@@ -6,7 +6,7 @@ public class IRCConnection extends PircBot {
 	
 	IRCService service;
 	
-	public void registerService(IRCService service) {
+	public IRCConnection(IRCService service) {
 		this.service = service;
 	}
 	
@@ -25,6 +25,72 @@ public class IRCConnection extends PircBot {
 	public void onConnect() {
 		this.service.updateNotification("Connected as " + this.getNick());
 	}
+	
+	public void onDisconnect() {
+		this.service.updateNotification("Not connected");
+	}
+	
+	public void onMessage() {
+		
+	}
+	
+	public void onPrivateMessage() {
+		
+	}
+	
+	public void onNotice() {
+		
+	}
+	
+	public void onOp() {
+		
+	}
+	
+	public void onDeop() {
+		
+	}
+	
+	public void onVoice() {
+		
+	}
+	
+	public void onDevoice() {
+		
+	}
+	
+	public void onInvite() {
+		
+	}
+	
+	public void onJoin() {
+		
+	}
+	
+	public void onMode() {
+		
+	}
+	
+	public void onKick() {
+		
+	}
+	
+	public void onNickChange() {
+		
+	}
+	
+	public void onPart() {
+		
+	}
+	
+	public void onQuit() {
+		
+	}
+	
+	public void onRemoveChannelBan() {
+		
+	}
+	
+	
 
 
 }

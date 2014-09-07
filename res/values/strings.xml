@@ -6,5 +6,6 @@
     <string name="connect_button">Connect</string>
     <string name="nickname_hint">Nickname</string>
     <string name="welcome_text">Welcome to ScoutLink, please enter a nickname below</string>
+    <string name="label_send_message_button">Send</string>
 
 </resources>

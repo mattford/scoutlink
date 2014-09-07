@@ -2,11 +2,11 @@ package uk.org.mattford.scoutlink;
 
 import uk.org.mattford.scoutlink.irc.IRCBinder;
 import uk.org.mattford.scoutlink.irc.IRCService;
+import uk.org.mattford.scoutlink.model.Settings;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.view.Menu;
@@ -17,17 +17,19 @@ import android.widget.EditText;
 
 public class MainActivity extends Activity implements ServiceConnection {
 	
-	public static final String PREFS_NAME = "ScoutLinkPrefs";
+	private Settings settings;
 	private IRCBinder binder;
 	
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, 0);
+        
+        this.settings = new Settings(this);
+        
         setContentView(R.layout.activity_main);
         EditText nick = (EditText)findViewById(R.id.nickname);
-        nick.setText(prefs.getString("nickname", ""));
+        nick.setText(settings.getString("nickname", ""));
         
     	Intent serviceIntent = new Intent(this, IRCService.class);
     	startService(serviceIntent);
@@ -35,14 +37,11 @@ public class MainActivity extends Activity implements ServiceConnection {
     }
     
     public void connectClick(View v) {
-    	SharedPreferences prefs = getSharedPreferences(PREFS_NAME, 0);
-    	SharedPreferences.Editor prefsEdit = prefs.edit();
     	EditText nick = (EditText)findViewById(R.id.nickname);
-    	prefsEdit.putString("nickname", nick.getText().toString());
-    	prefsEdit.commit();
+    	settings.putString("nickname", nick.getText().toString());
     	
     	
-    	this.binder.connect(nick.getText().toString(),"IDENT", "GECOS");
+    	this.binder.getService().connect();
     	Intent intent = new Intent(this, ConversationsActivity.class);
     	startActivity(intent);
     }

@@ -6,6 +6,7 @@ import org.jibble.pircbot.IrcException;
 import org.jibble.pircbot.NickAlreadyInUseException;
 
 import uk.org.mattford.scoutlink.R;
+import uk.org.mattford.scoutlink.model.Settings;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.Service;
@@ -18,12 +19,13 @@ import android.util.Log;
 public class IRCService extends Service {
 	
 	private IRCConnection irc;
+	private Settings settings;
 	private final int NOTIF_ID = 007;
 	
 	
 	public void onCreate() {
-		this.irc = new IRCConnection();
-		irc.registerService(this);
+		this.irc = new IRCConnection(this);
+		this.settings = new Settings(this);
 		Notification notif = new NotificationCompat.Builder(this)
 			.setContentTitle("ScoutLink")
 			.setContentText("Not connected")
@@ -33,18 +35,15 @@ public class IRCService extends Service {
 	}
 	
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		
 
-		
-		
 		return START_STICKY;
 	}
 	
-	public boolean connect(String nick, String ident, String realName) {
-		if (!irc.isConnected()) {
-			irc.setNickname(nick);
-			irc.setIdent(ident);
-			irc.setRealName(realName);
+	public boolean connect() {
+		if (!this.irc.isConnected()) {
+			this.irc.setNickname(settings.getString("nickname", "SLAndroid" + Math.floor(Math.random()*100)));
+			this.irc.setIdent(settings.getString("ident", "ScoutLinkIRC"));
+			this.irc.setRealName(settings.getString("realName", "ScoutLink IRC for Android"));
 			
 			new Thread(new Runnable() {
 				public void run() {
@@ -85,7 +84,6 @@ public class IRCService extends Service {
 
 	@Override
 	public Binder onBind(Intent intent) {
-		// TODO Auto-generated method stub
 		return new IRCBinder(this);
 	}
 
