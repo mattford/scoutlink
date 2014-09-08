@@ -1,6 +1,7 @@
 package uk.org.mattford.scoutlink;
 
 import uk.org.mattford.scoutlink.adapter.ConversationsPagerAdapter;
+import uk.org.mattford.scoutlink.model.Conversation;
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ public class ConversationsActivity extends FragmentActivity {
 	
 	private ConversationsPagerAdapter pagerAdapter;
 	private ViewPager pager;
+	private ActionBar.TabListener tabListener;
 	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -38,7 +40,7 @@ public class ConversationsActivity extends FragmentActivity {
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
         // Create a tab listener that is called when the user changes tabs.
-        ActionBar.TabListener tabListener = new ActionBar.TabListener() {
+        this.tabListener = new ActionBar.TabListener() {
 
 			@Override
 			public void onTabSelected(Tab tab,
@@ -67,7 +69,24 @@ public class ConversationsActivity extends FragmentActivity {
                     actionBar.newTab()
                             .setText("Server")
                             .setTabListener(tabListener));
+            
+            Conversation test = new Conversation("#test");
+            pagerAdapter.addConversation(test);
         }
+	
+	
+	
+	public void updateTabs() {
+		int size = this.pagerAdapter.getCount();
+		ActionBar act = getActionBar();
+		for (int i = 0; i < size; i++) {
+			act.addTab(act.newTab()
+					.setText(this.pagerAdapter.getItemInfo(i).conv.getName())
+					.setTabListener(tabListener)
+					);
+		}
+
+	}
         
 }
 	

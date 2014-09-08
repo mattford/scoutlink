@@ -3,6 +3,7 @@ package uk.org.mattford.scoutlink.adapter;
 import java.util.LinkedList;
 
 import uk.org.mattford.scoutlink.ConversationFragment;
+import uk.org.mattford.scoutlink.ConversationsActivity;
 import uk.org.mattford.scoutlink.model.Conversation;
 import android.app.ActionBar;
 import android.os.Bundle;
@@ -39,6 +40,10 @@ public class ConversationsPagerAdapter extends FragmentStatePagerAdapter {
         fragment.setArguments(args);
         return fragment;
     }
+    
+    public ConversationInfo getItemInfo(int i) {
+    	return conversations.get(i);
+    }
 
     @Override
     public int getCount() {
@@ -49,6 +54,16 @@ public class ConversationsPagerAdapter extends FragmentStatePagerAdapter {
     public CharSequence getPageTitle(int position) {
 		ConversationInfo cinfo = conversations.get(position);
 		return cinfo.conv.getName();
+    }
+    
+    public void addConversation(Conversation conv) {
+    	conversations.add(new ConversationInfo(conv));
+    	notifyDataSetChanged();
+    }
+    
+    public void removeConversation(int position) {
+    	conversations.remove(position);
+    	notifyDataSetChanged();
     }
 
 }

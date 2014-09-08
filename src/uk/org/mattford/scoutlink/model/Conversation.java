@@ -9,6 +9,7 @@ public class Conversation {
 
 	public Conversation(String name) {
 		this.CONVERSATION_NAME = name;
+		this.messages = new ArrayList<Message>();
 	}
 	
 	public String getName() {
