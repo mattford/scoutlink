@@ -51,6 +51,7 @@ public final class R {
         public static final int connect_button=0x7f050002;
         public static final int label_send_message_button=0x7f050005;
         public static final int nickname_hint=0x7f050003;
+        public static final int send_message_hint=0x7f050006;
         public static final int welcome_text=0x7f050004;
     }
     public static final class style {

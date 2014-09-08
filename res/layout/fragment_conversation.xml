@@ -28,6 +28,7 @@
         <EditText 
             android:id="@+id/EditText" 
             android:layout_width="fill_parent"
+            android:hint="@string/send_message_hint"
             android:layout_toLeftOf="@id/send_message_button"
             android:layout_height="wrap_content">
         </EditText>
