@@ -1,9 +1,15 @@
 package uk.org.mattford.scoutlink;
 
 import uk.org.mattford.scoutlink.adapter.ConversationsPagerAdapter;
+import uk.org.mattford.scoutlink.model.Broadcast;
 import uk.org.mattford.scoutlink.model.Conversation;
+import uk.org.mattford.scoutlink.receiver.ConversationReceiver;
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -14,6 +20,8 @@ public class ConversationsActivity extends FragmentActivity {
 	private ConversationsPagerAdapter pagerAdapter;
 	private ViewPager pager;
 	private ActionBar.TabListener tabListener;
+	private ActionBar actionBar;
+	private ConversationReceiver receiver;
 	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -34,10 +42,10 @@ public class ConversationsActivity extends FragmentActivity {
                 });
         pager.setAdapter(pagerAdapter);
         
-        final ActionBar actionBar = getActionBar();
+        this.actionBar = getActionBar();
 
         // Specify that tabs should be displayed in the action bar.
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+        this.actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
         // Create a tab listener that is called when the user changes tabs.
         this.tabListener = new ActionBar.TabListener() {
@@ -70,23 +78,33 @@ public class ConversationsActivity extends FragmentActivity {
                             .setText("Server")
                             .setTabListener(tabListener));
             
-            Conversation test = new Conversation("#test");
-            pagerAdapter.addConversation(test);
+            
+
         }
 	
-	
-	
-	public void updateTabs() {
-		int size = this.pagerAdapter.getCount();
-		ActionBar act = getActionBar();
-		for (int i = 0; i < size; i++) {
-			act.addTab(act.newTab()
-					.setText(this.pagerAdapter.getItemInfo(i).conv.getName())
-					.setTabListener(tabListener)
-					);
-		}
-
+	public void onResume() {
+		super.onResume();
+		
+		this.receiver = new ConversationReceiver(this);
+		registerReceiver(this.receiver, new IntentFilter(Broadcast.NEW_CONVERSATION));
+		
 	}
+	
+	
+	public void createNewConversation(String name) {
+		actionBar.addTab(
+				actionBar.newTab()
+				.setText(name)
+				.setTabListener(tabListener));
+		Conversation conv = new Conversation(name);
+		pagerAdapter.addConversation(conv);
+		
+	}
+	
+	public void newConversationMessage(String name) {
+		
+	}
+
         
 }
 	

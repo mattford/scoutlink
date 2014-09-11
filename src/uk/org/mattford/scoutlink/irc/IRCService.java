@@ -39,6 +39,10 @@ public class IRCService extends Service {
 		return START_STICKY;
 	}
 	
+	public void join(String c) {
+		irc.joinChannel(c);
+	}
+	
 	public boolean connect() {
 		if (!this.irc.isConnected()) {
 			this.irc.setNickname(settings.getString("nickname", "SLAndroid" + Math.floor(Math.random()*100)));
