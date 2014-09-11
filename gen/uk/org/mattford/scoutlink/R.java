@@ -26,7 +26,7 @@ public final class R {
     }
     public static final class id {
         public static final int EditText=0x7f080008;
-        public static final int InnerRelativeLayout=0x7f080006;
+        public static final int InnerLinearLayout=0x7f080006;
         public static final int action_settings=0x7f080009;
         public static final int connect_button=0x7f080004;
         public static final int messages=0x7f080005;

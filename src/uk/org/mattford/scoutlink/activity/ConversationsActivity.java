@@ -8,10 +8,12 @@ import uk.org.mattford.scoutlink.model.Conversation;
 import uk.org.mattford.scoutlink.receiver.ConversationReceiver;
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
+import android.app.Fragment;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 
 public class ConversationsActivity extends FragmentActivity {
@@ -97,7 +99,13 @@ public class ConversationsActivity extends FragmentActivity {
 	}
 	
 	public void newConversationMessage(String name) {
-		pager.setCurrentItem(pager.getCurrentItem());
+		
+		Fragment currentFrag = getFragmentManager().findFragmentById(pager.getCurrentItem());
+		FragmentTransaction txn = getFragmentManager().beginTransaction();
+		txn.detach(currentFrag);
+		txn.attach(currentFrag);
+		txn.commit();
+
 	}
 
         
