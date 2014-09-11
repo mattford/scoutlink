@@ -35,7 +35,6 @@ public class IRCService extends Service {
 	}
 	
 	public int onStartCommand(Intent intent, int flags, int startId) {
-
 		return START_STICKY;
 	}
 	
@@ -55,15 +54,12 @@ public class IRCService extends Service {
 					try {
 						irc.connect("chat.scoutlink.net");
 					} catch (NickAlreadyInUseException e) {
-						// TODO Auto-generated catch block
 						Log.e("ScoutLink", e.getMessage());
 						e.printStackTrace();
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
 						Log.e("ScoutLink", e.getMessage());
 						e.printStackTrace();
 					} catch (IrcException e) {
-						// TODO Auto-generated catch block
 						Log.e("ScoutLink", e.getMessage());
 						e.printStackTrace();
 					}

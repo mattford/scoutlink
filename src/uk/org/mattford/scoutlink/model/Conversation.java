@@ -2,6 +2,8 @@ package uk.org.mattford.scoutlink.model;
 
 import java.util.ArrayList;
 
+import android.util.Log;
+
 public class Conversation {
 	
 	public String CONVERSATION_NAME;
@@ -20,8 +22,8 @@ public class Conversation {
 		return this.messages;
 	}
 	
-	public void addMessage(String sender, String message) {
-		Message msg = new Message(sender, message);
+	public void addMessage(Message msg) {
+		Log.d("ScoutLink", "Adding new message from : "+msg.sender+" to conversation.");
 		messages.add(msg);
 	}
 }

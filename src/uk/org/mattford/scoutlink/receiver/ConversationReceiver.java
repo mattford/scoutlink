@@ -1,6 +1,6 @@
 package uk.org.mattford.scoutlink.receiver;
 
-import uk.org.mattford.scoutlink.ConversationsActivity;
+import uk.org.mattford.scoutlink.activity.ConversationsActivity;
 import uk.org.mattford.scoutlink.model.Broadcast;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -12,6 +12,7 @@ public class ConversationReceiver extends BroadcastReceiver {
 	private final ConversationsActivity activity;
 	
 	public ConversationReceiver(ConversationsActivity act) {
+		super();
 		this.activity = act;
 	}
 	

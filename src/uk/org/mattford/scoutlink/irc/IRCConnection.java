@@ -1,18 +1,16 @@
 package uk.org.mattford.scoutlink.irc;
 
-import java.util.ArrayList;
-
 import org.jibble.pircbot.PircBot;
 
 import android.content.Intent;
-import uk.org.mattford.scoutlink.ConversationsActivity;
+import uk.org.mattford.scoutlink.Scoutlink;
 import uk.org.mattford.scoutlink.model.Broadcast;
 import uk.org.mattford.scoutlink.model.Conversation;
+import uk.org.mattford.scoutlink.model.Message;
 
 public class IRCConnection extends PircBot {
 	
 	private IRCService service;
-	private ArrayList<Conversation> conversations;
 	
 	public IRCConnection(IRCService service) {
 		this.service = service;
@@ -32,8 +30,13 @@ public class IRCConnection extends PircBot {
 	
 	public void onConnect() {
 		this.service.updateNotification("Connected as " + this.getNick());
-		Conversation conversation = new Conversation("ScoutLink");
-		this.service.join("#test");
+		Conversation serverConv = new Conversation("ScoutLink");
+		Scoutlink.getInstance().getServer().addConversation(serverConv);
+		Intent intent = new Intent();
+		intent.setAction("uk.org.mattford.scoutlink.NEW_CONVERSATION");
+		intent.putExtra("target", "ScoutLink");
+		service.sendBroadcast(intent);
+		this.joinChannel("#test");
 	}
 	
 	public void onDisconnect() {
@@ -41,6 +44,7 @@ public class IRCConnection extends PircBot {
 	}
 	
 	public void onMessage(String channel, String sender, String login, String hostname, String message) {
+		Scoutlink.getInstance().getServer().getConversation(channel).addMessage(new Message(sender, message));
 		Intent intent = new Intent();
 		intent.setAction(Broadcast.NEW_MESSAGE);
 		intent.putExtra("target", channel);
@@ -76,6 +80,8 @@ public class IRCConnection extends PircBot {
 	}
 	
 	public void onJoin(String channel, String sender, String login, String hostname) {
+		Conversation conv = new Conversation(channel);
+		Scoutlink.getInstance().getServer().addConversation(conv);
 		Intent intent = new Intent();
 		intent.setAction("uk.org.mattford.scoutlink.NEW_CONVERSATION");
 		intent.putExtra("target", channel);

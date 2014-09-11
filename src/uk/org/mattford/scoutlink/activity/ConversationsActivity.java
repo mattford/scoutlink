@@ -1,14 +1,13 @@
-package uk.org.mattford.scoutlink;
+package uk.org.mattford.scoutlink.activity;
 
+import uk.org.mattford.scoutlink.R;
+import uk.org.mattford.scoutlink.Scoutlink;
 import uk.org.mattford.scoutlink.adapter.ConversationsPagerAdapter;
 import uk.org.mattford.scoutlink.model.Broadcast;
 import uk.org.mattford.scoutlink.model.Conversation;
 import uk.org.mattford.scoutlink.receiver.ConversationReceiver;
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -43,11 +42,7 @@ public class ConversationsActivity extends FragmentActivity {
         pager.setAdapter(pagerAdapter);
         
         this.actionBar = getActionBar();
-
-        // Specify that tabs should be displayed in the action bar.
         this.actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-
-        // Create a tab listener that is called when the user changes tabs.
         this.tabListener = new ActionBar.TabListener() {
 
 			@Override
@@ -70,14 +65,7 @@ public class ConversationsActivity extends FragmentActivity {
 				// TODO Auto-generated method stub
 				
 			}
-        };
-
-        // Add Server Tab
-            actionBar.addTab(
-                    actionBar.newTab()
-                            .setText("Server")
-                            .setTabListener(tabListener));
-            
+        };           
             
 
         }
@@ -87,7 +75,13 @@ public class ConversationsActivity extends FragmentActivity {
 		
 		this.receiver = new ConversationReceiver(this);
 		registerReceiver(this.receiver, new IntentFilter(Broadcast.NEW_CONVERSATION));
+		registerReceiver(this.receiver, new IntentFilter(Broadcast.NEW_MESSAGE));
 		
+	}
+	
+	public void onPause() {
+		super.onPause();
+		unregisterReceiver(this.receiver);
 	}
 	
 	
@@ -96,13 +90,14 @@ public class ConversationsActivity extends FragmentActivity {
 				actionBar.newTab()
 				.setText(name)
 				.setTabListener(tabListener));
-		Conversation conv = new Conversation(name);
+		Conversation conv = Scoutlink.getInstance().getServer().getConversation(name);
 		pagerAdapter.addConversation(conv);
+		
 		
 	}
 	
 	public void newConversationMessage(String name) {
-		
+		pager.setCurrentItem(pager.getCurrentItem());
 	}
 
         

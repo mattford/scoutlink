@@ -1,7 +1,9 @@
-package uk.org.mattford.scoutlink;
+package uk.org.mattford.scoutlink.activity;
 
 import java.util.ArrayList;
 
+import uk.org.mattford.scoutlink.R;
+import uk.org.mattford.scoutlink.Scoutlink;
 import uk.org.mattford.scoutlink.model.Conversation;
 import uk.org.mattford.scoutlink.model.Message;
 import android.os.Bundle;
@@ -16,15 +18,13 @@ public class ConversationFragment extends Fragment {
 	private Conversation conv;
     public static String CONVERSATION_ID = "conversation_id";
     
-    public ConversationFragment(Conversation conv) {
-    	this.conv = conv;
-    }
 
 	@Override
-    public View onCreateView(LayoutInflater inflater,
-            ViewGroup container, Bundle savedInstanceState) {
-        // The last two arguments ensure LayoutParams are inflated
-        // properly.
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+		Bundle args = getArguments();
+		String name = args.getString("name");
+		this.conv = Scoutlink.getInstance().getServer().getConversation(name);
         View rootView = inflater.inflate(
                 R.layout.fragment_conversation, container, false);
         TextView messages = (TextView) rootView.findViewById(R.id.messages);
@@ -35,5 +35,6 @@ public class ConversationFragment extends Fragment {
       
         return rootView;
     }
+	
 
 }

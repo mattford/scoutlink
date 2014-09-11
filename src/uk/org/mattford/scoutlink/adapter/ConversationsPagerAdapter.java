@@ -1,11 +1,9 @@
 package uk.org.mattford.scoutlink.adapter;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 
-import uk.org.mattford.scoutlink.ConversationFragment;
-import uk.org.mattford.scoutlink.ConversationsActivity;
+import uk.org.mattford.scoutlink.activity.ConversationFragment;
 import uk.org.mattford.scoutlink.model.Conversation;
-import android.app.ActionBar;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -13,30 +11,29 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 
 public class ConversationsPagerAdapter extends FragmentStatePagerAdapter {
 	
-	private LinkedList<ConversationInfo> conversations;
+	private ArrayList<ConversationInfo> conversations;
 
 	public ConversationsPagerAdapter(FragmentManager fm) {
         super(fm);
-        conversations = new LinkedList<ConversationInfo>();
+        conversations = new ArrayList<ConversationInfo>();
     }
 	
 	public class ConversationInfo {
-		public Conversation conv;
+		public String name;
 		
 		public ConversationInfo(Conversation conv) {
-			this.conv = conv;
+			this.name = conv.getName();
 		}
+
 	}
 
     @Override
     public Fragment getItem(int i) {
     	ConversationInfo cinfo = conversations.get(i);
-    	Conversation conv = cinfo.conv;
-    	
-        Fragment fragment = new ConversationFragment(conv);
+        Fragment fragment = new ConversationFragment();
         Bundle args = new Bundle();
         args.putInt(ConversationFragment.CONVERSATION_ID, i);
-
+        args.putString("name", cinfo.name);
         fragment.setArguments(args);
         return fragment;
     }
@@ -53,7 +50,7 @@ public class ConversationsPagerAdapter extends FragmentStatePagerAdapter {
     @Override
     public CharSequence getPageTitle(int position) {
 		ConversationInfo cinfo = conversations.get(position);
-		return cinfo.conv.getName();
+		return cinfo.name;
     }
     
     public void addConversation(Conversation conv) {
@@ -65,5 +62,6 @@ public class ConversationsPagerAdapter extends FragmentStatePagerAdapter {
     	conversations.remove(position);
     	notifyDataSetChanged();
     }
+    
 
 }
