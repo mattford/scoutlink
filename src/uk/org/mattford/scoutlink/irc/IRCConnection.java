@@ -32,7 +32,7 @@ public class IRCConnection extends PircBot {
 	
 	public void onConnect() {
 		this.service.updateNotification("Connected as " + this.getNick());
-		Conversation conversation = new Conversation("ScoutLink")
+		Conversation conversation = new Conversation("ScoutLink");
 		this.service.join("#test");
 	}
 	
