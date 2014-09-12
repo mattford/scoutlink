@@ -99,8 +99,7 @@ public class ConversationsActivity extends FragmentActivity {
 	}
 	
 	public void newConversationMessage(String name) {
-		
-		Fragment currentFrag = getFragmentManager().findFragmentById(pager.getCurrentItem());
+		Fragment currentFrag = getFragmentManager().findFragmentById(pagerAdapter.getItemByName(name));
 		FragmentTransaction txn = getFragmentManager().beginTransaction();
 		txn.detach(currentFrag);
 		txn.attach(currentFrag);

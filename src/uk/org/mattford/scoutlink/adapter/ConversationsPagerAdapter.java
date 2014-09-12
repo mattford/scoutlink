@@ -38,6 +38,16 @@ public class ConversationsPagerAdapter extends FragmentStatePagerAdapter {
         return fragment;
     }
     
+    public int getItemByName(String name) {
+    	for (int i = 0; i < conversations.size(); i++) {
+    		if (conversations.get(i).name == name) {
+    			return i;
+    		}
+    	}
+		return 0;
+    	
+    }
+    
     public ConversationInfo getItemInfo(int i) {
     	return conversations.get(i);
     }
