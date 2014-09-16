@@ -5,6 +5,7 @@ import uk.org.mattford.scoutlink.Scoutlink;
 import uk.org.mattford.scoutlink.adapter.ConversationsPagerAdapter;
 import uk.org.mattford.scoutlink.model.Broadcast;
 import uk.org.mattford.scoutlink.model.Conversation;
+import uk.org.mattford.scoutlink.model.Message;
 import uk.org.mattford.scoutlink.receiver.ConversationReceiver;
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
@@ -30,7 +31,7 @@ public class ConversationsActivity extends FragmentActivity {
 
         // ViewPager and its adapters use support library
         // fragments, so use getSupportFragmentManager.
-        pagerAdapter = new ConversationsPagerAdapter((FragmentManager) getSupportFragmentManager());
+        pagerAdapter = new ConversationsPagerAdapter();
         pager = (ViewPager) findViewById(R.id.pager);
         pager.setOnPageChangeListener(
                 new ViewPager.SimpleOnPageChangeListener() {
@@ -99,12 +100,11 @@ public class ConversationsActivity extends FragmentActivity {
 	}
 	
 	public void newConversationMessage(String name) {
-		Fragment currentFrag = getFragmentManager().findFragmentById(pagerAdapter.getItemByName(name));
-		FragmentTransaction txn = getFragmentManager().beginTransaction();
-		txn.detach(currentFrag);
-		txn.attach(currentFrag);
-		txn.commit();
-
+		Conversation conv = Scoutlink.getInstance().getServer().getConversation(name);
+		for (Message msg : conv.getBuffer()) {
+			pagerAdapter.getItemInfo(pagerAdapter.getItemByName(name)).adapter.addMessage(msg);
+		}
+		conv.flushBuffer();
 	}
 
         
