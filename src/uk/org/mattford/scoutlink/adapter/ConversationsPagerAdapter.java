@@ -10,7 +10,9 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 
 public class ConversationsPagerAdapter extends PagerAdapter {
 	
@@ -76,7 +78,8 @@ public class ConversationsPagerAdapter extends PagerAdapter {
      * Create a view object for the conversation at the given position.
      */
     @Override
-    public Object instantiateItem(View collection, int position) {
+    public Object instantiateItem(ViewGroup collection, int position) {
+    	Log.d("ScoutLink", "Instantiating item: " + position);
         ConversationInfo convInfo = conversations.get(position);
         View view;
 
@@ -93,8 +96,6 @@ public class ConversationsPagerAdapter extends PagerAdapter {
     }
     
     public MessageListView createView(ConversationInfo info, View parent) {
-    	
-
         MessageListView list = new MessageListView(parent.getContext());
         info.view = list;
         //list.setOnItemClickListener(MessageClickListener.getInstance());
