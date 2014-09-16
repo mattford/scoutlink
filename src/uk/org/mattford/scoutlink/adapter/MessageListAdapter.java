@@ -32,30 +32,32 @@ public class MessageListAdapter extends BaseAdapter implements ListAdapter {
 	public void addMessage(Message message) {
 		TextView tv = new TextView(this.context);
 		tv.setText(message.sender + ": " + message.text);
+		Log.d("ScoutLink", "MessageListAdapter.addMessage() called, adding: " + message.sender + ": " + message.text);
 		messages.add(tv);
 		notifyDataSetChanged();
 	}
 
 	@Override
 	public int getCount() {
-		Log.d("ScoutLink", "getCount():"+this.conversation.getName()+" = " + messages.size());
+		Log.d("ScoutLink", "MessageListAdapter.getCount() ("+this.conversation.getName()+") called, returing: " + messages.size());
 		return messages.size();
 	}
 
 	@Override
 	public TextView getItem(int position) {
-		Log.d("ScoutLink", "Getting TextView: " + position);
+		Log.d("ScoutLink", "MessageListAdapter.getItem() ("+this.conversation.getName()+") called: " + position);
 		return messages.get(position);
 	}
 
 	@Override
 	public long getItemId(int position) {
+		Log.d("ScoutLink", "MessageListAdapter.getItemId() ("+this.conversation.getName()+") called: "+position);
 		return position;
 	}
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		Log.d("ScoutLink", "Getting TextView (getView): " + position);
+		Log.d("ScoutLink", "MessageListAdapter.getView() called: " + position);
 		return getItem(position);
 	}
 

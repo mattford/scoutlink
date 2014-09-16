@@ -1,13 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical" >
 
-<android.support.v4.view.ViewPager  
-    android:id="@+id/pager"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content" >
-        </android.support.v4.view.ViewPager>
-   
-</LinearLayout>
+	<android.support.v4.view.ViewPager
+	    android:id="@+id/pager"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content" >
+	</android.support.v4.view.ViewPager>
+
+	<RelativeLayout 
+	    android:id="@+id/input_section"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_below="@id/pager"
+	    android:layout_alignParentBottom="true"
+	    >
+
+	    <EditText
+	        android:id="@+id/text_input"
+	        android:layout_width="wrap_content"
+	        android:layout_height="match_parent"
+	        android:ems="10" >
+	
+	       <requestFocus />
+	   </EditText>
+	
+	    <Button
+	        android:id="@+id/send_message_button"
+	        android:layout_width="wrap_content"
+	        android:layout_height="match_parent"
+	        android:layout_toRightOf="@id/text_input"
+	        android:text="@string/label_send_message_button" />
+	    
+	</RelativeLayout>
+
+
+</RelativeLayout>
