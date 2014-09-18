@@ -3,35 +3,39 @@ package uk.org.mattford.scoutlink.activity;
 import uk.org.mattford.scoutlink.R;
 import uk.org.mattford.scoutlink.Scoutlink;
 import uk.org.mattford.scoutlink.adapter.ConversationsPagerAdapter;
+import uk.org.mattford.scoutlink.irc.IRCBinder;
+import uk.org.mattford.scoutlink.irc.IRCService;
 import uk.org.mattford.scoutlink.model.Broadcast;
 import uk.org.mattford.scoutlink.model.Conversation;
 import uk.org.mattford.scoutlink.model.Message;
 import uk.org.mattford.scoutlink.receiver.ConversationReceiver;
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
-import android.app.Fragment;
+import android.content.ComponentName;
+import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 
-public class ConversationsActivity extends FragmentActivity {
+public class ConversationsActivity extends FragmentActivity implements ServiceConnection {
 	
 	private ConversationsPagerAdapter pagerAdapter;
 	private ViewPager pager;
 	private ActionBar.TabListener tabListener;
 	private ActionBar actionBar;
 	private ConversationReceiver receiver;
+	private IRCBinder binder;
+	
+	public static final String PRE_CONNECT = "uk.org.mattford.scoutlink.ACTION_PRE_CONNECT";
 	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_conversations);
-
-        // ViewPager and its adapters use support library
-        // fragments, so use getSupportFragmentManager.
-        pagerAdapter = new ConversationsPagerAdapter();
+                 
+        pagerAdapter = new ConversationsPagerAdapter(getSupportFragmentManager(), this);
         pager = (ViewPager) findViewById(R.id.pager);
         pager.setOnPageChangeListener(
                 new ViewPager.SimpleOnPageChangeListener() {
@@ -51,27 +55,24 @@ public class ConversationsActivity extends FragmentActivity {
 			@Override
 			public void onTabSelected(Tab tab,
 					android.app.FragmentTransaction ft) {
-				pager.setCurrentItem(tab.getPosition());
-				
+				pager.setCurrentItem(tab.getPosition());	
 			}
-
+			
 			@Override
 			public void onTabUnselected(Tab tab,
 					android.app.FragmentTransaction ft) {
-				// TODO Auto-generated method stub
-				
+				// TODO Do nothing?	
 			}
-
+			
 			@Override
 			public void onTabReselected(Tab tab,
 					android.app.FragmentTransaction ft) {
-				// TODO Auto-generated method stub
-				
+				// TODO Do nothing?
 			}
         };           
             
 
-        }
+    }
 	
 	public void onResume() {
 		super.onResume();
@@ -80,12 +81,18 @@ public class ConversationsActivity extends FragmentActivity {
 		registerReceiver(this.receiver, new IntentFilter(Broadcast.NEW_CONVERSATION));
 		registerReceiver(this.receiver, new IntentFilter(Broadcast.NEW_MESSAGE));
 		
+		Intent serviceIntent = new Intent(this, IRCService.class);
+		startService(serviceIntent);
+		bindService(serviceIntent, this, 0);
+		
 	}
 	
 	public void onPause() {
 		super.onPause();
 		unregisterReceiver(this.receiver);
+		unbindService(this);
 	}
+	
 	
 	
 	public void createNewConversation(String name) {
@@ -101,10 +108,26 @@ public class ConversationsActivity extends FragmentActivity {
 	
 	public void newConversationMessage(String name) {
 		Conversation conv = Scoutlink.getInstance().getServer().getConversation(name);
-		for (Message msg : conv.getBuffer()) {
-			pagerAdapter.getItemInfo(pagerAdapter.getItemByName(name)).adapter.addMessage(msg);
+		while (conv.hasBuffer()) {
+			Message msg = conv.pollBuffer();
+			int i = pagerAdapter.getItemByName(name);
+			pagerAdapter.getItemInfo(i).adapter.addMessage(msg);		
 		}
-		conv.flushBuffer();
+	}
+
+	@Override
+	public void onServiceConnected(ComponentName name, IBinder service) {
+		this.binder = (IRCBinder)service;
+        Intent intent = getIntent();
+        String action = intent.getAction();
+        if (action != null && action.equals(ConversationsActivity.PRE_CONNECT)) {
+        	binder.getService().connect();
+        }
+	}
+
+	@Override
+	public void onServiceDisconnected(ComponentName name) {
+		this.binder = null;
 	}
 
         

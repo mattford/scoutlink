@@ -8,30 +8,25 @@ import android.content.Context;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.ListAdapter;
+import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-public class MessageListAdapter extends BaseAdapter implements ListAdapter {
+public class MessageListAdapter extends ArrayAdapter<TextView> {
 	
 	private LinkedList<TextView> messages;
 	private Conversation conversation;
 	private Context context;
 	
 	public MessageListAdapter(Conversation conversation, Context context) {
-		super();
+		super(context, 0);
 		this.conversation = conversation;
 		this.context = context;
 		this.messages = new LinkedList<TextView>();
-		TextView test = new TextView(context);
-		test.setText("Testing");
-		messages.add(test);
-		notifyDataSetChanged();
 	}
 	
 	public void addMessage(Message message) {
 		TextView tv = new TextView(this.context);
-		tv.setText(message.sender + ": " + message.text);
+		tv.setText("<"+message.sender+"> " + message.text);
 		Log.d("ScoutLink", "MessageListAdapter.addMessage() called, adding: " + message.sender + ": " + message.text);
 		messages.add(tv);
 		notifyDataSetChanged();
@@ -39,7 +34,7 @@ public class MessageListAdapter extends BaseAdapter implements ListAdapter {
 
 	@Override
 	public int getCount() {
-		Log.d("ScoutLink", "MessageListAdapter.getCount() ("+this.conversation.getName()+") called, returing: " + messages.size());
+		Log.d("ScoutLink", "MessageListAdapter.getCount() ("+this.conversation.getName()+") called, returning: " + messages.size());
 		return messages.size();
 	}
 
@@ -58,7 +53,8 @@ public class MessageListAdapter extends BaseAdapter implements ListAdapter {
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		Log.d("ScoutLink", "MessageListAdapter.getView() called: " + position);
-		return getItem(position);
+		convertView = getItem(position);
+		return convertView;
 	}
 
 

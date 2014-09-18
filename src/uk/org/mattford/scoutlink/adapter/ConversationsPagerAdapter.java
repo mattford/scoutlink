@@ -1,55 +1,65 @@
 package uk.org.mattford.scoutlink.adapter;
 
-import java.util.ArrayList;
 
+import java.util.LinkedList;
+
+import uk.org.mattford.scoutlink.activity.MessageListFragment;
 import uk.org.mattford.scoutlink.model.Conversation;
-import uk.org.mattford.scoutlink.views.MessageListView;
-import android.os.Bundle;
+import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.util.Log;
-import android.view.View;
-import android.view.ViewGroup;
 
-public class ConversationsPagerAdapter extends PagerAdapter {
+public class ConversationsPagerAdapter extends FragmentStatePagerAdapter {
 	
-	private ArrayList<ConversationInfo> conversations;
+	private LinkedList<ConversationInfo> conversations;
+	private Context context;
 
-	public ConversationsPagerAdapter() {
-        super();
-        conversations = new ArrayList<ConversationInfo>();
+	public ConversationsPagerAdapter(FragmentManager fm, Context context) {
+        super(fm);
+        conversations = new LinkedList<ConversationInfo>();
+        this.context = context;
     }
 	
 	public class ConversationInfo {
 		public Conversation conv;
 		public MessageListAdapter adapter;
-		public MessageListView view;
+		public MessageListFragment frag;
 		
 		public ConversationInfo(Conversation conv) {
 			this.conv = conv;
+			this.adapter = null;
+			this.frag = null;
 		}
 
 	}
-
-    public Conversation getItem(int i) {
-    	return conversations.get(i).conv;
+	
+	@Override
+    public Fragment getItem(int i) {
+    	Log.d("ScoutLink", "ConversationsPagerAdapter.getItem("+i+") called.");
+        return getView(i);
     }
     
     public int getItemByName(String name) {
     	for (int i = 0; i < conversations.size(); i++) {
-    		if (conversations.get(i).conv.getName() == name) {
+    		if (conversations.get(i).conv.getName().equalsIgnoreCase(name)) {
     			return i;
     		}
     	}
-		return 0;
-    	
+		return 0;	// TODO: Should this return null if not found?
     }
     
     public ConversationInfo getItemInfo(int i) {
-    	return conversations.get(i);
+    	Log.d("ScoutLink", "getItemInfo("+Integer.toString(i)+")");
+    	ConversationInfo info = null;
+    	try {
+    		info = conversations.get(i);
+    	} catch (IndexOutOfBoundsException e) {
+    		Log.d("ScoutLink", Integer.toString(i)+" is out of bounds.");
+    		
+    	}
+    	return info;
     }
 
     
@@ -67,51 +77,33 @@ public class ConversationsPagerAdapter extends PagerAdapter {
 	public int getCount() {
 		return conversations.size();
 	}
-
-	@Override
-	public boolean isViewFromObject(View arg0, Object arg1) {
-		// TODO Auto-generated method stub
-		return false;
-	}
 	
-    /**
-     * Create a view object for the conversation at the given position.
-     */
-    @Override
-    public Object instantiateItem(ViewGroup collection, int position) {
-    	Log.d("ScoutLink", "Instantiating item: " + position);
-        ConversationInfo convInfo = conversations.get(position);
-        View view;
 
-        if (convInfo.view != null) {
-            view = convInfo.view;
-        } else {
-            view = createView(convInfo, collection);
-        }
+	
 
-        //views.put(position, view);
-        ((ViewPager) collection).addView(view);
-
-        return view;
-    }
     
-    public MessageListView createView(ConversationInfo info, View parent) {
-        MessageListView list = new MessageListView(parent.getContext());
-        info.view = list;
-        //list.setOnItemClickListener(MessageClickListener.getInstance());
+    public MessageListFragment getView(int i) {
+    	ConversationInfo info = conversations.get(i);
+    	Log.d("ScoutLink", "Creating new MessageListFragment for " + info.conv.getName());
+    	MessageListFragment frag;
+    	
+    	if (info.frag == null) {
+    		frag = new MessageListFragment(info.conv);
+    	} else {
+    		frag = info.frag;
+    	}
 
         MessageListAdapter adapter = info.adapter;
 
         if (adapter == null) {
-            adapter = new MessageListAdapter(info.conv, parent.getContext());
+            adapter = new MessageListAdapter(info.conv, context);
             info.adapter = adapter;
         }
 
 
-        list.setAdapter(adapter);
-        list.setSelection(adapter.getCount() - 1); // scroll to bottom
+        frag.setListAdapter(adapter);
 
-        return list;
+        return frag;
 
     }
     

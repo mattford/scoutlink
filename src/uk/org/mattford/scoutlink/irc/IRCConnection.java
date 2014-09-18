@@ -3,6 +3,7 @@ package uk.org.mattford.scoutlink.irc;
 import org.jibble.pircbot.PircBot;
 
 import android.content.Intent;
+import android.util.Log;
 import uk.org.mattford.scoutlink.Scoutlink;
 import uk.org.mattford.scoutlink.model.Broadcast;
 import uk.org.mattford.scoutlink.model.Conversation;
@@ -14,6 +15,13 @@ public class IRCConnection extends PircBot {
 	
 	public IRCConnection(IRCService service) {
 		this.service = service;
+		Conversation serverConv = new Conversation("ScoutLink");
+		Scoutlink.getInstance().getServer().addConversation(serverConv);
+		Intent intent = new Intent();
+		intent.setAction(Broadcast.NEW_CONVERSATION);
+		intent.putExtra("target", "ScoutLink");
+		Log.d("ScoutLink", "Sending broadcast...");
+		service.sendBroadcast(intent);
 	}
 	
 	public void setNickname(String nick) {
@@ -28,14 +36,11 @@ public class IRCConnection extends PircBot {
 		this.setVersion(name);
 	}
 	
+	
+	
 	public void onConnect() {
 		this.service.updateNotification("Connected as " + this.getNick());
-		Conversation serverConv = new Conversation("ScoutLink");
-		Scoutlink.getInstance().getServer().addConversation(serverConv);
-		Intent intent = new Intent();
-		intent.setAction("uk.org.mattford.scoutlink.NEW_CONVERSATION");
-		intent.putExtra("target", "ScoutLink");
-		service.sendBroadcast(intent);
+
 		this.joinChannel("#test");
 	}
 	
@@ -110,6 +115,14 @@ public class IRCConnection extends PircBot {
 	
 	public void onRemoveChannelBan() {
 		
+	}
+	
+	public void onServerResponse(int code, String message) {
+		Scoutlink.getInstance().getServer().getConversation("ScoutLink").addMessage(new Message("ScoutLink", message));
+		Intent intent = new Intent();
+		intent.setAction(Broadcast.NEW_MESSAGE);
+		intent.putExtra("target", "ScoutLink");
+		service.sendBroadcast(intent);
 	}
 	
 	

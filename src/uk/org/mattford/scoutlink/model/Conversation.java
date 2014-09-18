@@ -1,43 +1,47 @@
 package uk.org.mattford.scoutlink.model;
 
-import java.util.ArrayList;
-
-import android.util.Log;
+import java.util.LinkedList;
 
 public class Conversation {
 	
 	public String CONVERSATION_NAME;
-	private ArrayList<Message> messages;
-	private ArrayList<Message> buffer;
+	private LinkedList<Message> messages;
+	private LinkedList<Message> buffer;
 
 	public Conversation(String name) {
 		this.CONVERSATION_NAME = name;
-		this.messages = new ArrayList<Message>();
-		this.buffer = new ArrayList<Message>();
+		this.messages = new LinkedList<Message>();
+		this.buffer = new LinkedList<Message>();
 	}
 	
 	public String getName() {
 		return this.CONVERSATION_NAME;
 	}
 	
-	public ArrayList<Message> getMessages() {
+	public LinkedList<Message> getMessages() {
 		return this.messages;
 	}
 	
-	public ArrayList<Message> getBuffer() {
+	public LinkedList<Message> getBuffer() {
 		return this.buffer;
 	}
 	
-	public void flushBuffer() {
-		for (Message message : this.buffer) {
-			messages.add(message);
-		}
-		this.buffer = null;
-		this.buffer = new ArrayList<Message>();
+	public Message pollBuffer() {
+		Message message = buffer.get(buffer.size()-1);
+		buffer.remove(buffer.size()-1);
+		return message;
+	}
+	
+	public boolean hasBuffer() {
+		return buffer.size() != 0;
+	}
+	
+	public void clearBuffer() {
+		this.buffer.clear();
 	}
 	
 	public void addMessage(Message msg) {
-		Log.d("ScoutLink", "Adding new message from : "+msg.sender+" to conversation.");
+		//Log.d("ScoutLink", "Adding new message from : "+msg.sender+" to conversation.");
 		buffer.add(msg);
 	}
 }
