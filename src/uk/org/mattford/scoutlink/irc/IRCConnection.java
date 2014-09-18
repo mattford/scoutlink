@@ -85,12 +85,21 @@ public class IRCConnection extends PircBot {
 	}
 	
 	public void onJoin(String channel, String sender, String login, String hostname) {
-		Conversation conv = new Conversation(channel);
-		Scoutlink.getInstance().getServer().addConversation(conv);
-		Intent intent = new Intent();
-		intent.setAction("uk.org.mattford.scoutlink.NEW_CONVERSATION");
-		intent.putExtra("target", channel);
-		service.sendBroadcast(intent);
+		if (sender.equalsIgnoreCase(this.getNick())) {
+			Conversation conv = new Conversation(channel);
+			Scoutlink.getInstance().getServer().addConversation(conv);
+			Intent intent = new Intent();
+			intent.setAction(Broadcast.NEW_CONVERSATION);
+			intent.putExtra("target", channel);
+			service.sendBroadcast(intent);
+		} else {
+			Message msg = new Message(sender, "joined channel");
+			Scoutlink.getInstance().getServer().getConversation(channel).addMessage(msg);
+			Intent intent = new Intent();
+			intent.setAction(Broadcast.NEW_MESSAGE);
+			intent.putExtra("target", channel);
+			service.sendBroadcast(intent);
+		}
 	}
 	
 	public void onMode() {
