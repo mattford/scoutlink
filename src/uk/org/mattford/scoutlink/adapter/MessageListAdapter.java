@@ -25,9 +25,7 @@ public class MessageListAdapter extends ArrayAdapter<TextView> {
 	}
 	
 	public void addMessage(Message message) {
-		TextView tv = new TextView(this.context);
-		tv.setText("<"+message.sender+"> " + message.text);
-		Log.d("ScoutLink", "MessageListAdapter.addMessage() called, adding: " + message.sender + ": " + message.text);
+		TextView tv = message.renderTextView(context);
 		messages.add(tv);
 		notifyDataSetChanged();
 	}

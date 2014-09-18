@@ -111,7 +111,8 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 		while (conv.hasBuffer()) {
 			Message msg = conv.pollBuffer();
 			int i = pagerAdapter.getItemByName(name);
-			pagerAdapter.getItemInfo(i).adapter.addMessage(msg);		
+			pagerAdapter.getItemInfo(i).adapter.addMessage(msg);
+			
 		}
 	}
 

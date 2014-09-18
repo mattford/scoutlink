@@ -1,36 +1,14 @@
 package uk.org.mattford.scoutlink.model;
 
+import android.content.Context;
 import android.widget.TextView;
 
 public class Message {
 
-	private String sender;
 	private String text;
-	private String channel;
-	private int type;
 	
-	public final static int TYPE_CHANNEL = 0;
-	public final static int TYPE_PRIVATE = 1;
-	public final static int TYPE_SERVER = 2;
-	public final static int TYPE_JOIN = 3;
-	public final static int TYPE_MODE = 4;
-	public final static int TYPE_TOPIC = 5;
-	
-	public Message(String sender, String text) {
-		this.sender = sender;
+	public Message (String text) {
 		this.text = text;
-	}
-	
-	public Message(int type) {
-		this.type = type;
-	}
-	
-	public String getSender() {
-		return sender;
-	}
-
-	public void setSender(String sender) {
-		this.sender = sender;
 	}
 
 	public String getText() {
@@ -41,19 +19,10 @@ public class Message {
 		this.text = text;
 	}
 
-	public int getType() {
-		return type;
-	}
+	public TextView renderTextView(Context context) {
+		TextView view = new TextView(context);
+		view.setText(this.getText());
 
-	public void setType(int type) {
-		this.type = type;
+		return view;
 	}
-
-	public TextView renderTextView() {
-		switch (this.type){
-		
-		}
-		return null;
-	}
-	
 }

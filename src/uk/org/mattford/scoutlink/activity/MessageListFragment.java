@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 
 
 public class MessageListFragment extends ListFragment {
@@ -19,6 +20,7 @@ public class MessageListFragment extends ListFragment {
 		super();
 		this.conv = conv;
 
+
 	}
 	
     @Override
@@ -26,6 +28,8 @@ public class MessageListFragment extends ListFragment {
             Bundle savedInstanceState) {
     	Log.d("ScoutLink", "MessageListFragment.onCreateView() called.");
         View v = inflater.inflate(R.layout.message_list_view, container, false);
+        ListView lv = (ListView)v.findViewById(android.R.id.list);
+        lv.setTranscriptMode(ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
         return v;
     }
 	
