@@ -38,8 +38,8 @@ public class IRCService extends Service {
 		return START_STICKY;
 	}
 	
-	public void join(String c) {
-		irc.joinChannel(c);
+	public IRCConnection getConnection() {
+		return this.irc;
 	}
 	
 	public boolean connect() {

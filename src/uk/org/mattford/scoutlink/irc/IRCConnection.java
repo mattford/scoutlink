@@ -134,7 +134,9 @@ public class IRCConnection extends PircBot {
 	}
 	
 	public void onKick(String channel, String kickerNick, String kickerLogin, String kickerHostname, String recipientNick, String reason) {
-		
+		Message msg = new Message(recipientNick+" was kicked from "+channel+" by "+kickerNick+" ("+reason+")");
+		Scoutlink.getInstance().getServer().getConversation(channel).addMessage(msg);
+		sendNewMessageBroadcast(channel);
 	}
 	
 	public void onNickChange(String oldNick, String login, String hostname, String newNick) {
@@ -148,7 +150,9 @@ public class IRCConnection extends PircBot {
 	}
 	
 	public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
-		
+		Message msg = new Message(sourceNick+" has left ScoutLink ("+reason+")");
+		Scoutlink.getInstance().getServer().getConversation("ScoutLink").addMessage(msg);
+		sendNewMessageBroadcast("ScoutLink"); // TODO: Not quite right
 	}
 	
 	public void onRemoveChannelBan(String channel, String sourceNick, String sourceLogin, String sourceHostname, String hostmask) {
@@ -249,11 +253,13 @@ public class IRCConnection extends PircBot {
 	}
 	
 	public void onUserMode(String targetNick, String sourceNick, String sourceLogin, String sourceHostname, String mode) {
-		
+		Message msg = new Message(sourceNick+ " sets mode: "+mode+" "+targetNick);
+		Scoutlink.getInstance().getServer().getConversation("ScoutLink").addMessage(msg);
+		sendNewMessageBroadcast("ScoutLink");
 	}
 	
 	public void onVersion(String sourceNick, String sourceLogin, String sourceHostname, String target) {
-		
+		this.sendNotice(sourceNick, "ScoutLink for Android");
 	}
 	
 	public void onServerResponse(int code, String message) {

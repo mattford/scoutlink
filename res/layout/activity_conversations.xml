@@ -18,16 +18,17 @@
         android:orientation="horizontal">
         <EditText
             android:id="@+id/input"
-            android:layout_width="0dp"
+
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:inputType="text"
-            android:textIsSelectable="true"
-            android:imeOptions="actionSend" />
-        <Button
+            ></EditText>        
+            <Button
             android:id="@+id/send_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:onClick="onSendButtonClick"
             android:text="@string/label_send_message_button"
             />
     </LinearLayout>

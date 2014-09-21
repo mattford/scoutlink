@@ -18,6 +18,10 @@ public class Server {
 		}
 	}
 	
+	public HashMap<String, Conversation> getConversations() {
+		return this.conversations;
+	}
+	
 	public void addConversation(Conversation conv) {
 		conversations.put(conv.getName(), conv);
 	}

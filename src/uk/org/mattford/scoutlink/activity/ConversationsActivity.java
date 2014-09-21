@@ -1,5 +1,7 @@
 package uk.org.mattford.scoutlink.activity;
 
+import java.util.Map;
+
 import uk.org.mattford.scoutlink.R;
 import uk.org.mattford.scoutlink.Scoutlink;
 import uk.org.mattford.scoutlink.adapter.ConversationsPagerAdapter;
@@ -19,6 +21,10 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
 
 public class ConversationsActivity extends FragmentActivity implements ServiceConnection {
 	
@@ -85,12 +91,26 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 		startService(serviceIntent);
 		bindService(serviceIntent, this, 0);
 		
+		for (Map.Entry<String, Conversation> conv : Scoutlink.getInstance().getServer().getConversations().entrySet()) {
+			newConversationMessage(conv.getKey());
+		}
+		
 	}
 	
 	public void onPause() {
 		super.onPause();
 		unregisterReceiver(this.receiver);
 		unbindService(this);
+	}
+	
+	public void onSendButtonClick(View v) {
+		EditText et = (EditText)findViewById(R.id.input);
+		String message = et.getText().toString();
+		int current = pager.getCurrentItem();
+		String target = pagerAdapter.getItemInfo(current).conv.getName();
+		this.binder.getService().getConnection().sendMessage(target, message);
+		et.setText("");
+				
 	}
 	
 	
@@ -130,7 +150,36 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 	public void onServiceDisconnected(ComponentName name) {
 		this.binder = null;
 	}
+	
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.conversations, menu);
+        return true;
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        switch(id) {
+        case R.id.action_settings:
+        	
+        	break;
+        case R.id.action_close:
+        	
+        	break;
+        case R.id.action_disconnect:
+        	
+        	break;
+        case R.id.action_userlist:
+        	
+        	break;        	
+        }
+        return super.onOptionsItemSelected(item);
+    }
         
 }
 	

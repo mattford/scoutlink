@@ -25,7 +25,10 @@ public final class R {
         public static final int ic_launcher=0x7f020000;
     }
     public static final class id {
+        public static final int action_close=0x7f080008;
+        public static final int action_disconnect=0x7f080009;
         public static final int action_settings=0x7f080007;
+        public static final int action_userlist=0x7f08000a;
         public static final int connect_button=0x7f080006;
         public static final int input=0x7f080001;
         public static final int nickname=0x7f080005;
@@ -40,10 +43,14 @@ public final class R {
         public static final int message_list_view=0x7f030002;
     }
     public static final class menu {
-        public static final int main=0x7f070000;
+        public static final int conversations=0x7f070000;
+        public static final int main=0x7f070001;
     }
     public static final class string {
+        public static final int action_close=0x7f050007;
+        public static final int action_disconnect=0x7f050008;
         public static final int action_settings=0x7f050001;
+        public static final int action_users=0x7f050009;
         public static final int app_name=0x7f050000;
         public static final int connect_button=0x7f050002;
         public static final int label_send_message_button=0x7f050005;
