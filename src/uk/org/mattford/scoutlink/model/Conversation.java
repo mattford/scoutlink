@@ -27,8 +27,7 @@ public class Conversation {
 	}
 	
 	public Message pollBuffer() {
-		Message message = buffer.get(buffer.size()-1);
-		buffer.remove(buffer.size()-1);
+		Message message = buffer.pollFirst();
 		return message;
 	}
 	

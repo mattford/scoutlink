@@ -26,6 +26,7 @@
         <service android:name=".irc.IRCService"></service>
         <activity android:name=".activity.ConversationsActivity"></activity>
         <activity android:name=".activity.JoinActivity" android:theme="@android:style/Theme.Dialog" android:label="@string/join_activity_label"></activity>
+        <activity android:label="Users" android:theme="@android:style/Theme.Dialog" android:name=".activity.UserListActivity"></activity>
     </application>
 
 </manifest>

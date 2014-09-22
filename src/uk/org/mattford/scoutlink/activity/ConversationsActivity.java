@@ -1,6 +1,9 @@
 package uk.org.mattford.scoutlink.activity;
 
+import java.util.ArrayList;
 import java.util.Map;
+
+import org.jibble.pircbot.User;
 
 import uk.org.mattford.scoutlink.R;
 import uk.org.mattford.scoutlink.Scoutlink;
@@ -21,7 +24,6 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -145,7 +147,6 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 			Message msg = conv.pollBuffer();
 			int i = pagerAdapter.getItemByName(name);
 			if (i != -1) {
-				Log.d("ScoutLink", "Item name: " + name + ", item id: " + Integer.toString(i));
 				pagerAdapter.getItemInfo(i).adapter.addMessage(msg);
 			}
 			
@@ -198,11 +199,15 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
         	finish();
         	break;
         case R.id.action_userlist:
-        	
+        	String chan = pagerAdapter.getItemInfo(pager.getCurrentItem()).conv.getName();
+        	ArrayList<String> users = binder.getService().getConnection().getUsersAsStringArray(chan);
+        	Intent intent = new Intent(this, UserListActivity.class);
+        	intent.putStringArrayListExtra("users", users);
+        	startActivity(intent);
         	break;
         case R.id.action_join:
-        	Intent intent = new Intent(this, JoinActivity.class);
-        	startActivityForResult(intent, JOIN_CHANNEL_RESULT);
+        	Intent joinIntent = new Intent(this, JoinActivity.class);
+        	startActivityForResult(joinIntent, JOIN_CHANNEL_RESULT);
         	break;
         }
         return super.onOptionsItemSelected(item);

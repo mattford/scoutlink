@@ -60,10 +60,10 @@ public class IRCConnection extends PircBot {
 		sendNewMessageBroadcast(channel); 
 	}
 	
-	public void onAction(String channel, String sender, String login, String hostname, String message) {
-		Message msg = new Message(sender + " " + message);
-		server.getConversation(channel).addMessage(msg);
-		sendNewMessageBroadcast(channel);
+	public void onAction(String sender, String login, String hostname, String target, String action) {
+		Message msg = new Message(sender + " " + action);
+		server.getConversation(target).addMessage(msg);
+		sendNewMessageBroadcast(target);
 	}
 	
 	public void onPrivateMessage(String sender, String login, String hostname, String message) { // TODO: Might need to create conversation
@@ -147,15 +147,26 @@ public class IRCConnection extends PircBot {
 	}
 	
 	public void onMode(String channel, String sourceNick, String sourceLogin, String sourceHostname, String mode) {
-		Message msg = new Message(sourceNick+" sets mode: "+mode);
-		server.getConversation(channel).addMessage(msg);
-		sendNewMessageBroadcast(channel); 
+		/* Do nothing to avoid duplicated channel events.
+		 *  Message msg = new Message(sourceNick+" sets mode: "+mode);
+		 * 	server.getConversation(channel).addMessage(msg);
+		 *	sendNewMessageBroadcast(channel);
+		 */
+ 
 	}
 	
 	public void onKick(String channel, String kickerNick, String kickerLogin, String kickerHostname, String recipientNick, String reason) {
-		Message msg = new Message(recipientNick+" was kicked from "+channel+" by "+kickerNick+" ("+reason+")");
-		server.getConversation(channel).addMessage(msg);
-		sendNewMessageBroadcast(channel);
+		if (recipientNick.equals(this.getNick())) {
+			// We were kicked from a channel.
+			Message msg = new Message("You were kicked from "+channel);
+			server.getConversation("ScoutLink").addMessage(msg);
+			Intent intent = new Intent().setAction(Broadcast.REMOVE_CONVERSATION).putExtra("target", channel);
+			service.sendBroadcast(intent);
+		} else {
+			Message msg = new Message(recipientNick+" was kicked from "+channel+" by "+kickerNick+" ("+reason+")");
+			server.getConversation(channel).addMessage(msg);
+			sendNewMessageBroadcast(channel);
+		}
 	}
 	
 	public void onNickChange(String oldNick, String login, String hostname, String newNick) {
@@ -182,6 +193,7 @@ public class IRCConnection extends PircBot {
 	
 	public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
 		if (sourceNick.equals(this.getNick())) {
+			// We have quit, do nothing.
 			return;
 		}
 		Message msg = new Message(sourceNick+" has left ScoutLink ("+reason+")");
@@ -357,6 +369,15 @@ public class IRCConnection extends PircBot {
 			}
 		}
 		return returnChans;
+	}
+	
+	public ArrayList<String> getUsersAsStringArray(String target) {
+		User[] users = getUsers(target);
+		ArrayList<String> userlist = new ArrayList<String>();
+		for (User user : users) {
+			userlist.add(user.getPrefix()+user.getNick());
+		}
+		return userlist;
 	}
 	
 	
