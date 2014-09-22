@@ -1,26 +1,32 @@
 package uk.org.mattford.scoutlink.irc;
 
+import java.util.ArrayList;
+
 import org.jibble.pircbot.PircBot;
 import org.jibble.pircbot.User;
 
 import android.content.Intent;
-import android.util.Log;
 import uk.org.mattford.scoutlink.Scoutlink;
 import uk.org.mattford.scoutlink.model.Broadcast;
 import uk.org.mattford.scoutlink.model.Conversation;
 import uk.org.mattford.scoutlink.model.Message;
+import uk.org.mattford.scoutlink.model.Server;
 
 public class IRCConnection extends PircBot {
 	
 	private IRCService service;
+	private Server server;
 	
 	public IRCConnection(IRCService service) {
 		this.service = service;
+		this.server = Scoutlink.getInstance().getServer();
+
+	}
+	
+	public void createDefaultConversation() {
 		Conversation serverConv = new Conversation("ScoutLink");
-		Scoutlink.getInstance().getServer().addConversation(serverConv);
-		Intent intent = new Intent();
-		intent.setAction(Broadcast.NEW_CONVERSATION);
-		intent.putExtra("target", "ScoutLink");
+		server.addConversation(serverConv);
+		Intent intent = new Intent().setAction(Broadcast.NEW_CONVERSATION).putExtra("target", "ScoutLink");
 		service.sendBroadcast(intent);
 	}
 	
@@ -50,19 +56,32 @@ public class IRCConnection extends PircBot {
 	
 	public void onMessage(String channel, String sender, String login, String hostname, String message) {
 		Message msg = new Message("<"+sender+"> "+message);
-		Scoutlink.getInstance().getServer().getConversation(channel).addMessage(msg);
+		server.getConversation(channel).addMessage(msg);
 		sendNewMessageBroadcast(channel); 
 	}
 	
+	public void onAction(String channel, String sender, String login, String hostname, String message) {
+		Message msg = new Message(sender + " " + message);
+		server.getConversation(channel).addMessage(msg);
+		sendNewMessageBroadcast(channel);
+	}
+	
 	public void onPrivateMessage(String sender, String login, String hostname, String message) { // TODO: Might need to create conversation
+		Conversation conversation = server.getConversation(sender);
+		if (conversation == null) {
+			conversation = new Conversation(sender);
+			server.addConversation(conversation);
+			Intent intent = new Intent().setAction(Broadcast.NEW_CONVERSATION).putExtra("target", sender);
+			service.sendBroadcast(intent);
+		}
 		Message msg = new Message("<"+sender+"> "+message);
-		Scoutlink.getInstance().getServer().getConversation(sender).addMessage(msg);
-		sendNewMessageBroadcast(sender); 
+		conversation.addMessage(msg);
+		sendNewMessageBroadcast(sender);
 	}
 	
 	public void onNotice(String sourceNick, String sourceLogin, String sourceHostname, String target, String notice) {
 		Message msg = new Message("-"+sourceNick+"- "+notice);
-		Scoutlink.getInstance().getServer().getConversation("ScoutLink").addMessage(msg);
+		server.getConversation("ScoutLink").addMessage(msg);
 		sendNewMessageBroadcast("ScoutLink");
 	}
 	
@@ -73,7 +92,7 @@ public class IRCConnection extends PircBot {
 		} else {
 			msg = new Message(sourceNick + " gave operator status to "+ recipient);
 		}
-		Scoutlink.getInstance().getServer().getConversation(channel).addMessage(msg);
+		server.getConversation(channel).addMessage(msg);
 		sendNewMessageBroadcast(channel); 
 	}
 	
@@ -84,7 +103,7 @@ public class IRCConnection extends PircBot {
 		} else {
 			msg = new Message(sourceNick + " took operator status from "+ recipient);
 		}
-		Scoutlink.getInstance().getServer().getConversation(channel).addMessage(msg);
+		server.getConversation(channel).addMessage(msg);
 		sendNewMessageBroadcast(channel); 
 	}
 	
@@ -95,7 +114,7 @@ public class IRCConnection extends PircBot {
 		} else {
 			msg = new Message(sourceNick + " gave voice to "+ recipient);
 		}
-		Scoutlink.getInstance().getServer().getConversation(channel).addMessage(msg);
+		server.getConversation(channel).addMessage(msg);
 		sendNewMessageBroadcast(channel); 
 	}
 	
@@ -106,7 +125,7 @@ public class IRCConnection extends PircBot {
 		} else {
 			msg = new Message(sourceNick + " took voice from "+ recipient);
 		}
-		Scoutlink.getInstance().getServer().getConversation(channel).addMessage(msg);
+		server.getConversation(channel).addMessage(msg);
 		sendNewMessageBroadcast(channel); 
 	}
 	
@@ -117,78 +136,113 @@ public class IRCConnection extends PircBot {
 	public void onJoin(String channel, String sender, String login, String hostname) {
 		if (sender.equalsIgnoreCase(this.getNick())) {
 			Conversation conv = new Conversation(channel);
-			Scoutlink.getInstance().getServer().addConversation(conv);
+			server.addConversation(conv);
 			Intent intent = new Intent().setAction(Broadcast.NEW_CONVERSATION).putExtra("target", channel);
 			service.sendBroadcast(intent);
 		} else {
 			Message msg = new Message(sender+" has joined "+channel);
-			Scoutlink.getInstance().getServer().getConversation(channel).addMessage(msg);
+			server.getConversation(channel).addMessage(msg);
 			sendNewMessageBroadcast(channel); 
 		}
 	}
 	
 	public void onMode(String channel, String sourceNick, String sourceLogin, String sourceHostname, String mode) {
 		Message msg = new Message(sourceNick+" sets mode: "+mode);
-		Scoutlink.getInstance().getServer().getConversation(channel).addMessage(msg);
+		server.getConversation(channel).addMessage(msg);
 		sendNewMessageBroadcast(channel); 
 	}
 	
 	public void onKick(String channel, String kickerNick, String kickerLogin, String kickerHostname, String recipientNick, String reason) {
 		Message msg = new Message(recipientNick+" was kicked from "+channel+" by "+kickerNick+" ("+reason+")");
-		Scoutlink.getInstance().getServer().getConversation(channel).addMessage(msg);
+		server.getConversation(channel).addMessage(msg);
 		sendNewMessageBroadcast(channel);
 	}
 	
 	public void onNickChange(String oldNick, String login, String hostname, String newNick) {
-		// ...
+		Message msg = new Message(oldNick+" changed their nick to " + newNick);
+		for (String channel : getConversationsContainingUser(newNick)) {
+			server.getConversation(channel).addMessage(msg);
+			sendNewMessageBroadcast(channel);
+		}
 	}
 	
 	public void onPart(String channel, String sender, String login, String hostname) {
-		Message msg = new Message(sender+ " has left " + channel);
-		Scoutlink.getInstance().getServer().getConversation(channel).addMessage(msg);
-		sendNewMessageBroadcast(channel); 
+		if (sender.equals(this.getNick())) {
+			// We left a channel.
+			server.removeConversation(channel);
+			Intent intent = new Intent().setAction(Broadcast.REMOVE_CONVERSATION).putExtra("target", channel);
+			service.sendBroadcast(intent);
+		} else {
+			Message msg = new Message(sender+ " has left " + channel);
+			server.getConversation(channel).addMessage(msg);
+			sendNewMessageBroadcast(channel); 			
+		}
+
 	}
 	
 	public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
+		if (sourceNick.equals(this.getNick())) {
+			return;
+		}
 		Message msg = new Message(sourceNick+" has left ScoutLink ("+reason+")");
-		Scoutlink.getInstance().getServer().getConversation("ScoutLink").addMessage(msg);
-		sendNewMessageBroadcast("ScoutLink"); // TODO: Not quite right
+		for (String channel : getConversationsContainingUser(sourceNick)) {
+			server.getConversation(channel).addMessage(msg);
+			sendNewMessageBroadcast(channel);
+		}
 	}
 	
 	public void onRemoveChannelBan(String channel, String sourceNick, String sourceLogin, String sourceHostname, String hostmask) {
-		
+		Message msg = new Message(sourceNick+" has unbanned "+hostmask);
+		server.getConversation(channel).addMessage(msg);
+		sendNewMessageBroadcast(channel);
 	}
 	
 	public void onRemoveChannelKey(String channel, String sourceNick, String sourceLogin, String sourceHostname, String key) {
-		
+		Message msg = new Message(sourceNick+" has removed the channel key.");
+		server.getConversation(channel).addMessage(msg);
+		sendNewMessageBroadcast(channel);
 	}
 	
 	public void onRemoveChannelLimit(String channel, String sourceNick, String sourceLogin, String sourceHostname) {
-		
+		Message msg = new Message(sourceNick+" has removed the channel user limit.");
+		server.getConversation(channel).addMessage(msg);
+		sendNewMessageBroadcast(channel);
 	}
 	
 	public void onRemoveInviteOnly(String channel, String sourceNick, String sourceLogin, String sourceHostname) {
-		
+		Message msg = new Message(sourceNick +" has removed invite-only mode.");
+		server.getConversation(channel).addMessage(msg);
+		sendNewMessageBroadcast(channel);
 	}
 	
 	public void onRemoveModerated(String channel, String sourceNick, String sourceLogin, String sourceHostname) {
-		
+		Message msg = new Message(sourceNick+" has disabled moderated mode.");
+		server.getConversation(channel).addMessage(msg);
+		sendNewMessageBroadcast(channel);
 	}
 	
 	public void onRemoveNoExternalMessages(String channel, String sourceNick, String sourceLogin, String sourceHostname) {
-		
+		Message msg = new Message(sourceNick+" has disallowed external messages.");
+		server.getConversation(channel).addMessage(msg);
+		sendNewMessageBroadcast(channel);
 	}
 	
 	public void onRemovePrivate(String channel, String sourceNick, String sourceLogin, String sourceHostname) {
-		
+		Message msg = new Message(sourceNick+" has disabled private mode.");
+		server.getConversation(channel).addMessage(msg);
+		sendNewMessageBroadcast(channel);
 	}
 	
 	public void onRemoveSecret(String channel, String sourceNick, String sourceLogin, String sourceHostname) {
-		
+		Message msg = new Message(sourceNick+" has disabled secret mode.");
+		server.getConversation(channel).addMessage(msg);
+		sendNewMessageBroadcast(channel);
 	}
 	
 	public void onRemoveTopicProtection(String channel, String sourceNick, String sourceLogin, String sourceHostname) {
-		
+		Message msg = new Message(sourceNick+" has disabled topic protection mode.");
+		server.getConversation(channel).addMessage(msg);
+		sendNewMessageBroadcast(channel);
 	}
 	
 	public void onServerPing(String response) {
@@ -196,39 +250,57 @@ public class IRCConnection extends PircBot {
 	}
 	
 	public void onSetChannelBan(String channel, String sourceNick, String sourceLogin, String sourceHostname, String hostmask) {
-		
+		Message msg = new Message(sourceNick+" has banned "+hostmask);
+		server.getConversation(channel).addMessage(msg);
+		sendNewMessageBroadcast(channel);
 	}
 	
 	public void onSetChannelKey(String channel, String sourceNick, String sourceLogin, String sourceHostname, String key) {
-		
+		Message msg = new Message(sourceNick+ " has set the channel key to: "+key);
+		server.getConversation(channel).addMessage(msg);
+		sendNewMessageBroadcast(channel);
 	}
 	
 	public void onSetChannelLimit(String channel, String sourceNick, String sourceLogin, String sourceHostname, int limit) {
-		
+		Message msg = new Message(sourceNick+" has set the channel user limit to: "+Integer.toString(limit));
+		server.getConversation(channel).addMessage(msg);
+		sendNewMessageBroadcast(channel);
 	}
 	
 	public void onSetInviteOnly(String channel, String sourceNick, String sourceLogin, String sourceHostname) {
-		
+		Message msg = new Message(sourceNick+" has set the channel to invite only.");
+		server.getConversation(channel).addMessage(msg);
+		sendNewMessageBroadcast(channel);
 	}
 	
 	public void onSetModerated(String channel, String sourceNick, String sourceLogin, String sourceHostname) {
-		
+		Message msg = new Message(sourceNick+" has enabled moderated mode.");
+		server.getConversation(channel).addMessage(msg);
+		sendNewMessageBroadcast(channel);
 	}
 	
 	public void onSetNoExternalMessages(String channel, String sourceNick, String sourceLogin, String sourceHostname) {
-		
+		Message msg = new Message(sourceNick+" has disallowed external messages.");
+		server.getConversation(channel).addMessage(msg);
+		sendNewMessageBroadcast(channel);
 	}
 	
 	public void onSetPrivate(String channel, String sourceNick, String sourceLogin, String sourceHostname) {
-		
+		Message msg = new Message(sourceNick+" has enabled private mode.");
+		server.getConversation(channel).addMessage(msg);
+		sendNewMessageBroadcast(channel);
 	}
 	
 	public void onSetSecret(String channel, String sourceNick, String sourceLogin, String sourceHostname) {
-		
+		Message msg = new Message(sourceNick+" has enabled secret mode.");
+		server.getConversation(channel).addMessage(msg);
+		sendNewMessageBroadcast(channel);
 	}
 	
 	public void onSetTopicProtection(String channel, String sourceNick, String sourceLogin, String sourceHostname) {
-		
+		Message msg = new Message(sourceNick+" has enabled topic protection.");
+		server.getConversation(channel).addMessage(msg);
+		sendNewMessageBroadcast(channel);
 	}
 	
 	public void onTopic(String channel, String topic, String setBy, long date, boolean changed) {
@@ -238,7 +310,7 @@ public class IRCConnection extends PircBot {
 		} else {
 			msg = new Message(setBy+" changed the topic to "+topic);
 		}
-		Scoutlink.getInstance().getServer().getConversation(channel).addMessage(msg);
+		server.getConversation(channel).addMessage(msg);
 		sendNewMessageBroadcast(channel); 
 	}
 	
@@ -248,13 +320,13 @@ public class IRCConnection extends PircBot {
 			userList = userList + " " + user.getNick();
 		}
 		Message msg = new Message("Users on channel: " + userList);
-		Scoutlink.getInstance().getServer().getConversation(channel).addMessage(msg);
+		server.getConversation(channel).addMessage(msg);
 		sendNewMessageBroadcast(channel); 
 	}
 	
 	public void onUserMode(String targetNick, String sourceNick, String sourceLogin, String sourceHostname, String mode) {
 		Message msg = new Message(sourceNick+ " sets mode: "+mode+" "+targetNick);
-		Scoutlink.getInstance().getServer().getConversation("ScoutLink").addMessage(msg);
+		server.getConversation("ScoutLink").addMessage(msg);
 		sendNewMessageBroadcast("ScoutLink");
 	}
 	
@@ -264,13 +336,27 @@ public class IRCConnection extends PircBot {
 	
 	public void onServerResponse(int code, String message) {
 		Message msg = new Message(message);
-		Scoutlink.getInstance().getServer().getConversation("ScoutLink").addMessage(msg);
+		server.getConversation("ScoutLink").addMessage(msg);
 		sendNewMessageBroadcast("ScoutLink"); 
 	}
 	
 	private void sendNewMessageBroadcast(String target) {
 		Intent intent = new Intent().setAction(Broadcast.NEW_MESSAGE).putExtra("target", target);
 		service.sendBroadcast(intent);
+	}
+	
+	public ArrayList<String> getConversationsContainingUser(String u) {
+		String[] channels = getChannels();
+		ArrayList<String> returnChans = new ArrayList<String>();
+		for (String channel : channels) {
+			User[] users = getUsers(channel);
+			for (User user : users) {
+				if (user.getNick().equals(u)) {
+					returnChans.add(channel);
+				}
+			}
+		}
+		return returnChans;
 	}
 	
 	

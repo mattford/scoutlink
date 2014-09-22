@@ -7,7 +7,7 @@
     <android.support.v4.view.ViewPager
        android:id="@+id/pager"
        android:layout_width="fill_parent"
-       android:layout_height="wrap_content"
+       android:layout_height="0dp"
        android:layout_weight="1"
        android:layout_margin="0px"
        android:unselectedAlpha="100"
@@ -19,7 +19,7 @@
         <EditText
             android:id="@+id/input"
 
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:inputType="text"

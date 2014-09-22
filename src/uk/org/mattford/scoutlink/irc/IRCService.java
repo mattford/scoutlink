@@ -44,10 +44,11 @@ public class IRCService extends Service {
 	
 	public boolean connect() {
 		if (!this.irc.isConnected()) {
+			this.irc.createDefaultConversation();
 			this.irc.setNickname(settings.getString("nickname", "SLAndroid" + Math.floor(Math.random()*100)));
 			this.irc.setIdent(settings.getString("ident", "ScoutLinkIRC"));
 			this.irc.setRealName(settings.getString("realName", "ScoutLink IRC for Android"));
-			
+
 			new Thread(new Runnable() {
 				public void run() {
 					Log.v("ScoutLink", "Connecting to ScoutLink...");

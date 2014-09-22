@@ -2,6 +2,7 @@ package uk.org.mattford.scoutlink.model;
 
 import java.util.HashMap;
 
+
 public class Server {
 
 	private HashMap<String, Conversation> conversations;
@@ -28,6 +29,11 @@ public class Server {
 	
 	public void removeConversation(String name) {
 		conversations.remove(name);
+	}
+	
+	public void clearConversations() {
+		conversations.clear();
+		conversations.put("ScoutLink", new Conversation("ScoutLink"));
 	}
 	
 }

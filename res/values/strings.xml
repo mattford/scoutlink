@@ -11,5 +11,9 @@
     <string name="action_close">Close</string>
     <string name="action_disconnect">Disconnect</string>
     <string name="action_users">User list</string>
+    <string name="message_list_no_messages">No messages yet, type below to start chatting!</string>
+    <string name="join_button">Join</string>
+    <string name="action_join">Join Channel</string>
+    <string name="join_activity_label">Join Channel</string>
 
 </resources>

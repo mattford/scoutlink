@@ -14,13 +14,12 @@ import android.widget.ListView;
 
 public class MessageListFragment extends ListFragment {
 
+	@SuppressWarnings("unused")
 	private Conversation conv;
 
 	public MessageListFragment(Conversation conv) {
 		super();
 		this.conv = conv;
-
-
 	}
 	
     @Override

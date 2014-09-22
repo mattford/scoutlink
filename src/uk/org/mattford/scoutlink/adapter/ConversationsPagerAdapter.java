@@ -47,7 +47,7 @@ public class ConversationsPagerAdapter extends FragmentStatePagerAdapter {
     			return i;
     		}
     	}
-		return 0;	// TODO: Should this return null if not found?
+		return -1;	// TODO: Should this return null if not found?
     }
     
     public ConversationInfo getItemInfo(int i) {
@@ -72,7 +72,11 @@ public class ConversationsPagerAdapter extends FragmentStatePagerAdapter {
     	conversations.remove(position);
     	notifyDataSetChanged();
     }
-
+    
+    public void clearConversations() {
+    	conversations.clear();
+    }
+    
 	@Override
 	public int getCount() {
 		return conversations.size();

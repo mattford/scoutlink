@@ -21,6 +21,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,6 +37,7 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 	private IRCBinder binder;
 	
 	public static final String PRE_CONNECT = "uk.org.mattford.scoutlink.ACTION_PRE_CONNECT";
+	public final int JOIN_CHANNEL_RESULT = 1;
 	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -86,6 +88,7 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 		this.receiver = new ConversationReceiver(this);
 		registerReceiver(this.receiver, new IntentFilter(Broadcast.NEW_CONVERSATION));
 		registerReceiver(this.receiver, new IntentFilter(Broadcast.NEW_MESSAGE));
+		registerReceiver(this.receiver, new IntentFilter(Broadcast.REMOVE_CONVERSATION));
 		
 		Intent serviceIntent = new Intent(this, IRCService.class);
 		startService(serviceIntent);
@@ -106,9 +109,14 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 	public void onSendButtonClick(View v) {
 		EditText et = (EditText)findViewById(R.id.input);
 		String message = et.getText().toString();
-		int current = pager.getCurrentItem();
-		String target = pagerAdapter.getItemInfo(current).conv.getName();
+		Conversation conv = pagerAdapter.getItemInfo(pager.getCurrentItem()).conv;
+		
+		String target = conv.getName();
+		String nickname = this.binder.getService().getConnection().getNick();
+		conv.addMessage(new Message("<"+nickname+"> "+message));
+		newConversationMessage(target);
 		this.binder.getService().getConnection().sendMessage(target, message);
+		
 		et.setText("");
 				
 	}
@@ -122,8 +130,13 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 				.setTabListener(tabListener));
 		Conversation conv = Scoutlink.getInstance().getServer().getConversation(name);
 		pagerAdapter.addConversation(conv);
-		
-		
+			
+	}
+	
+	public void removeConversation(String name) {
+		int i = pagerAdapter.getItemByName(name);
+		pagerAdapter.removeConversation(i);
+		actionBar.removeTabAt(i);
 	}
 	
 	public void newConversationMessage(String name) {
@@ -131,7 +144,10 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 		while (conv.hasBuffer()) {
 			Message msg = conv.pollBuffer();
 			int i = pagerAdapter.getItemByName(name);
-			pagerAdapter.getItemInfo(i).adapter.addMessage(msg);
+			if (i != -1) {
+				Log.d("ScoutLink", "Item name: " + name + ", item id: " + Integer.toString(i));
+				pagerAdapter.getItemInfo(i).adapter.addMessage(msg);
+			}
 			
 		}
 	}
@@ -169,16 +185,48 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
         	
         	break;
         case R.id.action_close:
+        	// TODO make this work for queries
+        	String channel = pagerAdapter.getItemInfo(pager.getCurrentItem()).conv.getName();
+        	this.binder.getService().getConnection().partChannel(channel);
         	
         	break;
         case R.id.action_disconnect:
-        	
+        	this.binder.getService().getConnection().quitServer("ScoutLink for Android!");
+        	Scoutlink.getInstance().getServer().clearConversations();
+        	pagerAdapter.clearConversations();
+        	setResult(RESULT_OK);
+        	finish();
         	break;
         case R.id.action_userlist:
         	
-        	break;        	
+        	break;
+        case R.id.action_join:
+        	Intent intent = new Intent(this, JoinActivity.class);
+        	startActivityForResult(intent, JOIN_CHANNEL_RESULT);
+        	break;
         }
         return super.onOptionsItemSelected(item);
+    }
+    
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == JOIN_CHANNEL_RESULT) {
+            if (resultCode == RESULT_OK) {
+                String channel = data.getStringExtra("target");
+                binder.getService().getConnection().joinChannel(channel);
+            }
+        }
+    }
+    
+    @Override
+    public void onDestroy() {
+    	super.onDestroy();
+    	this.binder.getService().getConnection().quitServer("ScoutLink for Android! (User killed application)");
+    	Intent service = new Intent(this, IRCService.class);
+    	/*if (this.binder != null) { // Service should already be unbound at this point
+    		unbindService(this);
+    	}*/
+    	stopService(service);
     }
         
 }
