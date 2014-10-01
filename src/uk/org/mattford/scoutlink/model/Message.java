@@ -21,6 +21,7 @@ public class Message {
 
 	public TextView renderTextView(Context context) {
 		TextView view = new TextView(context);
+		// TODO: Use a parser and SpannableStrings here to show colours.
 		view.setText(this.getText());
 
 		return view;

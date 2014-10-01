@@ -17,6 +17,8 @@ public class MessageListAdapter extends ArrayAdapter<TextView> {
 	private Conversation conversation;
 	private Context context;
 	
+	private final String logTag = "ScoutLink/MessageListAdapter";
+	
 	public MessageListAdapter(Conversation conversation, Context context) {
 		super(context, 0);
 		this.conversation = conversation;
@@ -32,25 +34,25 @@ public class MessageListAdapter extends ArrayAdapter<TextView> {
 
 	@Override
 	public int getCount() {
-		Log.d("ScoutLink", "MessageListAdapter.getCount() ("+this.conversation.getName()+") called, returning: " + messages.size());
+		Log.d(logTag, "MessageListAdapter.getCount() ("+this.conversation.getName()+") called, returning: " + messages.size());
 		return messages.size();
 	}
 
 	@Override
 	public TextView getItem(int position) {
-		Log.d("ScoutLink", "MessageListAdapter.getItem() ("+this.conversation.getName()+") called: " + position);
+		Log.d(logTag, "MessageListAdapter.getItem() ("+this.conversation.getName()+") called: " + position);
 		return messages.get(position);
 	}
 
 	@Override
 	public long getItemId(int position) {
-		Log.d("ScoutLink", "MessageListAdapter.getItemId() ("+this.conversation.getName()+") called: "+position);
+		Log.d(logTag, "MessageListAdapter.getItemId() ("+this.conversation.getName()+") called: "+position);
 		return position;
 	}
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		Log.d("ScoutLink", "MessageListAdapter.getView() called: " + position);
+		Log.d(logTag, "MessageListAdapter.getView() called: " + position);
 		convertView = getItem(position);
 		return convertView;
 	}

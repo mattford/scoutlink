@@ -117,6 +117,7 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 		String nickname = this.binder.getService().getConnection().getNick();
 		conv.addMessage(new Message("<"+nickname+"> "+message));
 		newConversationMessage(target);
+		// TODO: Call sendMessage() in IRCService instead and implement Command Parsing
 		this.binder.getService().getConnection().sendMessage(target, message);
 		
 		et.setText("");

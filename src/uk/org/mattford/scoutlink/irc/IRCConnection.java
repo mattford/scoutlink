@@ -6,6 +6,7 @@ import org.jibble.pircbot.PircBot;
 import org.jibble.pircbot.User;
 
 import android.content.Intent;
+import android.util.Log;
 import uk.org.mattford.scoutlink.Scoutlink;
 import uk.org.mattford.scoutlink.model.Broadcast;
 import uk.org.mattford.scoutlink.model.Conversation;
@@ -16,6 +17,8 @@ public class IRCConnection extends PircBot {
 	
 	private IRCService service;
 	private Server server;
+	
+	private final String logTag = "ScoutLink/IRCConnection";
 	
 	public IRCConnection(IRCService service) {
 		this.service = service;
@@ -51,6 +54,7 @@ public class IRCConnection extends PircBot {
 	}
 	
 	public void onDisconnect() {
+		Log.v(logTag, "Disconnected from ScoutLink");
 		this.service.updateNotification("Not connected");
 	}
 	
@@ -258,7 +262,16 @@ public class IRCConnection extends PircBot {
 	}
 	
 	public void onServerPing(String response) {
-		
+		Log.v(logTag, "Responding to server ping.");
+		super.onServerPing(response);
+	}
+	
+	public void onPing(String sourceNick, String sourceLogin, String sourceHostname, String target, String pingValue) {
+		Log.v(logTag, "Received PING from "+sourceNick);
+		Message msg = new Message(sourceNick+" pinged you!");
+		server.getConversation("ScoutLink").addMessage(msg);
+		sendNewMessageBroadcast("ScoutLink");
+		super.onPing(sourceNick, sourceLogin, sourceHostname, target, pingValue);
 	}
 	
 	public void onSetChannelBan(String channel, String sourceNick, String sourceLogin, String sourceHostname, String hostmask) {

@@ -21,9 +21,14 @@ public class IRCService extends Service {
 	private IRCConnection irc;
 	private Settings settings;
 	private final int NOTIF_ID = 007;
+	private final String logTag = "ScoutLink/IRCService";
+	
+	public final String ACTION_FOREGROUND = "uk.org.mattford.scoutlink.irc.IRCService.ACTION_FOREGROUND";
+	public final String ACTION_BACKGROUND = "uk.org.mattford.scoutlink.irc.IRCService.ACTION_BACKGROUND";
 	
 	
 	public void onCreate() {
+		Log.v(logTag, "New instance of IRCService created.");
 		this.irc = new IRCConnection(this);
 		this.settings = new Settings(this);
 		Notification notif = new NotificationCompat.Builder(this)
@@ -32,6 +37,10 @@ public class IRCService extends Service {
 			.setSmallIcon(R.drawable.ic_launcher)
 			.build();
 		startForeground(NOTIF_ID, notif);
+	}
+	
+	public void onDestroy() {
+		Log.v(logTag, "Service is being destroyed!");
 	}
 	
 	public int onStartCommand(Intent intent, int flags, int startId) {
