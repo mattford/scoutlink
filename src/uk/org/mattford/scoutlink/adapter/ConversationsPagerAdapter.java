@@ -81,6 +81,9 @@ public class ConversationsPagerAdapter extends FragmentStatePagerAdapter {
     public void removeConversation(int position) {
     	Log.d(logTag, "Removing conversation at "+position);
     	conversations.remove(position);
+    	for (int i = 0; i<conversations.size();i++) {
+    		Log.d(logTag, i +": "+conversations.get(i).conv.getName());
+    	}
     	notifyDataSetChanged();
     }
     

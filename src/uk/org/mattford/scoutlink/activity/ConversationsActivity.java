@@ -157,6 +157,7 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 		int i = pagerAdapter.getItemByName(name);
 		MessageListAdapter adapter = pagerAdapter.getItemAdapter(i);
 		if (adapter == null) {
+			Log.d(logTag, "Adapter for "+ name + " is null.");
 			return;
 		}
 		while (conv.hasBuffer()) {
