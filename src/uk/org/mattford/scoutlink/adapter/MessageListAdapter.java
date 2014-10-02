@@ -24,6 +24,7 @@ public class MessageListAdapter extends ArrayAdapter<TextView> {
 		this.conversation = conversation;
 		this.context = context;
 		this.messages = new LinkedList<TextView>();
+		Log.d(logTag, "Creating MessageListAdapter for "+conversation.getName());
 	}
 	
 	public void addMessage(Message message) {
@@ -34,25 +35,25 @@ public class MessageListAdapter extends ArrayAdapter<TextView> {
 
 	@Override
 	public int getCount() {
-		Log.d(logTag, "MessageListAdapter.getCount() ("+this.conversation.getName()+") called, returning: " + messages.size());
+		//Log.d(logTag, "MessageListAdapter.getCount() ("+this.conversation.getName()+") called, returning: " + messages.size());
 		return messages.size();
 	}
 
 	@Override
 	public TextView getItem(int position) {
-		Log.d(logTag, "MessageListAdapter.getItem() ("+this.conversation.getName()+") called: " + position);
+		//Log.d(logTag, "MessageListAdapter.getItem() ("+this.conversation.getName()+") called: " + position);
 		return messages.get(position);
 	}
 
 	@Override
 	public long getItemId(int position) {
-		Log.d(logTag, "MessageListAdapter.getItemId() ("+this.conversation.getName()+") called: "+position);
+		//Log.d(logTag, "MessageListAdapter.getItemId() ("+this.conversation.getName()+") called: "+position);
 		return position;
 	}
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		Log.d(logTag, "MessageListAdapter.getView() called: " + position);
+		//Log.d(logTag, "MessageListAdapter.getView() called: " + position);
 		convertView = getItem(position);
 		return convertView;
 	}

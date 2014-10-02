@@ -8,6 +8,8 @@ import org.jibble.pircbot.User;
 import uk.org.mattford.scoutlink.R;
 import uk.org.mattford.scoutlink.Scoutlink;
 import uk.org.mattford.scoutlink.adapter.ConversationsPagerAdapter;
+import uk.org.mattford.scoutlink.adapter.MessageListAdapter;
+import uk.org.mattford.scoutlink.command.CommandParser;
 import uk.org.mattford.scoutlink.irc.IRCBinder;
 import uk.org.mattford.scoutlink.irc.IRCService;
 import uk.org.mattford.scoutlink.model.Broadcast;
@@ -24,6 +26,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -40,6 +43,8 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 	
 	public static final String PRE_CONNECT = "uk.org.mattford.scoutlink.ACTION_PRE_CONNECT";
 	public final int JOIN_CHANNEL_RESULT = 1;
+	
+	private final String logTag = "ScoutLink/ConversationsActivity";
 	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -97,6 +102,9 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 		bindService(serviceIntent, this, 0);
 		
 		for (Map.Entry<String, Conversation> conv : Scoutlink.getInstance().getServer().getConversations().entrySet()) {
+			if (pagerAdapter.getItemByName(conv.getKey()) == -1) {
+				createNewConversation(conv.getKey());
+			}
 			newConversationMessage(conv.getKey());
 		}
 		
@@ -112,13 +120,13 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 		EditText et = (EditText)findViewById(R.id.input);
 		String message = et.getText().toString();
 		Conversation conv = pagerAdapter.getItemInfo(pager.getCurrentItem()).conv;
-		
-		String target = conv.getName();
+		CommandParser.getInstance().parse(message, conv, this.binder.getService());
+		/*String target = conv.getName();
 		String nickname = this.binder.getService().getConnection().getNick();
 		conv.addMessage(new Message("<"+nickname+"> "+message));
 		newConversationMessage(target);
 		// TODO: Call sendMessage() in IRCService instead and implement Command Parsing
-		this.binder.getService().getConnection().sendMessage(target, message);
+		this.binder.getService().getConnection().sendMessage(target, message);*/
 		
 		et.setText("");
 				
@@ -133,6 +141,7 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 				.setTabListener(tabListener));
 		Conversation conv = Scoutlink.getInstance().getServer().getConversation(name);
 		pagerAdapter.addConversation(conv);
+		newConversationMessage(conv.getName());
 			
 	}
 	
@@ -144,11 +153,17 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 	
 	public void newConversationMessage(String name) {
 		Conversation conv = Scoutlink.getInstance().getServer().getConversation(name);
+		Log.d(logTag, "Message received for: "+name);
+		int i = pagerAdapter.getItemByName(name);
+		MessageListAdapter adapter = pagerAdapter.getItemAdapter(i);
+		if (adapter == null) {
+			return;
+		}
 		while (conv.hasBuffer()) {
 			Message msg = conv.pollBuffer();
-			int i = pagerAdapter.getItemByName(name);
 			if (i != -1) {
-				pagerAdapter.getItemInfo(i).adapter.addMessage(msg);
+				Log.d(logTag, "Adding "+ msg.getText()+" to " + name);
+				adapter.addMessage(msg);
 			}
 			
 		}

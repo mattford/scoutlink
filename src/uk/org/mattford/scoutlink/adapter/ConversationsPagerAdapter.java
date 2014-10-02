@@ -15,6 +15,8 @@ public class ConversationsPagerAdapter extends FragmentStatePagerAdapter {
 	
 	private LinkedList<ConversationInfo> conversations;
 	private Context context;
+	
+	private final String logTag = "ScoutLink/ConversationsPagerAdapter";
 
 	public ConversationsPagerAdapter(FragmentManager fm, Context context) {
         super(fm);
@@ -29,7 +31,7 @@ public class ConversationsPagerAdapter extends FragmentStatePagerAdapter {
 		
 		public ConversationInfo(Conversation conv) {
 			this.conv = conv;
-			this.adapter = null;
+			this.adapter = new MessageListAdapter(conv, context);
 			this.frag = null;
 		}
 
@@ -40,6 +42,14 @@ public class ConversationsPagerAdapter extends FragmentStatePagerAdapter {
     	Log.d("ScoutLink", "ConversationsPagerAdapter.getItem("+i+") called.");
         return getView(i);
     }
+	
+	public MessageListAdapter getItemAdapter(int position) {
+		ConversationInfo info = getItemInfo(position);
+		if (info == null) {
+			return null;
+		}
+		return info.adapter;
+	}
     
     public int getItemByName(String name) {
     	for (int i = 0; i < conversations.size(); i++) {
@@ -57,7 +67,7 @@ public class ConversationsPagerAdapter extends FragmentStatePagerAdapter {
     		info = conversations.get(i);
     	} catch (IndexOutOfBoundsException e) {
     		Log.d("ScoutLink", Integer.toString(i)+" is out of bounds.");
-    		
+    		return null;
     	}
     	return info;
     }
@@ -69,6 +79,7 @@ public class ConversationsPagerAdapter extends FragmentStatePagerAdapter {
     }
     
     public void removeConversation(int position) {
+    	Log.d(logTag, "Removing conversation at "+position);
     	conversations.remove(position);
     	notifyDataSetChanged();
     }

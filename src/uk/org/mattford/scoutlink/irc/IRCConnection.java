@@ -365,7 +365,7 @@ public class IRCConnection extends PircBot {
 		sendNewMessageBroadcast("ScoutLink"); 
 	}
 	
-	private void sendNewMessageBroadcast(String target) {
+	public void sendNewMessageBroadcast(String target) {
 		Intent intent = new Intent().setAction(Broadcast.NEW_MESSAGE).putExtra("target", target);
 		service.sendBroadcast(intent);
 	}
