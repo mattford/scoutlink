@@ -4,7 +4,9 @@ import java.util.HashMap;
 
 import android.util.Log;
 import uk.org.mattford.scoutlink.command.handler.JoinHandler;
+import uk.org.mattford.scoutlink.command.handler.NickHandler;
 import uk.org.mattford.scoutlink.command.handler.PartHandler;
+import uk.org.mattford.scoutlink.command.handler.QuitHandler;
 import uk.org.mattford.scoutlink.irc.IRCService;
 import uk.org.mattford.scoutlink.model.Conversation;
 
@@ -23,9 +25,14 @@ public class CommandParser {
 		
 		commands.put("join", new JoinHandler());
 		commands.put("part", new PartHandler());
+		commands.put("nick", new NickHandler());
+		commands.put("quit", new QuitHandler());
 		
 		aliases.put("j", "join");
 		aliases.put("p", "part");
+		aliases.put("n", "nick");
+		aliases.put("q", "quit");
+		aliases.put("disconnect", "quit");
 	}
 	
 	public void parse(String command, Conversation conversation, IRCService service) {
