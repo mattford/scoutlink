@@ -2,16 +2,21 @@ package uk.org.mattford.scoutlink.model;
 
 import java.util.HashMap;
 
+import android.util.Log;
+
 
 public class Server {
 
 	private HashMap<String, Conversation> conversations;
+	
+	private final String logTag = "ScoutLink/Model/Server";
 	
 	public Server() {
 		this.conversations = new HashMap<String, Conversation>();
 	}
 	
 	public Conversation getConversation(String name) {
+		Log.d(logTag, "getConversation("+name+")");
 		if (conversations.containsKey(name)) {
 			return conversations.get(name);
 		} else {

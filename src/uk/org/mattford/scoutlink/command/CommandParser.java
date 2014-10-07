@@ -3,6 +3,8 @@ package uk.org.mattford.scoutlink.command;
 import java.util.HashMap;
 
 import android.util.Log;
+import uk.org.mattford.scoutlink.Scoutlink;
+import uk.org.mattford.scoutlink.command.handler.ActionHandler;
 import uk.org.mattford.scoutlink.command.handler.JoinHandler;
 import uk.org.mattford.scoutlink.command.handler.NickHandler;
 import uk.org.mattford.scoutlink.command.handler.PartHandler;
@@ -27,6 +29,7 @@ public class CommandParser {
 		commands.put("part", new PartHandler());
 		commands.put("nick", new NickHandler());
 		commands.put("quit", new QuitHandler());
+		commands.put("me", new ActionHandler());
 		
 		aliases.put("j", "join");
 		aliases.put("p", "part");
@@ -46,6 +49,7 @@ public class CommandParser {
 			}
 			
 		} else {
+			
 			service.getConnection().sendMessage(conversation.getName(), command);
 			service.getConnection().sendNewMessageBroadcast(conversation.getName());
 			

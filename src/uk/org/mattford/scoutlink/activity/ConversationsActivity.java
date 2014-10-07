@@ -120,13 +120,17 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 		EditText et = (EditText)findViewById(R.id.input);
 		String message = et.getText().toString();
 		Conversation conv = pagerAdapter.getItemInfo(pager.getCurrentItem()).conv;
-		CommandParser.getInstance().parse(message, conv, this.binder.getService());
-		/*String target = conv.getName();
-		String nickname = this.binder.getService().getConnection().getNick();
-		conv.addMessage(new Message("<"+nickname+"> "+message));
-		newConversationMessage(target);
-		// TODO: Call sendMessage() in IRCService instead and implement Command Parsing
-		this.binder.getService().getConnection().sendMessage(target, message);*/
+		if (message.isEmpty()) {
+			return;
+		}
+		if (message.startsWith("/")) {
+			CommandParser.getInstance().parse(message, conv, this.binder.getService());
+		} else {
+			String nickname = this.binder.getService().getConnection().getNick();
+			conv.addMessage(new Message("<"+nickname+"> "+message));
+			newConversationMessage(conv.getName());
+			this.binder.getService().getConnection().sendMessage(conv.getName(), message);
+		}
 		
 		et.setText("");
 				

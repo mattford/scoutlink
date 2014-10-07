@@ -12,6 +12,13 @@ public abstract class CommandHandler {
 	
 	public abstract String getDescription();
 	
-
+	public String mergeParams(String[] params) {
+		StringBuilder sb = new StringBuilder();
+		sb.append(params[0]);
+		for (int i = 1; i<params.length; i++) {
+			sb.append(" ").append(params[i]);
+		}
+		return sb.toString();
+	}
 
 }

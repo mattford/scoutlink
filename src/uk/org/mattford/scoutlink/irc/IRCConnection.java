@@ -46,7 +46,6 @@ public class IRCConnection extends PircBot {
 	}
 	
 	
-	
 	public void onConnect() {
 		this.service.updateNotification("Connected as " + this.getNick());
 
@@ -66,8 +65,14 @@ public class IRCConnection extends PircBot {
 	
 	public void onAction(String sender, String login, String hostname, String target, String action) {
 		Message msg = new Message(sender + " " + action);
-		server.getConversation(target).addMessage(msg);
-		sendNewMessageBroadcast(target);
+		if (target.startsWith("#")) {
+			server.getConversation(target).addMessage(msg);
+			sendNewMessageBroadcast(target);
+		} else {
+			// It's a private message.
+			server.getConversation(sender).addMessage(msg);
+			sendNewMessageBroadcast(sender);
+		}
 	}
 	
 	public void onPrivateMessage(String sender, String login, String hostname, String message) { // TODO: Might need to create conversation

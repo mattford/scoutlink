@@ -6,6 +6,8 @@ import org.jibble.pircbot.IrcException;
 import org.jibble.pircbot.NickAlreadyInUseException;
 
 import uk.org.mattford.scoutlink.R;
+import uk.org.mattford.scoutlink.Scoutlink;
+import uk.org.mattford.scoutlink.model.Message;
 import uk.org.mattford.scoutlink.model.Settings;
 import android.app.Notification;
 import android.app.NotificationManager;

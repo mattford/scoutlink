@@ -38,8 +38,13 @@ public class ConversationsPagerAdapter extends FragmentStatePagerAdapter {
 	}
 	
 	@Override
+	public int getItemPosition(Object object) {
+		return POSITION_NONE;
+	}
+	
+	@Override
     public Fragment getItem(int i) {
-    	Log.d("ScoutLink", "ConversationsPagerAdapter.getItem("+i+") called.");
+    	Log.d(logTag, "ConversationsPagerAdapter.getItem("+i+") called.");
         return getView(i);
     }
 	
@@ -61,12 +66,12 @@ public class ConversationsPagerAdapter extends FragmentStatePagerAdapter {
     }
     
     public ConversationInfo getItemInfo(int i) {
-    	Log.d("ScoutLink", "getItemInfo("+Integer.toString(i)+")");
+    	Log.d(logTag, "getItemInfo("+Integer.toString(i)+")");
     	ConversationInfo info = null;
     	try {
     		info = conversations.get(i);
     	} catch (IndexOutOfBoundsException e) {
-    		Log.d("ScoutLink", Integer.toString(i)+" is out of bounds.");
+    		Log.d(logTag, Integer.toString(i)+" is out of bounds.");
     		return null;
     	}
     	return info;
