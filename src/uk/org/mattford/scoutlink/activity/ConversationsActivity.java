@@ -17,8 +17,11 @@ import uk.org.mattford.scoutlink.model.Conversation;
 import uk.org.mattford.scoutlink.model.Message;
 import uk.org.mattford.scoutlink.receiver.ConversationReceiver;
 import android.app.ActionBar;
+import android.app.AlertDialog;
 import android.app.ActionBar.Tab;
 import android.content.ComponentName;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
@@ -43,6 +46,7 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 	
 	public static final String PRE_CONNECT = "uk.org.mattford.scoutlink.ACTION_PRE_CONNECT";
 	public final int JOIN_CHANNEL_RESULT = 1;
+	public final int INVITE_RESULT = 2;
 	
 	private final String logTag = "ScoutLink/ConversationsActivity";
 	
@@ -96,14 +100,17 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 		registerReceiver(this.receiver, new IntentFilter(Broadcast.NEW_CONVERSATION));
 		registerReceiver(this.receiver, new IntentFilter(Broadcast.NEW_MESSAGE));
 		registerReceiver(this.receiver, new IntentFilter(Broadcast.REMOVE_CONVERSATION));
+		registerReceiver(this.receiver, new IntentFilter(Broadcast.INVITE));
 		
 		Intent serviceIntent = new Intent(this, IRCService.class);
 		startService(serviceIntent);
 		bindService(serviceIntent, this, 0);
 		
-		pagerAdapter.clearConversations();
+		//pagerAdapter.clearConversations();
 		for (Map.Entry<String, Conversation> conv : Scoutlink.getInstance().getServer().getConversations().entrySet()) {
-			if (pagerAdapter.getItemByName(conv.getKey()) == -1) {
+			int i = pagerAdapter.getItemByName(conv.getKey());
+			if (i == -1) {
+				Log.d(logTag, "Creating new conversation for " + conv.getKey() + i);
 				createNewConversation(conv.getKey());
 			}
 			newConversationMessage(conv.getKey());
@@ -113,7 +120,7 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 	
 	public void onPause() {
 		super.onPause();
-		pagerAdapter.clearConversations();
+		//pagerAdapter.clearConversations();
 		unregisterReceiver(this.receiver);
 		unbindService(this);
 	}
@@ -138,7 +145,24 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 				
 	}
 	
-	
+	public void onInvite(final String channel) {
+		AlertDialog.Builder adb = new AlertDialog.Builder(this);
+		adb.setTitle("Channel Invite");
+		adb.setMessage("You have been invited to " + channel + ", would you like to join?");
+		adb.setPositiveButton("Yes", new OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				binder.getService().getConnection().joinChannel(channel);
+			}
+		});
+		adb.setNegativeButton("No", new OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				// Do nothing.
+			}
+		});
+		adb.show();
+	}
 	
 	public void createNewConversation(String name) {
 		actionBar.addTab(

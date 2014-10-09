@@ -146,7 +146,8 @@ public class IRCConnection extends PircBot {
 	}
 	
 	public void onInvite(String targetNick, String sourceNick, String sourceLogin, String sourceHostname, String channel) {
-		// TODO:
+		Intent intent = new Intent().setAction(Broadcast.INVITE).putExtra("target", channel);
+		service.sendBroadcast(intent);
 	}
 	
 	public void onJoin(String channel, String sender, String login, String hostname) {
@@ -169,8 +170,10 @@ public class IRCConnection extends PircBot {
 	public void onKick(String channel, String kickerNick, String kickerLogin, String kickerHostname, String recipientNick, String reason) {
 		if (recipientNick.equals(this.getNick())) {
 			// We were kicked from a channel.
-			Message msg = new Message("You were kicked from "+channel);
+			Message msg = new Message("You were kicked from "+channel+ " by "+ kickerNick + "("+reason+")");
 			server.getConversation("ScoutLink").addMessage(msg);
+			sendNewMessageBroadcast("ScoutLink");
+			server.removeConversation(channel);
 			Intent intent = new Intent().setAction(Broadcast.REMOVE_CONVERSATION).putExtra("target", channel);
 			service.sendBroadcast(intent);
 		} else {

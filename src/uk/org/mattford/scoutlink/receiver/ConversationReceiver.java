@@ -26,6 +26,8 @@ public class ConversationReceiver extends BroadcastReceiver {
 			this.activity.newConversationMessage(intent.getStringExtra("target"));
 		} else if (action.equals(Broadcast.REMOVE_CONVERSATION)){
 			this.activity.removeConversation(intent.getStringExtra("target"));
+		} else if (action.equals(Broadcast.INVITE)) {
+			this.activity.onInvite(intent.getStringExtra("target"));
 		}
 		
 	}
