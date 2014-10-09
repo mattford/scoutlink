@@ -70,7 +70,14 @@ public class IRCConnection extends PircBot {
 			sendNewMessageBroadcast(target);
 		} else {
 			// It's a private message.
-			server.getConversation(sender).addMessage(msg);
+			Conversation conversation = server.getConversation(sender);
+			if (conversation == null) {
+				conversation = new Conversation(sender);
+				server.addConversation(conversation);
+				Intent intent = new Intent().setAction(Broadcast.NEW_CONVERSATION).putExtra("target", sender);
+				service.sendBroadcast(intent);
+			}
+			conversation.addMessage(msg);
 			sendNewMessageBroadcast(sender);
 		}
 	}
@@ -139,7 +146,7 @@ public class IRCConnection extends PircBot {
 	}
 	
 	public void onInvite(String targetNick, String sourceNick, String sourceLogin, String sourceHostname, String channel) {
-		
+		// TODO:
 	}
 	
 	public void onJoin(String channel, String sender, String login, String hostname) {
@@ -156,12 +163,7 @@ public class IRCConnection extends PircBot {
 	}
 	
 	public void onMode(String channel, String sourceNick, String sourceLogin, String sourceHostname, String mode) {
-		/* Do nothing to avoid duplicated channel events.
-		 *  Message msg = new Message(sourceNick+" sets mode: "+mode);
-		 * 	server.getConversation(channel).addMessage(msg);
-		 *	sendNewMessageBroadcast(channel);
-		 */
- 
+		// Do nothing to avoid duplicated channel events. 
 	}
 	
 	public void onKick(String channel, String kickerNick, String kickerLogin, String kickerHostname, String recipientNick, String reason) {

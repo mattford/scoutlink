@@ -101,6 +101,7 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 		startService(serviceIntent);
 		bindService(serviceIntent, this, 0);
 		
+		pagerAdapter.clearConversations();
 		for (Map.Entry<String, Conversation> conv : Scoutlink.getInstance().getServer().getConversations().entrySet()) {
 			if (pagerAdapter.getItemByName(conv.getKey()) == -1) {
 				createNewConversation(conv.getKey());
@@ -112,6 +113,7 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 	
 	public void onPause() {
 		super.onPause();
+		pagerAdapter.clearConversations();
 		unregisterReceiver(this.receiver);
 		unbindService(this);
 	}
@@ -159,11 +161,17 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 		Conversation conv = Scoutlink.getInstance().getServer().getConversation(name);
 		Log.d(logTag, "Message received for: "+name);
 		int i = pagerAdapter.getItemByName(name);
+		if (i == -1) {
+			createNewConversation(name);
+		}
+		i = pagerAdapter.getItemByName(name);
 		MessageListAdapter adapter = pagerAdapter.getItemAdapter(i);
+
 		if (adapter == null) {
 			Log.d(logTag, "Adapter for "+ name + " is null.");
 			return;
 		}
+
 		while (conv.hasBuffer()) {
 			Message msg = conv.pollBuffer();
 			if (i != -1) {
@@ -207,9 +215,13 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
         	
         	break;
         case R.id.action_close:
-        	// TODO make this work for queries
-        	String channel = pagerAdapter.getItemInfo(pager.getCurrentItem()).conv.getName();
-        	this.binder.getService().getConnection().partChannel(channel);
+        	String target = pagerAdapter.getItemInfo(pager.getCurrentItem()).conv.getName();
+        	if (target.startsWith("#")) {
+        		this.binder.getService().getConnection().partChannel(target);
+        	} else {
+        		Scoutlink.getInstance().getServer().removeConversation(target);
+        		this.removeConversation(target);
+        	}
         	
         	break;
         case R.id.action_disconnect:
