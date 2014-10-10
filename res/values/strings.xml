@@ -15,5 +15,6 @@
     <string name="join_button">Join</string>
     <string name="action_join">Join Channel</string>
     <string name="join_activity_label">Join Channel</string>
+    <string name="close_server_window">You cannot close the server window!</string>
 
 </resources>

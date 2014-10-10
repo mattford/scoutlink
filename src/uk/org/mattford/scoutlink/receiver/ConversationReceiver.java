@@ -21,13 +21,15 @@ public class ConversationReceiver extends BroadcastReceiver {
 		Log.d("ScoutLink", "Received broadcast action: " + intent.getAction());
 		String action = intent.getAction();
 		if (action.equals(Broadcast.NEW_CONVERSATION)) {
-			this.activity.createNewConversation(intent.getStringExtra("target"));
+			activity.createNewConversation(intent.getStringExtra("target"));
 		} else if (action.equals(Broadcast.NEW_MESSAGE)) {
-			this.activity.newConversationMessage(intent.getStringExtra("target"));
+			activity.newConversationMessage(intent.getStringExtra("target"));
 		} else if (action.equals(Broadcast.REMOVE_CONVERSATION)){
-			this.activity.removeConversation(intent.getStringExtra("target"));
+			activity.removeConversation(intent.getStringExtra("target"));
 		} else if (action.equals(Broadcast.INVITE)) {
-			this.activity.onInvite(intent.getStringExtra("target"));
+			activity.onInvite(intent.getStringExtra("target"));
+		} else if (action.equals(Broadcast.DISCONNECTED)) {
+			activity.onDisconnect();
 		}
 		
 	}

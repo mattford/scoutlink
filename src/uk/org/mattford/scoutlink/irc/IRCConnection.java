@@ -9,9 +9,12 @@ import android.content.Intent;
 import android.util.Log;
 import uk.org.mattford.scoutlink.Scoutlink;
 import uk.org.mattford.scoutlink.model.Broadcast;
+import uk.org.mattford.scoutlink.model.Channel;
 import uk.org.mattford.scoutlink.model.Conversation;
 import uk.org.mattford.scoutlink.model.Message;
+import uk.org.mattford.scoutlink.model.Query;
 import uk.org.mattford.scoutlink.model.Server;
+import uk.org.mattford.scoutlink.model.ServerWindow;
 
 public class IRCConnection extends PircBot {
 	
@@ -27,7 +30,7 @@ public class IRCConnection extends PircBot {
 	}
 	
 	public void createDefaultConversation() {
-		Conversation serverConv = new Conversation("ScoutLink");
+		Conversation serverConv = new ServerWindow("ScoutLink");
 		server.addConversation(serverConv);
 		Intent intent = new Intent().setAction(Broadcast.NEW_CONVERSATION).putExtra("target", "ScoutLink");
 		service.sendBroadcast(intent);
@@ -47,14 +50,16 @@ public class IRCConnection extends PircBot {
 	
 	
 	public void onConnect() {
-		this.service.updateNotification("Connected as " + this.getNick());
+		service.updateNotification("Connected as " + this.getNick());
 
-		this.joinChannel("#test");
+		joinChannel("#test");
 	}
 	
 	public void onDisconnect() {
 		Log.v(logTag, "Disconnected from ScoutLink");
-		this.service.updateNotification("Not connected");
+		service.updateNotification("Not connected");
+		Intent intent = new Intent().setAction(Broadcast.DISCONNECTED);
+		service.sendBroadcast(intent);
 	}
 	
 	public void onMessage(String channel, String sender, String login, String hostname, String message) {
@@ -72,7 +77,7 @@ public class IRCConnection extends PircBot {
 			// It's a private message.
 			Conversation conversation = server.getConversation(sender);
 			if (conversation == null) {
-				conversation = new Conversation(sender);
+				conversation = new Query(sender);
 				server.addConversation(conversation);
 				Intent intent = new Intent().setAction(Broadcast.NEW_CONVERSATION).putExtra("target", sender);
 				service.sendBroadcast(intent);
@@ -85,7 +90,7 @@ public class IRCConnection extends PircBot {
 	public void onPrivateMessage(String sender, String login, String hostname, String message) { // TODO: Might need to create conversation
 		Conversation conversation = server.getConversation(sender);
 		if (conversation == null) {
-			conversation = new Conversation(sender);
+			conversation = new Query(sender);
 			server.addConversation(conversation);
 			Intent intent = new Intent().setAction(Broadcast.NEW_CONVERSATION).putExtra("target", sender);
 			service.sendBroadcast(intent);
@@ -97,6 +102,7 @@ public class IRCConnection extends PircBot {
 	
 	public void onNotice(String sourceNick, String sourceLogin, String sourceHostname, String target, String notice) {
 		Message msg = new Message("-"+sourceNick+"- "+notice);
+		// TODO: show on all chans with this user
 		server.getConversation("ScoutLink").addMessage(msg);
 		sendNewMessageBroadcast("ScoutLink");
 	}
@@ -152,7 +158,7 @@ public class IRCConnection extends PircBot {
 	
 	public void onJoin(String channel, String sender, String login, String hostname) {
 		if (sender.equalsIgnoreCase(this.getNick())) {
-			Conversation conv = new Conversation(channel);
+			Conversation conv = new Channel(channel);
 			server.addConversation(conv);
 			Intent intent = new Intent().setAction(Broadcast.NEW_CONVERSATION).putExtra("target", channel);
 			service.sendBroadcast(intent);

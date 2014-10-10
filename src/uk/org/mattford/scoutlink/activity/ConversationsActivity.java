@@ -34,6 +34,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 public class ConversationsActivity extends FragmentActivity implements ServiceConnection {
 	
@@ -101,12 +102,12 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 		registerReceiver(this.receiver, new IntentFilter(Broadcast.NEW_MESSAGE));
 		registerReceiver(this.receiver, new IntentFilter(Broadcast.REMOVE_CONVERSATION));
 		registerReceiver(this.receiver, new IntentFilter(Broadcast.INVITE));
+		registerReceiver(this.receiver, new IntentFilter(Broadcast.DISCONNECTED));
 		
 		Intent serviceIntent = new Intent(this, IRCService.class);
 		startService(serviceIntent);
 		bindService(serviceIntent, this, 0);
-		
-		//pagerAdapter.clearConversations();
+
 		for (Map.Entry<String, Conversation> conv : Scoutlink.getInstance().getServer().getConversations().entrySet()) {
 			int i = pagerAdapter.getItemByName(conv.getKey());
 			if (i == -1) {
@@ -120,7 +121,7 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 	
 	public void onPause() {
 		super.onPause();
-		//pagerAdapter.clearConversations();
+
 		unregisterReceiver(this.receiver);
 		unbindService(this);
 	}
@@ -162,6 +163,12 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 			}
 		});
 		adb.show();
+	}
+	
+	public void onDisconnect() {
+		Intent intent = new Intent(this, MainActivity.class);
+		startActivity(intent);
+		finish();
 	}
 	
 	public void createNewConversation(String name) {
@@ -236,15 +243,17 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
         int id = item.getItemId();
         switch(id) {
         case R.id.action_settings:
-        	
+        	startActivity(new Intent(this, SettingsActivity.class));
         	break;
         case R.id.action_close:
-        	String target = pagerAdapter.getItemInfo(pager.getCurrentItem()).conv.getName();
-        	if (target.startsWith("#")) {
-        		this.binder.getService().getConnection().partChannel(target);
+        	Conversation conversation = pagerAdapter.getItemInfo(pager.getCurrentItem()).conv;
+        	if (conversation.getType().equals(Conversation.TYPE_CHANNEL)) {
+        		this.binder.getService().getConnection().partChannel(conversation.getName());
+        	} else if (conversation.getType().equals(Conversation.TYPE_QUERY)) {
+        		Scoutlink.getInstance().getServer().removeConversation(conversation.getName());
+        		this.removeConversation(conversation.getName());
         	} else {
-        		Scoutlink.getInstance().getServer().removeConversation(target);
-        		this.removeConversation(target);
+        		Toast.makeText(this, getResources().getString(R.string.close_server_window), Toast.LENGTH_SHORT).show();
         	}
         	
         	break;

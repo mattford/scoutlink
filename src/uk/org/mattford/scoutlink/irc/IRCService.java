@@ -6,8 +6,6 @@ import org.jibble.pircbot.IrcException;
 import org.jibble.pircbot.NickAlreadyInUseException;
 
 import uk.org.mattford.scoutlink.R;
-import uk.org.mattford.scoutlink.Scoutlink;
-import uk.org.mattford.scoutlink.model.Message;
 import uk.org.mattford.scoutlink.model.Settings;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -54,11 +52,12 @@ public class IRCService extends Service {
 	}
 	
 	public boolean connect() {
-		if (!this.irc.isConnected()) {
-			this.irc.createDefaultConversation();
-			this.irc.setNickname(settings.getString("nickname", "SLAndroid" + Math.floor(Math.random()*100)));
-			this.irc.setIdent(settings.getString("ident", "ScoutLinkIRC"));
-			this.irc.setRealName(settings.getString("realName", "ScoutLink IRC for Android"));
+		Log.d(logTag, "connect()");
+		if (!irc.isConnected()) {
+			irc.createDefaultConversation();
+			irc.setNickname(settings.getString("nickname", "SLAndroid" + Math.floor(Math.random()*100)));
+			irc.setIdent(settings.getString("ident", "ScoutLinkIRC"));
+			irc.setRealName(settings.getString("realName", "ScoutLink IRC for Android"));
 
 			new Thread(new Runnable() {
 				public void run() {

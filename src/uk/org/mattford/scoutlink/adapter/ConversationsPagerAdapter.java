@@ -107,11 +107,11 @@ public class ConversationsPagerAdapter extends FragmentStatePagerAdapter {
     
     public MessageListFragment getView(int i) {
     	ConversationInfo info = conversations.get(i);
-    	Log.d("ScoutLink", "Creating new MessageListFragment for " + info.conv.getName());
+
     	MessageListFragment frag;
     	
     	if (info.frag == null) {
-    		frag = new MessageListFragment(info.conv);
+    		frag = new MessageListFragment();
     	} else {
     		frag = info.frag;
     	}
