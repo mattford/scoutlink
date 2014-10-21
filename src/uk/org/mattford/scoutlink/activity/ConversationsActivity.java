@@ -107,7 +107,7 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 		Intent serviceIntent = new Intent(this, IRCService.class);
 		startService(serviceIntent);
 		bindService(serviceIntent, this, 0);
-
+				
 		for (Map.Entry<String, Conversation> conv : Scoutlink.getInstance().getServer().getConversations().entrySet()) {
 			int i = pagerAdapter.getItemByName(conv.getKey());
 			if (i == -1) {
@@ -166,6 +166,8 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 	}
 	
 	public void onDisconnect() {
+		Scoutlink.getInstance().getServer().clearConversations();
+		pagerAdapter.clearConversations();
 		Intent intent = new Intent(this, MainActivity.class);
 		startActivity(intent);
 		finish();
@@ -199,14 +201,12 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 		MessageListAdapter adapter = pagerAdapter.getItemAdapter(i);
 
 		if (adapter == null) {
-			Log.d(logTag, "Adapter for "+ name + " is null.");
 			return;
 		}
 
 		while (conv.hasBuffer()) {
 			Message msg = conv.pollBuffer();
 			if (i != -1) {
-				Log.d(logTag, "Adding "+ msg.getText()+" to " + name);
 				adapter.addMessage(msg);
 			}
 			
@@ -220,6 +220,10 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
         String action = intent.getAction();
         if (action != null && action.equals(ConversationsActivity.PRE_CONNECT)) {
         	binder.getService().connect();
+        } else {
+        	if (!binder.getService().getConnection().isConnected()) {
+        		onDisconnect();
+        	}
         }
 	}
 
@@ -292,12 +296,8 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
     @Override
     public void onDestroy() {
     	super.onDestroy();
-    	this.binder.getService().getConnection().quitServer("ScoutLink for Android! (User killed application)");
-    	Intent service = new Intent(this, IRCService.class);
-    	/*if (this.binder != null) { // Service should already be unbound at this point
-    		unbindService(this);
-    	}*/
-    	stopService(service);
+    	this.binder.getService().getConnection().quitServer("ScoutLink for Android! (Application was closed)");
+    	stopService(new Intent(this, IRCService.class));
     }
         
 }

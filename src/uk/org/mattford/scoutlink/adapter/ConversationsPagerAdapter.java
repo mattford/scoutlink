@@ -101,10 +101,6 @@ public class ConversationsPagerAdapter extends FragmentStatePagerAdapter {
 		return conversations.size();
 	}
 	
-
-	
-
-    
     public MessageListFragment getView(int i) {
     	ConversationInfo info = conversations.get(i);
 

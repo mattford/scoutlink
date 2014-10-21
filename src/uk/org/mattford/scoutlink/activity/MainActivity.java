@@ -1,6 +1,7 @@
 package uk.org.mattford.scoutlink.activity;
 
 import uk.org.mattford.scoutlink.R;
+import uk.org.mattford.scoutlink.Scoutlink;
 import uk.org.mattford.scoutlink.model.Settings;
 import android.app.Activity;
 import android.content.Intent;
@@ -18,7 +19,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
+
         this.settings = new Settings(this);
         
         setContentView(R.layout.activity_main);

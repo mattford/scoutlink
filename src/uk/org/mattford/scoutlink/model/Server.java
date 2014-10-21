@@ -38,7 +38,7 @@ public class Server {
 	
 	public void clearConversations() {
 		conversations.clear();
-		conversations.put("ScoutLink", new Conversation("ScoutLink"));
+		//conversations.put("ScoutLink", new Conversation("ScoutLink"));
 	}
 	
 }

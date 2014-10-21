@@ -51,7 +51,7 @@ public class IRCService extends Service {
 		return this.irc;
 	}
 	
-	public boolean connect() {
+	public void connect() {
 		Log.d(logTag, "connect()");
 		if (!irc.isConnected()) {
 			irc.createDefaultConversation();
@@ -79,7 +79,6 @@ public class IRCService extends Service {
 			}).start();
 			
 		}
-		return true;
 	}
 	
 	public void updateNotification(String text) {
