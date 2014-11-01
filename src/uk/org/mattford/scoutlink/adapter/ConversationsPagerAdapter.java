@@ -94,6 +94,7 @@ public class ConversationsPagerAdapter extends FragmentStatePagerAdapter {
     
     public void clearConversations() {
     	conversations.clear();
+    	notifyDataSetChanged();
     }
     
 	@Override

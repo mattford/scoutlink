@@ -168,6 +168,7 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 	public void onDisconnect() {
 		Scoutlink.getInstance().getServer().clearConversations();
 		pagerAdapter.clearConversations();
+		actionBar.removeAllTabs();
 		Intent intent = new Intent(this, MainActivity.class);
 		startActivity(intent);
 		finish();
@@ -296,8 +297,8 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
     @Override
     public void onDestroy() {
     	super.onDestroy();
-    	this.binder.getService().getConnection().quitServer("ScoutLink for Android! (Application was closed)");
-    	stopService(new Intent(this, IRCService.class));
+    	//this.binder.getService().getConnection().quitServer("ScoutLink for Android! (Application was closed)");
+    	//stopService(new Intent(this, IRCService.class));
     }
         
 }
