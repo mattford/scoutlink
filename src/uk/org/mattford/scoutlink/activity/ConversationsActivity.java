@@ -197,8 +197,8 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 		int i = pagerAdapter.getItemByName(name);
 		if (i == -1) {
 			createNewConversation(name);
+			i = pagerAdapter.getItemByName(name);
 		}
-		i = pagerAdapter.getItemByName(name);
 		MessageListAdapter adapter = pagerAdapter.getItemAdapter(i);
 
 		if (adapter == null) {
@@ -292,13 +292,6 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
                 binder.getService().getConnection().joinChannel(channel);
             }
         }
-    }
-    
-    @Override
-    public void onDestroy() {
-    	super.onDestroy();
-    	//this.binder.getService().getConnection().quitServer("ScoutLink for Android! (Application was closed)");
-    	//stopService(new Intent(this, IRCService.class));
     }
         
 }
