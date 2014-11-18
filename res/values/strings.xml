@@ -16,5 +16,6 @@
     <string name="action_join">Join Channel</string>
     <string name="join_activity_label">Join Channel</string>
     <string name="close_server_window">You cannot close the server window!</string>
+    <string name="userlist_not_on_channel">This function only works on channels</string>
 
 </resources>

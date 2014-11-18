@@ -244,14 +244,13 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+    	Conversation conversation = pagerAdapter.getItemInfo(pager.getCurrentItem()).conv;
         int id = item.getItemId();
         switch(id) {
         case R.id.action_settings:
         	startActivity(new Intent(this, SettingsActivity.class));
         	break;
         case R.id.action_close:
-        	Conversation conversation = pagerAdapter.getItemInfo(pager.getCurrentItem()).conv;
         	if (conversation.getType().equals(Conversation.TYPE_CHANNEL)) {
         		this.binder.getService().getConnection().partChannel(conversation.getName());
         	} else if (conversation.getType().equals(Conversation.TYPE_QUERY)) {
@@ -270,11 +269,15 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
         	finish();
         	break;
         case R.id.action_userlist:
-        	String chan = pagerAdapter.getItemInfo(pager.getCurrentItem()).conv.getName();
-        	ArrayList<String> users = binder.getService().getConnection().getUsersAsStringArray(chan);
-        	Intent intent = new Intent(this, UserListActivity.class);
-        	intent.putStringArrayListExtra("users", users);
-        	startActivity(intent);
+        	if (conversation.getType().equals(Conversation.TYPE_CHANNEL)) {
+	        	String chan = conversation.getName();
+	        	ArrayList<String> users = binder.getService().getConnection().getUsersAsStringArray(chan);
+	        	Intent intent = new Intent(this, UserListActivity.class);
+	        	intent.putStringArrayListExtra("users", users);
+	        	startActivity(intent);
+        	} else {
+        		Toast.makeText(this, getResources().getString(R.string.userlist_not_on_channel), Toast.LENGTH_SHORT).show();
+        	}
         	break;
         case R.id.action_join:
         	Intent joinIntent = new Intent(this, JoinActivity.class);

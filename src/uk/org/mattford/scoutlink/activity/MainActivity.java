@@ -38,6 +38,7 @@ public class MainActivity extends Activity implements ServiceConnection {
     
     @Override
     public void onResume() {
+    	super.onResume();
         Intent service = new Intent(this, IRCService.class);
         bindService(service, this, 0);
     }

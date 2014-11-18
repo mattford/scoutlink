@@ -68,6 +68,7 @@ public final class R {
         public static final int message_list_no_messages=0x7f05000a;
         public static final int nickname_hint=0x7f050003;
         public static final int send_message_hint=0x7f050006;
+        public static final int userlist_not_on_channel=0x7f05000f;
         public static final int welcome_text=0x7f050004;
     }
     public static final class style {
