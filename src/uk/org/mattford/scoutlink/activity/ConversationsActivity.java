@@ -3,10 +3,7 @@ package uk.org.mattford.scoutlink.activity;
 import java.util.ArrayList;
 import java.util.Map;
 
-import org.jibble.pircbot.User;
-
 import uk.org.mattford.scoutlink.R;
-import uk.org.mattford.scoutlink.Scoutlink;
 import uk.org.mattford.scoutlink.adapter.ConversationsPagerAdapter;
 import uk.org.mattford.scoutlink.adapter.MessageListAdapter;
 import uk.org.mattford.scoutlink.command.CommandParser;
@@ -108,14 +105,7 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 		startService(serviceIntent);
 		bindService(serviceIntent, this, 0);
 				
-		for (Map.Entry<String, Conversation> conv : Scoutlink.getInstance().getServer().getConversations().entrySet()) {
-			int i = pagerAdapter.getItemByName(conv.getKey());
-			if (i == -1) {
-				Log.d(logTag, "Creating new conversation for " + conv.getKey() + i);
-				createNewConversation(conv.getKey());
-			}
-			newConversationMessage(conv.getKey());
-		}
+
 		
 	}
 	
@@ -166,7 +156,7 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 	}
 	
 	public void onDisconnect() {
-		Scoutlink.getInstance().getServer().clearConversations();
+		binder.getService().getServer().clearConversations();
 		pagerAdapter.clearConversations();
 		actionBar.removeAllTabs();
 		Intent intent = new Intent(this, MainActivity.class);
@@ -179,7 +169,7 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 				actionBar.newTab()
 				.setText(name)
 				.setTabListener(tabListener));
-		Conversation conv = Scoutlink.getInstance().getServer().getConversation(name);
+		Conversation conv = binder.getService().getServer().getConversation(name);
 		pagerAdapter.addConversation(conv);
 		newConversationMessage(conv.getName());
 			
@@ -192,7 +182,7 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 	}
 	
 	public void newConversationMessage(String name) {
-		Conversation conv = Scoutlink.getInstance().getServer().getConversation(name);
+		Conversation conv = binder.getService().getServer().getConversation(name);
 		Log.d(logTag, "Message received for: "+name);
 		int i = pagerAdapter.getItemByName(name);
 		if (i == -1) {
@@ -219,12 +209,23 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 		this.binder = (IRCBinder)service;
         Intent intent = getIntent();
         String action = intent.getAction();
-        if (action != null && action.equals(ConversationsActivity.PRE_CONNECT)) {
+        Log.v(logTag, "onServiceConnected() action ="+action);
+        if (action != null && action.equals(ConversationsActivity.PRE_CONNECT) && !binder.getService().getConnection().isConnected()) {
         	binder.getService().connect();
+        } else if (!binder.getService().getConnection().isConnected()) {
+        	onDisconnect();
         } else {
-        	if (!binder.getService().getConnection().isConnected()) {
-        		onDisconnect();
-        	}
+        	/**
+        	 * The activity has resumed and the service has been bound, get all the messages we missed...
+        	 */
+    		for (Map.Entry<String, Conversation> conv : binder.getService().getServer().getConversations().entrySet()) {
+    			int i = pagerAdapter.getItemByName(conv.getKey());
+    			if (i == -1) {
+    				Log.d(logTag, "Creating new conversation for " + conv.getKey() + i);
+    				createNewConversation(conv.getKey());
+    			}
+    			newConversationMessage(conv.getKey());
+    		}
         }
 	}
 
@@ -254,7 +255,7 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
         	if (conversation.getType().equals(Conversation.TYPE_CHANNEL)) {
         		this.binder.getService().getConnection().partChannel(conversation.getName());
         	} else if (conversation.getType().equals(Conversation.TYPE_QUERY)) {
-        		Scoutlink.getInstance().getServer().removeConversation(conversation.getName());
+        		binder.getService().getServer().removeConversation(conversation.getName());
         		this.removeConversation(conversation.getName());
         	} else {
         		Toast.makeText(this, getResources().getString(R.string.close_server_window), Toast.LENGTH_SHORT).show();
@@ -263,7 +264,7 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
         	break;
         case R.id.action_disconnect:
         	this.binder.getService().getConnection().quitServer("ScoutLink for Android!");
-        	Scoutlink.getInstance().getServer().clearConversations();
+        	binder.getService().getServer().clearConversations();
         	pagerAdapter.clearConversations();
         	setResult(RESULT_OK);
         	finish();

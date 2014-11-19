@@ -7,7 +7,6 @@ import org.jibble.pircbot.User;
 
 import android.content.Intent;
 import android.util.Log;
-import uk.org.mattford.scoutlink.Scoutlink;
 import uk.org.mattford.scoutlink.model.Broadcast;
 import uk.org.mattford.scoutlink.model.Channel;
 import uk.org.mattford.scoutlink.model.Conversation;
@@ -25,7 +24,7 @@ public class IRCConnection extends PircBot {
 	
 	public IRCConnection(IRCService service) {
 		this.service = service;
-		this.server = Scoutlink.getInstance().getServer();
+		this.server = service.getServer();
 
 	}
 	
@@ -51,15 +50,22 @@ public class IRCConnection extends PircBot {
 	
 	public void onConnect() {
 		service.updateNotification("Connected as " + this.getNick());
-
+		service.setForeground(IRCService.ACTION_FOREGROUND);
+		server.setStatus(Server.STATUS_CONNECTED);
 		joinChannel("#test");
 	}
 	
 	public void onDisconnect() {
 		Log.v(logTag, "Disconnected from ScoutLink");
-		service.updateNotification("Not connected");
+		
+		service.updateNotification("Not connected.");
+		service.setForeground(IRCService.ACTION_BACKGROUND);
+		
+		server.setStatus(Server.STATUS_DISCONNECTED);
+		
 		Intent intent = new Intent().setAction(Broadcast.DISCONNECTED);
 		service.sendBroadcast(intent);
+		
 	}
 	
 	public void onMessage(String channel, String sender, String login, String hostname, String message) {

@@ -3,7 +3,6 @@ package uk.org.mattford.scoutlink.command.handler;
 import uk.org.mattford.scoutlink.command.CommandHandler;
 import uk.org.mattford.scoutlink.irc.IRCService;
 import uk.org.mattford.scoutlink.model.Conversation;
-import uk.org.mattford.scoutlink.model.Server;
 
 public class JoinHandler extends CommandHandler {
 

@@ -1,7 +1,6 @@
 package uk.org.mattford.scoutlink.activity;
 
 import uk.org.mattford.scoutlink.R;
-import uk.org.mattford.scoutlink.Scoutlink;
 import uk.org.mattford.scoutlink.irc.IRCBinder;
 import uk.org.mattford.scoutlink.irc.IRCService;
 import uk.org.mattford.scoutlink.model.Settings;

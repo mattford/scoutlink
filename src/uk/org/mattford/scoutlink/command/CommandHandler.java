@@ -2,7 +2,6 @@ package uk.org.mattford.scoutlink.command;
 
 import uk.org.mattford.scoutlink.irc.IRCService;
 import uk.org.mattford.scoutlink.model.Conversation;
-import uk.org.mattford.scoutlink.model.Server;
 
 public abstract class CommandHandler {
 	

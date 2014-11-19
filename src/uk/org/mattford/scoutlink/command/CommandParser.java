@@ -1,9 +1,9 @@
 package uk.org.mattford.scoutlink.command;
 
 import java.util.HashMap;
+import java.util.Locale;
 
 import android.util.Log;
-import uk.org.mattford.scoutlink.Scoutlink;
 import uk.org.mattford.scoutlink.command.handler.ActionHandler;
 import uk.org.mattford.scoutlink.command.handler.JoinHandler;
 import uk.org.mattford.scoutlink.command.handler.NickHandler;
@@ -75,11 +75,11 @@ public class CommandParser {
 	
 	public void handleServerCommand(String[] params, Conversation conversation, IRCService service) {
 		if (params.length > 1) {
-			params[0] = params[0].toUpperCase();
+			params[0] = params[0].toUpperCase(Locale.ENGLISH);
 			Log.d(logTag, "Server Command: " + mergeParams(params));
 			service.getConnection().sendRawLineViaQueue(mergeParams(params));
 		} else {
-			service.getConnection().sendRawLineViaQueue(params[0].toUpperCase());
+			service.getConnection().sendRawLineViaQueue(params[0].toUpperCase(Locale.ENGLISH));
 		}
 	}
 	

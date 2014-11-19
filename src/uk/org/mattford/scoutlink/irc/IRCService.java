@@ -6,6 +6,7 @@ import org.jibble.pircbot.IrcException;
 import org.jibble.pircbot.NickAlreadyInUseException;
 
 import uk.org.mattford.scoutlink.R;
+import uk.org.mattford.scoutlink.model.Server;
 import uk.org.mattford.scoutlink.model.Settings;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -20,31 +21,42 @@ public class IRCService extends Service {
 	
 	private IRCConnection irc;
 	private Settings settings;
+	private Server server;
+	private Notification notif;
+	
 	private final int NOTIF_ID = 007;
 	private final String logTag = "ScoutLink/IRCService";
 	
-	public final String ACTION_FOREGROUND = "uk.org.mattford.scoutlink.irc.IRCService.ACTION_FOREGROUND";
-	public final String ACTION_BACKGROUND = "uk.org.mattford.scoutlink.irc.IRCService.ACTION_BACKGROUND";
+	public final static int ACTION_FOREGROUND = 1;
+	public final static int ACTION_BACKGROUND = 0;
+	
+	private boolean foreground = false;
 	
 	
 	public void onCreate() {
-		Log.v(logTag, "New instance of IRCService created.");
+		this.server = new Server();
 		this.irc = new IRCConnection(this);
+		
 		this.settings = new Settings(this);
-		Notification notif = new NotificationCompat.Builder(this)
-			.setContentTitle("ScoutLink")
-			.setContentText("Not connected")
-			.setSmallIcon(R.drawable.ic_launcher)
-			.build();
-		startForeground(NOTIF_ID, notif);
+		this.updateNotification("Not connected.");
 	}
-	
-	public void onDestroy() {
-		Log.v(logTag, "Service is being destroyed!");
-	}
-	
+		
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		return START_STICKY;
+	}
+	
+	public void setForeground(int fg) {
+		if (fg == ACTION_FOREGROUND) {
+			startForeground(NOTIF_ID, notif);
+			this.foreground = true;
+		} else if (fg == ACTION_BACKGROUND && this.isForeground()) {
+			stopForeground(true);
+			this.foreground = false;
+		}
+	}
+	
+	public boolean isForeground() {
+		return this.foreground;
 	}
 	
 	public IRCConnection getConnection() {
@@ -52,7 +64,7 @@ public class IRCService extends Service {
 	}
 	
 	public void connect() {
-		Log.d(logTag, "connect()");
+		Log.v(logTag, "Connecting...");
 		if (!irc.isConnected()) {
 			irc.createDefaultConversation();
 			irc.setNickname(settings.getString("nickname", "SLAndroid" + Math.floor(Math.random()*100)));
@@ -81,14 +93,22 @@ public class IRCService extends Service {
 		}
 	}
 	
+	public Server getServer() {
+		return this.server;
+	}
+	
+	
 	public void updateNotification(String text) {
-		NotificationManager nm = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
-		Notification notif = new NotificationCompat.Builder(this)
+		
+		this.notif = new NotificationCompat.Builder(this)
 				.setContentTitle("ScoutLink")
 				.setContentText(text)
 				.setSmallIcon(R.drawable.ic_launcher)
 				.build();
-		nm.notify(NOTIF_ID, notif);
+		if (this.isForeground()) {
+			NotificationManager nm = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+			nm.notify(NOTIF_ID, notif);
+		}
 		
 	}
 

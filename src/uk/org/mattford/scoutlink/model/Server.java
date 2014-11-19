@@ -8,8 +8,12 @@ import android.util.Log;
 public class Server {
 
 	private HashMap<String, Conversation> conversations;
+	private int status = 0;
 	
 	private final String logTag = "ScoutLink/Model/Server";
+	
+	public final static int STATUS_DISCONNECTED = 0;
+	public final static int STATUS_CONNECTED = 1;
 	
 	public Server() {
 		this.conversations = new HashMap<String, Conversation>();
@@ -22,6 +26,14 @@ public class Server {
 		} else {
 			return null;
 		}
+	}
+	
+	public int getStatus() {
+		return this.status;
+	}
+	
+	public void setStatus(int status) {
+		this.status = status;
 	}
 	
 	public HashMap<String, Conversation> getConversations() {
@@ -38,7 +50,7 @@ public class Server {
 	
 	public void clearConversations() {
 		conversations.clear();
-		//conversations.put("ScoutLink", new Conversation("ScoutLink"));
 	}
+	
 	
 }

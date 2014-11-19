@@ -31,7 +31,7 @@ public class ConversationsPagerAdapter extends FragmentStatePagerAdapter {
 		
 		public ConversationInfo(Conversation conv) {
 			this.conv = conv;
-			this.adapter = new MessageListAdapter(conv, context);
+			this.adapter = new MessageListAdapter(context);
 			this.frag = null;
 		}
 
@@ -116,7 +116,7 @@ public class ConversationsPagerAdapter extends FragmentStatePagerAdapter {
         MessageListAdapter adapter = info.adapter;
 
         if (adapter == null) {
-            adapter = new MessageListAdapter(info.conv, context);
+            adapter = new MessageListAdapter(context);
             info.adapter = adapter;
         }
 
