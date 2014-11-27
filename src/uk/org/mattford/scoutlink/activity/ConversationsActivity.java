@@ -192,6 +192,7 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 		MessageListAdapter adapter = pagerAdapter.getItemAdapter(i);
 
 		if (adapter == null) {
+			Log.d(logTag, "Adapter is null for " + name);
 			return;
 		}
 
@@ -218,10 +219,11 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
         	/**
         	 * The activity has resumed and the service has been bound, get all the messages we missed...
         	 */
+        	Log.d(logTag, "Getting messages from buffer...");
     		for (Map.Entry<String, Conversation> conv : binder.getService().getServer().getConversations().entrySet()) {
     			int i = pagerAdapter.getItemByName(conv.getKey());
     			if (i == -1) {
-    				Log.d(logTag, "Creating new conversation for " + conv.getKey() + i);
+    				Log.d(logTag, "Creating new conversation for " + conv.getKey());
     				createNewConversation(conv.getKey());
     			}
     			newConversationMessage(conv.getKey());

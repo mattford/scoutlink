@@ -51,6 +51,7 @@ public class ConversationsPagerAdapter extends FragmentStatePagerAdapter {
 	public MessageListAdapter getItemAdapter(int position) {
 		ConversationInfo info = getItemInfo(position);
 		if (info == null) {
+			Log.d(logTag, "Adapter is null");
 			return null;
 		}
 		return info.adapter;
@@ -59,6 +60,7 @@ public class ConversationsPagerAdapter extends FragmentStatePagerAdapter {
     public int getItemByName(String name) {
     	for (int i = 0; i < conversations.size(); i++) {
     		if (conversations.get(i).conv.getName().equalsIgnoreCase(name)) {
+    			Log.d(logTag, name + " is at position " + i);
     			return i;
     		}
     	}
@@ -126,6 +128,7 @@ public class ConversationsPagerAdapter extends FragmentStatePagerAdapter {
         return frag;
 
     }
+
     
 
 }

@@ -9,7 +9,7 @@ import android.util.Log;
 
 public class ConversationReceiver extends BroadcastReceiver {
 	
-	private final ConversationsActivity activity;
+	private ConversationsActivity activity;
 	
 	public ConversationReceiver(ConversationsActivity act) {
 		super();
