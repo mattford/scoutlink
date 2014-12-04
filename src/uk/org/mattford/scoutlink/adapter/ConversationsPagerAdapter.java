@@ -20,7 +20,6 @@ public class ConversationsPagerAdapter extends FragmentStatePagerAdapter {
 
 	public ConversationsPagerAdapter(FragmentManager fm, Context context) {
         super(fm);
-        Log.v(logTag, "Created new ConversationsPagerAdapter");
         conversations = new LinkedList<ConversationInfo>();
         this.context = context;
     }
@@ -34,7 +33,7 @@ public class ConversationsPagerAdapter extends FragmentStatePagerAdapter {
 		
 		public ConversationInfo(Conversation conv) {
 			this.conv = conv;
-			this.adapter = new MessageListAdapter(context);
+			this.adapter = new MessageListAdapter(context, conv);
 			this.frag = null;
 		}
 
@@ -47,14 +46,12 @@ public class ConversationsPagerAdapter extends FragmentStatePagerAdapter {
 	
 	@Override
     public Fragment getItem(int i) {
-    	Log.d(logTag, "ConversationsPagerAdapter.getItem("+i+") called.");
         return getView(i);
     }
 	
 	public MessageListAdapter getItemAdapter(int position) {
 		ConversationInfo info = getItemInfo(position);
 		if (info == null) {
-			Log.d(logTag, "Adapter is null");
 			return null;
 		}
 		return info.adapter;
@@ -71,12 +68,10 @@ public class ConversationsPagerAdapter extends FragmentStatePagerAdapter {
     }
     
     public ConversationInfo getItemInfo(int i) {
-    	Log.d(logTag, "getItemInfo("+Integer.toString(i)+")");
     	ConversationInfo info = null;
     	try {
     		info = conversations.get(i);
     	} catch (IndexOutOfBoundsException e) {
-    		Log.d(logTag, Integer.toString(i)+" is out of bounds.");
     		return null;
     	}
     	return info;
@@ -89,11 +84,7 @@ public class ConversationsPagerAdapter extends FragmentStatePagerAdapter {
     }
     
     public void removeConversation(int position) {
-    	Log.d(logTag, "Removing conversation at "+position);
     	conversations.remove(position);
-    	for (int i = 0; i<conversations.size();i++) {
-    		Log.d(logTag, i +": "+conversations.get(i).conv.getName());
-    	}
     	notifyDataSetChanged();
     }
     
@@ -121,12 +112,13 @@ public class ConversationsPagerAdapter extends FragmentStatePagerAdapter {
         MessageListAdapter adapter = info.adapter;
 
         if (adapter == null) {
-            adapter = new MessageListAdapter(context);
+            adapter = new MessageListAdapter(context, info.conv);
             info.adapter = adapter;
         }
 
 
         frag.setListAdapter(adapter);
+        
 
         return frag;
 

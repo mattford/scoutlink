@@ -35,6 +35,7 @@ public class Conversation {
 	
 	public Message pollBuffer() {
 		Message message = buffer.pollFirst();
+		messages.add(message);
 		return message;
 	}
 	

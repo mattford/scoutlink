@@ -177,6 +177,7 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 				.setTabListener(tabListener));
 		Conversation conv = binder.getService().getServer().getConversation(name);
 		pagerAdapter.addConversation(conv);
+		
 		newConversationMessage(conv.getName());
 			
 	}

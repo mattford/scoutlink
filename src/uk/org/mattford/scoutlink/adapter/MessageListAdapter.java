@@ -2,6 +2,7 @@ package uk.org.mattford.scoutlink.adapter;
 
 import java.util.LinkedList;
 
+import uk.org.mattford.scoutlink.model.Conversation;
 import uk.org.mattford.scoutlink.model.Message;
 import android.content.Context;
 import android.view.View;
@@ -13,16 +14,27 @@ public class MessageListAdapter extends ArrayAdapter<TextView> {
 	
 	private LinkedList<TextView> messages;
 	private Context context;
+	private Conversation conversation;
 		
-	public MessageListAdapter(Context context) {
+	public MessageListAdapter(Context context, Conversation conv) {
 		super(context, 0);
+
 		this.context = context;
+		this.conversation = conv;
 		this.messages = new LinkedList<TextView>();
+		
+		for (Message msg : conversation.getMessages()) {
+			addMessage(msg);
+		}
+		
+		
+		
 	}
 	
 	public void addMessage(Message message) {
 		TextView tv = message.renderTextView(context);
 		messages.add(tv);
+		
 		notifyDataSetChanged();
 	}
 
