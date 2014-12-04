@@ -51,7 +51,7 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_conversations);
-                 
+        Log.v(logTag, "onCreate");
         pagerAdapter = new ConversationsPagerAdapter(getSupportFragmentManager(), this);
         pager = (ViewPager) findViewById(R.id.pager);
         pager.setOnPageChangeListener(
@@ -91,6 +91,15 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 
     }
 	
+	/**
+	 * If this is not overridden, then ConversationsPagerAdapter retains old fragments when the activity is recreated.
+	 * 
+	 */
+	@Override
+	protected void onSaveInstanceState(final Bundle outState) {
+	    // super.onSaveInstanceState(outState);
+	}
+	
 	public void onResume() {
 		super.onResume();
 		
@@ -103,10 +112,7 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 		
 		Intent serviceIntent = new Intent(this, IRCService.class);
 		startService(serviceIntent);
-		bindService(serviceIntent, this, 0);
-				
-
-		
+		bindService(serviceIntent, this, 0);	
 	}
 	
 	public void onPause() {

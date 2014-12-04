@@ -20,9 +20,12 @@ public class ConversationsPagerAdapter extends FragmentStatePagerAdapter {
 
 	public ConversationsPagerAdapter(FragmentManager fm, Context context) {
         super(fm);
+        Log.v(logTag, "Created new ConversationsPagerAdapter");
         conversations = new LinkedList<ConversationInfo>();
         this.context = context;
     }
+	
+
 	
 	public class ConversationInfo {
 		public Conversation conv;
