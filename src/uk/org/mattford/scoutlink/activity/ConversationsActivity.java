@@ -42,6 +42,7 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 	private ConversationReceiver receiver;
 	private IRCBinder binder;
 	
+	
 	public static final String PRE_CONNECT = "uk.org.mattford.scoutlink.ACTION_PRE_CONNECT";
 	public final int JOIN_CHANNEL_RESULT = 1;
 	public final int INVITE_RESULT = 2;
