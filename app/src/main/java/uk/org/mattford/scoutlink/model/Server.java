@@ -2,15 +2,10 @@ package uk.org.mattford.scoutlink.model;
 
 import java.util.HashMap;
 
-import android.util.Log;
-
-
 public class Server {
 
 	private HashMap<String, Conversation> conversations;
 	private int status = 0;
-	
-	private final String logTag = "ScoutLink/Model/Server";
 	
 	public final static int STATUS_DISCONNECTED = 0;
 	public final static int STATUS_CONNECTED = 1;
@@ -20,7 +15,7 @@ public class Server {
 	}
 	
 	public Conversation getConversation(String name) {
-		Log.d(logTag, "getConversation("+name+")");
+
 		if (conversations.containsKey(name)) {
 			return conversations.get(name);
 		} else {

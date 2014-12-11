@@ -44,7 +44,7 @@ public class Conversation {
 	}
 	
 	public void clearBuffer() {
-		this.buffer.clear();
+		buffer.clear();
 	}
 	
 	public void setType(String type) {
@@ -56,7 +56,6 @@ public class Conversation {
 	}
 	
 	public void addMessage(Message msg) {
-		//Log.d("ScoutLink", "Adding new message from : "+msg.sender+" to conversation.");
 		buffer.add(msg);
 	}
 }

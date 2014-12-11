@@ -5,7 +5,6 @@ import uk.org.mattford.scoutlink.model.Broadcast;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
 public class ConversationReceiver extends BroadcastReceiver {
 	
@@ -18,7 +17,6 @@ public class ConversationReceiver extends BroadcastReceiver {
 	
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		Log.d("ScoutLink", "Received broadcast action: " + intent.getAction());
 		String action = intent.getAction();
 		if (action.equals(Broadcast.NEW_CONVERSATION)) {
 			activity.createNewConversation(intent.getStringExtra("target"));

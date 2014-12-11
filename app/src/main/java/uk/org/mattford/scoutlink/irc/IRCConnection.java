@@ -6,6 +6,7 @@ import org.jibble.pircbot.PircBot;
 import org.jibble.pircbot.User;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.util.Log;
 import uk.org.mattford.scoutlink.model.Broadcast;
 import uk.org.mattford.scoutlink.model.Channel;
@@ -108,51 +109,59 @@ public class IRCConnection extends PircBot {
 	
 	public void onNotice(String sourceNick, String sourceLogin, String sourceHostname, String target, String notice) {
 		Message msg = new Message("-"+sourceNick+"- "+notice);
-		// TODO: show on all chans with this user
-		server.getConversation("ScoutLink").addMessage(msg);
+        msg.setColour(Color.GREEN);
+        for (String name : getConversationsContainingUser(sourceNick)) {
+            server.getConversation(name).addMessage(msg);
+            sendNewMessageBroadcast(name);
+        }
+        server.getConversation("ScoutLink").addMessage(msg);
 		sendNewMessageBroadcast("ScoutLink");
 	}
 	
 	public void onOp(String channel, String sourceNick, String sourceLogin, String sourceHostname, String recipient) {
-		Message msg = null;
+		Message msg;
 		if (recipient.equals(this.getNick())) {
 			msg = new Message(sourceNick + " gave you operator status!");
 		} else {
 			msg = new Message(sourceNick + " gave operator status to "+ recipient);
 		}
+        msg.setColour(Color.BLUE);
 		server.getConversation(channel).addMessage(msg);
 		sendNewMessageBroadcast(channel); 
 	}
 	
 	public void onDeop(String channel, String sourceNick, String sourceLogin, String sourceHostname, String recipient) {
-		Message msg = null;
+		Message msg;
 		if (recipient.equals(this.getNick())) {
 			msg = new Message(sourceNick + " took away your operator status!");
 		} else {
 			msg = new Message(sourceNick + " took operator status from "+ recipient);
 		}
+        msg.setColour(Color.BLUE);
 		server.getConversation(channel).addMessage(msg);
 		sendNewMessageBroadcast(channel); 
 	}
 	
 	public void onVoice(String channel, String sourceNick, String sourceLogin, String sourceHostname, String recipient) {
-		Message msg = null;
+		Message msg;
 		if (recipient.equals(this.getNick())) {
 			msg = new Message(sourceNick + " gave you voice!");
 		} else {
 			msg = new Message(sourceNick + " gave voice to "+ recipient);
 		}
+        msg.setColour(Color.BLUE);
 		server.getConversation(channel).addMessage(msg);
 		sendNewMessageBroadcast(channel); 
 	}
-	
-	public void onDevoice(String channel, String sourceNick, String sourceLogin, String sourceHostname, String recipient) {
-		Message msg = null;
+
+	public void onDeVoice(String channel, String sourceNick, String sourceLogin, String sourceHostname, String recipient) {
+		Message msg;
 		if (recipient.equals(this.getNick())) {
 			msg = new Message(sourceNick + " took your voice status!");
 		} else {
 			msg = new Message(sourceNick + " took voice from "+ recipient);
 		}
+        msg.setColour(Color.BLUE);
 		server.getConversation(channel).addMessage(msg);
 		sendNewMessageBroadcast(channel); 
 	}
@@ -170,6 +179,7 @@ public class IRCConnection extends PircBot {
 			service.sendBroadcast(intent);
 		} else {
 			Message msg = new Message(sender+" has joined "+channel);
+            msg.setColour(Color.BLUE);
 			server.getConversation(channel).addMessage(msg);
 			sendNewMessageBroadcast(channel); 
 		}
@@ -183,6 +193,7 @@ public class IRCConnection extends PircBot {
 		if (recipientNick.equals(this.getNick())) {
 			// We were kicked from a channel.
 			Message msg = new Message("You were kicked from "+channel+ " by "+ kickerNick + "("+reason+")");
+            msg.setColour(Color.RED);
 			server.getConversation("ScoutLink").addMessage(msg);
 			sendNewMessageBroadcast("ScoutLink");
 			server.removeConversation(channel);
@@ -190,6 +201,7 @@ public class IRCConnection extends PircBot {
 			service.sendBroadcast(intent);
 		} else {
 			Message msg = new Message(recipientNick+" was kicked from "+channel+" by "+kickerNick+" ("+reason+")");
+            msg.setColour(Color.BLUE);
 			server.getConversation(channel).addMessage(msg);
 			sendNewMessageBroadcast(channel);
 		}
@@ -197,6 +209,7 @@ public class IRCConnection extends PircBot {
 	
 	public void onNickChange(String oldNick, String login, String hostname, String newNick) {
 		Message msg = new Message(oldNick+" changed their nick to " + newNick);
+        msg.setColour(Color.BLUE);
 		for (String channel : getConversationsContainingUser(newNick)) {
 			server.getConversation(channel).addMessage(msg);
 			sendNewMessageBroadcast(channel);
@@ -211,6 +224,7 @@ public class IRCConnection extends PircBot {
 			service.sendBroadcast(intent);
 		} else {
 			Message msg = new Message(sender+ " has left " + channel);
+            msg.setColour(Color.BLUE);
 			server.getConversation(channel).addMessage(msg);
 			sendNewMessageBroadcast(channel); 			
 		}
@@ -223,6 +237,7 @@ public class IRCConnection extends PircBot {
 			return;
 		}
 		Message msg = new Message(sourceNick+" has left ScoutLink ("+reason+")");
+        msg.setColour(Color.BLUE);
 		for (String channel : getConversationsContainingUser(sourceNick)) {
 			server.getConversation(channel).addMessage(msg);
 			sendNewMessageBroadcast(channel);
@@ -231,66 +246,74 @@ public class IRCConnection extends PircBot {
 	
 	public void onRemoveChannelBan(String channel, String sourceNick, String sourceLogin, String sourceHostname, String hostmask) {
 		Message msg = new Message(sourceNick+" has unbanned "+hostmask);
+        msg.setColour(Color.BLUE);
 		server.getConversation(channel).addMessage(msg);
 		sendNewMessageBroadcast(channel);
 	}
 	
 	public void onRemoveChannelKey(String channel, String sourceNick, String sourceLogin, String sourceHostname, String key) {
 		Message msg = new Message(sourceNick+" has removed the channel key.");
+        msg.setColour(Color.BLUE);
 		server.getConversation(channel).addMessage(msg);
 		sendNewMessageBroadcast(channel);
 	}
 	
 	public void onRemoveChannelLimit(String channel, String sourceNick, String sourceLogin, String sourceHostname) {
 		Message msg = new Message(sourceNick+" has removed the channel user limit.");
+        msg.setColour(Color.BLUE);
 		server.getConversation(channel).addMessage(msg);
 		sendNewMessageBroadcast(channel);
 	}
 	
 	public void onRemoveInviteOnly(String channel, String sourceNick, String sourceLogin, String sourceHostname) {
 		Message msg = new Message(sourceNick +" has removed invite-only mode.");
+        msg.setColour(Color.BLUE);
 		server.getConversation(channel).addMessage(msg);
 		sendNewMessageBroadcast(channel);
 	}
 	
 	public void onRemoveModerated(String channel, String sourceNick, String sourceLogin, String sourceHostname) {
 		Message msg = new Message(sourceNick+" has disabled moderated mode.");
+        msg.setColour(Color.BLUE);
 		server.getConversation(channel).addMessage(msg);
 		sendNewMessageBroadcast(channel);
 	}
 	
 	public void onRemoveNoExternalMessages(String channel, String sourceNick, String sourceLogin, String sourceHostname) {
 		Message msg = new Message(sourceNick+" has disallowed external messages.");
+        msg.setColour(Color.BLUE);
 		server.getConversation(channel).addMessage(msg);
 		sendNewMessageBroadcast(channel);
 	}
 	
 	public void onRemovePrivate(String channel, String sourceNick, String sourceLogin, String sourceHostname) {
 		Message msg = new Message(sourceNick+" has disabled private mode.");
+        msg.setColour(Color.BLUE);
 		server.getConversation(channel).addMessage(msg);
 		sendNewMessageBroadcast(channel);
 	}
 	
 	public void onRemoveSecret(String channel, String sourceNick, String sourceLogin, String sourceHostname) {
 		Message msg = new Message(sourceNick+" has disabled secret mode.");
+        msg.setColour(Color.BLUE);
 		server.getConversation(channel).addMessage(msg);
 		sendNewMessageBroadcast(channel);
 	}
 	
 	public void onRemoveTopicProtection(String channel, String sourceNick, String sourceLogin, String sourceHostname) {
 		Message msg = new Message(sourceNick+" has disabled topic protection mode.");
+        msg.setColour(Color.BLUE);
 		server.getConversation(channel).addMessage(msg);
 		sendNewMessageBroadcast(channel);
 	}
 	
 	public void onServerPing(String response) {
-		Log.v(logTag, "Responding to server ping.");
 		super.onServerPing(response);
 	}
 	
 	public void onPing(String sourceNick, String sourceLogin, String sourceHostname, String target, String pingValue) {
-		Log.v(logTag, "Received PING from "+sourceNick);
 		Message msg = new Message(sourceNick+" pinged you!");
+        msg.setColour(Color.BLUE);
 		server.getConversation("ScoutLink").addMessage(msg);
 		sendNewMessageBroadcast("ScoutLink");
 		super.onPing(sourceNick, sourceLogin, sourceHostname, target, pingValue);
@@ -298,36 +321,42 @@ public class IRCConnection extends PircBot {
 	
 	public void onSetChannelBan(String channel, String sourceNick, String sourceLogin, String sourceHostname, String hostmask) {
 		Message msg = new Message(sourceNick+" has banned "+hostmask);
+        msg.setColour(Color.BLUE);
 		server.getConversation(channel).addMessage(msg);
 		sendNewMessageBroadcast(channel);
 	}
 	
 	public void onSetChannelKey(String channel, String sourceNick, String sourceLogin, String sourceHostname, String key) {
 		Message msg = new Message(sourceNick+ " has set the channel key to: "+key);
+        msg.setColour(Color.BLUE);
 		server.getConversation(channel).addMessage(msg);
 		sendNewMessageBroadcast(channel);
 	}
 	
 	public void onSetChannelLimit(String channel, String sourceNick, String sourceLogin, String sourceHostname, int limit) {
 		Message msg = new Message(sourceNick+" has set the channel user limit to: "+Integer.toString(limit));
+        msg.setColour(Color.BLUE);
 		server.getConversation(channel).addMessage(msg);
 		sendNewMessageBroadcast(channel);
 	}
 	
 	public void onSetInviteOnly(String channel, String sourceNick, String sourceLogin, String sourceHostname) {
 		Message msg = new Message(sourceNick+" has set the channel to invite only.");
+        msg.setColour(Color.BLUE);
 		server.getConversation(channel).addMessage(msg);
 		sendNewMessageBroadcast(channel);
 	}
 	
 	public void onSetModerated(String channel, String sourceNick, String sourceLogin, String sourceHostname) {
 		Message msg = new Message(sourceNick+" has enabled moderated mode.");
+        msg.setColour(Color.BLUE);
 		server.getConversation(channel).addMessage(msg);
 		sendNewMessageBroadcast(channel);
 	}
 	
 	public void onSetNoExternalMessages(String channel, String sourceNick, String sourceLogin, String sourceHostname) {
 		Message msg = new Message(sourceNick+" has disallowed external messages.");
+        msg.setColour(Color.BLUE);
 		server.getConversation(channel).addMessage(msg);
 		sendNewMessageBroadcast(channel);
 	}
@@ -351,12 +380,13 @@ public class IRCConnection extends PircBot {
 	}
 	
 	public void onTopic(String channel, String topic, String setBy, long date, boolean changed) {
-		Message msg = null;
+		Message msg;
 		if (!changed) {
 			msg = new Message("Topic of "+channel+" is "+topic+" (set by "+setBy+")");
 		} else {
 			msg = new Message(setBy+" changed the topic to "+topic);
 		}
+        msg.setColour(Color.BLUE);
 		server.getConversation(channel).addMessage(msg);
 		sendNewMessageBroadcast(channel); 
 	}
@@ -367,12 +397,14 @@ public class IRCConnection extends PircBot {
 			userList = userList + " " + user.getNick();
 		}
 		Message msg = new Message("Users on channel: " + userList);
+        msg.setColour(Color.BLUE);
 		server.getConversation(channel).addMessage(msg);
 		sendNewMessageBroadcast(channel); 
 	}
 	
 	public void onUserMode(String targetNick, String sourceNick, String sourceLogin, String sourceHostname, String mode) {
 		Message msg = new Message(sourceNick+ " sets mode: "+mode+" "+targetNick);
+        msg.setColour(Color.BLUE);
 		server.getConversation("ScoutLink").addMessage(msg);
 		sendNewMessageBroadcast("ScoutLink");
 	}

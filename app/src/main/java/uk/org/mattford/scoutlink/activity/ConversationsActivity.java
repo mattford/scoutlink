@@ -22,6 +22,7 @@ import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.FragmentActivity;
@@ -66,9 +67,9 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
                 });
         pager.setAdapter(pagerAdapter);
         
-        this.actionBar = getActionBar();
-        this.actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-        this.tabListener = new ActionBar.TabListener() {
+        actionBar = getActionBar();
+        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+        tabListener = new ActionBar.TabListener() {
 
 			@Override
 			public void onTabSelected(Tab tab,
@@ -79,13 +80,13 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 			@Override
 			public void onTabUnselected(Tab tab,
 					android.app.FragmentTransaction ft) {
-				// TODO Do nothing?	
+				// Do nothing.
 			}
 			
 			@Override
 			public void onTabReselected(Tab tab,
 					android.app.FragmentTransaction ft) {
-				// TODO Do nothing?
+				// Do nothing.
 			}
         };           
             
@@ -133,10 +134,16 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 		if (message.startsWith("/")) {
 			CommandParser.getInstance().parse(message, conv, this.binder.getService());
 		} else {
-			String nickname = this.binder.getService().getConnection().getNick();
-			conv.addMessage(new Message("<"+nickname+"> "+message));
-			newConversationMessage(conv.getName());
-			this.binder.getService().getConnection().sendMessage(conv.getName(), message);
+            if (conv.getType().equals(Conversation.TYPE_SERVER)) {
+                Message msg = new Message(getString(R.string.send_message_in_server_window));
+                msg.setColour(Color.RED);
+                conv.addMessage(msg);
+            } else {
+                String nickname = this.binder.getService().getConnection().getNick();
+                conv.addMessage(new Message("<"+nickname+"> "+message));
+                this.binder.getService().getConnection().sendMessage(conv.getName(), message);
+            }
+            newConversationMessage(conv.getName());
 		}
 		
 		et.setText("");
@@ -218,7 +225,6 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 		this.binder = (IRCBinder)service;
         Intent intent = getIntent();
         String action = intent.getAction();
-        Log.v(logTag, "onServiceConnected() action ="+action);
         if (action != null && action.equals(ConversationsActivity.PRE_CONNECT) && !binder.getService().getConnection().isConnected()) {
         	binder.getService().connect();
         } else if (!binder.getService().getConnection().isConnected()) {
@@ -227,11 +233,9 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
         	/**
         	 * The activity has resumed and the service has been bound, get all the messages we missed...
         	 */
-        	Log.d(logTag, "Getting messages from buffer...");
     		for (Map.Entry<String, Conversation> conv : binder.getService().getServer().getConversations().entrySet()) {
     			int i = pagerAdapter.getItemByName(conv.getKey());
     			if (i == -1) {
-    				Log.d(logTag, "Creating new conversation for " + conv.getKey());
     				createNewConversation(conv.getKey());
     			}
     			newConversationMessage(conv.getKey());

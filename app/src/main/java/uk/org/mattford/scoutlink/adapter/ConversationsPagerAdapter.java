@@ -9,14 +9,11 @@ import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.util.Log;
 
 public class ConversationsPagerAdapter extends FragmentStatePagerAdapter {
 	
 	private LinkedList<ConversationInfo> conversations;
 	private Context context;
-	
-	private final String logTag = "ScoutLink/ConversationsPagerAdapter";
 
 	public ConversationsPagerAdapter(FragmentManager fm, Context context) {
         super(fm);
@@ -60,15 +57,14 @@ public class ConversationsPagerAdapter extends FragmentStatePagerAdapter {
     public int getItemByName(String name) {
     	for (int i = 0; i < conversations.size(); i++) {
     		if (conversations.get(i).conv.getName().equalsIgnoreCase(name)) {
-    			Log.d(logTag, name + " is at position " + i);
     			return i;
     		}
     	}
-		return -1;	// TODO: Should this return null if not found?
+		return -1;
     }
     
     public ConversationInfo getItemInfo(int i) {
-    	ConversationInfo info = null;
+    	ConversationInfo info;
     	try {
     		info = conversations.get(i);
     	} catch (IndexOutOfBoundsException e) {
