@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:id="@+id/action_settings" android:orderInCategory="100" android:showAsAction="never" android:title="@string/action_settings"></item>
+    <item android:id="@+id/action_close" android:orderInCategory="100" android:showAsAction="never" android:title="@string/action_close"></item>
+    <item android:id="@+id/action_disconnect" android:orderInCategory="100" android:showAsAction="never" android:title="@string/action_disconnect"></item>
+    <item android:id="@+id/action_userlist" android:orderInCategory="100" android:showAsAction="never" android:title="@string/action_users"></item>
+    <item android:id="@+id/action_join" android:showAsAction="never" android:title="@string/action_join" android:orderInCategory="100"></item>
+
+
+</menu>

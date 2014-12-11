@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">ScoutLink</string>
+    <string name="action_settings">Settings</string>
+    <string name="connect_button">Connect</string>
+    <string name="nickname_hint">Nickname</string>
+    <string name="welcome_text">Welcome to ScoutLink, please enter a nickname below</string>
+    <string name="label_send_message_button">Send</string>
+    <string name="send_message_hint">Type to send a message</string>
+    <string name="action_close">Close</string>
+    <string name="action_disconnect">Disconnect</string>
+    <string name="action_users">User list</string>
+    <string name="message_list_no_messages">No messages yet, type below to start chatting!</string>
+    <string name="join_button">Join</string>
+    <string name="action_join">Join Channel</string>
+    <string name="join_activity_label">Join Channel</string>
+    <string name="close_server_window">You cannot close the server window!</string>
+    <string name="userlist_not_on_channel">This function only works on channels</string>
+
+</resources>
