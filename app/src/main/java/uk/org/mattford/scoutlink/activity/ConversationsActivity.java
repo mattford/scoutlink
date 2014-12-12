@@ -1,6 +1,7 @@
 package uk.org.mattford.scoutlink.activity;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
 
 import uk.org.mattford.scoutlink.R;
@@ -74,7 +75,9 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 			@Override
 			public void onTabSelected(Tab tab,
 					android.app.FragmentTransaction ft) {
-				pager.setCurrentItem(tab.getPosition());	
+				pager.setCurrentItem(tab.getPosition());
+                /*String name = pagerAdapter.getItemInfo(tab.getPosition()).conv.getName();
+                tab.setText(name);*/
 			}
 			
 			@Override
@@ -143,7 +146,7 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
                 conv.addMessage(new Message("<"+nickname+"> "+message));
                 this.binder.getService().getConnection().sendMessage(conv.getName(), message);
             }
-            newConversationMessage(conv.getName());
+            onConversationMessage(conv.getName());
 		}
 		
 		et.setText("");
@@ -178,7 +181,7 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 		finish();
 	}
 	
-	public void createNewConversation(String name) {
+	public void onNewConversation(String name) {
 		actionBar.addTab(
 				actionBar.newTab()
 				.setText(name)
@@ -186,7 +189,7 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 		Conversation conv = binder.getService().getServer().getConversation(name);
 		pagerAdapter.addConversation(conv);
 		
-		newConversationMessage(conv.getName());
+		onConversationMessage(conv.getName());
 			
 	}
 	
@@ -196,27 +199,28 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 		actionBar.removeTabAt(i);
 	}
 	
-	public void newConversationMessage(String name) {
+	public void onConversationMessage(String name) {
 		Conversation conv = binder.getService().getServer().getConversation(name);
-		Log.d(logTag, "Message received for: "+name);
 		int i = pagerAdapter.getItemByName(name);
 		if (i == -1) {
-			createNewConversation(name);
+			onNewConversation(name);
 			i = pagerAdapter.getItemByName(name);
 		}
 		MessageListAdapter adapter = pagerAdapter.getItemAdapter(i);
 
 		if (adapter == null) {
-			Log.d(logTag, "Adapter is null for " + name);
+			Log.d(logTag, "Adapter for "+name+" not yet initialised.");
 			return;
 		}
+
+        Tab tab = actionBar.getTabAt(i);
+        tab.setText(name + "*");
 
 		while (conv.hasBuffer()) {
 			Message msg = conv.pollBuffer();
 			if (i != -1) {
 				adapter.addMessage(msg);
 			}
-			
 		}
 	}
 
@@ -236,9 +240,9 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
     		for (Map.Entry<String, Conversation> conv : binder.getService().getServer().getConversations().entrySet()) {
     			int i = pagerAdapter.getItemByName(conv.getKey());
     			if (i == -1) {
-    				createNewConversation(conv.getKey());
+    				onNewConversation(conv.getKey());
     			}
-    			newConversationMessage(conv.getKey());
+    			onConversationMessage(conv.getKey());
     		}
         }
 	}
@@ -298,6 +302,12 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
         	Intent joinIntent = new Intent(this, JoinActivity.class);
         	startActivityForResult(joinIntent, JOIN_CHANNEL_RESULT);
         	break;
+        case R.id.action_channel_list:
+            Intent channelListIntent = new Intent(this, ChannelListActivity.class);
+            ArrayList<String> channels = binder.getService().getConnection().getChannelList();
+            channelListIntent.putStringArrayListExtra("channels", channels);
+            startActivityForResult(channelListIntent, JOIN_CHANNEL_RESULT);
+            break;
         }
         return super.onOptionsItemSelected(item);
     }

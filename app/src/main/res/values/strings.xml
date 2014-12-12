@@ -18,5 +18,8 @@
     <string name="close_server_window">You cannot close the server window!</string>
     <string name="userlist_not_on_channel">This function only works on channels</string>
     <string name="send_message_in_server_window">You cannot send messages to the server window.</string>
+    <string name="action_channel_list">Channel List</string>
+    <string name="title_activity_channel_list">Channel List</string>
+    <string name="userlist_activity_label">Users List</string>
 
 </resources>

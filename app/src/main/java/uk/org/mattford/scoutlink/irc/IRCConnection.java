@@ -20,13 +20,13 @@ public class IRCConnection extends PircBot {
 	
 	private IRCService service;
 	private Server server;
+    private ArrayList<String> channels = new ArrayList<String>();
 	
 	private final String logTag = "ScoutLink/IRCConnection";
 	
 	public IRCConnection(IRCService service) {
 		this.service = service;
 		this.server = service.getServer();
-
 	}
 	
 	public void createDefaultConversation() {
@@ -53,6 +53,7 @@ public class IRCConnection extends PircBot {
 		service.updateNotification("Connected as " + this.getNick());
 		service.setForeground(IRCService.ACTION_FOREGROUND);
 		server.setStatus(Server.STATUS_CONNECTED);
+        listChannels();
 		joinChannel("#test");
 	}
 	
@@ -447,7 +448,17 @@ public class IRCConnection extends PircBot {
 		return userlist;
 	}
 	
-	
+	public ArrayList<String> getChannelList() {
+        return channels;
+    }
+
+
+
+    public void onChannelInfo(String channel, int userCount, String topic) {
+        if (!channels.contains(channel)) {
+            channels.add(channel);
+        }
+    }
 
 
 }

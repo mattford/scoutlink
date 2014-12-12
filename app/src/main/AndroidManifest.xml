@@ -7,8 +7,17 @@
     <uses-sdk
         android:minSdkVersion="14"
         android:targetSdkVersion="19" />
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.SET_DEBUG_APP"/>
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.SET_DEBUG_APP" />
+
+    <android:uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="18" />
+    <android:uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <android:uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="18" />
 
     <application
         android:allowBackup="true"
@@ -24,11 +33,24 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name=".irc.IRCService"></service>
-        <activity android:name=".activity.ConversationsActivity"></activity>
-        <activity android:name=".activity.JoinActivity" android:theme="@android:style/Theme.Dialog" android:label="@string/join_activity_label"></activity>
-        <activity android:label="Users" android:theme="@android:style/Theme.Dialog" android:name=".activity.UserListActivity"></activity>
-        <activity android:name=".activity.SettingsActivity"></activity>
+
+        <service android:name=".irc.IRCService" />
+
+        <activity android:name=".activity.ConversationsActivity" />
+        <activity
+            android:name=".activity.JoinActivity"
+            android:label="@string/join_activity_label"
+            android:theme="@android:style/Theme.Dialog" />
+        <activity
+            android:name=".activity.UserListActivity"
+            android:label="@string/userlist_activity_label"
+            android:theme="@android:style/Theme.Dialog" />
+        <activity android:name=".activity.SettingsActivity" />
+        <activity
+            android:name=".activity.ChannelListActivity"
+            android:label="@string/title_activity_channel_list"
+            android:theme="@android:style/Theme.Dialog">
+        </activity>
     </application>
 
 </manifest>
