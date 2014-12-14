@@ -21,5 +21,11 @@
     <string name="action_channel_list">Channel List</string>
     <string name="title_activity_channel_list">Channel List</string>
     <string name="userlist_activity_label">Users List</string>
+    <string name="action_userlist_query_label">Query</string>
+    <string name="action_userlist_notice_label">Notice</string>
+    <string name="title_activity_notice">Send a notice</string>
+    <string name="send_notice_button">Send</string>
+    <string name="activity_invite_title">Invited to Channel</string>
+    <string name="invited_to_channel">You have been invited to %s, would you like to join?</string>
 
 </resources>

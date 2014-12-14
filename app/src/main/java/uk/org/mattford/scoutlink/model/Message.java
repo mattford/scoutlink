@@ -33,7 +33,6 @@ public class Message {
 
 	public TextView renderTextView(Context context) {
 		TextView view = new TextView(context);
-		// TODO: Use a parser and SpannableStrings here to show colours. (Overriden if this.colour is specified)
         SpannableString text = MircColors.toSpannable(getText());
 		view.setText(text);
         if (colour != null) {

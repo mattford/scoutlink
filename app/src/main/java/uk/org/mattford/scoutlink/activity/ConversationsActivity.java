@@ -13,6 +13,8 @@ import uk.org.mattford.scoutlink.irc.IRCService;
 import uk.org.mattford.scoutlink.model.Broadcast;
 import uk.org.mattford.scoutlink.model.Conversation;
 import uk.org.mattford.scoutlink.model.Message;
+import uk.org.mattford.scoutlink.model.Query;
+import uk.org.mattford.scoutlink.model.User;
 import uk.org.mattford.scoutlink.receiver.ConversationReceiver;
 import android.app.ActionBar;
 import android.app.AlertDialog;
@@ -43,18 +45,16 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 	private ActionBar actionBar;
 	private ConversationReceiver receiver;
 	private IRCBinder binder;
-	
-	
-	public static final String PRE_CONNECT = "uk.org.mattford.scoutlink.ACTION_PRE_CONNECT";
+
+    public final int USER_LIST_RESULT = 0;
 	public final int JOIN_CHANNEL_RESULT = 1;
-	public final int INVITE_RESULT = 2;
+    public final int NOTICE_RESULT = 2;
 	
 	private final String logTag = "ScoutLink/ConversationsActivity";
 	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_conversations);
-        Log.v(logTag, "onCreate");
         pagerAdapter = new ConversationsPagerAdapter(getSupportFragmentManager(), this);
         pager = (ViewPager) findViewById(R.id.pager);
         pager.setOnPageChangeListener(
@@ -155,8 +155,8 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 	
 	public void onInvite(final String channel) {
 		AlertDialog.Builder adb = new AlertDialog.Builder(this);
-		adb.setTitle("Channel Invite");
-		adb.setMessage("You have been invited to " + channel + ", would you like to join?");
+		adb.setTitle(getString(R.string.activity_invite_title));
+		adb.setMessage(getString(R.string.invited_to_channel, channel));
 		adb.setPositiveButton("Yes", new OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
@@ -228,8 +228,7 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 	public void onServiceConnected(ComponentName name, IBinder service) {
 		this.binder = (IRCBinder)service;
         Intent intent = getIntent();
-        String action = intent.getAction();
-        if (action != null && action.equals(ConversationsActivity.PRE_CONNECT) && !binder.getService().getConnection().isConnected()) {
+        if (!binder.getService().getConnection().isConnected()) {
         	binder.getService().connect();
         } else if (!binder.getService().getConnection().isConnected()) {
         	onDisconnect();
@@ -293,7 +292,7 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 	        	ArrayList<String> users = binder.getService().getConnection().getUsersAsStringArray(chan);
 	        	Intent intent = new Intent(this, UserListActivity.class);
 	        	intent.putStringArrayListExtra("users", users);
-	        	startActivity(intent);
+	        	startActivityForResult(intent, USER_LIST_RESULT);
         	} else {
         		Toast.makeText(this, getResources().getString(R.string.userlist_not_on_channel), Toast.LENGTH_SHORT).show();
         	}
@@ -314,11 +313,41 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
     
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == JOIN_CHANNEL_RESULT) {
-            if (resultCode == RESULT_OK) {
-                String channel = data.getStringExtra("target");
-                binder.getService().getConnection().joinChannel(channel);
-            }
+        switch (requestCode) {
+            case JOIN_CHANNEL_RESULT:
+                if (resultCode == RESULT_OK) {
+                    String channel = data.getStringExtra("target");
+                    binder.getService().getConnection().joinChannel(channel);
+                }
+                break;
+            case USER_LIST_RESULT:
+                if (resultCode == RESULT_OK) {
+                    String target = data.getStringExtra("target");
+                    switch (data.getIntExtra("action", -1)) {
+                        case User.ACTION_QUERY:
+                            Query query = new Query(target);
+                            binder.getService().getServer().addConversation(query);
+                            onNewConversation(query.getName());
+                            break;
+                        case User.ACTION_NOTICE:
+                            Intent intent = new Intent(this, NoticeActivity.class);
+                            intent.putExtra("target", target);
+                            startActivityForResult(intent, NOTICE_RESULT);
+                            break;
+                    }
+                }
+                break;
+            case NOTICE_RESULT:
+                if (resultCode == RESULT_OK) {
+                    String text = data.getStringExtra("message");
+                    String target = data.getStringExtra("target");
+                    Message msg = new Message("-> -"+target+"- "+text);
+                    binder.getService().getConnection().sendNotice(target, text);
+                    ConversationsPagerAdapter.ConversationInfo info = pagerAdapter.getItemInfo(pager.getCurrentItem());
+                    info.conv.addMessage(msg);
+                    onConversationMessage(info.conv.getName());
+                }
+                break;
         }
     }
         

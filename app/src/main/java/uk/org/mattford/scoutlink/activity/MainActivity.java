@@ -48,7 +48,6 @@ public class MainActivity extends Activity implements ServiceConnection {
     	settings.putString("nickname", nick.getText().toString());
     	
     	Intent intent = new Intent(this, ConversationsActivity.class);
-    	intent.setAction(ConversationsActivity.PRE_CONNECT);
     	intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
     	startActivity(intent);
     	finish();

@@ -95,7 +95,7 @@ public class IRCConnection extends PircBot {
 		}
 	}
 	
-	public void onPrivateMessage(String sender, String login, String hostname, String message) { // TODO: Might need to create conversation
+	public void onPrivateMessage(String sender, String login, String hostname, String message) {
 		Conversation conversation = server.getConversation(sender);
 		if (conversation == null) {
 			conversation = new Query(sender);

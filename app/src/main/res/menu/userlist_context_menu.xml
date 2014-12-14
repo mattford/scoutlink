@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/action_userlist_query" android:title="@string/action_userlist_query_label"
+        android:orderInCategory="100" android:showAsAction="never" />
+    <item android:id="@+id/action_userlist_notice" android:title="@string/action_userlist_notice_label"
+        android:orderInCategory="100" android:showAsAction="never" />
+</menu>

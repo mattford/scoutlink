@@ -49,7 +49,12 @@
         <activity
             android:name=".activity.ChannelListActivity"
             android:label="@string/title_activity_channel_list"
-            android:theme="@android:style/Theme.Dialog">
+            android:theme="@android:style/Theme.Dialog" >
+        </activity>
+        <activity
+            android:name=".activity.NoticeActivity"
+            android:label="@string/title_activity_notice"
+            android:theme="@android:style/Theme.Dialog" >
         </activity>
     </application>
 
