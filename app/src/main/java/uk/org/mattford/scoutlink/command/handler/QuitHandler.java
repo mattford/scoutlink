@@ -12,9 +12,9 @@ public class QuitHandler extends CommandHandler {
 		
 		if (params.length > 2) {
 			String reason = params[2];
-			service.getConnection().quitServer(reason);
+			service.getConnection().sendIRC().quitServer(reason);
 		} else {
-			service.getConnection().quitServer();
+			service.getConnection().sendIRC().quitServer();
 		}
 		
 		

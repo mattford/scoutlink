@@ -26,13 +26,10 @@ public class MainActivity extends Activity implements ServiceConnection {
         super.onCreate(savedInstanceState);
 
         this.settings = new Settings(this);
-        
-   
-        
+
         setContentView(R.layout.activity_main);
         EditText nick = (EditText)findViewById(R.id.nickname);
         nick.setText(settings.getString("nickname", ""));
-        
     }
     
     @Override

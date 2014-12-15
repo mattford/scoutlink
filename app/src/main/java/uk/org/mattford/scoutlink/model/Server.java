@@ -1,11 +1,17 @@
 package uk.org.mattford.scoutlink.model;
 
+import com.google.common.collect.ImmutableList;
+
+import org.pircbotx.ChannelListEntry;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Server {
 
 	private HashMap<String, Conversation> conversations;
 	private int status = 0;
+    private ArrayList<String> channelList = new ArrayList<String>();
 	
 	public final static int STATUS_DISCONNECTED = 0;
 	public final static int STATUS_CONNECTED = 1;
@@ -22,6 +28,19 @@ public class Server {
 			return null;
 		}
 	}
+
+    public void setChannelList(ImmutableList<ChannelListEntry> channels) {
+        channelList.clear();
+        for (ChannelListEntry entry : channels) {
+            if (entry.getName().startsWith("#")) {
+                channelList.add(entry.getName());
+            }
+        }
+    }
+
+    public ArrayList<String> getChannelList() {
+        return channelList;
+    }
 	
 	public int getStatus() {
 		return this.status;

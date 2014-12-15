@@ -12,7 +12,7 @@ public class PartHandler extends CommandHandler {
 
 		String channelToPart = params[1];
 		//String channelPartReason = params[2];
-		service.getConnection().partChannel(channelToPart);
+		service.getConnection().getUserChannelDao().getChannel(channelToPart).send().part();
 		
 	}
 

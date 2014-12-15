@@ -11,7 +11,7 @@ public class JoinHandler extends CommandHandler {
 			Conversation conversation, IRCService service) {
 		
 		String channelToJoin = params[1];
-		service.getConnection().joinChannel(channelToJoin);
+		service.getConnection().sendIRC().joinChannel(channelToJoin);
 		
 	}
 

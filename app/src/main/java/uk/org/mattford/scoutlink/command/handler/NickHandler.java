@@ -12,7 +12,7 @@ public class NickHandler extends CommandHandler {
 		
 		if (params.length > 1) {
 			String nickname = params[1];
-			service.getConnection().changeNick(nickname);
+			service.getConnection().sendIRC().changeNick(nickname);
 		}
 		
 		

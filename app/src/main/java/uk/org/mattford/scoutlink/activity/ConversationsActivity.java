@@ -1,7 +1,6 @@
 package uk.org.mattford.scoutlink.activity;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Map;
 
 import uk.org.mattford.scoutlink.R;
@@ -142,9 +141,9 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
                 msg.setColour(Color.RED);
                 conv.addMessage(msg);
             } else {
-                String nickname = this.binder.getService().getConnection().getNick();
-                conv.addMessage(new Message("<"+nickname+"> "+message));
-                this.binder.getService().getConnection().sendMessage(conv.getName(), message);
+                String nickname = binder.getService().getConnection().getNick();
+                conv.addMessage(new Message(getString(R.string.message_message, nickname, message)));
+                binder.getService().getConnection().sendIRC().message(conv.getName(), message);
             }
             onConversationMessage(conv.getName());
 		}
@@ -160,7 +159,7 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 		adb.setPositiveButton("Yes", new OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				binder.getService().getConnection().joinChannel(channel);
+				binder.getService().getConnection().sendIRC().joinChannel(channel);
 			}
 		});
 		adb.setNegativeButton("No", new OnClickListener() {
@@ -228,7 +227,7 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 	public void onServiceConnected(ComponentName name, IBinder service) {
 		this.binder = (IRCBinder)service;
         Intent intent = getIntent();
-        if (!binder.getService().getConnection().isConnected()) {
+        if (binder.getService().getConnection() == null || !binder.getService().getConnection().isConnected()) { //TODO: Extra check needed here. Don't know what for.
         	binder.getService().connect();
         } else if (!binder.getService().getConnection().isConnected()) {
         	onDisconnect();
@@ -270,17 +269,17 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
         	break;
         case R.id.action_close:
         	if (conversation.getType().equals(Conversation.TYPE_CHANNEL)) {
-        		this.binder.getService().getConnection().partChannel(conversation.getName());
+                binder.getService().getConnection().getUserChannelDao().getChannel(conversation.getName()).send().part();
         	} else if (conversation.getType().equals(Conversation.TYPE_QUERY)) {
         		binder.getService().getServer().removeConversation(conversation.getName());
-        		this.removeConversation(conversation.getName());
+        		removeConversation(conversation.getName());
         	} else {
         		Toast.makeText(this, getResources().getString(R.string.close_server_window), Toast.LENGTH_SHORT).show();
         	}
         	
         	break;
         case R.id.action_disconnect:
-        	this.binder.getService().getConnection().quitServer("ScoutLink for Android!");
+        	binder.getService().getConnection().sendIRC().quitServer("ScoutLink for Android!");
         	binder.getService().getServer().clearConversations();
         	pagerAdapter.clearConversations();
         	setResult(RESULT_OK);
@@ -289,7 +288,10 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
         case R.id.action_userlist:
         	if (conversation.getType().equals(Conversation.TYPE_CHANNEL)) {
 	        	String chan = conversation.getName();
-	        	ArrayList<String> users = binder.getService().getConnection().getUsersAsStringArray(chan);
+                ArrayList<String> users = new ArrayList<String>();
+	        	for (org.pircbotx.User user : binder.getService().getConnection().getUserChannelDao().getChannel(chan).getUsers()) {
+                    users.add(user.getNick());
+                }
 	        	Intent intent = new Intent(this, UserListActivity.class);
 	        	intent.putStringArrayListExtra("users", users);
 	        	startActivityForResult(intent, USER_LIST_RESULT);
@@ -303,7 +305,7 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
         	break;
         case R.id.action_channel_list:
             Intent channelListIntent = new Intent(this, ChannelListActivity.class);
-            ArrayList<String> channels = binder.getService().getConnection().getChannelList();
+            ArrayList<String> channels = binder.getService().getServer().getChannelList();
             channelListIntent.putStringArrayListExtra("channels", channels);
             startActivityForResult(channelListIntent, JOIN_CHANNEL_RESULT);
             break;
@@ -317,7 +319,7 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
             case JOIN_CHANNEL_RESULT:
                 if (resultCode == RESULT_OK) {
                     String channel = data.getStringExtra("target");
-                    binder.getService().getConnection().joinChannel(channel);
+                    binder.getService().getConnection().sendIRC().joinChannel(channel);
                 }
                 break;
             case USER_LIST_RESULT:
@@ -342,7 +344,7 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
                     String text = data.getStringExtra("message");
                     String target = data.getStringExtra("target");
                     Message msg = new Message("-> -"+target+"- "+text);
-                    binder.getService().getConnection().sendNotice(target, text);
+                    binder.getService().getConnection().sendIRC().notice(target, text);
                     ConversationsPagerAdapter.ConversationInfo info = pagerAdapter.getItemInfo(pager.getCurrentItem());
                     info.conv.addMessage(msg);
                     onConversationMessage(info.conv.getName());

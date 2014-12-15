@@ -2,11 +2,14 @@ package uk.org.mattford.scoutlink.irc;
 
 import java.io.IOException;
 
-import org.jibble.pircbot.IrcException;
-import org.jibble.pircbot.NickAlreadyInUseException;
+import org.pircbotx.Configuration;
+import org.pircbotx.PircBotX;
+import org.pircbotx.exception.IrcException;
 
 import uk.org.mattford.scoutlink.R;
+import uk.org.mattford.scoutlink.model.Broadcast;
 import uk.org.mattford.scoutlink.model.Server;
+import uk.org.mattford.scoutlink.model.ServerWindow;
 import uk.org.mattford.scoutlink.model.Settings;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -19,7 +22,7 @@ import android.util.Log;
 
 public class IRCService extends Service {
 	
-	private IRCConnection irc;
+	private PircBotX irc;
 	private Settings settings;
 	private Server server;
 	private Notification notif;
@@ -27,15 +30,10 @@ public class IRCService extends Service {
 	private final int NOTIF_ID = 007;
 	private final String logTag = "ScoutLink/IRCService";
 	
-	public final static int ACTION_FOREGROUND = 1;
-	public final static int ACTION_BACKGROUND = 0;
-	
 	private boolean foreground = false;
-	
-	
+
 	public void onCreate() {
 		this.server = new Server();
-		this.irc = new IRCConnection(this);
 		
 		this.settings = new Settings(this);
 		this.updateNotification("Not connected.");
@@ -45,58 +43,64 @@ public class IRCService extends Service {
 		return START_STICKY;
 	}
 	
-	public void setForeground(int fg) {
-		if (fg == ACTION_FOREGROUND) {
-			startForeground(NOTIF_ID, notif);
-			this.foreground = true;
-		} else if (fg == ACTION_BACKGROUND && this.isForeground()) {
-			stopForeground(true);
-			this.foreground = false;
-		}
+	public void setIsForeground(boolean fg) {
+        if (!foreground && fg) {
+            startForeground(NOTIF_ID, notif);
+        } else {
+            stopForeground(true);
+        }
+        this.foreground = fg;
 	}
 	
 	public boolean isForeground() {
 		return this.foreground;
 	}
 	
-	public IRCConnection getConnection() {
+	public PircBotX getConnection() {
 		return this.irc;
 	}
 	
 	public void connect() {
 		Log.v(logTag, "Connecting...");
-		if (!irc.isConnected()) {
-			irc.createDefaultConversation();
-			irc.setNickname(settings.getString("nickname", "SLAndroid" + Math.floor(Math.random()*100)));
-			irc.setIdent(settings.getString("ident", "ScoutLinkIRC"));
-			irc.setRealName(settings.getString("realName", "ScoutLink IRC for Android"));
 
-			new Thread(new Runnable() {
-				public void run() {
-					Log.v("ScoutLink", "Connecting to ScoutLink...");
-					try {
-						irc.connect("chat.scoutlink.net");
-					} catch (NickAlreadyInUseException e) {
-						Log.e("ScoutLink", e.getMessage());
-						e.printStackTrace();
-					} catch (IOException e) {
-						Log.e("ScoutLink", e.getMessage());
-						e.printStackTrace();
-					} catch (IrcException e) {
-						Log.e("ScoutLink", e.getMessage());
-						e.printStackTrace();
-					}
-					
-				}
-			}).start();
-			
-		}
+        ServerWindow sw = new ServerWindow("ScoutLink");
+        server.addConversation(sw);
+        Intent intent = new Intent(Broadcast.NEW_CONVERSATION).putExtra("target", "ScoutLink");
+        sendBroadcast(intent);
+
+        IRCListener listener = new IRCListener(this);
+        Configuration.Builder config = new Configuration.Builder()
+            .setName(settings.getString("nickname"))
+            .setLogin(settings.getString("login", "AndroidIRC"))
+            .setServer("chat.scoutlink.net", 6667)
+            .setRealName(settings.getString("realName", "ScoutLink IRC for Android!"))
+            .addListener(listener);
+        //config.setNickservPassword(settings.getString("password"));
+        config.addAutoJoinChannel("#test");
+        this.irc = new PircBotX(config.buildConfiguration());
+        new Thread(new Runnable() {
+            public void run() {
+                try {
+                    irc.startBot();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (IrcException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
+
 	}
 	
 	public Server getServer() {
 		return this.server;
 	}
-	
+
+    public void onNewMessage(String conversation) {
+        Intent intent = new Intent().setAction(Broadcast.NEW_MESSAGE).putExtra("target", conversation);
+        sendBroadcast(intent);
+    }
 	
 	public void updateNotification(String text) {
 		

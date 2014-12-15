@@ -50,8 +50,8 @@ public class CommandParser {
 			
 		} else {
 			
-			service.getConnection().sendMessage(conversation.getName(), command);
-			service.getConnection().sendNewMessageBroadcast(conversation.getName());
+			service.getConnection().sendIRC().message(conversation.getName(), command);
+			service.onNewMessage(conversation.getName());
 			
 		}
 	}
@@ -77,9 +77,9 @@ public class CommandParser {
 		if (params.length > 1) {
 			params[0] = params[0].toUpperCase(Locale.ENGLISH);
 			Log.d(logTag, "Server Command: " + mergeParams(params));
-			service.getConnection().sendRawLineViaQueue(mergeParams(params));
+			service.getConnection().sendRaw().rawLine(mergeParams(params));
 		} else {
-			service.getConnection().sendRawLineViaQueue(params[0].toUpperCase(Locale.ENGLISH));
+			service.getConnection().sendRaw().rawLine(params[0].toUpperCase(Locale.ENGLISH));
 		}
 	}
 	

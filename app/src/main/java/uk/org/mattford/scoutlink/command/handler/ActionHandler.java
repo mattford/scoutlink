@@ -10,7 +10,7 @@ public class ActionHandler extends CommandHandler {
 	@Override
 	public void execute(String[] params, Conversation conversation,
 			IRCService service) {
-		String action = null;
+		String action;
 		String nick = service.getConnection().getNick();
 		if (params.length > 2) {
 			StringBuilder sb = new StringBuilder();
@@ -21,9 +21,9 @@ public class ActionHandler extends CommandHandler {
 		} else {
 			action = params[1];
 		}
-		service.getConnection().sendAction(conversation.getName(), action);
+		service.getConnection().sendIRC().action(conversation.getName(), action);
 		conversation.addMessage(new Message(nick + " " + action));
-		service.getConnection().sendNewMessageBroadcast(conversation.getName());
+		service.onNewMessage(conversation.getName());
 			
 		
 	}
