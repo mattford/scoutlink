@@ -3,6 +3,7 @@ package uk.org.mattford.scoutlink.irc;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.util.Log;
 
 import com.google.common.collect.ImmutableSortedSet;
 
@@ -52,6 +53,7 @@ import org.pircbotx.hooks.events.UserListEvent;
 import org.pircbotx.hooks.events.UserModeEvent;
 import org.pircbotx.hooks.events.VersionEvent;
 import org.pircbotx.hooks.events.VoiceEvent;
+import org.pircbotx.snapshot.UserSnapshot;
 
 import java.util.ArrayList;
 
@@ -274,7 +276,7 @@ public class IRCListener extends ListenerAdapter {
         }
         Message msg = new Message(service.getString(R.string.message_quit, event.getUser().getNick(), event.getReason()));
         msg.setColour(Color.BLUE);
-        for (String channel : getSharedChannels(event.getBot(), event.getUser())) {
+        for (String channel : getSharedChannels(event.getBot(), event.getUser().getGeneratedFrom())) {
             server.getConversation(channel).addMessage(msg);
             service.onNewMessage(channel);
         }
@@ -448,12 +450,14 @@ public class IRCListener extends ListenerAdapter {
 
     public ArrayList<String> getSharedChannels(PircBotX bot, User user) {
         ArrayList<String> channels = new ArrayList<String>();
-        for (org.pircbotx.Channel channel : bot.getUserBot().getChannels()) {
-            if (user.getChannels().contains(channel)) {
-                channels.add(channel.getName());
+        for (org.pircbotx.Channel userChan : user.getChannels()) {
+            Log.d("SL", userChan.getName());
+            if (bot.getUserBot().getChannels().contains(userChan)) {
+                channels.add(userChan.getName());
             }
         }
         return channels;
     }
+
 
 }

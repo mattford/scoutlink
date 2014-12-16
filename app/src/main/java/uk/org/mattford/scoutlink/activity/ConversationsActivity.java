@@ -294,6 +294,12 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
                 }
 	        	Intent intent = new Intent(this, UserListActivity.class);
 	        	intent.putStringArrayListExtra("users", users);
+
+                boolean isChanOp = binder.getService().getConnection().getUserChannelDao().getChannel(chan).isOp(binder.getService().getConnection().getUserBot());
+                intent.putExtra("isChanOp", isChanOp);
+                boolean isIrcOp = binder.getService().getConnection().getUserBot().isIrcop();
+                intent.putExtra("isIrcOp", isIrcOp);
+
 	        	startActivityForResult(intent, USER_LIST_RESULT);
         	} else {
         		Toast.makeText(this, getResources().getString(R.string.userlist_not_on_channel), Toast.LENGTH_SHORT).show();
@@ -324,7 +330,7 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
                 break;
             case USER_LIST_RESULT:
                 if (resultCode == RESULT_OK) {
-                    String target = data.getStringExtra("target");
+                    final String target = data.getStringExtra("target");
                     switch (data.getIntExtra("action", -1)) {
                         case User.ACTION_QUERY:
                             Query query = new Query(target);
@@ -335,6 +341,43 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
                             Intent intent = new Intent(this, NoticeActivity.class);
                             intent.putExtra("target", target);
                             startActivityForResult(intent, NOTICE_RESULT);
+                            break;
+                        case User.ACTION_KICK:
+                            final String channel = pagerAdapter.getItemInfo(pager.getCurrentItem()).conv.getName();
+                            final EditText input = new EditText(this);
+                            new AlertDialog.Builder(this)
+                                    .setTitle(R.string.action_kick_dialog_title)
+                                    .setView(input)
+                                    .setPositiveButton("Kick", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int whichButton) {
+                                            org.pircbotx.User user = binder.getService().getConnection().getUserChannelDao().getUser(target);
+                                            binder.getService().getConnection().getUserChannelDao().getChannel(channel).send().kick(user, input.getText().toString());
+                                        }
+                                    })
+                                    .setNegativeButton("Cancel", new OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int whichButton) {
+                                            // Nada.
+                                        }
+                                    })
+                                    .show();
+                            break;
+                        case User.ACTION_KILL:
+                            final EditText inputKill = new EditText(this);
+                            new AlertDialog.Builder(this)
+                                    .setTitle(R.string.action_kick_dialog_title)
+                                    .setView(inputKill)
+                                    .setPositiveButton("Kill", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int whichButton) {
+                                            org.pircbotx.User user = binder.getService().getConnection().getUserChannelDao().getUser(target);
+                                            binder.getService().getConnection().sendRaw().rawLineNow("KILL " + target + " " + inputKill.getText().toString());
+                                        }
+                                    })
+                                    .setNegativeButton("Cancel", new OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int whichButton) {
+                                            // Nada.
+                                        }
+                                    })
+                                    .show();
                             break;
                     }
                 }

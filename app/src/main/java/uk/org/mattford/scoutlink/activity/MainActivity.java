@@ -36,7 +36,14 @@ public class MainActivity extends Activity implements ServiceConnection {
     public void onResume() {
     	super.onResume();
         Intent service = new Intent(this, IRCService.class);
+        startService(service);
         bindService(service, this, 0);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        unbindService(this);
     }
     
     
@@ -74,8 +81,8 @@ public class MainActivity extends Activity implements ServiceConnection {
 
 	@Override
 	public void onServiceConnected(ComponentName name, IBinder service) {
-		this.binder = (IRCBinder)service;
-		if (this.binder.getService().getConnection().isConnected()) {
+		binder = (IRCBinder)service;
+		if (binder.getService().getConnection() != null && binder.getService().getConnection().isConnected()) {
 			Intent intent = new Intent(this, ConversationsActivity.class);
 			startActivity(intent);
 			finish();

@@ -23,6 +23,8 @@
     <string name="userlist_activity_label">Users List</string>
     <string name="action_userlist_query_label">Query</string>
     <string name="action_userlist_notice_label">Notice</string>
+    <string name="action_userlist_kill_label">Kill</string>
+    <string name="action_userlist_kick_label">Kick</string>
     <string name="title_activity_notice">Send a notice</string>
     <string name="send_notice_button">Send</string>
     <string name="activity_invite_title">Invited to Channel</string>
@@ -71,4 +73,5 @@
     <string name="message_set_topicprotect">%1$s has enabled topic protection</string>
     <string name="message_unset_topicprotect">%1$s has disabled topic protection</string>
     <string name="message_action">%1$s %2$s</string>
+    <string name="action_kick_dialog_title">Reason for kick:</string>
 </resources>

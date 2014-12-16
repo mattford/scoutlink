@@ -17,7 +17,6 @@ public class MessageListFragment extends ListFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-    	Log.d("ScoutLink", "MessageListFragment.onCreateView() called.");
         View v = inflater.inflate(R.layout.message_list_view, container, false);
         ListView lv = (ListView)v.findViewById(android.R.id.list);
         
