@@ -53,6 +53,7 @@ import org.pircbotx.hooks.events.UserListEvent;
 import org.pircbotx.hooks.events.UserModeEvent;
 import org.pircbotx.hooks.events.VersionEvent;
 import org.pircbotx.hooks.events.VoiceEvent;
+import org.pircbotx.snapshot.ChannelSnapshot;
 import org.pircbotx.snapshot.UserSnapshot;
 
 import java.util.ArrayList;
@@ -154,7 +155,8 @@ public class IRCListener extends ListenerAdapter {
     }
 
     public void onMessage(MessageEvent event) {
-        Message message = new Message(service.getString(R.string.message_message, event.getUser().getNick(), event.getMessage()));
+        //Message message = new Message(service.getString(R.string.message_message, event.getUser().getNick(), event.getMessage()));
+        Message message = new Message(event.getUser().getNick(), event.getMessage());
         server.getConversation(event.getChannel().getName()).addMessage(message);
         service.onNewMessage(event.getChannel().getName());
     }
@@ -276,7 +278,8 @@ public class IRCListener extends ListenerAdapter {
         }
         Message msg = new Message(service.getString(R.string.message_quit, event.getUser().getNick(), event.getReason()));
         msg.setColour(Color.BLUE);
-        for (String channel : getSharedChannels(event.getBot(), event.getUser().getGeneratedFrom())) {
+
+        for (String channel : getSharedChannels(event.getBot(), event.getUser())) {
             server.getConversation(channel).addMessage(msg);
             service.onNewMessage(channel);
         }
@@ -451,7 +454,6 @@ public class IRCListener extends ListenerAdapter {
     public ArrayList<String> getSharedChannels(PircBotX bot, User user) {
         ArrayList<String> channels = new ArrayList<String>();
         for (org.pircbotx.Channel userChan : user.getChannels()) {
-            Log.d("SL", userChan.getName());
             if (bot.getUserBot().getChannels().contains(userChan)) {
                 channels.add(userChan.getName());
             }

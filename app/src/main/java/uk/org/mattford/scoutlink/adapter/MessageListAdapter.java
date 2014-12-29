@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import uk.org.mattford.scoutlink.model.Conversation;
 import uk.org.mattford.scoutlink.model.Message;
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -32,9 +33,25 @@ public class MessageListAdapter extends ArrayAdapter<TextView> {
 	}
 	
 	public void addMessage(Message message) {
-		TextView tv = message.renderTextView(context);
-		messages.add(tv);
-		
+
+        if (message.getSender() != null) {
+            Message lastMessage = conversation.getMessages().get(conversation.getMessages().size()-2);
+
+            for (Message msg : conversation.getMessages()) {
+                Log.d("SL", msg.getText());
+            }
+            if (lastMessage.getSender() != null && lastMessage.getSender().equalsIgnoreCase(message.getSender())) {
+                Log.d("SL", lastMessage.getSender() + " is equal to " + message.getSender());
+                TextView lastTextView = getItem(getCount()-1);
+                lastTextView.setText(lastTextView.getText().toString() + '\n' + message.getText());
+            } else {
+                TextView tv = message.renderTextView(context);
+                messages.add(tv);
+            }
+        } else {
+            TextView tv = message.renderTextView(context);
+            messages.add(tv);
+        }
 		notifyDataSetChanged();
 	}
 

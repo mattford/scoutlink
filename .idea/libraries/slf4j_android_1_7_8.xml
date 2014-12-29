@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="slf4j-android-1.7.8">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.slf4j/slf4j-android/1.7.8/6d015cab3a117d4d867fd64416576ba35d0b4047/slf4j-android-1.7.8.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.slf4j/slf4j-android/1.7.8/76a20b971aefab878145d17e786c6cfd5c7ce91f/slf4j-android-1.7.8-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
