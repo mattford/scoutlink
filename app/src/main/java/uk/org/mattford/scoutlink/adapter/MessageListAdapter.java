@@ -37,11 +37,7 @@ public class MessageListAdapter extends ArrayAdapter<TextView> {
         if (message.getSender() != null) {
             Message lastMessage = conversation.getMessages().get(conversation.getMessages().size()-2);
 
-            for (Message msg : conversation.getMessages()) {
-                Log.d("SL", msg.getText());
-            }
             if (lastMessage.getSender() != null && lastMessage.getSender().equalsIgnoreCase(message.getSender())) {
-                Log.d("SL", lastMessage.getSender() + " is equal to " + message.getSender());
                 TextView lastTextView = getItem(getCount()-1);
                 lastTextView.setText(lastTextView.getText().toString() + '\n' + message.getText());
             } else {
