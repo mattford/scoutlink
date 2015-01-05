@@ -142,7 +142,12 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
                 conv.addMessage(msg);
             } else {
                 String nickname = binder.getService().getConnection().getNick();
-                conv.addMessage(new Message(getString(R.string.message_message, nickname, message)));
+                Message msg = new Message(nickname, message);
+                msg.setBackgroundColour(Color.rgb(51, 102, 255));
+                msg.setColour(Color.WHITE);
+                msg.setAlignment(Message.ALIGN_RIGHT);
+                conv.addMessage(msg);
+
                 binder.getService().getConnection().sendIRC().message(conv.getName(), message);
             }
             onConversationMessage(conv.getName());
@@ -208,7 +213,6 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 		MessageListAdapter adapter = pagerAdapter.getItemAdapter(i);
 
 		if (adapter == null) {
-			Log.d(logTag, "Adapter for "+name+" not yet initialised.");
 			return;
 		}
 

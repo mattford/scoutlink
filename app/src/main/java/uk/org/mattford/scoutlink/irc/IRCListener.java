@@ -155,9 +155,7 @@ public class IRCListener extends ListenerAdapter {
     }
 
     public void onMessage(MessageEvent event) {
-        //Message message = new Message(service.getString(R.string.message_message, event.getUser().getNick(), event.getMessage()));
         Message message = new Message(event.getUser().getNick(), event.getMessage());
-        message.setBackgroundColour(Color.rgb(51, 102, 255));
         server.getConversation(event.getChannel().getName()).addMessage(message);
         service.onNewMessage(event.getChannel().getName());
     }
@@ -189,7 +187,7 @@ public class IRCListener extends ListenerAdapter {
             Intent intent = new Intent().setAction(Broadcast.NEW_CONVERSATION).putExtra("target", event.getUser().getNick());
             service.sendBroadcast(intent);
         }
-        Message msg = new Message(service.getString(R.string.message_private, event.getUser().getNick(), event.getMessage()));
+        Message msg = new Message(event.getUser().getNick(), event.getMessage());
         conversation.addMessage(msg);
         service.onNewMessage(event.getUser().getNick());
     }

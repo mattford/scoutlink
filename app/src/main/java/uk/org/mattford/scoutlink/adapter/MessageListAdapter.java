@@ -2,6 +2,7 @@ package uk.org.mattford.scoutlink.adapter;
 
 import java.util.LinkedList;
 
+import uk.org.mattford.scoutlink.R;
 import uk.org.mattford.scoutlink.model.Conversation;
 import uk.org.mattford.scoutlink.model.Message;
 import android.content.Context;
@@ -9,11 +10,12 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class MessageListAdapter extends ArrayAdapter<TextView> {
+public class MessageListAdapter extends ArrayAdapter<LinearLayout> {
 	
-	private LinkedList<TextView> messages;
+	private LinkedList<LinearLayout> messages;
 	private Context context;
 	private Conversation conversation;
 		
@@ -22,7 +24,7 @@ public class MessageListAdapter extends ArrayAdapter<TextView> {
 
 		this.context = context;
 		this.conversation = conv;
-		this.messages = new LinkedList<TextView>();
+		this.messages = new LinkedList<LinearLayout>();
 		
 		for (Message msg : conversation.getMessages()) {
 			addMessage(msg);
@@ -38,15 +40,16 @@ public class MessageListAdapter extends ArrayAdapter<TextView> {
             Message lastMessage = conversation.getMessages().get(conversation.getMessages().size()-2);
 
             if (lastMessage.getSender() != null && lastMessage.getSender().equalsIgnoreCase(message.getSender())) {
-                TextView lastTextView = getItem(getCount()-1);
+                LinearLayout lastLayout = getItem(getCount()-1);
+                TextView lastTextView = (TextView)lastLayout.findViewById(R.id.message);
                 lastTextView.setText(lastTextView.getText().toString() + '\n' + message.getText());
             } else {
-                TextView tv = message.renderTextView(context);
-                messages.add(tv);
+                LinearLayout msgView = message.renderTextView(context);
+                messages.add(msgView);
             }
         } else {
-            TextView tv = message.renderTextView(context);
-            messages.add(tv);
+            LinearLayout msgView = message.renderTextView(context);
+            messages.add(msgView);
         }
 		notifyDataSetChanged();
 	}
@@ -57,7 +60,7 @@ public class MessageListAdapter extends ArrayAdapter<TextView> {
 	}
 
 	@Override
-	public TextView getItem(int position) {
+	public LinearLayout getItem(int position) {
 		return messages.get(position);
 	}
 

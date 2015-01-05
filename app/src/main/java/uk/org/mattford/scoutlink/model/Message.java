@@ -5,7 +5,9 @@ import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import uk.org.mattford.scoutlink.R;
@@ -18,6 +20,19 @@ public class Message {
     private int timestamp;
     private Integer colour;
     private Integer backgroundColour;
+
+    public int getAlignment() {
+        return alignment;
+    }
+
+    public void setAlignment(int alignment) {
+        this.alignment = alignment;
+    }
+
+    private int alignment;
+
+    public static final int ALIGN_LEFT = 0;
+    public static final int ALIGN_RIGHT = 1;
 	
 	public Message (String text) {
 		this.text = text;
@@ -26,6 +41,9 @@ public class Message {
     public Message (String sender, String text) {
         this.text = text;
         this.sender = sender;
+        this.alignment = ALIGN_LEFT;
+        this.backgroundColour = Color.LTGRAY;
+        this.colour = Color.BLACK;
     }
 
 	public String getText() {
@@ -44,24 +62,33 @@ public class Message {
         this.colour = colour;
     }
 
-	public TextView renderTextView(Context context) {
+	public LinearLayout renderTextView(Context context) {
         LayoutInflater li = LayoutInflater.from(context);
-		TextView view = (TextView) li.inflate(R.layout.message_list_item, null);
+		LinearLayout view;
 
         SpannableString text = MircColors.toSpannable(getText());
+
         if (getSender() != null) {
-            SpannableStringBuilder sbb = new SpannableStringBuilder();
-            sbb.append(getSender());
-            sbb.append('\n');
-            sbb.append(text);
-            text = new SpannableString(sbb);
+            view = (LinearLayout) li.inflate(R.layout.message_list_item, null);
+            TextView senderView = (TextView)view.findViewById(R.id.sender);
+            senderView.setText(getSender());
+        } else {
+            view = (LinearLayout) li.inflate(R.layout.message_list_item_no_sender, null);
         }
-		view.setText(text);
+
+        if (getAlignment() == ALIGN_RIGHT) {
+            view.setGravity(Gravity.RIGHT);
+        }
+
+        TextView messageView = (TextView)view.findViewById(R.id.message);
+		messageView.setText(text);
+
         if (colour != null) {
-            view.setTextColor(colour);
+            messageView.setTextColor(colour);
         }
+
         if (backgroundColour != null) {
-            GradientDrawable bg = (GradientDrawable) view.getBackground();
+            GradientDrawable bg = (GradientDrawable) messageView.getBackground();
             bg.setColor(backgroundColour);
         }
 

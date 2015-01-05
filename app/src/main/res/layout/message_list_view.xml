@@ -2,8 +2,8 @@
          android:orientation="vertical"
          android:layout_width="match_parent"
          android:layout_height="match_parent"
-         android:paddingLeft="2dp"
-         android:paddingRight="2dp">
+         android:paddingLeft="4dp"
+         android:paddingRight="4dp">
 
      <ListView android:id="@id/android:list"
                android:layout_width="match_parent"
