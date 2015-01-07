@@ -19,7 +19,9 @@ public class MessageListFragment extends ListFragment {
             Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.message_list_view, container, false);
         ListView lv = (ListView)v.findViewById(android.R.id.list);
-        
+
+        lv.setDivider(null);
+        lv.setDividerHeight(0);
         lv.setTranscriptMode(ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
         lv.setStackFromBottom(true);
         

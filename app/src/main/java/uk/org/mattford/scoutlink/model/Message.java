@@ -4,11 +4,16 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.text.SpannableString;
-import android.text.SpannableStringBuilder;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import java.text.DateFormat;
+import java.util.Date;
 
 import uk.org.mattford.scoutlink.R;
 import uk.org.mattford.scoutlink.utils.MircColors;
@@ -17,7 +22,16 @@ public class Message {
 
 	private String text;
     private String sender;
-    private int timestamp;
+
+    public Date getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Date timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    private Date timestamp;
     private Integer colour;
     private Integer backgroundColour;
 
@@ -36,6 +50,7 @@ public class Message {
 	
 	public Message (String text) {
 		this.text = text;
+        this.timestamp = new Date();
 	}
 
     public Message (String sender, String text) {
@@ -44,6 +59,7 @@ public class Message {
         this.alignment = ALIGN_LEFT;
         this.backgroundColour = Color.LTGRAY;
         this.colour = Color.BLACK;
+        this.timestamp = new Date();
     }
 
 	public String getText() {
@@ -76,12 +92,15 @@ public class Message {
             view = (LinearLayout) li.inflate(R.layout.message_list_item_no_sender, null);
         }
 
-        if (getAlignment() == ALIGN_RIGHT) {
-            view.setGravity(Gravity.RIGHT);
-        }
+
 
         TextView messageView = (TextView)view.findViewById(R.id.message);
 		messageView.setText(text);
+
+        if (getAlignment() == ALIGN_RIGHT) {
+            view.setGravity(Gravity.RIGHT);
+            messageView.setGravity(Gravity.RIGHT);
+        }
 
         if (colour != null) {
             messageView.setTextColor(colour);
@@ -90,6 +109,29 @@ public class Message {
         if (backgroundColour != null) {
             GradientDrawable bg = (GradientDrawable) messageView.getBackground();
             bg.setColor(backgroundColour);
+        }
+
+        if (getTimestamp() != null) {
+            DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(context);
+            String dateString = timeFormat.format(getTimestamp());
+
+            TextView timestampView = (TextView)view.findViewById(R.id.timestamp);
+            timestampView.setText(dateString);
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    TextView ts = (TextView)view.findViewById(R.id.timestamp);
+                    if (ts.getVisibility() == TextView.VISIBLE) {
+                        Animation out = new AlphaAnimation(1.0f, 0.0f);
+                        ts.startAnimation(out);
+                        ts.setVisibility(TextView.GONE);
+                    } else {
+                        Animation in = new AlphaAnimation(0.0f, 1.0f);
+                        ts.startAnimation(in);
+                        ts.setVisibility(TextView.VISIBLE);
+                    }
+                }
+            });
         }
 
 		return view;

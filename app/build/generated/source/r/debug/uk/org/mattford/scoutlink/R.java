@@ -16,18 +16,19 @@ public final class R {
     }
     public static final class drawable {
         public static final int ic_launcher=0x7f020000;
+        public static final int rounded_corners=0x7f020001;
     }
     public static final class id {
-        public static final int action_channel_list=0x7f080010;
-        public static final int action_close=0x7f08000c;
-        public static final int action_disconnect=0x7f08000d;
-        public static final int action_join=0x7f08000f;
-        public static final int action_settings=0x7f08000b;
-        public static final int action_userlist=0x7f08000e;
-        public static final int action_userlist_kick=0x7f080013;
-        public static final int action_userlist_kill=0x7f080014;
-        public static final int action_userlist_notice=0x7f080012;
-        public static final int action_userlist_query=0x7f080011;
+        public static final int action_channel_list=0x7f080012;
+        public static final int action_close=0x7f08000e;
+        public static final int action_disconnect=0x7f08000f;
+        public static final int action_join=0x7f080011;
+        public static final int action_settings=0x7f08000d;
+        public static final int action_userlist=0x7f080010;
+        public static final int action_userlist_kick=0x7f080015;
+        public static final int action_userlist_kill=0x7f080016;
+        public static final int action_userlist_notice=0x7f080014;
+        public static final int action_userlist_query=0x7f080013;
         public static final int channel=0x7f080003;
         public static final int connect_button=0x7f080008;
         public static final int input=0x7f080001;
@@ -36,8 +37,10 @@ public final class R {
         public static final int nickname=0x7f080007;
         public static final int pager=0x7f080000;
         public static final int send_button=0x7f080002;
+        public static final int sender=0x7f08000a;
         public static final int sl_logo=0x7f080005;
-        public static final int user=0x7f08000a;
+        public static final int timestamp=0x7f08000b;
+        public static final int user=0x7f08000c;
         public static final int welcome_text=0x7f080006;
     }
     public static final class layout {
@@ -48,8 +51,10 @@ public final class R {
         public static final int activity_notice=0x7f030004;
         public static final int activity_userlist=0x7f030005;
         public static final int channel_list_item=0x7f030006;
-        public static final int message_list_view=0x7f030007;
-        public static final int user_list_item=0x7f030008;
+        public static final int message_list_item=0x7f030007;
+        public static final int message_list_item_no_sender=0x7f030008;
+        public static final int message_list_view=0x7f030009;
+        public static final int user_list_item=0x7f03000a;
     }
     public static final class menu {
         public static final int conversations=0x7f070000;

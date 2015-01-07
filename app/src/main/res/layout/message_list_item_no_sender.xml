@@ -9,6 +9,7 @@
 
     <TextView
         android:id="@+id/message"
+        android:minWidth="150dp"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:background="@drawable/rounded_corners"
@@ -16,4 +17,11 @@
         >
 
     </TextView>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/timestamp"
+        android:layout_gravity="center_horizontal"
+        android:visibility="gone"
+        />
 </LinearLayout>
