@@ -7,12 +7,14 @@ import org.pircbotx.PircBotX;
 import org.pircbotx.exception.IrcException;
 
 import uk.org.mattford.scoutlink.R;
+import uk.org.mattford.scoutlink.activity.ConversationsActivity;
 import uk.org.mattford.scoutlink.model.Broadcast;
 import uk.org.mattford.scoutlink.model.Server;
 import uk.org.mattford.scoutlink.model.ServerWindow;
 import uk.org.mattford.scoutlink.model.Settings;
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -103,11 +105,15 @@ public class IRCService extends Service {
     }
 	
 	public void updateNotification(String text) {
-		
+		Intent notifIntent = new Intent(this, ConversationsActivity.class);
+        notifIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        PendingIntent intent = PendingIntent.getActivity(this, 0, notifIntent, 0);
+
 		this.notif = new NotificationCompat.Builder(this)
 				.setContentTitle("ScoutLink")
 				.setContentText(text)
 				.setSmallIcon(R.drawable.ic_launcher)
+                .setContentIntent(intent)
 				.build();
 		if (this.isForeground()) {
 			NotificationManager nm = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);

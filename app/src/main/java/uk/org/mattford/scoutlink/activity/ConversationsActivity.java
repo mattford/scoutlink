@@ -216,8 +216,8 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 			return;
 		}
 
-        Tab tab = actionBar.getTabAt(i);
-        tab.setText(name + "*");
+        /*Tab tab = actionBar.getTabAt(i);
+        tab.setText(name + "*");*/
 
 		while (conv.hasBuffer()) {
 			Message msg = conv.pollBuffer();

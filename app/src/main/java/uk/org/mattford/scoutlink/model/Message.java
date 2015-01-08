@@ -7,6 +7,7 @@ import android.text.SpannableString;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.LinearLayout;
@@ -47,17 +48,19 @@ public class Message {
 
     public static final int ALIGN_LEFT = 0;
     public static final int ALIGN_RIGHT = 1;
+    public static final int ALIGN_CENTER = 2;
 	
 	public Message (String text) {
 		this.text = text;
         this.timestamp = new Date();
+        setAlignment(ALIGN_CENTER);
 	}
 
     public Message (String sender, String text) {
         this.text = text;
         this.sender = sender;
         this.alignment = ALIGN_LEFT;
-        this.backgroundColour = Color.LTGRAY;
+        //this.backgroundColour = Color.LTGRAY;
         this.colour = Color.BLACK;
         this.timestamp = new Date();
     }
@@ -92,14 +95,18 @@ public class Message {
             view = (LinearLayout) li.inflate(R.layout.message_list_item_no_sender, null);
         }
 
-
-
         TextView messageView = (TextView)view.findViewById(R.id.message);
 		messageView.setText(text);
 
         if (getAlignment() == ALIGN_RIGHT) {
             view.setGravity(Gravity.RIGHT);
             messageView.setGravity(Gravity.RIGHT);
+        } else if (getAlignment() == ALIGN_CENTER) {
+            ViewGroup.LayoutParams params = messageView.getLayoutParams();
+            params.width = ViewGroup.LayoutParams.MATCH_PARENT;
+            messageView.setLayoutParams(params);
+            view.setGravity(Gravity.CENTER);
+            messageView.setGravity(Gravity.CENTER);
         }
 
         if (colour != null) {
@@ -108,6 +115,7 @@ public class Message {
 
         if (backgroundColour != null) {
             GradientDrawable bg = (GradientDrawable) messageView.getBackground();
+            bg = (GradientDrawable)bg.mutate();
             bg.setColor(backgroundColour);
         }
 

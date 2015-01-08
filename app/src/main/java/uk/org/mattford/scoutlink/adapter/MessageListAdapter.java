@@ -5,7 +5,10 @@ import java.util.LinkedList;
 import uk.org.mattford.scoutlink.R;
 import uk.org.mattford.scoutlink.model.Conversation;
 import uk.org.mattford.scoutlink.model.Message;
+import uk.org.mattford.scoutlink.utils.MircColors;
+
 import android.content.Context;
+import android.text.SpannableString;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +21,7 @@ public class MessageListAdapter extends ArrayAdapter<LinearLayout> {
 	private LinkedList<LinearLayout> messages;
 	private Context context;
 	private Conversation conversation;
+    private Message previousMessage;
 		
 	public MessageListAdapter(Context context, Conversation conv) {
 		super(context, 0);
@@ -29,28 +33,24 @@ public class MessageListAdapter extends ArrayAdapter<LinearLayout> {
 		for (Message msg : conversation.getMessages()) {
 			addMessage(msg);
 		}
-		
-		
-		
 	}
 	
 	public void addMessage(Message message) {
+        if (message.getSender() != null &&
+                previousMessage != null &&
+                previousMessage.getSender() != null &&
+                previousMessage.getSender().equalsIgnoreCase(message.getSender())) {
 
-        if (message.getSender() != null) {
-            Message lastMessage = conversation.getMessages().get(conversation.getMessages().size()-2);
-
-            if (lastMessage.getSender() != null && lastMessage.getSender().equalsIgnoreCase(message.getSender())) {
-                LinearLayout lastLayout = getItem(getCount()-1);
-                TextView lastTextView = (TextView)lastLayout.findViewById(R.id.message);
-                lastTextView.setText(lastTextView.getText().toString() + '\n' + message.getText());
-            } else {
-                LinearLayout msgView = message.renderTextView(context);
-                messages.add(msgView);
-            }
+            SpannableString msg = MircColors.toSpannable(message.getText());
+            LinearLayout lastLayout = getItem(getCount()-1);
+            TextView lastTextView = (TextView)lastLayout.findViewById(R.id.message);
+            lastTextView.append("\n");
+            lastTextView.append(msg);
         } else {
             LinearLayout msgView = message.renderTextView(context);
             messages.add(msgView);
         }
+        previousMessage = message;
 		notifyDataSetChanged();
 	}
 
