@@ -62,6 +62,10 @@ public class ConversationsPagerAdapter extends FragmentStatePagerAdapter {
     	}
 		return -1;
     }
+
+    public String getPageTitle(int position) {
+        return conversations.get(position).conv.getName();
+    }
     
     public ConversationInfo getItemInfo(int i) {
     	ConversationInfo info;

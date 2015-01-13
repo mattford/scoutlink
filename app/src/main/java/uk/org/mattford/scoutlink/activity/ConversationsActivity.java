@@ -29,12 +29,19 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.viewpagerindicator.TitlePageIndicator;
 
 public class ConversationsActivity extends FragmentActivity implements ServiceConnection {
 	
@@ -55,28 +62,20 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 		super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_conversations);
         pagerAdapter = new ConversationsPagerAdapter(getSupportFragmentManager(), this);
+
         pager = (ViewPager) findViewById(R.id.pager);
-        pager.setOnPageChangeListener(
-                new ViewPager.SimpleOnPageChangeListener() {
-                    @Override
-                    public void onPageSelected(int position) {
-                        // When swiping between pages, select the
-                        // corresponding tab.
-                        getActionBar().setSelectedNavigationItem(position);
-                    }
-                });
         pager.setAdapter(pagerAdapter);
-        
-        actionBar = getActionBar();
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+
+        TitlePageIndicator indicator = (TitlePageIndicator)findViewById(R.id.nav_titles);
+        indicator.setViewPager(pager);
+
         tabListener = new ActionBar.TabListener() {
 
 			@Override
 			public void onTabSelected(Tab tab,
 					android.app.FragmentTransaction ft) {
 				pager.setCurrentItem(tab.getPosition());
-                /*String name = pagerAdapter.getItemInfo(tab.getPosition()).conv.getName();
-                tab.setText(name);*/
+
 			}
 			
 			@Override
@@ -90,9 +89,7 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 					android.app.FragmentTransaction ft) {
 				// Do nothing.
 			}
-        };           
-            
-
+        };
     }
 	
 	/**
@@ -186,10 +183,13 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 	}
 	
 	public void onNewConversation(String name) {
-		actionBar.addTab(
-				actionBar.newTab()
-				.setText(name)
-				.setTabListener(tabListener));
+        /*Tab newTab = actionBar.newTab()
+                .setTabListener(tabListener)
+                .setCustomView(R.layout.action_bar_tab);
+        TextView tv = (TextView)newTab.getCustomView().findViewById(R.id.text);
+        tv.setText(name);
+        tv.setTextColor(Color.BLUE);
+		actionBar.addTab(newTab);*/
 		Conversation conv = binder.getService().getServer().getConversation(name);
 		pagerAdapter.addConversation(conv);
 		
@@ -217,8 +217,10 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 		}
 
         /*Tab tab = actionBar.getTabAt(i);
-        tab.setText(name + "*");*/
-
+        SpannableString ss = new SpannableString(tab.getText());
+        ss.setSpan(new ForegroundColorSpan(Color.BLUE), 0, tab.getText().length(), 0);
+        tab.setText(ss);
+*/
 		while (conv.hasBuffer()) {
 			Message msg = conv.pollBuffer();
 			if (i != -1) {
