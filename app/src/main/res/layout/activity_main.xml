@@ -14,13 +14,13 @@
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
         android:scaleType="centerCrop"
-        android:src="@drawable/ic_launcher"></ImageView>
+        android:src="@drawable/scoutlink"/>
     <TextView
         android:id="@+id/welcome_text"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/sl_logo"
-        android:text="@string/welcome_text"></TextView>
+        android:text="@string/welcome_text"/>
     <EditText
         android:id="@+id/nickname"
         android:layout_width="fill_parent"
@@ -38,6 +38,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/nickname"
         android:onClick="connectClick"
-        ></Button>
+        />
 
 </RelativeLayout>

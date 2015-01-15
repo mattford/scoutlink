@@ -17,7 +17,6 @@ import uk.org.mattford.scoutlink.model.User;
 import uk.org.mattford.scoutlink.receiver.ConversationReceiver;
 import android.app.ActionBar;
 import android.app.AlertDialog;
-import android.app.ActionBar.Tab;
 import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
@@ -29,16 +28,10 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.SpannableStringBuilder;
-import android.text.style.ForegroundColorSpan;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.viewpagerindicator.TitlePageIndicator;
@@ -47,16 +40,13 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 	
 	private ConversationsPagerAdapter pagerAdapter;
 	private ViewPager pager;
-	private ActionBar.TabListener tabListener;
-	private ActionBar actionBar;
+	private TitlePageIndicator indicator;
 	private ConversationReceiver receiver;
 	private IRCBinder binder;
 
     public final int USER_LIST_RESULT = 0;
 	public final int JOIN_CHANNEL_RESULT = 1;
     public final int NOTICE_RESULT = 2;
-	
-	private final String logTag = "ScoutLink/ConversationsActivity";
 	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -66,35 +56,29 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
         pager = (ViewPager) findViewById(R.id.pager);
         pager.setAdapter(pagerAdapter);
 
-        TitlePageIndicator indicator = (TitlePageIndicator)findViewById(R.id.nav_titles);
+        indicator = (TitlePageIndicator)findViewById(R.id.nav_titles);
         indicator.setViewPager(pager);
 
-        tabListener = new ActionBar.TabListener() {
+        indicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
-			@Override
-			public void onTabSelected(Tab tab,
-					android.app.FragmentTransaction ft) {
-				pager.setCurrentItem(tab.getPosition());
+            }
 
-			}
-			
-			@Override
-			public void onTabUnselected(Tab tab,
-					android.app.FragmentTransaction ft) {
-				// Do nothing.
-			}
-			
-			@Override
-			public void onTabReselected(Tab tab,
-					android.app.FragmentTransaction ft) {
-				// Do nothing.
-			}
-        };
+            @Override
+            public void onPageSelected(int position) {
+                binder.getService().updateNotification("Connected as "+binder.getService().getConnection().getNick());
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
     }
 	
 	/**
 	 * If this is not overridden, then ConversationsPagerAdapter retains old fragments when the activity is recreated.
-	 * 
 	 */
 	@Override
 	protected void onSaveInstanceState(final Bundle outState) {
@@ -140,7 +124,7 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
             } else {
                 String nickname = binder.getService().getConnection().getNick();
                 Message msg = new Message(nickname, message);
-                msg.setBackgroundColour(Color.rgb(51, 102, 255));
+                msg.setBackgroundColour(Color.parseColor("#0F1B5F"));
                 msg.setColour(Color.WHITE);
                 msg.setAlignment(Message.ALIGN_RIGHT);
                 conv.addMessage(msg);
@@ -149,9 +133,7 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
             }
             onConversationMessage(conv.getName());
 		}
-		
 		et.setText("");
-				
 	}
 	
 	public void onInvite(final String channel) {
@@ -176,31 +158,21 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 	public void onDisconnect() {
 		binder.getService().getServer().clearConversations();
 		pagerAdapter.clearConversations();
-		actionBar.removeAllTabs();
 		Intent intent = new Intent(this, MainActivity.class);
 		startActivity(intent);
 		finish();
 	}
 	
 	public void onNewConversation(String name) {
-        /*Tab newTab = actionBar.newTab()
-                .setTabListener(tabListener)
-                .setCustomView(R.layout.action_bar_tab);
-        TextView tv = (TextView)newTab.getCustomView().findViewById(R.id.text);
-        tv.setText(name);
-        tv.setTextColor(Color.BLUE);
-		actionBar.addTab(newTab);*/
 		Conversation conv = binder.getService().getServer().getConversation(name);
 		pagerAdapter.addConversation(conv);
 		
 		onConversationMessage(conv.getName());
-			
 	}
 	
 	public void removeConversation(String name) {
 		int i = pagerAdapter.getItemByName(name);
 		pagerAdapter.removeConversation(i);
-		actionBar.removeTabAt(i);
 	}
 	
 	public void onConversationMessage(String name) {
@@ -216,11 +188,10 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 			return;
 		}
 
-        /*Tab tab = actionBar.getTabAt(i);
-        SpannableString ss = new SpannableString(tab.getText());
-        ss.setSpan(new ForegroundColorSpan(Color.BLUE), 0, tab.getText().length(), 0);
-        tab.setText(ss);
-*/
+        if (pager.getCurrentItem() != i) {
+            binder.getService().updateNotification("New message in "+name);
+        }
+
 		while (conv.hasBuffer()) {
 			Message msg = conv.pollBuffer();
 			if (i != -1) {
@@ -232,7 +203,6 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 	@Override
 	public void onServiceConnected(ComponentName name, IBinder service) {
 		this.binder = (IRCBinder)service;
-        Intent intent = getIntent();
         if (binder.getService().getConnection() == null || !binder.getService().getConnection().isConnected()) { //TODO: Extra check needed here. Don't know what for.
         	binder.getService().connect();
         } else if (!binder.getService().getConnection().isConnected()) {
@@ -374,7 +344,6 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
                                     .setView(inputKill)
                                     .setPositiveButton("Kill", new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int whichButton) {
-                                            org.pircbotx.User user = binder.getService().getConnection().getUserChannelDao().getUser(target);
                                             binder.getService().getConnection().sendRaw().rawLineNow("KILL " + target + " " + inputKill.getText().toString());
                                         }
                                     })

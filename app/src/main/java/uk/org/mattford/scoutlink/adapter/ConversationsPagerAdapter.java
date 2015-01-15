@@ -77,7 +77,6 @@ public class ConversationsPagerAdapter extends FragmentStatePagerAdapter {
     	return info;
     }
 
-    
     public void addConversation(Conversation conv) {
     	conversations.add(new ConversationInfo(conv));
     	notifyDataSetChanged();

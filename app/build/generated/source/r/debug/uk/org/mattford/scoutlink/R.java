@@ -9,39 +9,360 @@ package uk.org.mattford.scoutlink;
 
 public final class R {
     public static final class attr {
+        /** <p>Must be a boolean value, either "<code>true</code>" or "<code>false</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int centered=0x7f010000;
+        /** <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
+Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
+in (inches), mm (millimeters).
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int clipPadding=0x7f01000b;
+        /** <p>Must be an integer value, such as "<code>100</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int fadeDelay=0x7f010017;
+        /** <p>Must be an integer value, such as "<code>100</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int fadeLength=0x7f010018;
+        /** <p>Must be a boolean value, either "<code>true</code>" or "<code>false</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int fades=0x7f010016;
+        /** <p>Must be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
+"<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int fillColor=0x7f010004;
+        /** <p>Must be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
+"<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int footerColor=0x7f01000c;
+        /** <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
+Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
+in (inches), mm (millimeters).
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int footerIndicatorHeight=0x7f01000f;
+        /** <p>Must be one of the following constant values.</p>
+<table>
+<colgroup align="left" />
+<colgroup align="left" />
+<colgroup align="left" />
+<tr><th>Constant</th><th>Value</th><th>Description</th></tr>
+<tr><td><code>none</code></td><td>0</td><td></td></tr>
+<tr><td><code>triangle</code></td><td>1</td><td></td></tr>
+<tr><td><code>underline</code></td><td>2</td><td></td></tr>
+</table>
+         */
+        public static final int footerIndicatorStyle=0x7f01000e;
+        /** <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
+Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
+in (inches), mm (millimeters).
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int footerIndicatorUnderlinePadding=0x7f010010;
+        /** <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
+Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
+in (inches), mm (millimeters).
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int footerLineHeight=0x7f01000d;
+        /** <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
+Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
+in (inches), mm (millimeters).
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int footerPadding=0x7f010011;
+        /** <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
+Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
+in (inches), mm (millimeters).
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int gapWidth=0x7f01000a;
+        /** <p>Must be one of the following constant values.</p>
+<table>
+<colgroup align="left" />
+<colgroup align="left" />
+<colgroup align="left" />
+<tr><th>Constant</th><th>Value</th><th>Description</th></tr>
+<tr><td><code>bottom</code></td><td>0</td><td></td></tr>
+<tr><td><code>top</code></td><td>1</td><td></td></tr>
+</table>
+         */
+        public static final int linePosition=0x7f010012;
+        /** <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
+Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
+in (inches), mm (millimeters).
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int lineWidth=0x7f010009;
+        /** <p>Must be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
+"<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int pageColor=0x7f010005;
+        /** <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
+Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
+in (inches), mm (millimeters).
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int radius=0x7f010006;
+        /** <p>Must be a boolean value, either "<code>true</code>" or "<code>false</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int selectedBold=0x7f010013;
+        /** <p>Must be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
+"<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int selectedColor=0x7f010001;
+        /** <p>Must be a boolean value, either "<code>true</code>" or "<code>false</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int snap=0x7f010007;
+        /** <p>Must be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
+"<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int strokeColor=0x7f010008;
+        /** <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
+Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
+in (inches), mm (millimeters).
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int strokeWidth=0x7f010002;
+        /** <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
+Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
+in (inches), mm (millimeters).
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int titlePadding=0x7f010014;
+        /** <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
+Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
+in (inches), mm (millimeters).
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int topPadding=0x7f010015;
+        /** <p>Must be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
+"<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int unselectedColor=0x7f010003;
+        /** <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+         */
+        public static final int vpiCirclePageIndicatorStyle=0x7f010019;
+        /** <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+         */
+        public static final int vpiIconPageIndicatorStyle=0x7f01001a;
+        /** <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+         */
+        public static final int vpiLinePageIndicatorStyle=0x7f01001b;
+        /** <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+         */
+        public static final int vpiTabPageIndicatorStyle=0x7f01001d;
+        /** <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+         */
+        public static final int vpiTitlePageIndicatorStyle=0x7f01001c;
+        /** <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+         */
+        public static final int vpiUnderlinePageIndicatorStyle=0x7f01001e;
+    }
+    public static final class bool {
+        public static final int default_circle_indicator_centered=0x7f040000;
+        public static final int default_circle_indicator_snap=0x7f040001;
+        public static final int default_line_indicator_centered=0x7f040002;
+        public static final int default_title_indicator_selected_bold=0x7f040003;
+        public static final int default_underline_indicator_fades=0x7f040004;
+    }
+    public static final class color {
+        public static final int default_circle_indicator_fill_color=0x7f050000;
+        public static final int default_circle_indicator_page_color=0x7f050001;
+        public static final int default_circle_indicator_stroke_color=0x7f050002;
+        public static final int default_line_indicator_selected_color=0x7f050003;
+        public static final int default_line_indicator_unselected_color=0x7f050004;
+        public static final int default_title_indicator_footer_color=0x7f050005;
+        public static final int default_title_indicator_selected_color=0x7f050006;
+        public static final int default_title_indicator_text_color=0x7f050007;
+        public static final int default_underline_indicator_selected_color=0x7f050008;
+        public static final int vpi__background_holo_dark=0x7f050009;
+        public static final int vpi__background_holo_light=0x7f05000a;
+        public static final int vpi__bright_foreground_disabled_holo_dark=0x7f05000b;
+        public static final int vpi__bright_foreground_disabled_holo_light=0x7f05000c;
+        public static final int vpi__bright_foreground_holo_dark=0x7f05000d;
+        public static final int vpi__bright_foreground_holo_light=0x7f05000e;
+        public static final int vpi__bright_foreground_inverse_holo_dark=0x7f05000f;
+        public static final int vpi__bright_foreground_inverse_holo_light=0x7f050010;
+        public static final int vpi__dark_theme=0x7f050011;
+        public static final int vpi__light_theme=0x7f050012;
     }
     public static final class dimen {
-        public static final int activity_horizontal_margin=0x7f040000;
-        public static final int activity_vertical_margin=0x7f040001;
+        public static final int activity_horizontal_margin=0x7f060000;
+        public static final int activity_vertical_margin=0x7f060001;
+        public static final int default_circle_indicator_radius=0x7f060002;
+        public static final int default_circle_indicator_stroke_width=0x7f060003;
+        public static final int default_line_indicator_gap_width=0x7f060004;
+        public static final int default_line_indicator_line_width=0x7f060005;
+        public static final int default_line_indicator_stroke_width=0x7f060006;
+        public static final int default_title_indicator_clip_padding=0x7f060007;
+        public static final int default_title_indicator_footer_indicator_height=0x7f060008;
+        public static final int default_title_indicator_footer_indicator_underline_padding=0x7f060009;
+        public static final int default_title_indicator_footer_line_height=0x7f06000a;
+        public static final int default_title_indicator_footer_padding=0x7f06000b;
+        public static final int default_title_indicator_text_size=0x7f06000c;
+        public static final int default_title_indicator_title_padding=0x7f06000d;
+        public static final int default_title_indicator_top_padding=0x7f06000e;
     }
     public static final class drawable {
         public static final int ic_launcher=0x7f020000;
         public static final int rounded_corners=0x7f020001;
+        public static final int scoutlink=0x7f020002;
+        public static final int vpi__tab_indicator=0x7f020003;
+        public static final int vpi__tab_selected_focused_holo=0x7f020004;
+        public static final int vpi__tab_selected_holo=0x7f020005;
+        public static final int vpi__tab_selected_pressed_holo=0x7f020006;
+        public static final int vpi__tab_unselected_focused_holo=0x7f020007;
+        public static final int vpi__tab_unselected_holo=0x7f020008;
+        public static final int vpi__tab_unselected_pressed_holo=0x7f020009;
     }
     public static final class id {
-        public static final int action_channel_list=0x7f080012;
-        public static final int action_close=0x7f08000e;
-        public static final int action_disconnect=0x7f08000f;
-        public static final int action_join=0x7f080011;
-        public static final int action_settings=0x7f08000d;
-        public static final int action_userlist=0x7f080010;
-        public static final int action_userlist_kick=0x7f080015;
-        public static final int action_userlist_kill=0x7f080016;
-        public static final int action_userlist_notice=0x7f080014;
-        public static final int action_userlist_query=0x7f080013;
-        public static final int channel=0x7f080003;
-        public static final int connect_button=0x7f080008;
-        public static final int input=0x7f080001;
-        public static final int join_button=0x7f080004;
-        public static final int message=0x7f080009;
-        public static final int nickname=0x7f080007;
-        public static final int pager=0x7f080000;
-        public static final int send_button=0x7f080002;
-        public static final int sender=0x7f08000a;
-        public static final int sl_logo=0x7f080005;
-        public static final int timestamp=0x7f08000b;
-        public static final int user=0x7f08000c;
-        public static final int welcome_text=0x7f080006;
+        public static final int action_channel_list=0x7f0b0018;
+        public static final int action_close=0x7f0b0014;
+        public static final int action_disconnect=0x7f0b0015;
+        public static final int action_join=0x7f0b0017;
+        public static final int action_settings=0x7f0b0013;
+        public static final int action_userlist=0x7f0b0016;
+        public static final int action_userlist_kick=0x7f0b001b;
+        public static final int action_userlist_kill=0x7f0b001c;
+        public static final int action_userlist_notice=0x7f0b001a;
+        public static final int action_userlist_query=0x7f0b0019;
+        public static final int bottom=0x7f0b0003;
+        public static final int channel=0x7f0b0009;
+        public static final int connect_button=0x7f0b000e;
+        public static final int input=0x7f0b0007;
+        public static final int join_button=0x7f0b000a;
+        public static final int message=0x7f0b000f;
+        public static final int nav_titles=0x7f0b0005;
+        public static final int nickname=0x7f0b000d;
+        public static final int none=0x7f0b0000;
+        public static final int pager=0x7f0b0006;
+        public static final int send_button=0x7f0b0008;
+        public static final int sender=0x7f0b0010;
+        public static final int sl_logo=0x7f0b000b;
+        public static final int timestamp=0x7f0b0011;
+        public static final int top=0x7f0b0004;
+        public static final int triangle=0x7f0b0001;
+        public static final int underline=0x7f0b0002;
+        public static final int user=0x7f0b0012;
+        public static final int welcome_text=0x7f0b000c;
+    }
+    public static final class integer {
+        public static final int default_circle_indicator_orientation=0x7f070000;
+        public static final int default_title_indicator_footer_indicator_style=0x7f070001;
+        public static final int default_title_indicator_line_position=0x7f070002;
+        public static final int default_underline_indicator_fade_delay=0x7f070003;
+        public static final int default_underline_indicator_fade_length=0x7f070004;
     }
     public static final class layout {
         public static final int activity_channel_list=0x7f030000;
@@ -57,88 +378,88 @@ public final class R {
         public static final int user_list_item=0x7f03000a;
     }
     public static final class menu {
-        public static final int conversations=0x7f070000;
-        public static final int main=0x7f070001;
-        public static final int menu_channel_list=0x7f070002;
-        public static final int menu_notice=0x7f070003;
-        public static final int userlist_context_menu=0x7f070004;
-        public static final int userlist_context_menu_chanop=0x7f070005;
-        public static final int userlist_context_menu_ircop=0x7f070006;
+        public static final int conversations=0x7f0a0000;
+        public static final int main=0x7f0a0001;
+        public static final int menu_channel_list=0x7f0a0002;
+        public static final int menu_notice=0x7f0a0003;
+        public static final int userlist_context_menu=0x7f0a0004;
+        public static final int userlist_context_menu_chanop=0x7f0a0005;
+        public static final int userlist_context_menu_ircop=0x7f0a0006;
     }
     public static final class string {
-        public static final int action_channel_list=0x7f050000;
-        public static final int action_close=0x7f050001;
-        public static final int action_disconnect=0x7f050002;
-        public static final int action_join=0x7f050003;
-        public static final int action_kick_dialog_title=0x7f050004;
-        public static final int action_settings=0x7f050005;
-        public static final int action_userlist_kick_label=0x7f050006;
-        public static final int action_userlist_kill_label=0x7f050007;
-        public static final int action_userlist_notice_label=0x7f050008;
-        public static final int action_userlist_query_label=0x7f050009;
-        public static final int action_users=0x7f05000a;
-        public static final int activity_invite_title=0x7f05000b;
-        public static final int app_name=0x7f05000c;
-        public static final int close_server_window=0x7f05000d;
-        public static final int connect_button=0x7f05000e;
-        public static final int invited_to_channel=0x7f05000f;
-        public static final int join_activity_label=0x7f050010;
-        public static final int join_button=0x7f050011;
-        public static final int label_send_message_button=0x7f050012;
-        public static final int message_action=0x7f050013;
-        public static final int message_ban_add=0x7f050014;
-        public static final int message_ban_remove=0x7f050015;
-        public static final int message_dehalfopevent=0x7f050016;
-        public static final int message_deopevent=0x7f050017;
-        public static final int message_deownerevent=0x7f050018;
-        public static final int message_desuperopevent=0x7f050019;
-        public static final int message_devoiceevent=0x7f05001a;
-        public static final int message_halfopevent=0x7f05001b;
-        public static final int message_join=0x7f05001c;
-        public static final int message_kicked_other=0x7f05001d;
-        public static final int message_kicked_self=0x7f05001e;
-        public static final int message_list_no_messages=0x7f05001f;
-        public static final int message_message=0x7f050020;
-        public static final int message_nickchange=0x7f050021;
-        public static final int message_notice=0x7f050022;
-        public static final int message_opevent=0x7f050023;
-        public static final int message_ownerevent=0x7f050024;
-        public static final int message_part=0x7f050025;
-        public static final int message_private=0x7f050026;
-        public static final int message_quit=0x7f050027;
-        public static final int message_set_invite=0x7f050028;
-        public static final int message_set_key=0x7f050029;
-        public static final int message_set_limit=0x7f05002a;
-        public static final int message_set_moderated=0x7f05002b;
-        public static final int message_set_no_external=0x7f05002c;
-        public static final int message_set_private=0x7f05002d;
-        public static final int message_set_secret=0x7f05002e;
-        public static final int message_set_topicprotect=0x7f05002f;
-        public static final int message_superopevent=0x7f050030;
-        public static final int message_topic=0x7f050031;
-        public static final int message_topic_changed=0x7f050032;
-        public static final int message_unset_invite=0x7f050033;
-        public static final int message_unset_key=0x7f050034;
-        public static final int message_unset_limit=0x7f050035;
-        public static final int message_unset_moderated=0x7f050036;
-        public static final int message_unset_no_external=0x7f050037;
-        public static final int message_unset_private=0x7f050038;
-        public static final int message_unset_secret=0x7f050039;
-        public static final int message_unset_topicprotect=0x7f05003a;
-        public static final int message_usermode=0x7f05003b;
-        public static final int message_version=0x7f05003c;
-        public static final int message_voiceevent=0x7f05003d;
-        public static final int nickname_hint=0x7f05003e;
-        public static final int notification_connected=0x7f05003f;
-        public static final int notification_not_connected=0x7f050040;
-        public static final int send_message_hint=0x7f050041;
-        public static final int send_message_in_server_window=0x7f050042;
-        public static final int send_notice_button=0x7f050043;
-        public static final int title_activity_channel_list=0x7f050044;
-        public static final int title_activity_notice=0x7f050045;
-        public static final int userlist_activity_label=0x7f050046;
-        public static final int userlist_not_on_channel=0x7f050047;
-        public static final int welcome_text=0x7f050048;
+        public static final int action_channel_list=0x7f080000;
+        public static final int action_close=0x7f080001;
+        public static final int action_disconnect=0x7f080002;
+        public static final int action_join=0x7f080003;
+        public static final int action_kick_dialog_title=0x7f080004;
+        public static final int action_settings=0x7f080005;
+        public static final int action_userlist_kick_label=0x7f080006;
+        public static final int action_userlist_kill_label=0x7f080007;
+        public static final int action_userlist_notice_label=0x7f080008;
+        public static final int action_userlist_query_label=0x7f080009;
+        public static final int action_users=0x7f08000a;
+        public static final int activity_invite_title=0x7f08000b;
+        public static final int app_name=0x7f08000c;
+        public static final int close_server_window=0x7f08000d;
+        public static final int connect_button=0x7f08000e;
+        public static final int invited_to_channel=0x7f08000f;
+        public static final int join_activity_label=0x7f080010;
+        public static final int join_button=0x7f080011;
+        public static final int label_send_message_button=0x7f080012;
+        public static final int message_action=0x7f080013;
+        public static final int message_ban_add=0x7f080014;
+        public static final int message_ban_remove=0x7f080015;
+        public static final int message_dehalfopevent=0x7f080016;
+        public static final int message_deopevent=0x7f080017;
+        public static final int message_deownerevent=0x7f080018;
+        public static final int message_desuperopevent=0x7f080019;
+        public static final int message_devoiceevent=0x7f08001a;
+        public static final int message_halfopevent=0x7f08001b;
+        public static final int message_join=0x7f08001c;
+        public static final int message_kicked_other=0x7f08001d;
+        public static final int message_kicked_self=0x7f08001e;
+        public static final int message_list_no_messages=0x7f08001f;
+        public static final int message_message=0x7f080020;
+        public static final int message_nickchange=0x7f080021;
+        public static final int message_notice=0x7f080022;
+        public static final int message_opevent=0x7f080023;
+        public static final int message_ownerevent=0x7f080024;
+        public static final int message_part=0x7f080025;
+        public static final int message_private=0x7f080026;
+        public static final int message_quit=0x7f080027;
+        public static final int message_set_invite=0x7f080028;
+        public static final int message_set_key=0x7f080029;
+        public static final int message_set_limit=0x7f08002a;
+        public static final int message_set_moderated=0x7f08002b;
+        public static final int message_set_no_external=0x7f08002c;
+        public static final int message_set_private=0x7f08002d;
+        public static final int message_set_secret=0x7f08002e;
+        public static final int message_set_topicprotect=0x7f08002f;
+        public static final int message_superopevent=0x7f080030;
+        public static final int message_topic=0x7f080031;
+        public static final int message_topic_changed=0x7f080032;
+        public static final int message_unset_invite=0x7f080033;
+        public static final int message_unset_key=0x7f080034;
+        public static final int message_unset_limit=0x7f080035;
+        public static final int message_unset_moderated=0x7f080036;
+        public static final int message_unset_no_external=0x7f080037;
+        public static final int message_unset_private=0x7f080038;
+        public static final int message_unset_secret=0x7f080039;
+        public static final int message_unset_topicprotect=0x7f08003a;
+        public static final int message_usermode=0x7f08003b;
+        public static final int message_version=0x7f08003c;
+        public static final int message_voiceevent=0x7f08003d;
+        public static final int nickname_hint=0x7f08003e;
+        public static final int notification_connected=0x7f08003f;
+        public static final int notification_not_connected=0x7f080040;
+        public static final int send_message_hint=0x7f080041;
+        public static final int send_message_in_server_window=0x7f080042;
+        public static final int send_notice_button=0x7f080043;
+        public static final int title_activity_channel_list=0x7f080044;
+        public static final int title_activity_notice=0x7f080045;
+        public static final int userlist_activity_label=0x7f080046;
+        public static final int userlist_not_on_channel=0x7f080047;
+        public static final int welcome_text=0x7f080048;
     }
     public static final class style {
         /** 
@@ -149,9 +470,712 @@ public final class R {
  API 11 theme customizations can go here. 
  API 14 theme customizations can go here. 
          */
-        public static final int AppBaseTheme=0x7f060000;
+        public static final int AppBaseTheme=0x7f090000;
         /**  All customizations that are NOT specific to a particular API-level can go here. 
          */
-        public static final int AppTheme=0x7f060001;
+        public static final int AppTheme=0x7f090001;
+        public static final int MyActionBar=0x7f090002;
+        public static final int ScoutLinkTheme=0x7f090003;
+        public static final int TextAppearance_TabPageIndicator=0x7f090004;
+        public static final int Theme_PageIndicatorDefaults=0x7f090005;
+        public static final int Widget=0x7f090006;
+        public static final int Widget_IconPageIndicator=0x7f090007;
+        public static final int Widget_TabPageIndicator=0x7f090008;
     }
+    public static final class styleable {
+        /** Attributes that can be used with a CirclePageIndicator.
+           <p>Includes the following attributes:</p>
+           <table>
+           <colgroup align="left" />
+           <colgroup align="left" />
+           <tr><th>Attribute</th><th>Description</th></tr>
+           <tr><td><code>{@link #CirclePageIndicator_android_background android:background}</code></td><td></td></tr>
+           <tr><td><code>{@link #CirclePageIndicator_android_orientation android:orientation}</code></td><td></td></tr>
+           <tr><td><code>{@link #CirclePageIndicator_centered uk.org.mattford.scoutlink:centered}</code></td><td></td></tr>
+           <tr><td><code>{@link #CirclePageIndicator_fillColor uk.org.mattford.scoutlink:fillColor}</code></td><td></td></tr>
+           <tr><td><code>{@link #CirclePageIndicator_pageColor uk.org.mattford.scoutlink:pageColor}</code></td><td></td></tr>
+           <tr><td><code>{@link #CirclePageIndicator_radius uk.org.mattford.scoutlink:radius}</code></td><td></td></tr>
+           <tr><td><code>{@link #CirclePageIndicator_snap uk.org.mattford.scoutlink:snap}</code></td><td></td></tr>
+           <tr><td><code>{@link #CirclePageIndicator_strokeColor uk.org.mattford.scoutlink:strokeColor}</code></td><td></td></tr>
+           <tr><td><code>{@link #CirclePageIndicator_strokeWidth uk.org.mattford.scoutlink:strokeWidth}</code></td><td></td></tr>
+           </table>
+           @see #CirclePageIndicator_android_background
+           @see #CirclePageIndicator_android_orientation
+           @see #CirclePageIndicator_centered
+           @see #CirclePageIndicator_fillColor
+           @see #CirclePageIndicator_pageColor
+           @see #CirclePageIndicator_radius
+           @see #CirclePageIndicator_snap
+           @see #CirclePageIndicator_strokeColor
+           @see #CirclePageIndicator_strokeWidth
+         */
+        public static final int[] CirclePageIndicator = {
+            0x010100c4, 0x010100d4, 0x7f010000, 0x7f010002,
+            0x7f010004, 0x7f010005, 0x7f010006, 0x7f010007,
+            0x7f010008
+        };
+        /**
+          <p>This symbol is the offset where the {@link android.R.attr#background}
+          attribute's value can be found in the {@link #CirclePageIndicator} array.
+          @attr name android:background
+        */
+        public static final int CirclePageIndicator_android_background = 1;
+        /**
+          <p>This symbol is the offset where the {@link android.R.attr#orientation}
+          attribute's value can be found in the {@link #CirclePageIndicator} array.
+          @attr name android:orientation
+        */
+        public static final int CirclePageIndicator_android_orientation = 0;
+        /**
+          <p>This symbol is the offset where the {@link uk.org.mattford.scoutlink.R.attr#centered}
+          attribute's value can be found in the {@link #CirclePageIndicator} array.
+
+
+          <p>Must be a boolean value, either "<code>true</code>" or "<code>false</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name uk.org.mattford.scoutlink:centered
+        */
+        public static final int CirclePageIndicator_centered = 2;
+        /**
+          <p>This symbol is the offset where the {@link uk.org.mattford.scoutlink.R.attr#fillColor}
+          attribute's value can be found in the {@link #CirclePageIndicator} array.
+
+
+          <p>Must be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
+"<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name uk.org.mattford.scoutlink:fillColor
+        */
+        public static final int CirclePageIndicator_fillColor = 4;
+        /**
+          <p>This symbol is the offset where the {@link uk.org.mattford.scoutlink.R.attr#pageColor}
+          attribute's value can be found in the {@link #CirclePageIndicator} array.
+
+
+          <p>Must be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
+"<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name uk.org.mattford.scoutlink:pageColor
+        */
+        public static final int CirclePageIndicator_pageColor = 5;
+        /**
+          <p>This symbol is the offset where the {@link uk.org.mattford.scoutlink.R.attr#radius}
+          attribute's value can be found in the {@link #CirclePageIndicator} array.
+
+
+          <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
+Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
+in (inches), mm (millimeters).
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name uk.org.mattford.scoutlink:radius
+        */
+        public static final int CirclePageIndicator_radius = 6;
+        /**
+          <p>This symbol is the offset where the {@link uk.org.mattford.scoutlink.R.attr#snap}
+          attribute's value can be found in the {@link #CirclePageIndicator} array.
+
+
+          <p>Must be a boolean value, either "<code>true</code>" or "<code>false</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name uk.org.mattford.scoutlink:snap
+        */
+        public static final int CirclePageIndicator_snap = 7;
+        /**
+          <p>This symbol is the offset where the {@link uk.org.mattford.scoutlink.R.attr#strokeColor}
+          attribute's value can be found in the {@link #CirclePageIndicator} array.
+
+
+          <p>Must be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
+"<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name uk.org.mattford.scoutlink:strokeColor
+        */
+        public static final int CirclePageIndicator_strokeColor = 8;
+        /**
+          <p>This symbol is the offset where the {@link uk.org.mattford.scoutlink.R.attr#strokeWidth}
+          attribute's value can be found in the {@link #CirclePageIndicator} array.
+
+
+          <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
+Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
+in (inches), mm (millimeters).
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name uk.org.mattford.scoutlink:strokeWidth
+        */
+        public static final int CirclePageIndicator_strokeWidth = 3;
+        /** Attributes that can be used with a LinePageIndicator.
+           <p>Includes the following attributes:</p>
+           <table>
+           <colgroup align="left" />
+           <colgroup align="left" />
+           <tr><th>Attribute</th><th>Description</th></tr>
+           <tr><td><code>{@link #LinePageIndicator_android_background android:background}</code></td><td></td></tr>
+           <tr><td><code>{@link #LinePageIndicator_centered uk.org.mattford.scoutlink:centered}</code></td><td></td></tr>
+           <tr><td><code>{@link #LinePageIndicator_gapWidth uk.org.mattford.scoutlink:gapWidth}</code></td><td></td></tr>
+           <tr><td><code>{@link #LinePageIndicator_lineWidth uk.org.mattford.scoutlink:lineWidth}</code></td><td></td></tr>
+           <tr><td><code>{@link #LinePageIndicator_selectedColor uk.org.mattford.scoutlink:selectedColor}</code></td><td></td></tr>
+           <tr><td><code>{@link #LinePageIndicator_strokeWidth uk.org.mattford.scoutlink:strokeWidth}</code></td><td></td></tr>
+           <tr><td><code>{@link #LinePageIndicator_unselectedColor uk.org.mattford.scoutlink:unselectedColor}</code></td><td></td></tr>
+           </table>
+           @see #LinePageIndicator_android_background
+           @see #LinePageIndicator_centered
+           @see #LinePageIndicator_gapWidth
+           @see #LinePageIndicator_lineWidth
+           @see #LinePageIndicator_selectedColor
+           @see #LinePageIndicator_strokeWidth
+           @see #LinePageIndicator_unselectedColor
+         */
+        public static final int[] LinePageIndicator = {
+            0x010100d4, 0x7f010000, 0x7f010001, 0x7f010002,
+            0x7f010003, 0x7f010009, 0x7f01000a
+        };
+        /**
+          <p>This symbol is the offset where the {@link android.R.attr#background}
+          attribute's value can be found in the {@link #LinePageIndicator} array.
+          @attr name android:background
+        */
+        public static final int LinePageIndicator_android_background = 0;
+        /**
+          <p>This symbol is the offset where the {@link uk.org.mattford.scoutlink.R.attr#centered}
+          attribute's value can be found in the {@link #LinePageIndicator} array.
+
+
+          <p>Must be a boolean value, either "<code>true</code>" or "<code>false</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name uk.org.mattford.scoutlink:centered
+        */
+        public static final int LinePageIndicator_centered = 1;
+        /**
+          <p>This symbol is the offset where the {@link uk.org.mattford.scoutlink.R.attr#gapWidth}
+          attribute's value can be found in the {@link #LinePageIndicator} array.
+
+
+          <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
+Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
+in (inches), mm (millimeters).
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name uk.org.mattford.scoutlink:gapWidth
+        */
+        public static final int LinePageIndicator_gapWidth = 6;
+        /**
+          <p>This symbol is the offset where the {@link uk.org.mattford.scoutlink.R.attr#lineWidth}
+          attribute's value can be found in the {@link #LinePageIndicator} array.
+
+
+          <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
+Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
+in (inches), mm (millimeters).
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name uk.org.mattford.scoutlink:lineWidth
+        */
+        public static final int LinePageIndicator_lineWidth = 5;
+        /**
+          <p>This symbol is the offset where the {@link uk.org.mattford.scoutlink.R.attr#selectedColor}
+          attribute's value can be found in the {@link #LinePageIndicator} array.
+
+
+          <p>Must be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
+"<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name uk.org.mattford.scoutlink:selectedColor
+        */
+        public static final int LinePageIndicator_selectedColor = 2;
+        /**
+          <p>This symbol is the offset where the {@link uk.org.mattford.scoutlink.R.attr#strokeWidth}
+          attribute's value can be found in the {@link #LinePageIndicator} array.
+
+
+          <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
+Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
+in (inches), mm (millimeters).
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name uk.org.mattford.scoutlink:strokeWidth
+        */
+        public static final int LinePageIndicator_strokeWidth = 3;
+        /**
+          <p>This symbol is the offset where the {@link uk.org.mattford.scoutlink.R.attr#unselectedColor}
+          attribute's value can be found in the {@link #LinePageIndicator} array.
+
+
+          <p>Must be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
+"<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name uk.org.mattford.scoutlink:unselectedColor
+        */
+        public static final int LinePageIndicator_unselectedColor = 4;
+        /** Attributes that can be used with a TitlePageIndicator.
+           <p>Includes the following attributes:</p>
+           <table>
+           <colgroup align="left" />
+           <colgroup align="left" />
+           <tr><th>Attribute</th><th>Description</th></tr>
+           <tr><td><code>{@link #TitlePageIndicator_android_background android:background}</code></td><td></td></tr>
+           <tr><td><code>{@link #TitlePageIndicator_android_textColor android:textColor}</code></td><td></td></tr>
+           <tr><td><code>{@link #TitlePageIndicator_android_textSize android:textSize}</code></td><td></td></tr>
+           <tr><td><code>{@link #TitlePageIndicator_clipPadding uk.org.mattford.scoutlink:clipPadding}</code></td><td></td></tr>
+           <tr><td><code>{@link #TitlePageIndicator_footerColor uk.org.mattford.scoutlink:footerColor}</code></td><td></td></tr>
+           <tr><td><code>{@link #TitlePageIndicator_footerIndicatorHeight uk.org.mattford.scoutlink:footerIndicatorHeight}</code></td><td></td></tr>
+           <tr><td><code>{@link #TitlePageIndicator_footerIndicatorStyle uk.org.mattford.scoutlink:footerIndicatorStyle}</code></td><td></td></tr>
+           <tr><td><code>{@link #TitlePageIndicator_footerIndicatorUnderlinePadding uk.org.mattford.scoutlink:footerIndicatorUnderlinePadding}</code></td><td></td></tr>
+           <tr><td><code>{@link #TitlePageIndicator_footerLineHeight uk.org.mattford.scoutlink:footerLineHeight}</code></td><td></td></tr>
+           <tr><td><code>{@link #TitlePageIndicator_footerPadding uk.org.mattford.scoutlink:footerPadding}</code></td><td></td></tr>
+           <tr><td><code>{@link #TitlePageIndicator_linePosition uk.org.mattford.scoutlink:linePosition}</code></td><td></td></tr>
+           <tr><td><code>{@link #TitlePageIndicator_selectedBold uk.org.mattford.scoutlink:selectedBold}</code></td><td></td></tr>
+           <tr><td><code>{@link #TitlePageIndicator_selectedColor uk.org.mattford.scoutlink:selectedColor}</code></td><td></td></tr>
+           <tr><td><code>{@link #TitlePageIndicator_titlePadding uk.org.mattford.scoutlink:titlePadding}</code></td><td></td></tr>
+           <tr><td><code>{@link #TitlePageIndicator_topPadding uk.org.mattford.scoutlink:topPadding}</code></td><td></td></tr>
+           </table>
+           @see #TitlePageIndicator_android_background
+           @see #TitlePageIndicator_android_textColor
+           @see #TitlePageIndicator_android_textSize
+           @see #TitlePageIndicator_clipPadding
+           @see #TitlePageIndicator_footerColor
+           @see #TitlePageIndicator_footerIndicatorHeight
+           @see #TitlePageIndicator_footerIndicatorStyle
+           @see #TitlePageIndicator_footerIndicatorUnderlinePadding
+           @see #TitlePageIndicator_footerLineHeight
+           @see #TitlePageIndicator_footerPadding
+           @see #TitlePageIndicator_linePosition
+           @see #TitlePageIndicator_selectedBold
+           @see #TitlePageIndicator_selectedColor
+           @see #TitlePageIndicator_titlePadding
+           @see #TitlePageIndicator_topPadding
+         */
+        public static final int[] TitlePageIndicator = {
+            0x01010095, 0x01010098, 0x010100d4, 0x7f010001,
+            0x7f01000b, 0x7f01000c, 0x7f01000d, 0x7f01000e,
+            0x7f01000f, 0x7f010010, 0x7f010011, 0x7f010012,
+            0x7f010013, 0x7f010014, 0x7f010015
+        };
+        /**
+          <p>This symbol is the offset where the {@link android.R.attr#background}
+          attribute's value can be found in the {@link #TitlePageIndicator} array.
+          @attr name android:background
+        */
+        public static final int TitlePageIndicator_android_background = 2;
+        /**
+          <p>This symbol is the offset where the {@link android.R.attr#textColor}
+          attribute's value can be found in the {@link #TitlePageIndicator} array.
+          @attr name android:textColor
+        */
+        public static final int TitlePageIndicator_android_textColor = 1;
+        /**
+          <p>This symbol is the offset where the {@link android.R.attr#textSize}
+          attribute's value can be found in the {@link #TitlePageIndicator} array.
+          @attr name android:textSize
+        */
+        public static final int TitlePageIndicator_android_textSize = 0;
+        /**
+          <p>This symbol is the offset where the {@link uk.org.mattford.scoutlink.R.attr#clipPadding}
+          attribute's value can be found in the {@link #TitlePageIndicator} array.
+
+
+          <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
+Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
+in (inches), mm (millimeters).
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name uk.org.mattford.scoutlink:clipPadding
+        */
+        public static final int TitlePageIndicator_clipPadding = 4;
+        /**
+          <p>This symbol is the offset where the {@link uk.org.mattford.scoutlink.R.attr#footerColor}
+          attribute's value can be found in the {@link #TitlePageIndicator} array.
+
+
+          <p>Must be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
+"<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name uk.org.mattford.scoutlink:footerColor
+        */
+        public static final int TitlePageIndicator_footerColor = 5;
+        /**
+          <p>This symbol is the offset where the {@link uk.org.mattford.scoutlink.R.attr#footerIndicatorHeight}
+          attribute's value can be found in the {@link #TitlePageIndicator} array.
+
+
+          <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
+Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
+in (inches), mm (millimeters).
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name uk.org.mattford.scoutlink:footerIndicatorHeight
+        */
+        public static final int TitlePageIndicator_footerIndicatorHeight = 8;
+        /**
+          <p>This symbol is the offset where the {@link uk.org.mattford.scoutlink.R.attr#footerIndicatorStyle}
+          attribute's value can be found in the {@link #TitlePageIndicator} array.
+
+
+          <p>Must be one of the following constant values.</p>
+<table>
+<colgroup align="left" />
+<colgroup align="left" />
+<colgroup align="left" />
+<tr><th>Constant</th><th>Value</th><th>Description</th></tr>
+<tr><td><code>none</code></td><td>0</td><td></td></tr>
+<tr><td><code>triangle</code></td><td>1</td><td></td></tr>
+<tr><td><code>underline</code></td><td>2</td><td></td></tr>
+</table>
+          @attr name uk.org.mattford.scoutlink:footerIndicatorStyle
+        */
+        public static final int TitlePageIndicator_footerIndicatorStyle = 7;
+        /**
+          <p>This symbol is the offset where the {@link uk.org.mattford.scoutlink.R.attr#footerIndicatorUnderlinePadding}
+          attribute's value can be found in the {@link #TitlePageIndicator} array.
+
+
+          <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
+Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
+in (inches), mm (millimeters).
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name uk.org.mattford.scoutlink:footerIndicatorUnderlinePadding
+        */
+        public static final int TitlePageIndicator_footerIndicatorUnderlinePadding = 9;
+        /**
+          <p>This symbol is the offset where the {@link uk.org.mattford.scoutlink.R.attr#footerLineHeight}
+          attribute's value can be found in the {@link #TitlePageIndicator} array.
+
+
+          <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
+Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
+in (inches), mm (millimeters).
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name uk.org.mattford.scoutlink:footerLineHeight
+        */
+        public static final int TitlePageIndicator_footerLineHeight = 6;
+        /**
+          <p>This symbol is the offset where the {@link uk.org.mattford.scoutlink.R.attr#footerPadding}
+          attribute's value can be found in the {@link #TitlePageIndicator} array.
+
+
+          <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
+Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
+in (inches), mm (millimeters).
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name uk.org.mattford.scoutlink:footerPadding
+        */
+        public static final int TitlePageIndicator_footerPadding = 10;
+        /**
+          <p>This symbol is the offset where the {@link uk.org.mattford.scoutlink.R.attr#linePosition}
+          attribute's value can be found in the {@link #TitlePageIndicator} array.
+
+
+          <p>Must be one of the following constant values.</p>
+<table>
+<colgroup align="left" />
+<colgroup align="left" />
+<colgroup align="left" />
+<tr><th>Constant</th><th>Value</th><th>Description</th></tr>
+<tr><td><code>bottom</code></td><td>0</td><td></td></tr>
+<tr><td><code>top</code></td><td>1</td><td></td></tr>
+</table>
+          @attr name uk.org.mattford.scoutlink:linePosition
+        */
+        public static final int TitlePageIndicator_linePosition = 11;
+        /**
+          <p>This symbol is the offset where the {@link uk.org.mattford.scoutlink.R.attr#selectedBold}
+          attribute's value can be found in the {@link #TitlePageIndicator} array.
+
+
+          <p>Must be a boolean value, either "<code>true</code>" or "<code>false</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name uk.org.mattford.scoutlink:selectedBold
+        */
+        public static final int TitlePageIndicator_selectedBold = 12;
+        /**
+          <p>This symbol is the offset where the {@link uk.org.mattford.scoutlink.R.attr#selectedColor}
+          attribute's value can be found in the {@link #TitlePageIndicator} array.
+
+
+          <p>Must be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
+"<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name uk.org.mattford.scoutlink:selectedColor
+        */
+        public static final int TitlePageIndicator_selectedColor = 3;
+        /**
+          <p>This symbol is the offset where the {@link uk.org.mattford.scoutlink.R.attr#titlePadding}
+          attribute's value can be found in the {@link #TitlePageIndicator} array.
+
+
+          <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
+Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
+in (inches), mm (millimeters).
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name uk.org.mattford.scoutlink:titlePadding
+        */
+        public static final int TitlePageIndicator_titlePadding = 13;
+        /**
+          <p>This symbol is the offset where the {@link uk.org.mattford.scoutlink.R.attr#topPadding}
+          attribute's value can be found in the {@link #TitlePageIndicator} array.
+
+
+          <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
+Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
+in (inches), mm (millimeters).
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name uk.org.mattford.scoutlink:topPadding
+        */
+        public static final int TitlePageIndicator_topPadding = 14;
+        /** Attributes that can be used with a UnderlinePageIndicator.
+           <p>Includes the following attributes:</p>
+           <table>
+           <colgroup align="left" />
+           <colgroup align="left" />
+           <tr><th>Attribute</th><th>Description</th></tr>
+           <tr><td><code>{@link #UnderlinePageIndicator_android_background android:background}</code></td><td></td></tr>
+           <tr><td><code>{@link #UnderlinePageIndicator_fadeDelay uk.org.mattford.scoutlink:fadeDelay}</code></td><td></td></tr>
+           <tr><td><code>{@link #UnderlinePageIndicator_fadeLength uk.org.mattford.scoutlink:fadeLength}</code></td><td></td></tr>
+           <tr><td><code>{@link #UnderlinePageIndicator_fades uk.org.mattford.scoutlink:fades}</code></td><td></td></tr>
+           <tr><td><code>{@link #UnderlinePageIndicator_selectedColor uk.org.mattford.scoutlink:selectedColor}</code></td><td></td></tr>
+           </table>
+           @see #UnderlinePageIndicator_android_background
+           @see #UnderlinePageIndicator_fadeDelay
+           @see #UnderlinePageIndicator_fadeLength
+           @see #UnderlinePageIndicator_fades
+           @see #UnderlinePageIndicator_selectedColor
+         */
+        public static final int[] UnderlinePageIndicator = {
+            0x010100d4, 0x7f010001, 0x7f010016, 0x7f010017,
+            0x7f010018
+        };
+        /**
+          <p>This symbol is the offset where the {@link android.R.attr#background}
+          attribute's value can be found in the {@link #UnderlinePageIndicator} array.
+          @attr name android:background
+        */
+        public static final int UnderlinePageIndicator_android_background = 0;
+        /**
+          <p>This symbol is the offset where the {@link uk.org.mattford.scoutlink.R.attr#fadeDelay}
+          attribute's value can be found in the {@link #UnderlinePageIndicator} array.
+
+
+          <p>Must be an integer value, such as "<code>100</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name uk.org.mattford.scoutlink:fadeDelay
+        */
+        public static final int UnderlinePageIndicator_fadeDelay = 3;
+        /**
+          <p>This symbol is the offset where the {@link uk.org.mattford.scoutlink.R.attr#fadeLength}
+          attribute's value can be found in the {@link #UnderlinePageIndicator} array.
+
+
+          <p>Must be an integer value, such as "<code>100</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name uk.org.mattford.scoutlink:fadeLength
+        */
+        public static final int UnderlinePageIndicator_fadeLength = 4;
+        /**
+          <p>This symbol is the offset where the {@link uk.org.mattford.scoutlink.R.attr#fades}
+          attribute's value can be found in the {@link #UnderlinePageIndicator} array.
+
+
+          <p>Must be a boolean value, either "<code>true</code>" or "<code>false</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name uk.org.mattford.scoutlink:fades
+        */
+        public static final int UnderlinePageIndicator_fades = 2;
+        /**
+          <p>This symbol is the offset where the {@link uk.org.mattford.scoutlink.R.attr#selectedColor}
+          attribute's value can be found in the {@link #UnderlinePageIndicator} array.
+
+
+          <p>Must be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
+"<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name uk.org.mattford.scoutlink:selectedColor
+        */
+        public static final int UnderlinePageIndicator_selectedColor = 1;
+        /** Attributes that can be used with a ViewPagerIndicator.
+           <p>Includes the following attributes:</p>
+           <table>
+           <colgroup align="left" />
+           <colgroup align="left" />
+           <tr><th>Attribute</th><th>Description</th></tr>
+           <tr><td><code>{@link #ViewPagerIndicator_vpiCirclePageIndicatorStyle uk.org.mattford.scoutlink:vpiCirclePageIndicatorStyle}</code></td><td></td></tr>
+           <tr><td><code>{@link #ViewPagerIndicator_vpiIconPageIndicatorStyle uk.org.mattford.scoutlink:vpiIconPageIndicatorStyle}</code></td><td></td></tr>
+           <tr><td><code>{@link #ViewPagerIndicator_vpiLinePageIndicatorStyle uk.org.mattford.scoutlink:vpiLinePageIndicatorStyle}</code></td><td></td></tr>
+           <tr><td><code>{@link #ViewPagerIndicator_vpiTabPageIndicatorStyle uk.org.mattford.scoutlink:vpiTabPageIndicatorStyle}</code></td><td></td></tr>
+           <tr><td><code>{@link #ViewPagerIndicator_vpiTitlePageIndicatorStyle uk.org.mattford.scoutlink:vpiTitlePageIndicatorStyle}</code></td><td></td></tr>
+           <tr><td><code>{@link #ViewPagerIndicator_vpiUnderlinePageIndicatorStyle uk.org.mattford.scoutlink:vpiUnderlinePageIndicatorStyle}</code></td><td></td></tr>
+           </table>
+           @see #ViewPagerIndicator_vpiCirclePageIndicatorStyle
+           @see #ViewPagerIndicator_vpiIconPageIndicatorStyle
+           @see #ViewPagerIndicator_vpiLinePageIndicatorStyle
+           @see #ViewPagerIndicator_vpiTabPageIndicatorStyle
+           @see #ViewPagerIndicator_vpiTitlePageIndicatorStyle
+           @see #ViewPagerIndicator_vpiUnderlinePageIndicatorStyle
+         */
+        public static final int[] ViewPagerIndicator = {
+            0x7f010019, 0x7f01001a, 0x7f01001b, 0x7f01001c,
+            0x7f01001d, 0x7f01001e
+        };
+        /**
+          <p>This symbol is the offset where the {@link uk.org.mattford.scoutlink.R.attr#vpiCirclePageIndicatorStyle}
+          attribute's value can be found in the {@link #ViewPagerIndicator} array.
+
+
+          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+          @attr name uk.org.mattford.scoutlink:vpiCirclePageIndicatorStyle
+        */
+        public static final int ViewPagerIndicator_vpiCirclePageIndicatorStyle = 0;
+        /**
+          <p>This symbol is the offset where the {@link uk.org.mattford.scoutlink.R.attr#vpiIconPageIndicatorStyle}
+          attribute's value can be found in the {@link #ViewPagerIndicator} array.
+
+
+          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+          @attr name uk.org.mattford.scoutlink:vpiIconPageIndicatorStyle
+        */
+        public static final int ViewPagerIndicator_vpiIconPageIndicatorStyle = 1;
+        /**
+          <p>This symbol is the offset where the {@link uk.org.mattford.scoutlink.R.attr#vpiLinePageIndicatorStyle}
+          attribute's value can be found in the {@link #ViewPagerIndicator} array.
+
+
+          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+          @attr name uk.org.mattford.scoutlink:vpiLinePageIndicatorStyle
+        */
+        public static final int ViewPagerIndicator_vpiLinePageIndicatorStyle = 2;
+        /**
+          <p>This symbol is the offset where the {@link uk.org.mattford.scoutlink.R.attr#vpiTabPageIndicatorStyle}
+          attribute's value can be found in the {@link #ViewPagerIndicator} array.
+
+
+          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+          @attr name uk.org.mattford.scoutlink:vpiTabPageIndicatorStyle
+        */
+        public static final int ViewPagerIndicator_vpiTabPageIndicatorStyle = 4;
+        /**
+          <p>This symbol is the offset where the {@link uk.org.mattford.scoutlink.R.attr#vpiTitlePageIndicatorStyle}
+          attribute's value can be found in the {@link #ViewPagerIndicator} array.
+
+
+          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+          @attr name uk.org.mattford.scoutlink:vpiTitlePageIndicatorStyle
+        */
+        public static final int ViewPagerIndicator_vpiTitlePageIndicatorStyle = 3;
+        /**
+          <p>This symbol is the offset where the {@link uk.org.mattford.scoutlink.R.attr#vpiUnderlinePageIndicatorStyle}
+          attribute's value can be found in the {@link #ViewPagerIndicator} array.
+
+
+          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+          @attr name uk.org.mattford.scoutlink:vpiUnderlinePageIndicatorStyle
+        */
+        public static final int ViewPagerIndicator_vpiUnderlinePageIndicatorStyle = 5;
+    };
 }
