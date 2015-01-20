@@ -32,8 +32,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.viewpagerindicator.TabPageIndicator;
 import com.viewpagerindicator.TitlePageIndicator;
 
 public class ConversationsActivity extends FragmentActivity implements ServiceConnection {
@@ -75,6 +77,7 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 
             }
         });
+        
     }
 	
 	/**

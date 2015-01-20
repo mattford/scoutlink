@@ -447,7 +447,7 @@ public class IRCListener extends ListenerAdapter {
     }
 
     public void onServerPing(ServerPingEvent event) {
-        event.respond(event.getResponse());
+        //event.respond(event.getResponse());
     }
 
     public ArrayList<String> getSharedChannels(PircBotX bot, User user) {
