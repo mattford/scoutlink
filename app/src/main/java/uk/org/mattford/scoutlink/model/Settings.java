@@ -43,6 +43,7 @@ public class Settings {
 		editor.putBoolean(key, value);
 		editor.commit();
 	}
+
 	
 	
 }

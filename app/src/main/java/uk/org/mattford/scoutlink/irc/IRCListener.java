@@ -76,6 +76,7 @@ public class IRCListener extends ListenerAdapter {
 
     public void onConnect(ConnectEvent event) {
         event.getBot().sendIRC().listChannels();
+
         service.getServer().setStatus(Server.STATUS_CONNECTED);
         service.setIsForeground(true);
         service.updateNotification(service.getString(R.string.notification_connected, service.getConnection().getNick()));

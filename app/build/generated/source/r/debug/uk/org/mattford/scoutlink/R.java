@@ -327,16 +327,16 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int vpi__tab_unselected_pressed_holo=0x7f020009;
     }
     public static final class id {
-        public static final int action_channel_list=0x7f0b0018;
-        public static final int action_close=0x7f0b0014;
-        public static final int action_disconnect=0x7f0b0015;
-        public static final int action_join=0x7f0b0017;
-        public static final int action_settings=0x7f0b0013;
-        public static final int action_userlist=0x7f0b0016;
-        public static final int action_userlist_kick=0x7f0b001b;
-        public static final int action_userlist_kill=0x7f0b001c;
-        public static final int action_userlist_notice=0x7f0b001a;
-        public static final int action_userlist_query=0x7f0b0019;
+        public static final int action_channel_list=0x7f0b0022;
+        public static final int action_close=0x7f0b001e;
+        public static final int action_disconnect=0x7f0b001f;
+        public static final int action_join=0x7f0b0021;
+        public static final int action_settings=0x7f0b001d;
+        public static final int action_userlist=0x7f0b0020;
+        public static final int action_userlist_kick=0x7f0b0025;
+        public static final int action_userlist_kill=0x7f0b0026;
+        public static final int action_userlist_notice=0x7f0b0024;
+        public static final int action_userlist_query=0x7f0b0023;
         public static final int bottom=0x7f0b0003;
         public static final int channel=0x7f0b0009;
         public static final int connect_button=0x7f0b000e;
@@ -348,13 +348,23 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int none=0x7f0b0000;
         public static final int pager=0x7f0b0006;
         public static final int send_button=0x7f0b0008;
-        public static final int sender=0x7f0b0010;
+        public static final int sender=0x7f0b001a;
+        public static final int settings_gecos=0x7f0b0015;
+        public static final int settings_gecos_label=0x7f0b0014;
+        public static final int settings_ident=0x7f0b0013;
+        public static final int settings_ident_label=0x7f0b0012;
+        public static final int settings_nickname=0x7f0b0011;
+        public static final int settings_nickname_label=0x7f0b0010;
+        public static final int settings_nickserv_password=0x7f0b0019;
+        public static final int settings_nickserv_password_label=0x7f0b0018;
+        public static final int settings_nickserv_user=0x7f0b0017;
+        public static final int settings_nickserv_user_label=0x7f0b0016;
         public static final int sl_logo=0x7f0b000b;
-        public static final int timestamp=0x7f0b0011;
+        public static final int timestamp=0x7f0b001b;
         public static final int top=0x7f0b0004;
         public static final int triangle=0x7f0b0001;
         public static final int underline=0x7f0b0002;
-        public static final int user=0x7f0b0012;
+        public static final int user=0x7f0b001c;
         public static final int welcome_text=0x7f0b000c;
     }
     public static final class integer {
@@ -370,12 +380,13 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int activity_join=0x7f030002;
         public static final int activity_main=0x7f030003;
         public static final int activity_notice=0x7f030004;
-        public static final int activity_userlist=0x7f030005;
-        public static final int channel_list_item=0x7f030006;
-        public static final int message_list_item=0x7f030007;
-        public static final int message_list_item_no_sender=0x7f030008;
-        public static final int message_list_view=0x7f030009;
-        public static final int user_list_item=0x7f03000a;
+        public static final int activity_settings=0x7f030005;
+        public static final int activity_userlist=0x7f030006;
+        public static final int channel_list_item=0x7f030007;
+        public static final int message_list_item=0x7f030008;
+        public static final int message_list_item_no_sender=0x7f030009;
+        public static final int message_list_view=0x7f03000a;
+        public static final int user_list_item=0x7f03000b;
     }
     public static final class menu {
         public static final int conversations=0x7f0a0000;
@@ -455,11 +466,16 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int send_message_hint=0x7f080041;
         public static final int send_message_in_server_window=0x7f080042;
         public static final int send_notice_button=0x7f080043;
-        public static final int title_activity_channel_list=0x7f080044;
-        public static final int title_activity_notice=0x7f080045;
-        public static final int userlist_activity_label=0x7f080046;
-        public static final int userlist_not_on_channel=0x7f080047;
-        public static final int welcome_text=0x7f080048;
+        public static final int settings_gecos_label=0x7f080044;
+        public static final int settings_ident_label=0x7f080045;
+        public static final int settings_nickname_label=0x7f080046;
+        public static final int settings_nickserv_password_label=0x7f080047;
+        public static final int settings_nickserv_user_label=0x7f080048;
+        public static final int title_activity_channel_list=0x7f080049;
+        public static final int title_activity_notice=0x7f08004a;
+        public static final int userlist_activity_label=0x7f08004b;
+        public static final int userlist_not_on_channel=0x7f08004c;
+        public static final int welcome_text=0x7f08004d;
     }
     public static final class style {
         /** 

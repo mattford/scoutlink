@@ -28,13 +28,16 @@ public class MainActivity extends Activity implements ServiceConnection {
         this.settings = new Settings(this);
 
         setContentView(R.layout.activity_main);
-        EditText nick = (EditText)findViewById(R.id.nickname);
-        nick.setText(settings.getString("nickname", ""));
+
     }
     
     @Override
     public void onResume() {
     	super.onResume();
+
+        EditText nick = (EditText)findViewById(R.id.nickname);
+        nick.setText(settings.getString("nickname", ""));
+
         Intent service = new Intent(this, IRCService.class);
         startService(service);
         bindService(service, this, 0);
@@ -72,7 +75,8 @@ public class MainActivity extends Activity implements ServiceConnection {
         int id = item.getItemId();
         switch(id) {
         case R.id.action_settings:
-        	
+        	Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
         	break;
         	
         }

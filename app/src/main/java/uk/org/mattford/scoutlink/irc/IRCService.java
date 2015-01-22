@@ -9,6 +9,7 @@ import org.pircbotx.exception.IrcException;
 import uk.org.mattford.scoutlink.R;
 import uk.org.mattford.scoutlink.activity.ConversationsActivity;
 import uk.org.mattford.scoutlink.model.Broadcast;
+import uk.org.mattford.scoutlink.model.Message;
 import uk.org.mattford.scoutlink.model.Server;
 import uk.org.mattford.scoutlink.model.ServerWindow;
 import uk.org.mattford.scoutlink.model.Settings;
@@ -29,7 +30,7 @@ public class IRCService extends Service {
 	private Server server;
 	private Notification notif;
 	
-	private final int NOTIF_ID = 007;
+	private final int NOTIF_ID = 1;
 	private final String logTag = "ScoutLink/IRCService";
 	
 	private boolean foreground = false;
@@ -67,17 +68,20 @@ public class IRCService extends Service {
 
         ServerWindow sw = new ServerWindow("ScoutLink");
         server.addConversation(sw);
+        Message msg = new Message("Connecting to ScoutLink...");
+        sw.addMessage(msg);
         Intent intent = new Intent(Broadcast.NEW_CONVERSATION).putExtra("target", "ScoutLink");
         sendBroadcast(intent);
+        onNewMessage("ScoutLink");
 
         IRCListener listener = new IRCListener(this);
         Configuration.Builder config = new Configuration.Builder()
             .setName(settings.getString("nickname"))
-            .setLogin(settings.getString("login", "AndroidIRC"))
+            .setLogin(settings.getString("ident", "AndroidIRC"))
             .setServer("chat.scoutlink.net", 6667)
-            .setRealName(settings.getString("realName", "ScoutLink IRC for Android!"))
+            .setRealName(settings.getString("gecos", "ScoutLink IRC for Android!"))
             .addListener(listener);
-        //config.setNickservPassword(settings.getString("password"));
+
         config.addAutoJoinChannel("#test");
         this.irc = new PircBotX(config.buildConfiguration());
         new Thread(new Runnable() {
