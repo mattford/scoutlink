@@ -77,9 +77,8 @@ public class IRCListener extends ListenerAdapter {
     public void onConnect(ConnectEvent event) {
         event.getBot().sendIRC().listChannels();
 
-        service.getServer().setStatus(Server.STATUS_CONNECTED);
-        service.setIsForeground(true);
-        service.updateNotification(service.getString(R.string.notification_connected, service.getConnection().getNick()));
+
+        service.onConnect();
     }
 
     public void onDisconnect(DisconnectEvent event) {
@@ -196,6 +195,8 @@ public class IRCListener extends ListenerAdapter {
             server.getConversation(channel).addMessage(message);
             service.onNewMessage(channel);
         }
+        server.getConversation("ScoutLink").addMessage(message);
+        service.onNewMessage("ScoutLink");
     }
 
     public void onInvite(InviteEvent event) {

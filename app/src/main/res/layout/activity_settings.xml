@@ -68,4 +68,24 @@
         android:id="@+id/settings_nickserv_password"
         android:layout_gravity="center_horizontal" />
 
+    <Button
+    android:id="@+id/settings_autojoin_channels"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:text="@string/settings_autojoin_channels_label"
+    android:onClick="openAutojoinSettings"
+    >
+
+</Button>
+
+    <Button
+        android:id="@+id/settings_command_on_connect"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:text="@string/settings_command_on_connect_label"
+        android:onClick="openCommandOnConnectSettings"
+        >
+
+    </Button>
+
 </LinearLayout>

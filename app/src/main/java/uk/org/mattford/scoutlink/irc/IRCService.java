@@ -82,7 +82,17 @@ public class IRCService extends Service {
             .setRealName(settings.getString("gecos", "ScoutLink IRC for Android!"))
             .addListener(listener);
 
-        config.addAutoJoinChannel("#test");
+        String[] channels = settings.getStringArray("autojoin_channels");
+        if (channels.length > 1 || !channels[0].equals("")) {
+            for (String channel : channels) {
+                if (!channel.startsWith("#")) {
+                    channel = "#" + channel;
+                }
+                config.addAutoJoinChannel(channel);
+            }
+        }
+
+
         this.irc = new PircBotX(config.buildConfiguration());
         new Thread(new Runnable() {
             public void run() {
@@ -125,6 +135,26 @@ public class IRCService extends Service {
 		}
 		
 	}
+
+    public void onConnect() {
+        getServer().setStatus(Server.STATUS_CONNECTED);
+        setIsForeground(true);
+        updateNotification(getString(R.string.notification_connected, getConnection().getNick()));
+
+        if (!settings.getString("nickserv_user", "").equals("") && !settings.getString("nickserv_password", "").equals("")) {
+            getConnection().sendRaw().rawLineNow("NICKSERV LOGIN " + settings.getString("nickserv_user", "") + " " + settings.getString("nickserv_password", ""));
+        }
+
+        String[] commands = settings.getStringArray("command_on_connect");
+        if (commands.length > 1 || !commands[0].equals("")) {
+            for (String command : commands) {
+                if (command.startsWith("/")) {
+                    command = command.substring(1, command.length());
+                }
+                getConnection().sendRaw().rawLineNow(command);
+            }
+        }
+    }
 
 	@Override
 	public Binder onBind(Intent intent) {

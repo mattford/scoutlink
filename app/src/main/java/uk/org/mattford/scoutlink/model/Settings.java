@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import java.util.ArrayList;
+
 public class Settings {
 	
 	private SharedPreferences prefs;
@@ -43,6 +45,27 @@ public class Settings {
 		editor.putBoolean(key, value);
 		editor.commit();
 	}
+
+    public void putStringArray(String key, String[] value) {
+        SharedPreferences.Editor editor = prefs.edit();
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < value.length; i++) {
+            sb.append(value[i]).append(",");
+        }
+        putString(key, sb.toString());
+    }
+
+    public void putStringArrayList(String key, ArrayList<String> value) {
+        String[] strArr = new String[value.size()];
+        strArr = value.toArray(strArr);
+        putStringArray(key, strArr);
+    }
+
+    public String[] getStringArray(String key) {
+        String string = this.getString(key);
+        String[] items = string.split(",");
+        return items;
+    }
 
 	
 	

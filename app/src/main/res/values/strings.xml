@@ -41,8 +41,8 @@
     <string name="message_deownerevent">%1$s took owner from %2$s</string>
     <string name="message_voiceevent">%1$s gave voice to %2$s</string>
     <string name="message_devoiceevent">%1$s took voice from %2$s</string>
-    <string name="message_message">&lt;%1$s&gt; %2$s</string>
-    <string name="message_private">&lt;%1$s&gt; %2$s</string>
+    <string name="message_message">&lt;%1$s> %2$s</string>
+    <string name="message_private">&lt;%1$s> %2$s</string>
     <string name="message_notice">-%1$s- %2$s</string>
     <string name="message_join">%1$s has joined %2$s</string>
     <string name="message_kicked_self">You were kicked from %1$s by %2$s (%3$s)</string>
@@ -74,10 +74,15 @@
     <string name="message_unset_topicprotect">%1$s has disabled topic protection</string>
     <string name="message_action">%1$s %2$s</string>
     <string name="action_kick_dialog_title">Reason for kick:</string>
-
     <string name="settings_nickname_label">Nickname:</string>
     <string name="settings_ident_label">Username:</string>
     <string name="settings_gecos_label">Real Name:</string>
     <string name="settings_nickserv_user_label">Nickserv Username:</string>
     <string name="settings_nickserv_password_label">Nickserv Password:</string>
+    <string name="title_activity_list_view_edit">ListViewEditActivity</string>
+    <string name="edit_list_remove_item_confirm_title">Remove Item?</string>
+    <string name="edit_list_remove_item_confirm_text">Are you sure you want to remove this item?</string>
+    <string name="edit_list_title">Edit list</string>
+    <string name="settings_autojoin_channels_label">Autojoin Channels</string>
+    <string name="settings_command_on_connect_label">Run commands on connect</string>
 </resources>

@@ -10,7 +10,6 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.SET_DEBUG_APP" />
-
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="18" />
@@ -55,6 +54,11 @@
             android:name=".activity.NoticeActivity"
             android:label="@string/title_activity_notice"
             android:theme="@android:style/Theme.Dialog" >
+        </activity>
+        <activity
+            android:name=".activity.ListViewEditActivity"
+            android:label="@string/title_activity_list_view_edit"
+            android:theme="@android:style/Theme.Dialog">
         </activity>
     </application>
 
