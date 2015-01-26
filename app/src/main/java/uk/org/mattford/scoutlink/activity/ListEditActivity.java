@@ -14,15 +14,20 @@ import java.util.ArrayList;
 
 import uk.org.mattford.scoutlink.R;
 
-public class ListViewEditActivity extends ListActivity {
+public class ListEditActivity extends ListActivity {
 
     private ArrayList<String>items;
     private ArrayAdapter<String> adapter;
+
+    private String title = "List Edit";
+    private String firstChar = "";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_view_edit);
+
         Intent callingIntent = getIntent();
         items = callingIntent.getStringArrayListExtra("items");
         if (items.size() < 2 && items.get(0).equals("")) {
@@ -30,6 +35,17 @@ public class ListViewEditActivity extends ListActivity {
         }
         adapter = new ArrayAdapter<String>(this, R.layout.list_view_edit_item, items);
         setListAdapter(adapter);
+
+        if (callingIntent.getStringExtra("firstChar") != null) {
+            firstChar = callingIntent.getStringExtra("firstChar");
+        }
+        if (callingIntent.getStringExtra("title") != null) {
+            title = callingIntent.getStringExtra("title");
+        }
+        setTitle(title);
+        EditText et = (EditText)findViewById(R.id.new_item);
+        et.setText(firstChar);
+        et.setSelection(et.getText().length());
     }
 
     public void onPause() {
@@ -49,7 +65,9 @@ public class ListViewEditActivity extends ListActivity {
 
     public void onNewItemButtonClick(View v) {
         EditText et = (EditText)v.getRootView().findViewById(R.id.new_item);
-        et.setText("");
+        et.setText(firstChar);
+        et.setSelection(et.getText().length());
+
         String newItem = et.getText().toString();
         items.add(newItem);
         adapter.notifyDataSetChanged();

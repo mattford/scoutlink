@@ -190,7 +190,10 @@ public class IRCListener extends ListenerAdapter {
     }
 
     public void onNotice(NoticeEvent event) {
-        Message message = new Message(service.getString(R.string.message_notice, event.getUser().getNick(), event.getMessage()));
+        Message message = new Message("-"+event.getUser().getNick()+"-", event.getMessage());
+        message.setBackgroundColour(Color.parseColor("#4CD964"));
+        message.setColour(Color.WHITE);
+
         for (String channel : getSharedChannels(event.getBot(), event.getUser())) {
             server.getConversation(channel).addMessage(message);
             service.onNewMessage(channel);

@@ -28,6 +28,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -162,8 +163,8 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 		binder.getService().getServer().clearConversations();
 		pagerAdapter.clearConversations();
 		Intent intent = new Intent(this, MainActivity.class);
-		startActivity(intent);
-		finish();
+        startActivity(intent);
+        finish();
 	}
 	
 	public void onNewConversation(String name) {
@@ -259,10 +260,9 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
         	break;
         case R.id.action_disconnect:
         	binder.getService().getConnection().sendIRC().quitServer("ScoutLink for Android!");
-        	binder.getService().getServer().clearConversations();
-        	pagerAdapter.clearConversations();
-        	setResult(RESULT_OK);
-        	finish();
+        	//binder.getService().getServer().clearConversations();
+        	//pagerAdapter.clearConversations();
+        	//onDisconnect();
         	break;
         case R.id.action_userlist:
         	if (conversation.getType().equals(Conversation.TYPE_CHANNEL)) {

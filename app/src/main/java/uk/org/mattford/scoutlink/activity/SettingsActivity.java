@@ -48,20 +48,20 @@ public class SettingsActivity extends Activity {
     }
 
     public void openAutojoinSettings(View v) {
-        Intent intent = new Intent(this, ListViewEditActivity.class);
-        Log.d("SL", settings.getString("autojoin_channels"));
-        String[] strs = settings.getStringArray("autojoin_channels");
-        for (String str : strs) {
-            Toast.makeText(this, str, Toast.LENGTH_SHORT).show();
-        }
+        Intent intent = new Intent(this, ListEditActivity.class);
+
+        intent.putExtra("title", "Autojoin Channels");
+        intent.putExtra("firstChar", "#");
         intent.putStringArrayListExtra("items", new ArrayList<String>(Arrays.asList(settings.getStringArray("autojoin_channels"))));
         startActivityForResult(intent, AUTOJOIN_REQUEST_CODE);
     }
 
     public void openCommandOnConnectSettings(View v) {
-        Intent intent = new Intent(this, ListViewEditActivity.class);
+        Intent intent = new Intent(this, ListEditActivity.class);
 
         intent.putStringArrayListExtra("items", new ArrayList<String>(Arrays.asList(settings.getStringArray("command_on_connect"))));
+        intent.putExtra("title", "Commands on Connect");
+        intent.putExtra("firstChar", "/");
         startActivityForResult(intent, CONNECT_COMMANDS_REQUEST_CODE);
     }
 

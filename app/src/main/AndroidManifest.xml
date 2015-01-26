@@ -56,7 +56,7 @@
             android:theme="@android:style/Theme.Dialog" >
         </activity>
         <activity
-            android:name=".activity.ListViewEditActivity"
+            android:name=".activity.ListEditActivity"
             android:label="@string/title_activity_list_view_edit"
             android:theme="@android:style/Theme.Dialog">
         </activity>
