@@ -65,12 +65,11 @@ public class ListEditActivity extends ListActivity {
 
     public void onNewItemButtonClick(View v) {
         EditText et = (EditText)v.getRootView().findViewById(R.id.new_item);
-        et.setText(firstChar);
-        et.setSelection(et.getText().length());
-
         String newItem = et.getText().toString();
         items.add(newItem);
         adapter.notifyDataSetChanged();
+        et.setText(firstChar);
+        et.setSelection(et.getText().length());
     }
 
     public void onItemClick(View v) {
