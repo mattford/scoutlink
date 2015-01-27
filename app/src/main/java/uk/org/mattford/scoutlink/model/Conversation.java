@@ -5,15 +5,13 @@ import java.util.LinkedList;
 public class Conversation {
 	
 	public String CONVERSATION_NAME;
-	private String type;
+	private int type;
 	private LinkedList<Message> messages;
 	private LinkedList<Message> buffer;
 	
-	public final static String TYPE_CHANNEL = "uk.org.mattford.scoutlink.Conversation.TYPE_CHANNEL";
-	public final static String TYPE_QUERY = "uk.org.mattford.scoutlink.Conversation.TYPE_QUERY";
-	public final static String TYPE_SERVER = "uk.org.mattford.scoutlink.Conversation.TYPE_SERVER";
-	
-	
+	public final static int TYPE_CHANNEL = 0;
+	public final static int TYPE_QUERY = 1;
+	public final static int TYPE_SERVER = 2;
 
 	public Conversation(String name) {
 		this.CONVERSATION_NAME = name;
@@ -47,11 +45,11 @@ public class Conversation {
 		buffer.clear();
 	}
 	
-	public void setType(String type) {
+	public void setType(int type) {
 		this.type = type;
 	}
 	
-	public String getType() {
+	public int getType() {
 		return this.type;
 	}
 	

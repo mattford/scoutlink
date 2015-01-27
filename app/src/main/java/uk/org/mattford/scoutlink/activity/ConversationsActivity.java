@@ -70,7 +70,7 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 
             @Override
             public void onPageSelected(int position) {
-                binder.getService().updateNotification("Connected as "+binder.getService().getConnection().getNick());
+                binder.getService().updateNotification();
             }
 
             @Override
@@ -121,7 +121,7 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 		if (message.startsWith("/")) {
 			CommandParser.getInstance().parse(message, conv, this.binder.getService());
 		} else {
-            if (conv.getType().equals(Conversation.TYPE_SERVER)) {
+            if (conv.getType() == (Conversation.TYPE_SERVER)) {
                 Message msg = new Message(getString(R.string.send_message_in_server_window));
                 msg.setColour(Color.RED);
                 conv.addMessage(msg);
@@ -193,7 +193,7 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 		}
 
         if (pager.getCurrentItem() != i) {
-            binder.getService().updateNotification("New message in "+name);
+            binder.getService().updateNotification();
         }
 
 		while (conv.hasBuffer()) {
@@ -248,9 +248,9 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
         	startActivity(new Intent(this, SettingsActivity.class));
         	break;
         case R.id.action_close:
-        	if (conversation.getType().equals(Conversation.TYPE_CHANNEL)) {
+        	if (conversation.getType() == Conversation.TYPE_CHANNEL) {
                 binder.getService().getConnection().getUserChannelDao().getChannel(conversation.getName()).send().part();
-        	} else if (conversation.getType().equals(Conversation.TYPE_QUERY)) {
+        	} else if (conversation.getType() == Conversation.TYPE_QUERY) {
         		binder.getService().getServer().removeConversation(conversation.getName());
         		removeConversation(conversation.getName());
         	} else {
@@ -265,7 +265,7 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
         	//onDisconnect();
         	break;
         case R.id.action_userlist:
-        	if (conversation.getType().equals(Conversation.TYPE_CHANNEL)) {
+        	if (conversation.getType() == Conversation.TYPE_CHANNEL) {
 	        	String chan = conversation.getName();
                 ArrayList<String> users = new ArrayList<String>();
 	        	for (org.pircbotx.User user : binder.getService().getConnection().getUserChannelDao().getChannel(chan).getUsers()) {

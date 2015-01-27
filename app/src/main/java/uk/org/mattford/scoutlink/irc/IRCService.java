@@ -1,6 +1,8 @@
 package uk.org.mattford.scoutlink.irc;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
@@ -9,6 +11,7 @@ import org.pircbotx.exception.IrcException;
 import uk.org.mattford.scoutlink.R;
 import uk.org.mattford.scoutlink.activity.ConversationsActivity;
 import uk.org.mattford.scoutlink.model.Broadcast;
+import uk.org.mattford.scoutlink.model.Conversation;
 import uk.org.mattford.scoutlink.model.Message;
 import uk.org.mattford.scoutlink.model.Server;
 import uk.org.mattford.scoutlink.model.ServerWindow;
@@ -39,7 +42,7 @@ public class IRCService extends Service {
 		this.server = new Server();
 		
 		this.settings = new Settings(this);
-		this.updateNotification("Not connected.");
+		this.updateNotification();
 	}
 		
 	public int onStartCommand(Intent intent, int flags, int startId) {
@@ -116,16 +119,66 @@ public class IRCService extends Service {
     public void onNewMessage(String conversation) {
         Intent intent = new Intent().setAction(Broadcast.NEW_MESSAGE).putExtra("target", conversation);
         sendBroadcast(intent);
+        updateNotification();
     }
 	
-	public void updateNotification(String text) {
-		Intent notifIntent = new Intent(this, ConversationsActivity.class);
+	public void updateNotification() {
+        Intent notifIntent = new Intent(this, ConversationsActivity.class);
         notifIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent intent = PendingIntent.getActivity(this, 0, notifIntent, 0);
 
+        HashMap<String, Conversation> conversations = getServer().getConversations();
+        ArrayList<Conversation> conversationsWithNewMsg = new ArrayList<Conversation>();
+        int newMsgTotal = 0;
+        ArrayList<Conversation> conversationsWithMentions = new ArrayList<Conversation>();
+        int newMentionTotal = 0;
+        for (Conversation conversation : conversations.values()) {
+            if (conversation.hasBuffer()) {
+                conversationsWithNewMsg.add(conversation);
+                for (Message msg : conversation.getBuffer()) {
+                    newMsgTotal++;
+                    if (getConnection() != null && msg.getText().contains(getConnection().getNick())) {
+                        conversationsWithMentions.add(conversation);
+                        newMentionTotal++;
+                    }
+                }
+            }
+        }
+        ArrayList<String> lines = new ArrayList<String>();
+        if (conversationsWithNewMsg.size() > 0) {
+            if (conversationsWithNewMsg.size() == 1 && newMsgTotal <= 3) {
+                Conversation conv = conversationsWithNewMsg.get(0);
+                for (Message msg : conv.getBuffer()) {
+                    lines.add(conv.getName() + "/" + msg.getSender() + ": " + msg.getText());
+                }
+            } else {
+                lines.add(newMsgTotal + " new messages in " + conversationsWithNewMsg.size() + " conversations.");
+            }
+        }
+        if (conversationsWithMentions.size() > 0) {
+            if (conversationsWithMentions.size() == 1) {
+                lines.add(newMentionTotal + " new mentions in " + conversationsWithMentions.get(0).getName());
+            } else {
+                lines.add(newMentionTotal + " new mentions in " + conversationsWithMentions.size() + " conversations.");
+            }
+        }
+        String basicText;
+        if (getConnection() != null && conversationsWithNewMsg.size() == 0 && conversationsWithMentions.size() == 0) {
+            lines.clear();
+            basicText = "Connected as " + getConnection().getNick();
+        } else {
+            basicText = newMsgTotal + " new messages, " + newMentionTotal + " new mentions.";
+        }
+
+        NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
+        inboxStyle.setBigContentTitle("New messages on ScoutLink");
+        for (String line : lines) {
+            inboxStyle.addLine(line);
+        }
 		this.notif = new NotificationCompat.Builder(this)
 				.setContentTitle("ScoutLink")
-				.setContentText(text)
+				.setContentText(basicText)
+                .setStyle(inboxStyle)
 				.setSmallIcon(R.drawable.ic_launcher)
                 .setContentIntent(intent)
 				.build();
@@ -139,7 +192,7 @@ public class IRCService extends Service {
     public void onConnect() {
         getServer().setStatus(Server.STATUS_CONNECTED);
         setIsForeground(true);
-        updateNotification(getString(R.string.notification_connected, getConnection().getNick()));
+        updateNotification();
 
         if (!settings.getString("nickserv_user", "").equals("") && !settings.getString("nickserv_password", "").equals("")) {
             getConnection().sendRaw().rawLineNow("NICKSERV LOGIN " + settings.getString("nickserv_user", "") + " " + settings.getString("nickserv_password", ""));

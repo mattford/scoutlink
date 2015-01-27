@@ -82,7 +82,7 @@ public class IRCListener extends ListenerAdapter {
     }
 
     public void onDisconnect(DisconnectEvent event) {
-        service.updateNotification(service.getString(R.string.notification_not_connected));
+        service.updateNotification();
         service.setIsForeground(false);
 
         server.setStatus(Server.STATUS_DISCONNECTED);
