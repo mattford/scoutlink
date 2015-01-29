@@ -294,6 +294,18 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
             channelListIntent.putStringArrayListExtra("channels", channels);
             startActivityForResult(channelListIntent, JOIN_CHANNEL_RESULT);
             break;
+        case R.id.action_channel_settings:
+            if (conversation.getType() != Conversation.TYPE_CHANNEL) {
+                Toast.makeText(this, getString(R.string.channel_settings_not_channel), Toast.LENGTH_SHORT).show();
+            } else if (binder.getService().getConnection().getUserChannelDao().getChannel(conversation.getName()).isOp(binder.getService().getConnection().getUserBot())) {
+                Intent intent = new Intent(this, ChannelSettingsActivity.class);
+                intent.putExtra("channelName", conversation.getName());
+                startActivity(intent);
+            } else {
+                Toast.makeText(this, getString(R.string.channel_settings_need_op), Toast.LENGTH_SHORT).show();
+            }
+            break;
+
         }
         return super.onOptionsItemSelected(item);
     }

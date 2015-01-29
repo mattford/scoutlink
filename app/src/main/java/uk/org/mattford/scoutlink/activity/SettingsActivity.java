@@ -90,9 +90,6 @@ public class SettingsActivity extends Activity {
         switch (requestCode) {
             case AUTOJOIN_REQUEST_CODE:
                 if (resultCode == RESULT_OK) {
-                    for (String str : data.getStringArrayListExtra("items")) {
-                        Toast.makeText(this, str, Toast.LENGTH_SHORT).show();
-                    }
                     settings.putStringArrayList("autojoin_channels", data.getStringArrayListExtra("items"));
                 }
                 break;

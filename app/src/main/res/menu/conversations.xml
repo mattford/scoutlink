@@ -6,5 +6,6 @@
     <item android:id="@+id/action_userlist" android:orderInCategory="100" android:showAsAction="never" android:title="@string/action_users"></item>
     <item android:id="@+id/action_join" android:showAsAction="never" android:title="@string/action_join" android:orderInCategory="100"></item>
     <item android:id="@+id/action_channel_list" android:showAsAction="never" android:title="@string/action_channel_list" android:orderInCategory="100"></item>
+    <item android:id="@+id/action_channel_settings" android:showAsAction="never" android:title="@string/action_channel_settings" android:orderInCategory="100"></item>
 
 </menu>
