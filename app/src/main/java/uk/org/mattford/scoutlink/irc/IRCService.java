@@ -25,6 +25,7 @@ import android.content.Intent;
 import android.os.Binder;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+import android.widget.Toast;
 
 public class IRCService extends Service {
 	
@@ -95,7 +96,7 @@ public class IRCService extends Service {
             }
         }
 
-
+        final IRCService context = this;
         this.irc = new PircBotX(config.buildConfiguration());
         new Thread(new Runnable() {
             public void run() {
@@ -104,6 +105,8 @@ public class IRCService extends Service {
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (IrcException e) {
+                    Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+
                     e.printStackTrace();
                 }
             }

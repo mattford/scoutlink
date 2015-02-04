@@ -1,4 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:showAsAction="always" android:title="@string/action_userlist_kick_label" android:id="@+id/action_userlist_kick"/>
+    <item android:showAsAction="always" android:title="@string/action_userlist_op" android:id="@+id/action_userlist_op"/>
+    <item android:showAsAction="always" android:title="@string/action_userlist_deop" android:id="@+id/action_userlist_deop"/>
+    <item android:showAsAction="always" android:title="@string/action_userlist_hop" android:id="@+id/action_userlist_hop"/>
+    <item android:showAsAction="always" android:title="@string/action_userlist_dehop" android:id="@+id/action_userlist_dehop"/>
+    <item android:showAsAction="always" android:title="@string/action_userlist_owner" android:id="@+id/action_userlist_owner"/>
+    <item android:showAsAction="always" android:title="@string/action_userlist_deowner" android:id="@+id/action_userlist_deowner"/>
+    <item android:showAsAction="always" android:title="@string/action_userlist_admin" android:id="@+id/action_userlist_admin"/>
+    <item android:showAsAction="always" android:title="@string/action_userlist_deadmin" android:id="@+id/action_userlist_deadmin"/>
+    <item android:showAsAction="always" android:title="@string/action_userlist_voice" android:id="@+id/action_userlist_voice"/>
+    <item android:showAsAction="always" android:title="@string/action_userlist_devoice" android:id="@+id/action_userlist_devoice"/>
 </menu>

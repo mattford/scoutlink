@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import uk.org.mattford.scoutlink.R;
 import uk.org.mattford.scoutlink.model.User;
 
+import android.app.AlertDialog;
 import android.app.ListActivity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,6 +18,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 
 public class UserListActivity extends ListActivity {
@@ -66,6 +69,37 @@ public class UserListActivity extends ListActivity {
             case R.id.action_userlist_kill:
                 intent.putExtra("action", User.ACTION_KILL);
                 break;
+            case R.id.action_userlist_op:
+                intent.putExtra("action", User.ACTION_OP);
+                break;
+            case R.id.action_userlist_deop:
+                intent.putExtra("action", User.ACTION_DEOP);
+                break;
+            case R.id.action_userlist_hop:
+                intent.putExtra("action", User.ACTION_HOP);
+                break;
+            case R.id.action_userlist_dehop:
+                intent.putExtra("action", User.ACTION_DEHOP);
+                break;
+            case R.id.action_userlist_owner:
+                intent.putExtra("action", User.ACTION_OWNER);
+                break;
+            case R.id.action_userlist_deowner:
+                intent.putExtra("action", User.ACTION_DEOWNER);
+                break;
+            case R.id.action_userlist_admin:
+                intent.putExtra("action", User.ACTION_ADMIN);
+                break;
+            case R.id.action_userlist_deadmin:
+                intent.putExtra("action", User.ACTION_DEADMIN);
+                break;
+            case R.id.action_userlist_voice:
+                intent.putExtra("action", User.ACTION_VOICE);
+                break;
+            case R.id.action_userlist_devoice:
+                intent.putExtra("action", User.ACTION_DEVOICE);
+                break;
+
 
         }
         setResult(RESULT_OK, intent);

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="action_userlist_rights_list">
+        <item>Give Op</item>
+        <item>Take Op</item>
+        <item>Give Half-Op</item>
+        <item>Take Half-Op</item>
+        <item>Give Owner</item>
+        <item>Take Owner</item>
+        <item>Give Admin</item>
+        <item>Take Admin</item>
+        <item>Give Voice</item>
+        <item>Take Voice</item>
+    </string-array>
+
+
+</resources>

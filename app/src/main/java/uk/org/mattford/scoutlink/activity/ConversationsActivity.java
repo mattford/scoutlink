@@ -39,6 +39,8 @@ import android.widget.Toast;
 import com.viewpagerindicator.TabPageIndicator;
 import com.viewpagerindicator.TitlePageIndicator;
 
+import org.pircbotx.Channel;
+
 public class ConversationsActivity extends FragmentActivity implements ServiceConnection {
 	
 	private ConversationsPagerAdapter pagerAdapter;
@@ -321,7 +323,10 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
                 break;
             case USER_LIST_RESULT:
                 if (resultCode == RESULT_OK) {
-                    final String target = data.getStringExtra("target");
+                    String target = data.getStringExtra("target");
+                    String chanStr = pagerAdapter.getItemInfo(pager.getCurrentItem()).conv.getName();
+                    final Channel channel = binder.getService().getConnection().getUserChannelDao().getChannel(chanStr);
+                    final org.pircbotx.User user = binder.getService().getConnection().getUserChannelDao().getUser(target);
                     switch (data.getIntExtra("action", -1)) {
                         case User.ACTION_QUERY:
                             Query query = new Query(target);
@@ -334,15 +339,13 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
                             startActivityForResult(intent, NOTICE_RESULT);
                             break;
                         case User.ACTION_KICK:
-                            final String channel = pagerAdapter.getItemInfo(pager.getCurrentItem()).conv.getName();
                             final EditText input = new EditText(this);
                             new AlertDialog.Builder(this)
                                     .setTitle(R.string.action_kick_dialog_title)
                                     .setView(input)
                                     .setPositiveButton("Kick", new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int whichButton) {
-                                            org.pircbotx.User user = binder.getService().getConnection().getUserChannelDao().getUser(target);
-                                            binder.getService().getConnection().getUserChannelDao().getChannel(channel).send().kick(user, input.getText().toString());
+                                            channel.send().kick(user, input.getText().toString());
                                         }
                                     })
                                     .setNegativeButton("Cancel", new OnClickListener() {
@@ -359,7 +362,7 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
                                     .setView(inputKill)
                                     .setPositiveButton("Kill", new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int whichButton) {
-                                            binder.getService().getConnection().sendRaw().rawLineNow("KILL " + target + " " + inputKill.getText().toString());
+                                            binder.getService().getConnection().sendRaw().rawLineNow("KILL " + user.getNick() + " " + inputKill.getText().toString());
                                         }
                                     })
                                     .setNegativeButton("Cancel", new OnClickListener() {
@@ -368,6 +371,36 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
                                         }
                                     })
                                     .show();
+                            break;
+                        case User.ACTION_OP:
+                            channel.send().op(user);
+                            break;
+                        case User.ACTION_DEOP:
+                            channel.send().deOp(user);
+                            break;
+                        case User.ACTION_HOP:
+                            channel.send().halfOp(user);
+                            break;
+                        case User.ACTION_DEHOP:
+                            channel.send().deHalfOp(user);
+                            break;
+                        case User.ACTION_ADMIN:
+                            channel.send().superOp(user);
+                            break;
+                        case User.ACTION_DEADMIN:
+                            channel.send().deSuperOp(user);
+                            break;
+                        case User.ACTION_OWNER:
+                            channel.send().owner(user);
+                            break;
+                        case User.ACTION_DEOWNER:
+                            channel.send().deOwner(user);
+                            break;
+                        case User.ACTION_VOICE:
+                            channel.send().voice(user);
+                            break;
+                        case User.ACTION_DEVOICE:
+                            channel.send().deVoice(user);
                             break;
                     }
                 }

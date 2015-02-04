@@ -25,6 +25,16 @@
     <string name="action_userlist_notice_label">Notice</string>
     <string name="action_userlist_kill_label">Kill</string>
     <string name="action_userlist_kick_label">Kick</string>
+    <string name="action_userlist_op">Op</string>
+    <string name="action_userlist_deop">Deop</string>
+    <string name="action_userlist_hop">Half-Op</string>
+    <string name="action_userlist_dehop">DeHalf-Op</string>
+    <string name="action_userlist_owner">Owner</string>
+    <string name="action_userlist_deowner">De-Owner</string>
+    <string name="action_userlist_admin">Admin</string>
+    <string name="action_userlist_deadmin">De-Admin</string>
+    <string name="action_userlist_voice">Voice</string>
+    <string name="action_userlist_devoice">Devoice</string>
     <string name="title_activity_notice">Send a notice</string>
     <string name="send_notice_button">Send</string>
     <string name="activity_invite_title">Invited to Channel</string>
