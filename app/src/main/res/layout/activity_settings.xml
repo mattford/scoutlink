@@ -14,7 +14,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/settings_nickname"
-        android:layout_gravity="center_horizontal" />
+        android:layout_gravity="center_horizontal"
+        android:inputType="text" />
 
     <TextView
         android:layout_width="match_parent"
@@ -27,7 +28,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/settings_ident"
-        android:layout_gravity="center_horizontal" />
+        android:layout_gravity="center_horizontal"
+        android:inputType="text" />
 
     <TextView
         android:layout_width="match_parent"
@@ -40,7 +42,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/settings_gecos"
-        android:layout_gravity="center_horizontal" />
+        android:layout_gravity="center_horizontal"
+        android:inputType="text" />
 
     <TextView
         android:layout_width="match_parent"
@@ -53,7 +56,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/settings_nickserv_user"
-        android:layout_gravity="center_horizontal" />
+        android:layout_gravity="center_horizontal"
+        android:inputType="text" />
 
     <TextView
         android:layout_width="match_parent"
@@ -66,7 +70,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/settings_nickserv_password"
-        android:layout_gravity="center_horizontal" />
+        android:layout_gravity="center_horizontal"
+        android:inputType="textPassword"
+        android:password="false" />
 
     <Button
     android:id="@+id/settings_autojoin_channels"
