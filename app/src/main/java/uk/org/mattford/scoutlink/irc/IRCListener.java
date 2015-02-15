@@ -3,6 +3,7 @@ package uk.org.mattford.scoutlink.irc;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.widget.Toast;
 
 import com.google.common.collect.ImmutableSortedSet;
 
@@ -37,6 +38,7 @@ import org.pircbotx.hooks.events.RemovePrivateEvent;
 import org.pircbotx.hooks.events.RemoveSecretEvent;
 import org.pircbotx.hooks.events.RemoveTopicProtectionEvent;
 import org.pircbotx.hooks.events.ServerPingEvent;
+import org.pircbotx.hooks.events.ServerResponseEvent;
 import org.pircbotx.hooks.events.SetChannelBanEvent;
 import org.pircbotx.hooks.events.SetChannelKeyEvent;
 import org.pircbotx.hooks.events.SetChannelLimitEvent;
@@ -72,6 +74,13 @@ public class IRCListener extends ListenerAdapter {
         super();
         this.service = service;
         this.server = service.getServer();
+    }
+
+    public void onServerResponse(ServerResponseEvent event) {
+        switch(event.getCode()) {
+            case 433:
+                // Nick already in use, do something.
+        }
     }
 
     public void onConnect(ConnectEvent event) {

@@ -20,7 +20,7 @@
     <string name="send_message_in_server_window">You cannot send messages to the server window.</string>
     <string name="action_channel_list">Channel List</string>
     <string name="title_activity_channel_list">Channel List</string>
-    <string name="userlist_activity_label">Users List</string>
+    <string name="userlist_activity_label">User List</string>
     <string name="action_userlist_query_label">Query</string>
     <string name="action_userlist_notice_label">Notice</string>
     <string name="action_userlist_kill_label">Kill</string>
@@ -39,8 +39,6 @@
     <string name="send_notice_button">Send</string>
     <string name="activity_invite_title">Invited to Channel</string>
     <string name="invited_to_channel">You have been invited to %1$s, would you like to join?</string>
-    <string name="notification_connected">Connected as %s</string>
-    <string name="notification_not_connected">Not connected.</string>
     <string name="message_halfopevent">%1$s gave halfop to %2$s</string>
     <string name="message_dehalfopevent">%1$s took halfop from %2$s</string>
     <string name="message_opevent">%1$s gave op to %2$s</string>
@@ -51,9 +49,6 @@
     <string name="message_deownerevent">%1$s took owner from %2$s</string>
     <string name="message_voiceevent">%1$s gave voice to %2$s</string>
     <string name="message_devoiceevent">%1$s took voice from %2$s</string>
-    <string name="message_message">&lt;%1$s> %2$s</string>
-    <string name="message_private">&lt;%1$s> %2$s</string>
-    <string name="message_notice">-%1$s- %2$s</string>
     <string name="message_join">%1$s has joined %2$s</string>
     <string name="message_kicked_self">You were kicked from %1$s by %2$s (%3$s)</string>
     <string name="message_kicked_other">%1$s was kicked from %2$s by %3$s (%4$s)</string>
@@ -92,7 +87,6 @@
     <string name="title_activity_list_view_edit">ListViewEditActivity</string>
     <string name="edit_list_remove_item_confirm_title">Remove Item?</string>
     <string name="edit_list_remove_item_confirm_text">Are you sure you want to remove this item?</string>
-    <string name="edit_list_title">Edit list</string>
     <string name="settings_autojoin_channels_label">Autojoin Channels</string>
     <string name="settings_command_on_connect_label">Run commands on connect</string>
     <string name="title_activity_channel_settings">Channel Settings</string>
@@ -110,23 +104,8 @@
     <string name="channel_key_remove">Remove</string>
     <string name="channel_settings_key">Password</string>
     <string name="channel_settings_topic_change">Change</string>
-    <string name="set_no_external_messages_failed">Failed to disable external messages</string>
-    <string name="remove_no_external_messages_failed">Failed to disable external messages</string>
-    <string name="set_topic_protection">Failed to enable topic protection</string>
-    <string name="remove_topic_protection">Failed to disable topic protection</string>
-    <string name="set_private_failed">Failed to set private</string>
-    <string name="remove_private_failed">Failed to unset private</string>
-    <string name="set_secret_failed">Failed to set secret</string>
-    <string name="remove_secret_failed">Failed to unset secret</string>
-    <string name="set_moderated_failed">Failed to set moderated</string>
-    <string name="remove_moderated_failed">Failed to unset moderated</string>
-    <string name="set_invite_only_failed">Failed to set invite-only</string>
-    <string name="remove_invite_only_failed">Failed to unset invite-only</string>
-    <string name="set_channel_limit_failed">Failed to set channel limit</string>
-    <string name="remove_channel_limit_failed">Failed to remove channel limit</string>
-    <string name="set_channel_key_failed">Failed to set channel key</string>
-    <string name="remove_channel_key_failed">Failed to remove channel key</string>
+
     <string name="channel_settings_need_op">You must be an op to change channel settings</string>
     <string name="channel_settings_not_channel">You can only change settings in channels</string>
-
+    <string name="default_quit_message">ScoutLink for Android!</string>
 </resources>

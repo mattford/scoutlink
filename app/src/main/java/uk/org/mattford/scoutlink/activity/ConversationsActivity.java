@@ -13,6 +13,7 @@ import uk.org.mattford.scoutlink.model.Broadcast;
 import uk.org.mattford.scoutlink.model.Conversation;
 import uk.org.mattford.scoutlink.model.Message;
 import uk.org.mattford.scoutlink.model.Query;
+import uk.org.mattford.scoutlink.model.Settings;
 import uk.org.mattford.scoutlink.model.User;
 import uk.org.mattford.scoutlink.receiver.ConversationReceiver;
 import android.app.ActionBar;
@@ -48,6 +49,7 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 	private TitlePageIndicator indicator;
 	private ConversationReceiver receiver;
 	private IRCBinder binder;
+    private Settings settings;
 
     public final int USER_LIST_RESULT = 0;
 	public final int JOIN_CHANNEL_RESULT = 1;
@@ -56,6 +58,9 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_conversations);
+
+        settings = new Settings(this);
+
         pagerAdapter = new ConversationsPagerAdapter(getSupportFragmentManager(), this);
 
         pager = (ViewPager) findViewById(R.id.pager);
@@ -261,10 +266,7 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
         	
         	break;
         case R.id.action_disconnect:
-        	binder.getService().getConnection().sendIRC().quitServer("ScoutLink for Android!");
-        	//binder.getService().getServer().clearConversations();
-        	//pagerAdapter.clearConversations();
-        	//onDisconnect();
+        	binder.getService().getConnection().sendIRC().quitServer(settings.getString("quit_message", getString(R.string.default_quit_message)));
         	break;
         case R.id.action_userlist:
         	if (conversation.getType() == Conversation.TYPE_CHANNEL) {

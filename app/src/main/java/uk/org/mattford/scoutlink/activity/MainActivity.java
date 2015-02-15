@@ -24,11 +24,8 @@ public class MainActivity extends Activity implements ServiceConnection {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         this.settings = new Settings(this);
-
         setContentView(R.layout.activity_main);
-
     }
     
     @Override

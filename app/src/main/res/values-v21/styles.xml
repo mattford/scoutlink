@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="AppBaseTheme" parent="android:Theme.Material">
-        <item name="android:colorPrimaryDark">#0F1B5F</item>
+    <style name="AppBaseTheme" parent="android:Theme.Material.Light">
+        <item name="android:colorPrimaryDark">#ff0e1344</item>
         <item name="android:colorPrimary">#0F1B5F</item>
-        <item name="android:colorAccent">#0F1B5F</item>
+        <item name="android:colorAccent">#FFB200</item>
     </style>
-    <style name="Dialog" parent="android:Theme.Material.Dialog">
-
+    <style name="Dialog" parent="android:Theme.Material.Light.Dialog">
+        <item name="android:colorPrimaryDark">#ff0e1344</item>
+        <item name="android:colorPrimary">#0F1B5F</item>
+        <item name="android:colorAccent">#FFB200</item>
     </style>
 </resources>
