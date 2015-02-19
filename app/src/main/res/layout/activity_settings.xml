@@ -72,7 +72,15 @@
         android:id="@+id/settings_nickserv_password"
         android:layout_gravity="center_horizontal"
         android:inputType="textPassword"
-        android:password="false" />
+        />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/settings_quit_message"
+        android:layout_gravity="center_horizontal"
+        android:inputType="text"
+        />
 
     <Button
     android:id="@+id/settings_autojoin_channels"

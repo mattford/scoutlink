@@ -75,7 +75,9 @@
         android:inputType="number"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"/>
+        android:layout_weight="1"
+        android:hint="@string/channel_settings_limit"
+        />
     <Button
         android:id="@+id/channel_limit_set"
         android:layout_height="wrap_content"
@@ -97,7 +99,9 @@
             android:id="@+id/channel_key"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:hint="@string/channel_settings_key"
+            />
         <Button
             android:id="@+id/channel_key_set"
             android:layout_height="wrap_content"

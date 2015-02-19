@@ -75,9 +75,9 @@ public class ChannelSettingsActivity extends Activity implements ServiceConnecti
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (b && !channel.isNoExternalMessages()) {
-                    channel.send().setNoExternalMessages(channel);
+                    channel.send().setNoExternalMessages();
                 } else if (!b && channel.isNoExternalMessages()) {
-                    channel.send().removeNoExternalMessages(channel);
+                    channel.send().removeNoExternalMessages();
                 }
                 //compoundButton.setChecked(channel.isNoExternalMessages());
             }
@@ -89,9 +89,9 @@ public class ChannelSettingsActivity extends Activity implements ServiceConnecti
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (b && !channel.hasTopicProtection()) {
-                    channel.send().setTopicProtection(channel);
+                    channel.send().setTopicProtection();
                 } else if (!b && channel.hasTopicProtection()) {
-                    channel.send().removeTopicProtection(channel);
+                    channel.send().removeTopicProtection();
                 }
                 //compoundButton.setChecked(channel.hasTopicProtection());
             }
@@ -103,9 +103,9 @@ public class ChannelSettingsActivity extends Activity implements ServiceConnecti
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (b && !channel.isChannelPrivate()) {
-                    channel.send().setChannelPrivate(channel);
+                    channel.send().setChannelPrivate();
                 } else if (!b && channel.isNoExternalMessages()) {
-                    channel.send().removeChannelPrivate(channel);
+                    channel.send().removeChannelPrivate();
                 }
                // compoundButton.setChecked(channel.isChannelPrivate());
             }
@@ -117,9 +117,9 @@ public class ChannelSettingsActivity extends Activity implements ServiceConnecti
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (b && !channel.isSecret()) {
-                    channel.send().setSecret(channel);
+                    channel.send().setSecret();
                 } else if (!b && channel.isNoExternalMessages()) {
-                    channel.send().removeSecret(channel);
+                    channel.send().removeSecret();
                 }
                // compoundButton.setChecked(channel.isSecret());
             }
@@ -131,9 +131,9 @@ public class ChannelSettingsActivity extends Activity implements ServiceConnecti
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (b && !channel.isModerated()) {
-                    channel.send().setModerated(channel);
+                    channel.send().setModerated();
                 } else if (!b && channel.isNoExternalMessages()) {
-                    channel.send().removeModerated(channel);
+                    channel.send().removeModerated();
                 }
                // compoundButton.setChecked(channel.isModerated());
             }
@@ -145,9 +145,9 @@ public class ChannelSettingsActivity extends Activity implements ServiceConnecti
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (b && !channel.isInviteOnly()) {
-                    channel.send().setInviteOnly(channel);
+                    channel.send().setInviteOnly();
                 } else if (!b && channel.isNoExternalMessages()) {
-                    channel.send().removeInviteOnly(channel);
+                    channel.send().removeInviteOnly();
                 }
                // compoundButton.setChecked(channel.isInviteOnly());
             }
@@ -171,7 +171,7 @@ public class ChannelSettingsActivity extends Activity implements ServiceConnecti
         removeLimitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                channel.send().removeChannelLimit(channel);
+                channel.send().removeChannelLimit();
                 limit.setText("");
             }
         });
@@ -191,7 +191,7 @@ public class ChannelSettingsActivity extends Activity implements ServiceConnecti
             public void onClick(View view) {
                 if (channel.getChannelKey() != null) {
                     channel.send().setMode("-k " + channel.getChannelKey());
-                     key.setText("");
+                    key.setText("");
                 }
             }
         });

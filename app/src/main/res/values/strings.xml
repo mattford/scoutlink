@@ -108,4 +108,8 @@
     <string name="channel_settings_need_op">You must be an op to change channel settings</string>
     <string name="channel_settings_not_channel">You can only change settings in channels</string>
     <string name="default_quit_message">ScoutLink for Android!</string>
+    <string name="nick_already_in_use">This nickname is already in use, please select a different nickname and try again.</string>
+    <string name="default_ident">AndroidIRC</string>
+    <string name="default_gecos">ScoutLink IRC for Android!</string>
+    <string name="server_address">chat.scoutlink.net</string>
 </resources>

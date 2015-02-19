@@ -3,6 +3,7 @@ package uk.org.mattford.scoutlink.irc;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
@@ -22,7 +23,9 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.os.Binder;
+import android.os.Handler;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
@@ -78,12 +81,15 @@ public class IRCService extends Service {
         sendBroadcast(intent);
         onNewMessage("ScoutLink");
 
+        List<Configuration.ServerEntry> servers = new ArrayList<Configuration.ServerEntry>();
+        servers.add(new Configuration.ServerEntry(getString(R.string.server_address), 6667));
+
         IRCListener listener = new IRCListener(this);
         Configuration.Builder config = new Configuration.Builder()
             .setName(settings.getString("nickname"))
-            .setLogin(settings.getString("ident", "AndroidIRC"))
-            .setServer("chat.scoutlink.net", 6667)
-            .setRealName(settings.getString("gecos", "ScoutLink IRC for Android!"))
+            .setLogin(settings.getString("ident", getString(R.string.default_ident)))
+            .setServers(servers)
+            .setRealName(settings.getString("gecos", getString(R.string.default_gecos)))
             .addListener(listener);
 
         String[] channels = settings.getStringArray("autojoin_channels");
@@ -96,7 +102,6 @@ public class IRCService extends Service {
             }
         }
 
-        final IRCService context = this;
         this.irc = new PircBotX(config.buildConfiguration());
         new Thread(new Runnable() {
             public void run() {
@@ -105,14 +110,10 @@ public class IRCService extends Service {
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (IrcException e) {
-                    Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
-
                     e.printStackTrace();
                 }
             }
         }).start();
-
-
 	}
 	
 	public Server getServer() {
@@ -183,6 +184,7 @@ public class IRCService extends Service {
 				.setContentText(basicText)
                 .setStyle(inboxStyle)
 				.setSmallIcon(R.drawable.ic_launcher)
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher))
                 .setContentIntent(intent)
 				.build();
 		if (this.isForeground()) {
@@ -198,7 +200,7 @@ public class IRCService extends Service {
         updateNotification();
 
         if (!settings.getString("nickserv_user", "").equals("") && !settings.getString("nickserv_password", "").equals("")) {
-            getConnection().sendRaw().rawLineNow("NICKSERV LOGIN " + settings.getString("nickserv_user", "") + " " + settings.getString("nickserv_password", ""));
+            irc.send().notice("NickServ", "LOGIN "+settings.getString("nickserv_user", "")+" "+settings.getString("nickserv_password", ""));
         }
 
         String[] commands = settings.getStringArray("command_on_connect");
@@ -210,6 +212,17 @@ public class IRCService extends Service {
                 getConnection().sendRaw().rawLineNow(command);
             }
         }
+    }
+
+    public void onNickAlreadyInUse() {
+        Handler mainThread = new Handler(getMainLooper());
+        final Context context = this;
+        mainThread.post(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(context, getString(R.string.nick_already_in_use), Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
 	@Override

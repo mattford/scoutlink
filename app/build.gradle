@@ -32,8 +32,15 @@ android {
     }
 }
 
+repositories {
+    maven {
+        url 'https://oss.sonatype.org/content/repositories/snapshots'
+    }
+    mavenCentral()
+}
+
 dependencies {
     compile 'com.android.support:support-v4:19.1.0'
     compile 'org.slf4j:slf4j-android:1.7.8'
-    compile 'org.pircbotx:pircbotx:2.0'
+    compile 'org.pircbotx:pircbotx:2.1-SNAPSHOT'
 }

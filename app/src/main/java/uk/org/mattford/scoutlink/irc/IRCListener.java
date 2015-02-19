@@ -3,10 +3,12 @@ package uk.org.mattford.scoutlink.irc;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.common.collect.ImmutableSortedSet;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.pircbotx.hooks.ListenerAdapter;
@@ -20,6 +22,7 @@ import org.pircbotx.hooks.events.JoinEvent;
 import org.pircbotx.hooks.events.KickEvent;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.MotdEvent;
+import org.pircbotx.hooks.events.NickAlreadyInUseEvent;
 import org.pircbotx.hooks.events.NickChangeEvent;
 import org.pircbotx.hooks.events.NoticeEvent;
 import org.pircbotx.hooks.events.OpEvent;
@@ -76,17 +79,13 @@ public class IRCListener extends ListenerAdapter {
         this.server = service.getServer();
     }
 
-    public void onServerResponse(ServerResponseEvent event) {
-        switch(event.getCode()) {
-            case 433:
-                // Nick already in use, do something.
-        }
+    public void onNickAlreadyInUse(NickAlreadyInUseEvent event) {
+        service.onNickAlreadyInUse();
+        event.getBot().sendIRC().quitServer();
     }
 
     public void onConnect(ConnectEvent event) {
         event.getBot().sendIRC().listChannels();
-
-
         service.onConnect();
     }
 
@@ -199,13 +198,21 @@ public class IRCListener extends ListenerAdapter {
     }
 
     public void onNotice(NoticeEvent event) {
-        Message message = new Message("-"+event.getUser().getNick()+"-", event.getMessage());
+
+        String sender;
+        try {
+            sender = event.getUser().getNick();
+        } catch (NullPointerException e) {
+            sender = event.getUserHostmask().getNick();
+        }
+        Message message = new Message("-"+sender+"-", event.getMessage());
         message.setBackgroundColour(Color.parseColor("#4CD964"));
         message.setColour(Color.WHITE);
-
-        for (String channel : getSharedChannels(event.getBot(), event.getUser())) {
-            server.getConversation(channel).addMessage(message);
-            service.onNewMessage(channel);
+        if (event.getUser() != null) {
+            for (String channel : getSharedChannels(event.getBot(), event.getUser())) {
+                server.getConversation(channel).addMessage(message);
+                service.onNewMessage(channel);
+            }
         }
         server.getConversation("ScoutLink").addMessage(message);
         service.onNewMessage("ScoutLink");
@@ -437,7 +444,9 @@ public class IRCListener extends ListenerAdapter {
     }
 
     public void onUserMode(UserModeEvent event) {
-        Message msg = new Message(service.getString(R.string.message_usermode, event.getUser().getNick(), event.getMode(), event.getRecipient().getNick()));
+        String sender = event.getUserHostmask().getNick();
+        String receiver = event.getRecipientHostmask().getNick();
+        Message msg = new Message(service.getString(R.string.message_usermode, sender, event.getMode(), receiver));
         msg.setColour(Color.parseColor("#0F1B5F"));
         server.getConversation("ScoutLink").addMessage(msg);
         service.onNewMessage("ScoutLink");

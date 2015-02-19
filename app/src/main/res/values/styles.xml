@@ -29,7 +29,7 @@
         <item name="android:background">#0F1B5F</item>
     </style>
 
-    <style name="Dialog" parent="android:Theme.Dialog"></style>
+    <style name="Dialog" parent="android:Theme.Holo.Light.Dialog"></style>
 
 
 </resources>

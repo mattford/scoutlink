@@ -44,6 +44,9 @@ public class SettingsActivity extends Activity {
         et = (EditText)findViewById(R.id.settings_nickserv_password);
         et.setText(settings.getString("nickserv_password", ""));
 
+        et = (EditText)findViewById(R.id.settings_quit_message);
+        et.setText(settings.getString("quit_message", getString(R.string.default_quit_message)));
+
 
     }
 
@@ -83,6 +86,9 @@ public class SettingsActivity extends Activity {
 
         et = (EditText)findViewById(R.id.settings_nickserv_password);
         settings.putString("nickserv_password", et.getText().toString());
+
+        et = (EditText)findViewById(R.id.settings_quit_message);
+        settings.putString("quit_message", et.getText().toString());
     }
 
     @Override
