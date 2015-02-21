@@ -1,24 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
+    <!-- Name of the App -->
     <string name="app_name">ScoutLink</string>
-    <string name="action_settings">Settings</string>
-    <string name="connect_button">Connect</string>
+
+    <!-- Text displayed if the nickname field in main screen is blank -->
     <string name="nickname_hint">Nickname</string>
+    <!-- Text on the "Connect" button on the main screen -->
+    <string name="connect_button">Connect</string>
+    <!-- Text displayed below the logo on the main screen -->
     <string name="welcome_text">Welcome to ScoutLink, please enter a nickname below</string>
-    <string name="label_send_message_button">Send</string>
-    <string name="send_message_hint">Type to send a message</string>
+
+    <!-- Menu Items -->
+    <!-- Opens Application Settings, e.g., nick, ident, realname, quit message -->
+    <string name="action_settings">Settings</string>
+    <!-- Leaves the current channel or closes PM window, fails in server window, see `close_server_window` string. -->
     <string name="action_close">Close</string>
+    <!-- Disconnects from ScoutLink -->
     <string name="action_disconnect">Disconnect</string>
+    <!-- Shows users on the current channel, fails if not in a channel - see `userlist_not_on_channel` string. -->
     <string name="action_users">User list</string>
-    <string name="message_list_no_messages">No messages yet, type below to start chatting!</string>
-    <string name="join_button">Join</string>
+    <!-- Opens an interface to join a new channel -->
     <string name="action_join">Join Channel</string>
-    <string name="join_activity_label">Join Channel</string>
-    <string name="close_server_window">You cannot close the server window!</string>
-    <string name="userlist_not_on_channel">This function only works on channels</string>
-    <string name="send_message_in_server_window">You cannot send messages to the server window.</string>
+    <!-- Displays a list of all available channels -->
     <string name="action_channel_list">Channel List</string>
+    <!-- Displays a window where channel settings such as topic, and common modes can be changed -->
+    <string name="action_channel_settings">Channel Settings</string>
+
+    <!-- Text displayed on the "Send" button in a channel -->
+    <string name="label_send_message_button">Send</string>
+    <!-- Text shown when no text has been typed into the new message box on a channel. -->
+    <string name="send_message_hint">Type to send a message</string>
+
+    <!-- Displayed when no messages have been sent to a channel yet (very rarely seen as channels almost immediately display topic info when joined) -->
+    <string name="message_list_no_messages">No messages yet, type below to start chatting!</string>
+    <!-- Displayed if the user tries to close the Server Window -->
+    <string name="close_server_window">You cannot close the server window!</string>
+    <!-- Displayed if the user tries to open the user list on a non-channel conversation -->
+    <string name="userlist_not_on_channel">This function only works on channels</string>
+    <!-- Displayed if the user tries to send a non-command message to the server window -->
+    <string name="send_message_in_server_window">You cannot send messages to the server window.</string>
+
+    <!-- Displayed on the Join button in JoinActivity (opened when "action_join" is selected -->
+    <string name="join_button">Join</string>
+    <!-- Title of the Join Activity -->
+    <string name="join_activity_label">Join Channel</string>
+
+
     <string name="title_activity_channel_list">Channel List</string>
     <string name="userlist_activity_label">User List</string>
     <string name="action_userlist_query_label">Query</string>
@@ -35,10 +62,13 @@
     <string name="action_userlist_deadmin">De-Admin</string>
     <string name="action_userlist_voice">Voice</string>
     <string name="action_userlist_devoice">Devoice</string>
+
     <string name="title_activity_notice">Send a notice</string>
     <string name="send_notice_button">Send</string>
+
     <string name="activity_invite_title">Invited to Channel</string>
     <string name="invited_to_channel">You have been invited to %1$s, would you like to join?</string>
+
     <string name="message_halfopevent">%1$s gave halfop to %2$s</string>
     <string name="message_dehalfopevent">%1$s took halfop from %2$s</string>
     <string name="message_opevent">%1$s gave op to %2$s</string>
@@ -78,19 +108,25 @@
     <string name="message_set_topicprotect">%1$s has enabled topic protection</string>
     <string name="message_unset_topicprotect">%1$s has disabled topic protection</string>
     <string name="message_action">%1$s %2$s</string>
+    <string name="message_notice">-%1$s- %2$s</string>
+
     <string name="action_kick_dialog_title">Reason for kick:</string>
+
     <string name="settings_nickname_label">Nickname:</string>
     <string name="settings_ident_label">Username:</string>
     <string name="settings_gecos_label">Real Name:</string>
     <string name="settings_nickserv_user_label">Nickserv Username:</string>
     <string name="settings_nickserv_password_label">Nickserv Password:</string>
-    <string name="title_activity_list_view_edit">ListViewEditActivity</string>
+
+    <string name="title_activity_list_view_edit">Edit List</string>
     <string name="edit_list_remove_item_confirm_title">Remove Item?</string>
     <string name="edit_list_remove_item_confirm_text">Are you sure you want to remove this item?</string>
+
     <string name="settings_autojoin_channels_label">Autojoin Channels</string>
     <string name="settings_command_on_connect_label">Run commands on connect</string>
+
     <string name="title_activity_channel_settings">Channel Settings</string>
-    <string name="action_channel_settings">Channel Settings</string>
+
     <string name="channel_settings_external_messages">Block external messages</string>
     <string name="channel_settings_topic_protection">Enable topic protection</string>
     <string name="channel_settings_private">Private</string>
@@ -104,12 +140,35 @@
     <string name="channel_key_remove">Remove</string>
     <string name="channel_settings_key">Password</string>
     <string name="channel_settings_topic_change">Change</string>
-
     <string name="channel_settings_need_op">You must be an op to change channel settings</string>
     <string name="channel_settings_not_channel">You can only change settings in channels</string>
     <string name="default_quit_message">ScoutLink for Android!</string>
     <string name="nick_already_in_use">This nickname is already in use, please select a different nickname and try again.</string>
+
+    <string name="notification_new_mentions">%1$s new mentions in %2$s.</string>
+    <string name="notification_new_mentions_multi">%1$s new mentions in %2$s conversations.</string>
+    <string name="notification_new_messages_inbox_title">New messages on ScoutLink</string>
+    <string name="notification_new_messages">%1$s new messages in %2$s conversations.</string>
+    <string name="notification_new_messages_multi">%1$s/%2$s: %3$s</string>
+    <string name="notification_connected">Connected as %1$s.</string>
+    <string name="notification_new_multi">%1$s new messages, %2$s new mentions.</string>
+
+
+    <string name="notice_hint">Enter your message</string>
+    <string name="settings_topic_hint">Channel Topic</string>
+
+    <string name="edit_list_add_button">Add</string>
+    <string name="edit_list_save_button">Save</string>
+
+    <!-- Default settings values -->
+    <!-- Default ident to use if the user does not set one, this will show in the users hostmask (nick!ident@host) -->
     <string name="default_ident">AndroidIRC</string>
+    <!-- Default Real Name to use if the user does not set one, this will show in WHOIS -->
     <string name="default_gecos">ScoutLink IRC for Android!</string>
+
+    <!-- Core App Settings, probably don't need localising. -->
+    <string name="server_window_title">ScoutLink</string>
+    <string name="channel_name_prefix">#</string>
+
     <string name="server_address">chat.scoutlink.net</string>
 </resources>

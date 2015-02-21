@@ -31,9 +31,9 @@ public class ListEditActivity extends ListActivity {
         Intent callingIntent = getIntent();
         items = callingIntent.getStringArrayListExtra("items");
         if (items.size() < 2 && items.get(0).equals("")) {
-            items = new ArrayList<String>();
+            items = new ArrayList<>();
         }
-        adapter = new ArrayAdapter<String>(this, R.layout.list_view_edit_item, items);
+        adapter = new ArrayAdapter<>(this, R.layout.list_view_edit_item, items);
         setListAdapter(adapter);
 
         if (callingIntent.getStringExtra("firstChar") != null) {

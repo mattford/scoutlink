@@ -15,7 +15,8 @@ public class ActionHandler extends CommandHandler {
 		if (params.length > 2) {
 			StringBuilder sb = new StringBuilder();
 			for (int i = 1; i < params.length; i++) {
-				sb.append(params[i] + " ");
+				sb.append(params[i]);
+                sb.append(" ");
 			}
 			action = sb.toString();
 		} else {

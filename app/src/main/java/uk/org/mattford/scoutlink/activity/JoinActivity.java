@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.EditText;
 
 public class JoinActivity extends Activity implements OnClickListener {
@@ -14,7 +13,7 @@ public class JoinActivity extends Activity implements OnClickListener {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_join);
-		((Button)findViewById(R.id.join_button)).setOnClickListener(this);
+		findViewById(R.id.join_button).setOnClickListener(this);
 	}
 
 	@Override

@@ -3,7 +3,6 @@ package uk.org.mattford.scoutlink.command;
 import java.util.HashMap;
 import java.util.Locale;
 
-import android.util.Log;
 import uk.org.mattford.scoutlink.command.handler.ActionHandler;
 import uk.org.mattford.scoutlink.command.handler.JoinHandler;
 import uk.org.mattford.scoutlink.command.handler.NickHandler;
@@ -19,11 +18,9 @@ public class CommandParser {
 	public HashMap<String, CommandHandler> commands;
 	public HashMap<String, String> aliases;
 	
-	private final String logTag = "ScoutLink/CommandParser";
-
 	private CommandParser() {
-		commands = new HashMap<String, CommandHandler>();
-		aliases = new HashMap<String, String>();
+		commands = new HashMap<>();
+		aliases = new HashMap<>();
 		
 		commands.put("join", new JoinHandler());
 		commands.put("part", new PartHandler());
@@ -76,7 +73,6 @@ public class CommandParser {
 	public void handleServerCommand(String[] params, Conversation conversation, IRCService service) {
 		if (params.length > 1) {
 			params[0] = params[0].toUpperCase(Locale.ENGLISH);
-			Log.d(logTag, "Server Command: " + mergeParams(params));
 			service.getConnection().sendRaw().rawLine(mergeParams(params));
 		} else {
 			service.getConnection().sendRaw().rawLine(params[0].toUpperCase(Locale.ENGLISH));
@@ -84,10 +80,7 @@ public class CommandParser {
 	}
 	
 	public boolean isClientCommand(String command) {
-		if (commands.containsKey(command) || aliases.containsKey(command)) {
-			return true;
-		}
-		return false;
+		return (commands.containsKey(command) || aliases.containsKey(command));
 	}
 	
 	public String mergeParams(String[] params) {

@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -20,7 +19,7 @@ public class ChannelListActivity extends ListActivity implements AdapterView.OnI
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_channel_list);
         ArrayList<String> channels = getIntent().getStringArrayListExtra("channels");
-        setListAdapter(new ArrayAdapter<String>(this, R.layout.channel_list_item, channels));
+        setListAdapter(new ArrayAdapter<>(this, R.layout.channel_list_item, channels));
         getListView().setOnItemClickListener(this);
 
     }

@@ -10,7 +10,8 @@
         android:layout_height="wrap_content"
         android:singleLine="true"
         android:ems="10"
-        android:text="#" />
+        android:text="@string/channel_name_prefix"
+        android:inputType="text"/>
     <Button
         android:id="@+id/join_button"
         android:layout_width="fill_parent"

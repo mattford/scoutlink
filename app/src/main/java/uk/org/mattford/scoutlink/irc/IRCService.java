@@ -1,13 +1,11 @@
 package uk.org.mattford.scoutlink.irc;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
-import org.pircbotx.exception.IrcException;
 
 import uk.org.mattford.scoutlink.R;
 import uk.org.mattford.scoutlink.activity.ConversationsActivity;
@@ -27,7 +25,6 @@ import android.graphics.BitmapFactory;
 import android.os.Binder;
 import android.os.Handler;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 import android.widget.Toast;
 
 public class IRCService extends Service {
@@ -38,8 +35,7 @@ public class IRCService extends Service {
 	private Notification notif;
 	
 	private final int NOTIF_ID = 1;
-	private final String logTag = "ScoutLink/IRCService";
-	
+
 	private boolean foreground = false;
 
 	public void onCreate() {
@@ -71,17 +67,15 @@ public class IRCService extends Service {
 	}
 	
 	public void connect() {
-		Log.v(logTag, "Connecting...");
-
-        ServerWindow sw = new ServerWindow("ScoutLink");
+        ServerWindow sw = new ServerWindow(getString(R.string.server_window_title));
         server.addConversation(sw);
         Message msg = new Message("Connecting to ScoutLink...");
         sw.addMessage(msg);
-        Intent intent = new Intent(Broadcast.NEW_CONVERSATION).putExtra("target", "ScoutLink");
+        Intent intent = new Intent(Broadcast.NEW_CONVERSATION).putExtra("target", getString(R.string.server_window_title));
         sendBroadcast(intent);
-        onNewMessage("ScoutLink");
+        onNewMessage(getString(R.string.server_window_title));
 
-        List<Configuration.ServerEntry> servers = new ArrayList<Configuration.ServerEntry>();
+        List<Configuration.ServerEntry> servers = new ArrayList<>();
         servers.add(new Configuration.ServerEntry(getString(R.string.server_address), 6667));
 
         IRCListener listener = new IRCListener(this);
@@ -107,10 +101,9 @@ public class IRCService extends Service {
             public void run() {
                 try {
                     irc.startBot();
-                } catch (IOException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
-                } catch (IrcException e) {
-                    e.printStackTrace();
+                    // TODO: Quit the application here.
                 }
             }
         }).start();
@@ -132,9 +125,9 @@ public class IRCService extends Service {
         PendingIntent intent = PendingIntent.getActivity(this, 0, notifIntent, 0);
 
         HashMap<String, Conversation> conversations = getServer().getConversations();
-        ArrayList<Conversation> conversationsWithNewMsg = new ArrayList<Conversation>();
+        ArrayList<Conversation> conversationsWithNewMsg = new ArrayList<>();
         int newMsgTotal = 0;
-        ArrayList<Conversation> conversationsWithMentions = new ArrayList<Conversation>();
+        ArrayList<Conversation> conversationsWithMentions = new ArrayList<>();
         int newMentionTotal = 0;
         for (Conversation conversation : conversations.values()) {
             if (conversation.hasBuffer()) {
@@ -148,42 +141,42 @@ public class IRCService extends Service {
                 }
             }
         }
-        ArrayList<String> lines = new ArrayList<String>();
+        ArrayList<String> lines = new ArrayList<>();
         if (conversationsWithNewMsg.size() > 0) {
             if (conversationsWithNewMsg.size() == 1 && newMsgTotal <= 3) {
                 Conversation conv = conversationsWithNewMsg.get(0);
                 for (Message msg : conv.getBuffer()) {
-                    lines.add(conv.getName() + "/" + msg.getSender() + ": " + msg.getText());
+                    lines.add(getString(R.string.notification_new_messages_multi, conv.getName(), msg.getSender(), msg.getText()));
                 }
             } else {
-                lines.add(newMsgTotal + " new messages in " + conversationsWithNewMsg.size() + " conversations.");
+                lines.add(getString(R.string.notification_new_messages, newMsgTotal, conversationsWithNewMsg.size()));
             }
         }
         if (conversationsWithMentions.size() > 0) {
             if (conversationsWithMentions.size() == 1) {
-                lines.add(newMentionTotal + " new mentions in " + conversationsWithMentions.get(0).getName());
+                lines.add(getString(R.string.notification_new_mentions, newMentionTotal, conversationsWithMentions.get(0).getName()));
             } else {
-                lines.add(newMentionTotal + " new mentions in " + conversationsWithMentions.size() + " conversations.");
+                lines.add(getString(R.string.notification_new_mentions_multi, newMentionTotal, conversationsWithMentions.size()));
             }
         }
         String basicText;
         if (getConnection() != null && conversationsWithNewMsg.size() == 0 && conversationsWithMentions.size() == 0) {
             lines.clear();
-            basicText = "Connected as " + getConnection().getNick();
+            basicText = getString(R.string.notification_connected, getConnection().getNick());
         } else {
-            basicText = newMsgTotal + " new messages, " + newMentionTotal + " new mentions.";
+            basicText = getString(R.string.notification_new_multi, newMsgTotal, newMentionTotal);
         }
 
         NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
-        inboxStyle.setBigContentTitle("New messages on ScoutLink");
+        inboxStyle.setBigContentTitle(getString(R.string.notification_new_messages_inbox_title));
         for (String line : lines) {
             inboxStyle.addLine(line);
         }
 		this.notif = new NotificationCompat.Builder(this)
-				.setContentTitle("ScoutLink")
+				.setContentTitle(getString(R.string.app_name))
 				.setContentText(basicText)
                 .setStyle(inboxStyle)
-				.setSmallIcon(R.drawable.ic_launcher)
+				.setSmallIcon(R.drawable.notification_icon)
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher))
                 .setContentIntent(intent)
 				.build();

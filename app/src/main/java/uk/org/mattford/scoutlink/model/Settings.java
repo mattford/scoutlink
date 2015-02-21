@@ -37,20 +37,19 @@ public class Settings {
 	public void putString(String key, String value) {
 		SharedPreferences.Editor editor = this.prefs.edit();
 		editor.putString(key, value);
-		editor.commit();
+		editor.apply();
 	}
 	
 	public void putBoolean(String key, Boolean value) {
 		SharedPreferences.Editor editor = this.prefs.edit();
 		editor.putBoolean(key, value);
-		editor.commit();
+		editor.apply();
 	}
 
     public void putStringArray(String key, String[] value) {
-        SharedPreferences.Editor editor = prefs.edit();
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < value.length; i++) {
-            sb.append(value[i]).append(",");
+        for (String val : value) {
+            sb.append(val).append(",");
         }
         putString(key, sb.toString());
     }
@@ -63,8 +62,7 @@ public class Settings {
 
     public String[] getStringArray(String key) {
         String string = this.getString(key);
-        String[] items = string.split(",");
-        return items;
+        return string.split(",");
     }
 
 	

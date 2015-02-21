@@ -3,10 +3,8 @@ package uk.org.mattford.scoutlink.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -55,14 +53,14 @@ public class SettingsActivity extends Activity {
 
         intent.putExtra("title", "Autojoin Channels");
         intent.putExtra("firstChar", "#");
-        intent.putStringArrayListExtra("items", new ArrayList<String>(Arrays.asList(settings.getStringArray("autojoin_channels"))));
+        intent.putStringArrayListExtra("items", new ArrayList<>(Arrays.asList(settings.getStringArray("autojoin_channels"))));
         startActivityForResult(intent, AUTOJOIN_REQUEST_CODE);
     }
 
     public void openCommandOnConnectSettings(View v) {
         Intent intent = new Intent(this, ListEditActivity.class);
 
-        intent.putStringArrayListExtra("items", new ArrayList<String>(Arrays.asList(settings.getStringArray("command_on_connect"))));
+        intent.putStringArrayListExtra("items", new ArrayList<>(Arrays.asList(settings.getStringArray("command_on_connect"))));
         intent.putExtra("title", "Commands on Connect");
         intent.putExtra("firstChar", "/");
         startActivityForResult(intent, CONNECT_COMMANDS_REQUEST_CODE);

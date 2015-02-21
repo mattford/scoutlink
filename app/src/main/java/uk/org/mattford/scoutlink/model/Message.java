@@ -23,18 +23,25 @@ public class Message {
 
 	private String text;
     private String sender;
+    private Date timestamp;
+    private Integer colour;
+    private Integer backgroundColour;
+
 
     public Date getTimestamp() {
         return timestamp;
     }
 
+    /**
+     * Set the timestamp for this message
+     *
+     * @param timestamp
+     */
     public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
     }
 
-    private Date timestamp;
-    private Integer colour;
-    private Integer backgroundColour;
+
 
     public int getAlignment() {
         return alignment;
@@ -99,8 +106,8 @@ public class Message {
 		messageView.setText(text);
 
         if (getAlignment() == ALIGN_RIGHT) {
-            view.setGravity(Gravity.RIGHT);
-            messageView.setGravity(Gravity.RIGHT);
+            view.setGravity(Gravity.END);
+            messageView.setGravity(Gravity.END);
         } else if (getAlignment() == ALIGN_CENTER) {
             ViewGroup.LayoutParams params = messageView.getLayoutParams();
             params.width = ViewGroup.LayoutParams.MATCH_PARENT;

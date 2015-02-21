@@ -4,7 +4,7 @@ import java.util.LinkedList;
 
 public class Conversation {
 	
-	public String CONVERSATION_NAME;
+	private String CONVERSATION_NAME;
 	private int type;
 	private LinkedList<Message> messages;
 	private LinkedList<Message> buffer;
@@ -13,10 +13,10 @@ public class Conversation {
 	public final static int TYPE_QUERY = 1;
 	public final static int TYPE_SERVER = 2;
 
-	public Conversation(String name) {
+	protected Conversation(String name) {
 		this.CONVERSATION_NAME = name;
-		this.messages = new LinkedList<Message>();
-		this.buffer = new LinkedList<Message>();
+		this.messages = new LinkedList<>();
+		this.buffer = new LinkedList<>();
 	}
 	
 	public String getName() {
@@ -45,7 +45,7 @@ public class Conversation {
 		buffer.clear();
 	}
 	
-	public void setType(int type) {
+	protected void setType(int type) {
 		this.type = type;
 	}
 	

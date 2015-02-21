@@ -17,7 +17,7 @@ public class ConversationsPagerAdapter extends FragmentStatePagerAdapter {
 
 	public ConversationsPagerAdapter(FragmentManager fm, Context context) {
         super(fm);
-        conversations = new LinkedList<ConversationInfo>();
+        conversations = new LinkedList<>();
         this.context = context;
     }
 	
@@ -97,7 +97,7 @@ public class ConversationsPagerAdapter extends FragmentStatePagerAdapter {
 		return conversations.size();
 	}
 	
-    public MessageListFragment getView(int i) {
+    protected MessageListFragment getView(int i) {
     	ConversationInfo info = conversations.get(i);
 
     	MessageListFragment frag;

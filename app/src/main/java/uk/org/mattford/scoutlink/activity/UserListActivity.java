@@ -5,20 +5,15 @@ import java.util.ArrayList;
 import uk.org.mattford.scoutlink.R;
 import uk.org.mattford.scoutlink.model.User;
 
-import android.app.AlertDialog;
 import android.app.ListActivity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.Toast;
 
 
 public class UserListActivity extends ListActivity {
@@ -32,7 +27,7 @@ public class UserListActivity extends ListActivity {
 		ArrayList<String> users = getIntent().getStringArrayListExtra("users");
         this.isChanOp = getIntent().getBooleanExtra("isChanOp", false);
         this.isIrcOp = getIntent().getBooleanExtra("isIrcOp", false);
-		setListAdapter(new ArrayAdapter<String>(this, R.layout.user_list_item, users));
+		setListAdapter(new ArrayAdapter<>(this, R.layout.user_list_item, users));
         registerForContextMenu(getListView());
 	}
 

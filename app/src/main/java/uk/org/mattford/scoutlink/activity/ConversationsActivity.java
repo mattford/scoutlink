@@ -16,7 +16,6 @@ import uk.org.mattford.scoutlink.model.Query;
 import uk.org.mattford.scoutlink.model.Settings;
 import uk.org.mattford.scoutlink.model.User;
 import uk.org.mattford.scoutlink.receiver.ConversationReceiver;
-import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.DialogInterface;
@@ -29,15 +28,12 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.viewpagerindicator.TabPageIndicator;
 import com.viewpagerindicator.TitlePageIndicator;
 
 import org.pircbotx.Channel;
@@ -46,14 +42,13 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 	
 	private ConversationsPagerAdapter pagerAdapter;
 	private ViewPager pager;
-	private TitlePageIndicator indicator;
 	private ConversationReceiver receiver;
 	private IRCBinder binder;
     private Settings settings;
 
-    public final int USER_LIST_RESULT = 0;
-	public final int JOIN_CHANNEL_RESULT = 1;
-    public final int NOTICE_RESULT = 2;
+    private final int USER_LIST_RESULT = 0;
+	private final int JOIN_CHANNEL_RESULT = 1;
+    private final int NOTICE_RESULT = 2;
 	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -66,14 +61,14 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
         pager = (ViewPager) findViewById(R.id.pager);
         pager.setAdapter(pagerAdapter);
 
+        TitlePageIndicator indicator;
+
         indicator = (TitlePageIndicator)findViewById(R.id.nav_titles);
         indicator.setViewPager(pager);
 
         indicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
 
             @Override
             public void onPageSelected(int position) {
@@ -81,9 +76,7 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
             }
 
             @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
+            public void onPageScrollStateChanged(int state) {}
         });
         
     }
@@ -199,25 +192,21 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
 			return;
 		}
 
-        if (pager.getCurrentItem() != i) {
-            binder.getService().updateNotification();
-        }
-
 		while (conv.hasBuffer()) {
 			Message msg = conv.pollBuffer();
 			if (i != -1) {
 				adapter.addMessage(msg);
 			}
 		}
+
+        binder.getService().updateNotification();
 	}
 
 	@Override
 	public void onServiceConnected(ComponentName name, IBinder service) {
 		this.binder = (IRCBinder)service;
-        if (binder.getService().getConnection() == null || !binder.getService().getConnection().isConnected()) { //TODO: Extra check needed here. Don't know what for.
+        if (binder.getService().getConnection() == null || !binder.getService().getConnection().isConnected()) {
         	binder.getService().connect();
-        } else if (!binder.getService().getConnection().isConnected()) {
-        	onDisconnect();
         } else {
         	/**
         	 * The activity has resumed and the service has been bound, get all the messages we missed...
@@ -271,7 +260,7 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
         case R.id.action_userlist:
         	if (conversation.getType() == Conversation.TYPE_CHANNEL) {
 	        	String chan = conversation.getName();
-                ArrayList<String> users = new ArrayList<String>();
+                ArrayList<String> users = new ArrayList<>();
 	        	for (org.pircbotx.User user : binder.getService().getConnection().getUserChannelDao().getChannel(chan).getUsers()) {
                     users.add(user.getNick());
                 }

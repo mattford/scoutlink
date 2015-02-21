@@ -9,7 +9,6 @@ import uk.org.mattford.scoutlink.utils.MircColors;
 
 import android.content.Context;
 import android.text.SpannableString;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -28,7 +27,7 @@ public class MessageListAdapter extends ArrayAdapter<LinearLayout> {
 
 		this.context = context;
 		this.conversation = conv;
-		this.messages = new LinkedList<LinearLayout>();
+		this.messages = new LinkedList<>();
 		
 		for (Message msg : conversation.getMessages()) {
 			addMessage(msg);

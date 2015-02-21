@@ -11,13 +11,13 @@ public class Server {
 
 	private HashMap<String, Conversation> conversations;
 	private int status = 0;
-    private ArrayList<String> channelList = new ArrayList<String>();
+    private ArrayList<String> channelList = new ArrayList<>();
 	
 	public final static int STATUS_DISCONNECTED = 0;
 	public final static int STATUS_CONNECTED = 1;
 	
 	public Server() {
-		this.conversations = new HashMap<String, Conversation>();
+		this.conversations = new HashMap<>();
 	}
 	
 	public Conversation getConversation(String name) {

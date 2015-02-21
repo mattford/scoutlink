@@ -18,18 +18,24 @@ public class ConversationReceiver extends BroadcastReceiver {
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		String action = intent.getAction();
-		if (action.equals(Broadcast.NEW_CONVERSATION)) {
-			activity.onNewConversation(intent.getStringExtra("target"));
-		} else if (action.equals(Broadcast.NEW_MESSAGE)) {
-			activity.onConversationMessage(intent.getStringExtra("target"));
-		} else if (action.equals(Broadcast.REMOVE_CONVERSATION)){
-			activity.removeConversation(intent.getStringExtra("target"));
-		} else if (action.equals(Broadcast.INVITE)) {
-			activity.onInvite(intent.getStringExtra("target"));
-		} else if (action.equals(Broadcast.DISCONNECTED)) {
-			activity.onDisconnect();
-		}
-		
+        switch (action) {
+            case Broadcast.NEW_CONVERSATION:
+                activity.onNewConversation(intent.getStringExtra("target"));
+                break;
+            case Broadcast.NEW_MESSAGE:
+                activity.onConversationMessage(intent.getStringExtra("target"));
+                break;
+            case Broadcast.REMOVE_CONVERSATION:
+                activity.removeConversation(intent.getStringExtra("target"));
+                break;
+            case Broadcast.INVITE:
+                activity.onInvite(intent.getStringExtra("target"));
+                break;
+            case Broadcast.DISCONNECTED:
+                activity.onDisconnect();
+                break;
+        }
+
 	}
 
 }
