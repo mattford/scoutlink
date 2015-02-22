@@ -4,7 +4,7 @@
         Base application theme, dependent on API level. This theme is replaced
         by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
     -->
-    <style name="AppBaseTheme" parent="android:Theme.Light">
+    <style name="AppBaseTheme" parent="android:Theme.Holo.Light.DarkActionBar">
         <!--
             Theme customizations available in newer API levels can go in
             res/values-vXX/styles.xml, while customizations related to
@@ -15,18 +15,18 @@
     <!-- Application theme. -->
     <style name="AppTheme" parent="AppBaseTheme">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+        <item name="android:actionBarStyle">@style/ScoutLinkActionBar</item>
     </style>
 
-    <!-- the theme applied to the application or activity -->
-    <style name="ScoutLinkTheme"
-        parent="@style/AppTheme">
-        <item name="android:actionBarStyle">@style/MyActionBar</item>
-    </style>
-
-    <!-- ActionBar styles -->
-    <style name="MyActionBar"
-        parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
+    <!-- ScoutLink ActionBar styles -->
+    <style name="ScoutLinkActionBar"
+        parent="@android:style/Widget.Holo.ActionBar">
         <item name="android:background">#0F1B5F</item>
+        <item name="android:titleTextStyle">@style/ScoutLinkActionBar.TitleTextStyle</item>
+    </style>
+
+    <style name="ScoutLinkActionBar.TitleTextStyle" parent="@android:style/TextAppearance">
+        <item name="android:textColor">#FFFFFF</item>
     </style>
 
     <style name="Dialog" parent="android:Theme.Holo.Light.Dialog"></style>

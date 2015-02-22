@@ -244,38 +244,42 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
         	startActivity(new Intent(this, SettingsActivity.class));
         	break;
         case R.id.action_close:
-        	if (conversation.getType() == Conversation.TYPE_CHANNEL) {
-                binder.getService().getConnection().getUserChannelDao().getChannel(conversation.getName()).send().part();
-        	} else if (conversation.getType() == Conversation.TYPE_QUERY) {
-        		binder.getService().getServer().removeConversation(conversation.getName());
-        		removeConversation(conversation.getName());
-        	} else {
-        		Toast.makeText(this, getResources().getString(R.string.close_server_window), Toast.LENGTH_SHORT).show();
-        	}
-        	
+            switch (conversation.getType()) {
+                case Conversation.TYPE_CHANNEL:
+                    binder.getService().getConnection().getUserChannelDao().getChannel(conversation.getName()).send().part();
+                    break;
+                case Conversation.TYPE_QUERY:
+                    binder.getService().getServer().removeConversation(conversation.getName());
+                    removeConversation(conversation.getName());
+                    break;
+                default:
+                    Toast.makeText(this, getResources().getString(R.string.close_server_window), Toast.LENGTH_SHORT).show();
+                    break;
+            }
         	break;
         case R.id.action_disconnect:
         	binder.getService().getConnection().sendIRC().quitServer(settings.getString("quit_message", getString(R.string.default_quit_message)));
         	break;
         case R.id.action_userlist:
-        	if (conversation.getType() == Conversation.TYPE_CHANNEL) {
-	        	String chan = conversation.getName();
-                ArrayList<String> users = new ArrayList<>();
-	        	for (org.pircbotx.User user : binder.getService().getConnection().getUserChannelDao().getChannel(chan).getUsers()) {
-                    users.add(user.getNick());
-                }
-	        	Intent intent = new Intent(this, UserListActivity.class);
-	        	intent.putStringArrayListExtra("users", users);
+            switch (conversation.getType()) {
+                case Conversation.TYPE_CHANNEL:
+                    String chan = conversation.getName();
+                    ArrayList<String> users = new ArrayList<>();
+                    users.addAll(binder.getService().getConnection().getUserChannelDao().getChannel(chan).getUsersNicks());
+                    Intent intent = new Intent(this, UserListActivity.class);
+                    intent.putStringArrayListExtra("users", users);
 
-                boolean isChanOp = binder.getService().getConnection().getUserChannelDao().getChannel(chan).isOp(binder.getService().getConnection().getUserBot());
-                intent.putExtra("isChanOp", isChanOp);
-                boolean isIrcOp = binder.getService().getConnection().getUserBot().isIrcop();
-                intent.putExtra("isIrcOp", isIrcOp);
+                    boolean isChanOp = binder.getService().getConnection().getUserChannelDao().getChannel(chan).isOp(binder.getService().getConnection().getUserBot());
+                    intent.putExtra("isChanOp", isChanOp);
+                    boolean isIrcOp = binder.getService().getConnection().getUserBot().isIrcop();
+                    intent.putExtra("isIrcOp", isIrcOp);
 
-	        	startActivityForResult(intent, USER_LIST_RESULT);
-        	} else {
-        		Toast.makeText(this, getResources().getString(R.string.userlist_not_on_channel), Toast.LENGTH_SHORT).show();
-        	}
+                    startActivityForResult(intent, USER_LIST_RESULT);
+                    break;
+                default:
+                    Toast.makeText(this, getResources().getString(R.string.userlist_not_on_channel), Toast.LENGTH_SHORT).show();
+                    break;
+            }
         	break;
         case R.id.action_join:
         	Intent joinIntent = new Intent(this, JoinActivity.class);
@@ -409,7 +413,6 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
                 break;
         }
     }
-        
 }
 	
 	

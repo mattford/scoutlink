@@ -193,7 +193,7 @@ public class IRCService extends Service {
         updateNotification();
 
         if (!settings.getString("nickserv_user", "").equals("") && !settings.getString("nickserv_password", "").equals("")) {
-            irc.send().notice("NickServ", "LOGIN "+settings.getString("nickserv_user", "")+" "+settings.getString("nickserv_password", ""));
+            irc.send().message("NickServ", "LOGIN "+settings.getString("nickserv_user", "")+" "+settings.getString("nickserv_password", ""));
         }
 
         String[] commands = settings.getStringArray("command_on_connect");

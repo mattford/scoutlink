@@ -73,7 +73,12 @@
         android:layout_gravity="center_horizontal"
         android:inputType="textPassword"
         />
-
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/settings_quit_message_label"
+        android:id="@+id/settings_quit_message_label"
+        android:layout_gravity="center_horizontal" />
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

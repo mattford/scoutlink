@@ -158,7 +158,8 @@ public class IRCListener extends ListenerAdapter {
     }
 
     public void onAction(ActionEvent event) {
-        Message msg = new Message(service.getString(R.string.message_action, event.getUserHostmask().getNick(), event.getAction()));
+        //Message msg = new Message(service.getString(R.string.message_action, event.getUserHostmask().getNick(), event.getAction()));
+        Message msg = new Message(event.getUserHostmask().getNick(), "* "+event.getAction());
         if (event.getChannel() != null) {
             server.getConversation(event.getChannel().getName()).addMessage(msg);
             service.onNewMessage(event.getChannel().getName());
@@ -191,7 +192,7 @@ public class IRCListener extends ListenerAdapter {
 
     public void onNotice(NoticeEvent event) {
         String sender = event.getUserHostmask().getNick();
-        Message message = new Message(service.getString(R.string.message_notice, sender, event.getMessage()));
+        Message message = new Message("-"+sender+"-", event.getMessage());
         message.setBackgroundColour(Color.parseColor("#4CD964"));
         message.setColour(Color.WHITE);
         if (event.getUser() != null) {
@@ -414,6 +415,9 @@ public class IRCListener extends ListenerAdapter {
 
     @SuppressWarnings("unchecked")
     public void onUserList(UserListEvent event) {
+        if (!event.isComplete()) {
+            return;
+        }
         String userList = "";
 
         for (User user : event.getUsers()) {
@@ -425,8 +429,9 @@ public class IRCListener extends ListenerAdapter {
         service.onNewMessage(event.getChannel().getName());
     }
 
+    @Override
     public void onVersion(VersionEvent event) {
-        event.respond(service.getString(R.string.message_version));
+        event.respond("VERSION " + service.getString(R.string.message_version));
     }
 
     public void onUserMode(UserModeEvent event) {

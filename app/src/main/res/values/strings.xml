@@ -6,9 +6,13 @@
     <!-- Text displayed if the nickname field in main screen is blank -->
     <string name="nickname_hint">Nickname</string>
     <!-- Text on the "Connect" button on the main screen -->
-    <string name="connect_button">Connect</string>
+    <string name="connect_button">Start Chatting</string>
     <!-- Text displayed below the logo on the main screen -->
-    <string name="welcome_text">Welcome to ScoutLink, please enter a nickname below</string>
+    <string name="welcome_text">
+        Welcome to ScoutLink, the IRC network for Scouts and Guides.\n
+        Please enter a nickname below.
+    </string>
+    <string name="sl_header_content_description">Header image</string>
 
     <!-- Menu Items -->
     <!-- Opens Application Settings, e.g., nick, ident, realname, quit message -->
@@ -115,6 +119,7 @@
     <string name="settings_nickname_label">Nickname:</string>
     <string name="settings_ident_label">Username:</string>
     <string name="settings_gecos_label">Real Name:</string>
+    <string name="settings_quit_message_label">Quit Message:</string>
     <string name="settings_nickserv_user_label">Nickserv Username:</string>
     <string name="settings_nickserv_password_label">Nickserv Password:</string>
 
