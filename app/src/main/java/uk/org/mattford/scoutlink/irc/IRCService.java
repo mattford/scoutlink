@@ -25,6 +25,7 @@ import android.graphics.BitmapFactory;
 import android.os.Binder;
 import android.os.Handler;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.widget.Toast;
 
 public class IRCService extends Service {
@@ -34,7 +35,7 @@ public class IRCService extends Service {
 	private Server server;
 	private Notification notif;
 	
-	private final int NOTIF_ID = 1;
+	private final int NOTIFICATION_ID = 1;
 
 	private boolean foreground = false;
 
@@ -51,7 +52,7 @@ public class IRCService extends Service {
 	
 	public void setIsForeground(boolean fg) {
         if (!foreground && fg) {
-            startForeground(NOTIF_ID, notif);
+            startForeground(NOTIFICATION_ID, notif);
         } else {
             stopForeground(true);
         }
@@ -142,7 +143,9 @@ public class IRCService extends Service {
                 for (Message msg : conversation.getBuffer()) {
                     newMsgTotal++;
                     if (getConnection() != null && msg.getText().contains(getConnection().getNick())) {
-                        conversationsWithMentions.add(conversation);
+                        if (!conversationsWithMentions.contains(conversation)) {
+                            conversationsWithMentions.add(conversation);
+                        }
                         newMentionTotal++;
                     }
                 }
@@ -188,8 +191,8 @@ public class IRCService extends Service {
                 .setContentIntent(intent)
 				.build();
 		if (this.isForeground()) {
-			NotificationManager nm = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
-			nm.notify(NOTIF_ID, notif);
+			NotificationManagerCompat nm = NotificationManagerCompat.from(this);
+			nm.notify(NOTIFICATION_ID, notif);
 		}
 		
 	}
