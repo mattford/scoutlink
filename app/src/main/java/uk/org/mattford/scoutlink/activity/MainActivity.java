@@ -4,19 +4,18 @@ import uk.org.mattford.scoutlink.R;
 import uk.org.mattford.scoutlink.irc.IRCBinder;
 import uk.org.mattford.scoutlink.irc.IRCService;
 import uk.org.mattford.scoutlink.model.Settings;
-import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
-
-public class MainActivity extends Activity implements ServiceConnection {
+public class MainActivity extends ActionBarActivity implements ServiceConnection {
 	
 	private Settings settings;
 	private IRCBinder binder;

@@ -1,11 +1,11 @@
 package uk.org.mattford.scoutlink.activity;
 
-import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -18,7 +18,7 @@ import uk.org.mattford.scoutlink.R;
 import uk.org.mattford.scoutlink.irc.IRCBinder;
 import uk.org.mattford.scoutlink.irc.IRCService;
 
-public class ChannelSettingsActivity extends Activity implements ServiceConnection {
+public class ChannelSettingsActivity extends ActionBarActivity implements ServiceConnection {
 
     private IRCBinder binder;
 

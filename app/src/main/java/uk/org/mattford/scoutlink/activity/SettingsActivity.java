@@ -1,8 +1,8 @@
 package uk.org.mattford.scoutlink.activity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.widget.EditText;
 
@@ -12,7 +12,7 @@ import java.util.Arrays;
 import uk.org.mattford.scoutlink.R;
 import uk.org.mattford.scoutlink.model.Settings;
 
-public class SettingsActivity extends Activity {
+public class SettingsActivity extends ActionBarActivity {
 
     private Settings settings;
 

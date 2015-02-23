@@ -102,8 +102,7 @@ public class IRCService extends Service {
                 try {
                     irc.startBot();
                 } catch (Exception e) {
-                    e.printStackTrace();
-                    // TODO: Quit the application here.
+                    onDisconnect();
                 }
             }
         }).start();
@@ -112,6 +111,14 @@ public class IRCService extends Service {
 	public Server getServer() {
 		return this.server;
 	}
+
+    public void onDisconnect() {
+        updateNotification();
+        setIsForeground(false);
+        server.setStatus(Server.STATUS_DISCONNECTED);
+        Intent intent = new Intent().setAction(Broadcast.DISCONNECTED);
+        sendBroadcast(intent);
+    }
 
     public void onNewMessage(String conversation) {
         Intent intent = new Intent().setAction(Broadcast.NEW_MESSAGE).putExtra("target", conversation);

@@ -82,13 +82,7 @@ public class IRCListener extends ListenerAdapter {
     }
 
     public void onDisconnect(DisconnectEvent event) {
-        service.updateNotification();
-        service.setIsForeground(false);
-
-        server.setStatus(Server.STATUS_DISCONNECTED);
-
-        Intent intent = new Intent().setAction(Broadcast.DISCONNECTED);
-        service.sendBroadcast(intent);
+        service.onDisconnect();
     }
 
     public void onHalfOp(HalfOpEvent event) {
@@ -159,7 +153,7 @@ public class IRCListener extends ListenerAdapter {
 
     public void onAction(ActionEvent event) {
         //Message msg = new Message(service.getString(R.string.message_action, event.getUserHostmask().getNick(), event.getAction()));
-        Message msg = new Message(event.getUserHostmask().getNick(), "* "+event.getAction());
+        Message msg = new Message(event.getUserHostmask().getNick(), service.getString(R.string.message_action,event.getAction()));
         if (event.getChannel() != null) {
             server.getConversation(event.getChannel().getName()).addMessage(msg);
             service.onNewMessage(event.getChannel().getName());
@@ -192,7 +186,7 @@ public class IRCListener extends ListenerAdapter {
 
     public void onNotice(NoticeEvent event) {
         String sender = event.getUserHostmask().getNick();
-        Message message = new Message("-"+sender+"-", event.getMessage());
+        Message message = new Message(service.getString(R.string.message_notice_sender, sender), event.getMessage());
         message.setBackgroundColour(Color.parseColor("#4CD964"));
         message.setColour(Color.WHITE);
         if (event.getUser() != null) {

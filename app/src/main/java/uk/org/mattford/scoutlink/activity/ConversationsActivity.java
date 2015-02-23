@@ -26,8 +26,8 @@ import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -38,7 +38,7 @@ import com.viewpagerindicator.TitlePageIndicator;
 
 import org.pircbotx.Channel;
 
-public class ConversationsActivity extends FragmentActivity implements ServiceConnection {
+public class ConversationsActivity extends ActionBarActivity implements ServiceConnection {
 	
 	private ConversationsPagerAdapter pagerAdapter;
 	private ViewPager pager;
@@ -218,6 +218,7 @@ public class ConversationsActivity extends FragmentActivity implements ServiceCo
     			}
     			onConversationMessage(conv.getKey());
     		}
+            binder.getService().updateNotification();
         }
 	}
 

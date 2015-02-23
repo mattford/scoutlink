@@ -43,4 +43,5 @@ dependencies {
     compile 'com.android.support:support-v4:21.0.3'
     compile 'org.slf4j:slf4j-android:1.7.8'
     compile 'org.pircbotx:pircbotx:2.1-SNAPSHOT'
+    compile 'com.android.support:appcompat-v7:21.0.3'
 }

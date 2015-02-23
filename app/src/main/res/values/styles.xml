@@ -1,35 +1,30 @@
 <resources>
+    <!-- Application theme. -->
+    <style name="AppTheme" parent="AppTheme.Base">
+        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+
+    </style>
+
+    <style name="Dialog" parent="Dialog.Base">
+
+    </style>
 
     <!--
         Base application theme, dependent on API level. This theme is replaced
         by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
     -->
-    <style name="AppBaseTheme" parent="android:Theme.Holo.Light.DarkActionBar">
-        <!--
-            Theme customizations available in newer API levels can go in
-            res/values-vXX/styles.xml, while customizations related to
-            backward-compatibility can go here.
-        -->
+    <style name="AppTheme.Base" parent="Base.Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimaryDark">@color/scoutlink_blue_dark</item>
+        <item name="colorPrimary">@color/scoutlink_blue</item>
+        <item name="colorAccent">@color/scoutlink_orange</item>
     </style>
 
-    <!-- Application theme. -->
-    <style name="AppTheme" parent="AppBaseTheme">
-        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
-        <item name="android:actionBarStyle">@style/ScoutLinkActionBar</item>
+    <style name="Dialog.Base" parent="Base.Theme.AppCompat.Light.Dialog">
+        <item name="colorPrimaryDark">@color/scoutlink_blue_dark</item>
+        <item name="colorPrimary">@color/scoutlink_blue</item>
+        <item name="colorAccent">@color/scoutlink_orange</item>
+        <item name="android:windowNoTitle">false</item>
     </style>
-
-    <!-- ScoutLink ActionBar styles -->
-    <style name="ScoutLinkActionBar"
-        parent="@android:style/Widget.Holo.ActionBar">
-        <item name="android:background">#0F1B5F</item>
-        <item name="android:titleTextStyle">@style/ScoutLinkActionBar.TitleTextStyle</item>
-    </style>
-
-    <style name="ScoutLinkActionBar.TitleTextStyle" parent="@android:style/TextAppearance">
-        <item name="android:textColor">#FFFFFF</item>
-    </style>
-
-    <style name="Dialog" parent="android:Theme.Holo.Light.Dialog"></style>
 
 
 </resources>
