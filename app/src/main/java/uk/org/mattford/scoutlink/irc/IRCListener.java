@@ -212,7 +212,6 @@ public class IRCListener extends ListenerAdapter {
             service.sendBroadcast(intent);
         } else {
             Message msg = new Message(service.getString(R.string.message_join, event.getUserHostmask().getNick(), event.getChannel().getName()));
-            msg.setColour(Color.parseColor("#0F1B5F"));
             server.getConversation(event.getChannel().getName()).addMessage(msg);
             service.onNewMessage(event.getChannel().getName());
         }
@@ -230,7 +229,6 @@ public class IRCListener extends ListenerAdapter {
             service.sendBroadcast(intent);
         } else {
             Message msg = new Message(service.getString(R.string.message_kicked_other, event.getRecipientHostmask().getNick(), event.getChannel().getName(), event.getUserHostmask().getNick(), event.getReason()));
-            msg.setColour(Color.parseColor("#0F1B5F"));
             server.getConversation(event.getChannel().getName()).addMessage(msg);
             service.onNewMessage(event.getChannel().getName());
         }
@@ -238,7 +236,6 @@ public class IRCListener extends ListenerAdapter {
 
     public void onNickChange(NickChangeEvent event) {
         Message msg = new Message(service.getString(R.string.message_nickchange, event.getOldNick(), event.getNewNick()));
-        msg.setColour(Color.parseColor("#0F1B5F"));
         for (String channel : getSharedChannels(event.getBot(), event.getUser())) {
             server.getConversation(channel).addMessage(msg);
             service.onNewMessage(channel);
@@ -259,7 +256,6 @@ public class IRCListener extends ListenerAdapter {
             service.sendBroadcast(intent);
         } else {
             Message msg = new Message(service.getString(R.string.message_part, event.getUserHostmask().getNick(), event.getChannel().getName(), event.getReason()));
-            msg.setColour(Color.parseColor("#0F1B5F"));
             server.getConversation(event.getChannel().getName()).addMessage(msg);
             service.onNewMessage(event.getChannel().getName());
         }
@@ -275,7 +271,6 @@ public class IRCListener extends ListenerAdapter {
             return;
         }
         Message msg = new Message(service.getString(R.string.message_quit, event.getUser().getNick(), event.getReason()));
-        msg.setColour(Color.parseColor("#0F1B5F"));
 
         for (String channel : getSharedChannels(event.getBot(), event.getUser())) {
             server.getConversation(channel).addMessage(msg);
@@ -284,15 +279,13 @@ public class IRCListener extends ListenerAdapter {
     }
 
     public void onSetChannelBan(SetChannelBanEvent event) {
-        Message msg = new Message(service.getString(R.string.message_ban_add, event.getUser(), event.getBanHostmask().toString()));
-        msg.setColour(Color.parseColor("#0F1B5F"));
+        Message msg = new Message(service.getString(R.string.message_ban_add, event.getUserHostmask().getNick(), event.getBanHostmask().getHostmask()));
         server.getConversation(event.getChannel().getName()).addMessage(msg);
         service.onNewMessage(event.getChannel().getName());
     }
 
     public void onRemoveChannelBan(RemoveChannelBanEvent event) {
-        Message msg = new Message(service.getString(R.string.message_ban_remove, event.getUser(), event.getHostmask()));
-        msg.setColour(Color.parseColor("#0F1B5F"));
+        Message msg = new Message(service.getString(R.string.message_ban_remove, event.getUserHostmask().getNick(), event.getHostmask().getHostmask()));
         server.getConversation(event.getChannel().getName()).addMessage(msg);
         service.onNewMessage(event.getChannel().getName());
     }
@@ -305,7 +298,6 @@ public class IRCListener extends ListenerAdapter {
 
     public void onRemovePrivate(RemovePrivateEvent event) {
         Message msg = new Message(service.getString(R.string.message_unset_private, event.getUser().getNick()));
-        msg.setColour(Color.parseColor("#0F1B5F"));
         server.getConversation(event.getChannel().getName()).addMessage(msg);
         service.onNewMessage(event.getChannel().getName());
     }
@@ -318,91 +310,78 @@ public class IRCListener extends ListenerAdapter {
 
     public void onRemoveSecret(RemoveSecretEvent event) {
         Message msg = new Message(service.getString(R.string.message_unset_secret, event.getUser().getNick()));
-        msg.setColour(Color.parseColor("#0F1B5F"));
         server.getConversation(event.getChannel().getName()).addMessage(msg);
         service.onNewMessage(event.getChannel().getName());
     }
 
     public void onSetChannelKey(SetChannelKeyEvent event) {
         Message msg = new Message(service.getString(R.string.message_set_key, event.getUser().getNick(), event.getKey()));
-        msg.setColour(Color.parseColor("#0F1B5F"));
         server.getConversation(event.getChannel().getName()).addMessage(msg);
         service.onNewMessage(event.getChannel().getName());
     }
 
     public void onRemoveChannelKey(RemoveChannelKeyEvent event) {
         Message msg = new Message(service.getString(R.string.message_unset_key, event.getUser().getNick()));
-        msg.setColour(Color.parseColor("#0F1B5F"));
         server.getConversation(event.getChannel().getName()).addMessage(msg);
         service.onNewMessage(event.getChannel().getName());
     }
 
     public void onSetChannelLimit(SetChannelLimitEvent event) {
         Message msg = new Message(service.getString(R.string.message_set_limit, event.getUser().getNick(), Integer.toString(event.getLimit())));
-        msg.setColour(Color.parseColor("#0F1B5F"));
         server.getConversation(event.getChannel().getName()).addMessage(msg);
         service.onNewMessage(event.getChannel().getName());
     }
 
     public void onRemoveChannelLimit(RemoveChannelLimitEvent event) {
         Message msg = new Message(service.getString(R.string.message_unset_limit, event.getUser().getNick()));
-        msg.setColour(Color.parseColor("#0F1B5F"));
         server.getConversation(event.getChannel().getName()).addMessage(msg);
         service.onNewMessage(event.getChannel().getName());
     }
 
     public void onSetInviteOnly(SetInviteOnlyEvent event) {
         Message msg = new Message(service.getString(R.string.message_set_invite, event.getUser().getNick()));
-        msg.setColour(Color.parseColor("#0F1B5F"));
         server.getConversation(event.getChannel().getName()).addMessage(msg);
         service.onNewMessage(event.getChannel().getName());
     }
 
     public void onRemoveInviteOnly(RemoveInviteOnlyEvent event) {
         Message msg = new Message(service.getString(R.string.message_unset_invite, event.getUser().getNick()));
-        msg.setColour(Color.parseColor("#0F1B5F"));
         server.getConversation(event.getChannel().getName()).addMessage(msg);
         service.onNewMessage(event.getChannel().getName());
     }
 
     public void onSetModerated(SetModeratedEvent event) {
         Message msg = new Message(service.getString(R.string.message_set_moderated, event.getUser().getNick()));
-        msg.setColour(Color.parseColor("#0F1B5F"));
         server.getConversation(event.getChannel().getName()).addMessage(msg);
         service.onNewMessage(event.getChannel().getName());
     }
 
     public void onRemoveModerated(RemoveModeratedEvent event) {
         Message msg = new Message(service.getString(R.string.message_unset_moderated, event.getUser().getNick()));
-        msg.setColour(Color.parseColor("#0F1B5F"));
         server.getConversation(event.getChannel().getName()).addMessage(msg);
         service.onNewMessage(event.getChannel().getName());
     }
 
     public void onSetNoExternalMessages(SetNoExternalMessagesEvent event) {
         Message msg = new Message(service.getString(R.string.message_set_no_external, event.getUser().getNick()));
-        msg.setColour(Color.parseColor("#0F1B5F"));
         server.getConversation(event.getChannel().getName()).addMessage(msg);
         service.onNewMessage(event.getChannel().getName());
     }
 
     public void onRemoveNoExternalMessages(RemoveNoExternalMessagesEvent event) {
         Message msg = new Message(service.getString(R.string.message_unset_no_external, event.getUserHostmask().getNick()));
-        msg.setColour(Color.parseColor("#0F1B5F"));
         server.getConversation(event.getChannel().getName()).addMessage(msg);
         service.onNewMessage(event.getChannel().getName());
     }
 
     public void onSetTopicProtection(SetTopicProtectionEvent event) {
         Message msg = new Message(service.getString(R.string.message_set_topicprotect, event.getUserHostmask().getNick()));
-        msg.setColour(Color.parseColor("#0F1B5F"));
         server.getConversation(event.getChannel().getName()).addMessage(msg);
         service.onNewMessage(event.getChannel().getName());
     }
 
     public void onRemoveTopicProtection(RemoveTopicProtectionEvent event) {
         Message msg = new Message(service.getString(R.string.message_unset_topicprotect, event.getUserHostmask().getNick()));
-        msg.setColour(Color.parseColor("#0F1B5F"));
         server.getConversation(event.getChannel().getName()).addMessage(msg);
         service.onNewMessage(event.getChannel().getName());
     }
