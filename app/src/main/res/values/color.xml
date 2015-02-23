@@ -3,4 +3,6 @@
     <color name="scoutlink_blue">#0F1B5F</color>
     <color name="scoutlink_blue_dark">#FF0E1344</color>
     <color name="scoutlink_orange">#FFB200</color>
+    <color name="white">#FFFFFF</color>
+    <color name="light_green">#4CD964</color>
 </resources>
