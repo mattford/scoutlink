@@ -6,10 +6,13 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.widget.EditText;
 
+import com.google.android.gms.analytics.GoogleAnalytics;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
 import uk.org.mattford.scoutlink.R;
+import uk.org.mattford.scoutlink.ScoutlinkApplication;
 import uk.org.mattford.scoutlink.model.Settings;
 
 public class SettingsActivity extends ActionBarActivity {
@@ -24,6 +27,9 @@ public class SettingsActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
         settings = new Settings(this);
+
+       // ((ScoutlinkApplication) getApplication()).getTracker(ScoutlinkApplication.TrackerName.APP_TRACKER);
+
 
         EditText et;
 

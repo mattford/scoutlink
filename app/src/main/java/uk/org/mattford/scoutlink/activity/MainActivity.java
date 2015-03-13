@@ -1,6 +1,7 @@
 package uk.org.mattford.scoutlink.activity;
 
 import uk.org.mattford.scoutlink.R;
+import uk.org.mattford.scoutlink.ScoutlinkApplication;
 import uk.org.mattford.scoutlink.irc.IRCBinder;
 import uk.org.mattford.scoutlink.irc.IRCService;
 import uk.org.mattford.scoutlink.model.Settings;
@@ -15,6 +16,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
+import com.google.android.gms.analytics.GoogleAnalytics;
+
 public class MainActivity extends ActionBarActivity implements ServiceConnection {
 	
 	private Settings settings;
@@ -23,10 +26,13 @@ public class MainActivity extends ActionBarActivity implements ServiceConnection
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        ((ScoutlinkApplication) getApplication()).getTracker(ScoutlinkApplication.TrackerName.APP_TRACKER);
+
         this.settings = new Settings(this);
         setContentView(R.layout.activity_main);
     }
-    
+
     @Override
     public void onResume() {
     	super.onResume();
@@ -43,6 +49,12 @@ public class MainActivity extends ActionBarActivity implements ServiceConnection
     public void onPause() {
         super.onPause();
         unbindService(this);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
     }
     
     

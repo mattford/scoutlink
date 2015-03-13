@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import uk.org.mattford.scoutlink.R;
+import uk.org.mattford.scoutlink.ScoutlinkApplication;
 import uk.org.mattford.scoutlink.adapter.ConversationsPagerAdapter;
 import uk.org.mattford.scoutlink.adapter.MessageListAdapter;
 import uk.org.mattford.scoutlink.command.CommandParser;
@@ -34,6 +35,9 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.viewpagerindicator.TitlePageIndicator;
 
 import org.pircbotx.Channel;
@@ -45,6 +49,7 @@ public class ConversationsActivity extends ActionBarActivity implements ServiceC
 	private ConversationReceiver receiver;
 	private IRCBinder binder;
     private Settings settings;
+    private Tracker tracker;
 
     private final int USER_LIST_RESULT = 0;
 	private final int JOIN_CHANNEL_RESULT = 1;
@@ -55,6 +60,7 @@ public class ConversationsActivity extends ActionBarActivity implements ServiceC
         setContentView(R.layout.activity_conversations);
 
         settings = new Settings(this);
+        //tracker = ((ScoutlinkApplication) getApplication()).getTracker(ScoutlinkApplication.TrackerName.APP_TRACKER);
 
         pagerAdapter = new ConversationsPagerAdapter(getSupportFragmentManager(), this);
 
@@ -80,7 +86,7 @@ public class ConversationsActivity extends ActionBarActivity implements ServiceC
         });
         
     }
-	
+
 	/**
 	 * If this is not overridden, then ConversationsPagerAdapter retains old fragments when the activity is recreated.
 	 */
@@ -138,6 +144,13 @@ public class ConversationsActivity extends ActionBarActivity implements ServiceC
             onConversationMessage(conv.getName());
 		}
 		et.setText("");
+
+       /*tracker.send(new HitBuilders.EventBuilder()
+                .setCategory("Messages")
+                .setAction("Send")
+                .build()
+        );*/
+
 	}
 	
 	public void onInvite(final String channel) {
@@ -194,9 +207,7 @@ public class ConversationsActivity extends ActionBarActivity implements ServiceC
 
 		while (conv.hasBuffer()) {
 			Message msg = conv.pollBuffer();
-			if (i != -1) {
-				adapter.addMessage(msg);
-			}
+			adapter.addMessage(msg);
 		}
 
         binder.getService().updateNotification();
@@ -405,7 +416,7 @@ public class ConversationsActivity extends ActionBarActivity implements ServiceC
                 if (resultCode == RESULT_OK) {
                     String text = data.getStringExtra("message");
                     String target = data.getStringExtra("target");
-                    Message msg = new Message("-> -"+target+"- "+text);
+                    Message msg = new Message("-> -"+target+"-", text);
                     binder.getService().getConnection().sendIRC().notice(target, text);
                     ConversationsPagerAdapter.ConversationInfo info = pagerAdapter.getItemInfo(pager.getCurrentItem());
                     info.conv.addMessage(msg);
@@ -415,7 +426,3 @@ public class ConversationsActivity extends ActionBarActivity implements ServiceC
         }
     }
 }
-	
-	
-
-
