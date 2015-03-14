@@ -23,7 +23,12 @@ public class Settings {
 	}
 	
 	public String getString(String key, String defValue) {
-		return this.prefs.getString(key, defValue);
+		String str =  prefs.getString(key, defValue);
+        if (str == "") {
+            return defValue; // Return the default value is the string is blank as opposed to null
+        } else {
+            return str;
+        }
 	}
 	
 	public Boolean getBoolean(String key) {

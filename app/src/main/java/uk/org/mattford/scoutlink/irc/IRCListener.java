@@ -2,6 +2,7 @@ package uk.org.mattford.scoutlink.irc;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.util.Log;
 
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;

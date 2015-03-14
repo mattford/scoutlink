@@ -2,6 +2,8 @@ package uk.org.mattford.scoutlink.irc;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.pircbotx.Configuration;
@@ -26,6 +28,7 @@ import android.os.Binder;
 import android.os.Handler;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
+import android.util.Log;
 import android.widget.Toast;
 
 public class IRCService extends Service {
@@ -155,7 +158,9 @@ public class IRCService extends Service {
         if (conversationsWithNewMsg.size() > 0) {
             if (conversationsWithNewMsg.size() == 1 && newMsgTotal <= 3) {
                 Conversation conv = conversationsWithNewMsg.get(0);
-                for (Message msg : conv.getBuffer()) {
+                Iterator msgIter = conv.getBuffer().iterator(); // USe an iterator to avoid ConcurrentModificationException when the notification is updated while new messages are received
+                while(msgIter.hasNext()) {
+                    Message msg = (Message)msgIter.next();
                     lines.add(getString(R.string.notification_new_messages_multi, conv.getName(), msg.getSender(), msg.getText()));
                 }
             } else {
