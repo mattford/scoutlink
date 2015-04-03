@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.util.Log;
 
+import com.google.common.collect.Lists;
+
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.pircbotx.hooks.ListenerAdapter;
@@ -50,6 +52,7 @@ import org.pircbotx.hooks.events.UserListEvent;
 import org.pircbotx.hooks.events.UserModeEvent;
 import org.pircbotx.hooks.events.VersionEvent;
 import org.pircbotx.hooks.events.VoiceEvent;
+import org.pircbotx.hooks.events.WhoisEvent;
 
 import java.util.ArrayList;
 
@@ -421,6 +424,27 @@ public class IRCListener extends ListenerAdapter {
         msg.setColour(service.getResources().getColor(R.color.scoutlink_blue));
         server.getConversation(event.getChannel().getName()).addMessage(msg);
         service.onNewMessage(event.getChannel().getName());
+    }
+
+    public void onWhois(WhoisEvent event) {
+        StringBuilder strB = new StringBuilder();
+        for (String channel : event.getChannels()) {
+            strB.append(channel + " ");
+        }
+        Message msg = new Message(
+                service.getString(R.string.message_whois,
+                        event.getNick(),
+                        event.getLogin(),
+                        event.getHostname(),
+                        event.getRealname(),
+                        event.getServer(),
+                        event.getAwayMessage(),
+                        event.getRegisteredAs(),
+                        strB.toString()
+                        )
+        );
+        server.getConversation(service.getString(R.string.server_window_title)).addMessage(msg);
+        service.onNewMessage(service.getString(R.string.server_window_title));
     }
 
     @SuppressWarnings("unchecked")

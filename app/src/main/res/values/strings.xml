@@ -5,6 +5,8 @@
 
     <!-- Text displayed if the nickname field in main screen is blank -->
     <string name="nickname_hint">Nickname</string>
+    <!-- Message displayed if the nickname is not valid. -->
+    <string name="nickname_not_valid">Nickname is not valid, please enter a different one and try again</string>
     <!-- Text on the "Connect" button on the main screen -->
     <string name="connect_button">Start Chatting</string>
     <!-- Text displayed below the logo on the main screen -->
@@ -112,6 +114,7 @@
     <string name="message_unset_topicprotect">%1$s has disabled topic protection</string>
     <string name="message_action">*%1$s</string>
     <string name="message_notice_sender">-%1$s-</string>
+    <string name="message_whois">Whois Response for %1$s:\n%1$s!%2$s@%3$s - %4$s\nServer: %5$s\nAway: %6$s\nRegistered as: %7$s\nChannels: %8$s</string>
 
     <string name="action_kick_dialog_title">Reason for kick:</string>
 

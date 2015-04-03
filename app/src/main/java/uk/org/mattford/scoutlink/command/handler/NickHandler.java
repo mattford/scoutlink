@@ -1,5 +1,8 @@
 package uk.org.mattford.scoutlink.command.handler;
 
+import android.widget.Toast;
+
+import uk.org.mattford.scoutlink.R;
 import uk.org.mattford.scoutlink.command.CommandHandler;
 import uk.org.mattford.scoutlink.irc.IRCService;
 import uk.org.mattford.scoutlink.model.Conversation;
@@ -12,7 +15,11 @@ public class NickHandler extends CommandHandler {
 		
 		if (params.length > 1) {
 			String nickname = params[1];
-			service.getConnection().sendIRC().changeNick(nickname);
+			if (nickname.matches("\\A[a-z_\\-\\[\\]\\\\^{}|`][a-z0-9_\\-\\[\\]\\\\^{}|`]*\\z")) {
+				service.getConnection().sendIRC().changeNick(nickname);
+			} else {
+				Toast.makeText(service, service.getString(R.string.nickname_not_valid), Toast.LENGTH_SHORT).show();
+			}
 		}
 		
 		

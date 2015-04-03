@@ -8,6 +8,7 @@ import uk.org.mattford.scoutlink.model.Settings;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v7.app.ActionBarActivity;
@@ -16,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
 
@@ -59,8 +61,13 @@ public class MainActivity extends ActionBarActivity implements ServiceConnection
     
     
     public void connectClick(View v) {
-    	EditText nick = (EditText)findViewById(R.id.nickname);
-    	settings.putString("nickname", nick.getText().toString());
+    	String nick = ((EditText)findViewById(R.id.nickname)).getText().toString();
+
+    	if (nick == null || !nick.matches("\\A[a-z_\\-\\[\\]\\\\^{}|`][a-z0-9_\\-\\[\\]\\\\^{}|`]*\\z")) {
+            Toast.makeText(this, getString(R.string.nickname_not_valid), Toast.LENGTH_LONG).show();
+            return;
+        }
+        settings.putString("nickname", nick);
     	
     	Intent intent = new Intent(this, ConversationsActivity.class);
     	intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
