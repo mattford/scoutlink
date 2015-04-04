@@ -89,7 +89,7 @@ public class SettingsActivity extends ActionBarActivity {
         super.onPause();
         EditText et;
         et = (EditText)findViewById(R.id.settings_nickname);
-        settings.putString("nickname", et.getText().toString());
+        settings.putString("nickname", et.getText().toString()); // Validate here?
 
         et = (EditText)findViewById(R.id.settings_ident);
         settings.putString("ident", et.getText().toString());

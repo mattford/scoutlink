@@ -6,6 +6,7 @@ import uk.org.mattford.scoutlink.R;
 import uk.org.mattford.scoutlink.command.CommandHandler;
 import uk.org.mattford.scoutlink.irc.IRCService;
 import uk.org.mattford.scoutlink.model.Conversation;
+import uk.org.mattford.scoutlink.utils.Validator;
 
 public class NickHandler extends CommandHandler {
 
@@ -15,7 +16,7 @@ public class NickHandler extends CommandHandler {
 		
 		if (params.length > 1) {
 			String nickname = params[1];
-			if (nickname.matches("\\A[a-z_\\-\\[\\]\\\\^{}|`][a-z0-9_\\-\\[\\]\\\\^{}|`]*\\z")) {
+			if (nickname != null && Validator.isValidNickname(nickname)) {
 				service.getConnection().sendIRC().changeNick(nickname);
 			} else {
 				Toast.makeText(service, service.getString(R.string.nickname_not_valid), Toast.LENGTH_SHORT).show();

@@ -5,6 +5,8 @@ import uk.org.mattford.scoutlink.ScoutlinkApplication;
 import uk.org.mattford.scoutlink.irc.IRCBinder;
 import uk.org.mattford.scoutlink.irc.IRCService;
 import uk.org.mattford.scoutlink.model.Settings;
+import uk.org.mattford.scoutlink.utils.Validator;
+
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -74,7 +76,7 @@ public class MainActivity extends ActionBarActivity implements ServiceConnection
     public void connectClick(View v) {
     	String nick = ((EditText)findViewById(R.id.nickname)).getText().toString();
 
-    	if (nick == null || !nick.matches("\\A[a-z_\\-\\[\\]\\\\^{}|`][a-z0-9_\\-\\[\\]\\\\^{}|`]*\\z")) {
+    	if (nick == null || !Validator.isValidNickname(nick)) {
             Toast.makeText(this, getString(R.string.nickname_not_valid), Toast.LENGTH_LONG).show();
             return;
         }

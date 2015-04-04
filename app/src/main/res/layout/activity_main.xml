@@ -1,56 +1,61 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="0px"
-    android:paddingRight="0px"
-    android:paddingTop="0px"
-    tools:context="uk.org.mattford.scoutlink.activity.MainActivity" >
+<RelativeLayout
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
 
-    <ImageView
-        android:id="@+id/sl_header"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:adjustViewBounds="true"
-        android:scaleType="centerCrop"
-        android:src="@drawable/header"
-        android:contentDescription="@string/sl_header_content_description"/>
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_below="@id/sl_header"
-        android:paddingBottom="@dimen/activity_vertical_margin"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin"
-        >
-        <TextView
-            android:id="@+id/welcome_text"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+        <ImageView
+            android:id="@+id/sl_header"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="@string/welcome_text"/>
-        <EditText
-            android:id="@+id/nickname"
-            android:layout_width="fill_parent"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+            android:src="@drawable/header"
+            android:contentDescription="@string/sl_header_content_description"/>
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="@string/nickname_hint"
-            android:maxLines="1"
-            android:singleLine="true">
+            android:background="@drawable/slightly_rounded_corners"
+            android:layout_alignParentBottom="true"
+            android:orientation="vertical"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:layout_marginBottom="@dimen/activity_vertical_margin">
+            <TextView
+                android:id="@+id/welcome_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
 
-            <requestFocus />
-        </EditText>
-        <Button
-            android:id="@+id/connect_button"
-            android:text="@string/connect_button"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:onClick="connectClick"
-            />
+                android:text="@string/welcome_text"/>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <EditText
+                    android:id="@+id/nickname"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:hint="@string/nickname_hint"
+                    android:maxLines="1"
+                    android:singleLine="true">
+                    <requestFocus />
+                </EditText>
+                <Button
+                    android:id="@+id/connect_button"
+                    android:text="@string/connect_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="connectClick"
+                    />
+            </LinearLayout>
+        </LinearLayout>
 
-    </LinearLayout>
 
 
-</RelativeLayout>
+
+    </RelativeLayout>
+
+
+

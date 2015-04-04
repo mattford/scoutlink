@@ -5,6 +5,7 @@ import java.util.Locale;
 
 import uk.org.mattford.scoutlink.command.handler.ActionHandler;
 import uk.org.mattford.scoutlink.command.handler.JoinHandler;
+import uk.org.mattford.scoutlink.command.handler.MessageHandler;
 import uk.org.mattford.scoutlink.command.handler.NickHandler;
 import uk.org.mattford.scoutlink.command.handler.NotifyHandler;
 import uk.org.mattford.scoutlink.command.handler.PartHandler;
@@ -29,6 +30,7 @@ public class CommandParser {
 		commands.put("quit", new QuitHandler());
 		commands.put("me", new ActionHandler());
 		commands.put("notify", new NotifyHandler());
+		commands.put("msg", new MessageHandler());
 		
 		aliases.put("j", "join");
 		aliases.put("p", "part");
