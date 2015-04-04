@@ -36,7 +36,9 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:hint="@string/nickname_hint" >
+            android:hint="@string/nickname_hint"
+            android:maxLines="1"
+            android:singleLine="true">
 
             <requestFocus />
         </EditText>

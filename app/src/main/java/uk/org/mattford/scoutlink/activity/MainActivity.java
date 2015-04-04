@@ -13,10 +13,12 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
@@ -41,7 +43,16 @@ public class MainActivity extends ActionBarActivity implements ServiceConnection
 
         EditText nick = (EditText)findViewById(R.id.nickname);
         nick.setText(settings.getString("nickname", ""));
-
+        nick.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (event == null) {
+                    connectClick(v);
+                    return true;
+                }
+                return false;
+            }
+        });
         Intent service = new Intent(this, IRCService.class);
         startService(service);
         bindService(service, this, 0);

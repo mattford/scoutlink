@@ -3,6 +3,7 @@ package uk.org.mattford.scoutlink.irc;
 import android.content.Intent;
 import android.graphics.Color;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.common.collect.Lists;
 
@@ -37,6 +38,7 @@ import org.pircbotx.hooks.events.RemovePrivateEvent;
 import org.pircbotx.hooks.events.RemoveSecretEvent;
 import org.pircbotx.hooks.events.RemoveTopicProtectionEvent;
 import org.pircbotx.hooks.events.ServerPingEvent;
+import org.pircbotx.hooks.events.ServerResponseEvent;
 import org.pircbotx.hooks.events.SetChannelBanEvent;
 import org.pircbotx.hooks.events.SetChannelKeyEvent;
 import org.pircbotx.hooks.events.SetChannelLimitEvent;
@@ -55,14 +57,18 @@ import org.pircbotx.hooks.events.VoiceEvent;
 import org.pircbotx.hooks.events.WhoisEvent;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import uk.org.mattford.scoutlink.R;
+import uk.org.mattford.scoutlink.event.NotifyEvent;
 import uk.org.mattford.scoutlink.model.Broadcast;
 import uk.org.mattford.scoutlink.model.Channel;
 import uk.org.mattford.scoutlink.model.Conversation;
 import uk.org.mattford.scoutlink.model.Message;
 import uk.org.mattford.scoutlink.model.Query;
 import uk.org.mattford.scoutlink.model.Server;
+import uk.org.mattford.scoutlink.model.Settings;
 
 public class IRCListener extends ListenerAdapter {
 
@@ -73,6 +79,90 @@ public class IRCListener extends ListenerAdapter {
         super();
         this.service = service;
         this.server = service.getServer();
+    }
+
+    public void onServerResponse(ServerResponseEvent event) {
+        Settings settings;
+        ArrayList<String> notifies;
+        switch (event.getCode()) {
+            case 604:
+            case 600:
+                // User on watchlist joined IRC
+                settings = new Settings(service);
+                notifies = new ArrayList<>(Arrays.asList(settings.getStringArray("notify_list")));
+                if (!notifies.contains(event.getParsedResponse().get(1))) {
+                    notifies.add(event.getParsedResponse().get(1));
+                    settings.putStringArrayList("notify_list", notifies);
+                }
+                NotifyEvent onlineEvent = new NotifyEvent(event.getParsedResponse().get(1), NotifyEvent.TYPE_ONLINE, false, true, false, event.getParsedResponse().get(4));
+                onNotify(onlineEvent);
+                break;
+            case 605:
+            case 601:
+                // User on watchlist left IRC
+                settings = new Settings(service);
+                notifies = new ArrayList<>(Arrays.asList(settings.getStringArray("notify_list")));
+                if (!notifies.contains(event.getParsedResponse().get(1))) {
+                    notifies.add(event.getParsedResponse().get(1));
+                    settings.putStringArrayList("notify_list", notifies);
+                }
+                NotifyEvent offlineEvent = new NotifyEvent(event.getParsedResponse().get(1), NotifyEvent.TYPE_ONLINE, false, false, false, event.getParsedResponse().get(4));
+                onNotify(offlineEvent);
+                break;
+            case 602:
+                // Removed from list
+                settings = new Settings(service);
+                notifies = new ArrayList<>(Arrays.asList(settings.getStringArray("notify_list")));
+                if (notifies.contains(event.getParsedResponse().get(1))) {
+                    notifies.remove(event.getParsedResponse().get(1));
+                    settings.putStringArrayList("notify_list", notifies);
+                }
+                NotifyEvent removedEvent = new NotifyEvent(event.getParsedResponse().get(1), NotifyEvent.TYPE_MANAGELIST, false, false, false, event.getParsedResponse().get(4));
+                onNotify(removedEvent);
+                break;
+            case 598:
+                // User on watch list is away
+                NotifyEvent awayEvent = new NotifyEvent(event.getParsedResponse().get(0), NotifyEvent.TYPE_AWAY, true, true, false, event.getParsedResponse().get(4));
+                onNotify(awayEvent);
+                break;
+            case 599:
+                // User on watch list is back from away
+                NotifyEvent backEvent = new NotifyEvent(event.getParsedResponse().get(0), NotifyEvent.TYPE_AWAY, false, true, false, event.getParsedResponse().get(4));
+                onNotify(backEvent);
+                break;
+        }
+    }
+
+    public void onNotify(NotifyEvent event) {
+        String text = "";
+        switch (event.getType()) {
+            case NotifyEvent.TYPE_ONLINE:
+                if (event.isOnline()) {
+                    text = service.getString(R.string.message_notify_online, event.getNick());
+                } else {
+                    text = service.getString(R.string.message_notify_offline, event.getNick());
+                }
+                service.sendToast(text);
+                break;
+            case NotifyEvent.TYPE_MANAGELIST:
+                if (event.isAdded()) {
+                    text = service.getString(R.string.message_notify_added, event.getNick());
+                } else {
+                    text = service.getString(R.string.message_notify_removed, event.getNick());
+                }
+                break;
+            case NotifyEvent.TYPE_AWAY:
+                if (event.isAway()) {
+                    text = service.getString(R.string.message_notify_away, event.getNick(), event.getMessage());
+                } else {
+                    text = service.getString(R.string.message_notify_back, event.getNick());
+                }
+                service.sendToast(text);
+                break;
+        }
+        Message msg = new Message(text);
+        server.getConversation(service.getString(R.string.server_window_title)).addMessage(msg);
+        service.onNewMessage(service.getString(R.string.server_window_title));
     }
 
     public void onNickAlreadyInUse(NickAlreadyInUseEvent event) {
@@ -427,21 +517,36 @@ public class IRCListener extends ListenerAdapter {
     }
 
     public void onWhois(WhoisEvent event) {
-        StringBuilder strB = new StringBuilder();
+        StringBuilder channelsBuilder = new StringBuilder();
         for (String channel : event.getChannels()) {
-            strB.append(channel + " ");
+            channelsBuilder.append(channel + " ");
+        }
+        StringBuilder messageBuilder = new StringBuilder();
+        messageBuilder.append(
+            service.getString(R.string.message_whois_fullhost,
+                    event.getNick(),
+                    event.getLogin(),
+                    event.getHostname(),
+                    event.getRealname()
+            )
+        );
+        if (!channelsBuilder.toString().equals("")) {
+            messageBuilder.append(service.getString(R.string.message_whois_channels, channelsBuilder.toString()));
+        }
+        if (event.getAwayMessage() != null) {
+            messageBuilder.append(service.getString(R.string.message_whois_away, event.getAwayMessage()));
+        }
+        if (event.getIdleSeconds() != 0) {
+            messageBuilder.append(service.getString(R.string.message_whois_idle, event.getIdleSeconds()));
+        }
+        if (event.getServer() != null) {
+            messageBuilder.append(service.getString(R.string.message_whois_server, event.getServer() + " " + event.getServerInfo()));
+        }
+        if (event.getRegisteredAs() != null) {
+            messageBuilder.append(service.getString(R.string.message_whois_registered, event.getRegisteredAs()));
         }
         Message msg = new Message(
-                service.getString(R.string.message_whois,
-                        event.getNick(),
-                        event.getLogin(),
-                        event.getHostname(),
-                        event.getRealname(),
-                        event.getServer(),
-                        event.getAwayMessage(),
-                        event.getRegisteredAs(),
-                        strB.toString()
-                        )
+            messageBuilder.toString()
         );
         server.getConversation(service.getString(R.string.server_window_title)).addMessage(msg);
         service.onNewMessage(service.getString(R.string.server_window_title));

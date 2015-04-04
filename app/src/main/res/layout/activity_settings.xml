@@ -97,14 +97,24 @@
 
 </Button>
 
-    <Button
-        android:id="@+id/settings_command_on_connect"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:text="@string/settings_command_on_connect_label"
-        android:onClick="openCommandOnConnectSettings"
-        >
+<Button
+    android:id="@+id/settings_command_on_connect"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:text="@string/settings_command_on_connect_label"
+    android:onClick="openCommandOnConnectSettings"
+    >
 
-    </Button>
+</Button>
+
+<Button
+    android:id="@+id/settings_notify_list"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:text="@string/settings_notify_list_label"
+    android:onClick="openNotifyListSettings"
+    >
+
+</Button>
 
 </LinearLayout>

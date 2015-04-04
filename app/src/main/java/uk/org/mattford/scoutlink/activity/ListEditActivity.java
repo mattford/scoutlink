@@ -18,9 +18,11 @@ public class ListEditActivity extends ListActivity {
 
     private ArrayList<String>items;
     private ArrayAdapter<String> adapter;
+    private ArrayList<String> newItems = new ArrayList<>();
+    private ArrayList<String> removedItems = new ArrayList<>();
 
-    private String title = "List Edit";
-    private String firstChar = "";
+    protected String title = "List Edit";
+    protected String firstChar = "";
 
 
     @Override
@@ -30,8 +32,8 @@ public class ListEditActivity extends ListActivity {
 
         Intent callingIntent = getIntent();
         items = callingIntent.getStringArrayListExtra("items");
-        if (items.size() < 2 && items.get(0).equals("")) {
-            items = new ArrayList<>();
+        if (items.size() > 0 && items.get(0).equals("")) {
+            items.remove(0);
         }
         adapter = new ArrayAdapter<>(this, R.layout.list_view_edit_item, items);
         setListAdapter(adapter);
@@ -59,6 +61,8 @@ public class ListEditActivity extends ListActivity {
     public void onFinishClick(View v) {
         Intent intent = new Intent();
         intent.putStringArrayListExtra("items", items);
+        intent.putStringArrayListExtra("newItems", newItems);
+        intent.putStringArrayListExtra("removedItems", removedItems);
         setResult(RESULT_OK, intent);
         finish();
     }
@@ -67,6 +71,7 @@ public class ListEditActivity extends ListActivity {
         EditText et = (EditText)v.getRootView().findViewById(R.id.new_item);
         String newItem = et.getText().toString();
         items.add(newItem);
+        newItems.add(newItem);
         adapter.notifyDataSetChanged();
         et.setText(firstChar);
         et.setSelection(et.getText().length());
@@ -81,7 +86,9 @@ public class ListEditActivity extends ListActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 items.remove(s);
+
                 adapter.notifyDataSetChanged();
+                onItemRemoved(s);
             }
         });
         adb.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -92,6 +99,10 @@ public class ListEditActivity extends ListActivity {
         });
         adb.show();
 
+    }
+
+    public void onItemRemoved(String item) {
+        removedItems.add(item);
     }
 
 }

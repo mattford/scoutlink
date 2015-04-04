@@ -10,9 +10,11 @@ import com.google.android.gms.analytics.GoogleAnalytics;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import uk.org.mattford.scoutlink.R;
 import uk.org.mattford.scoutlink.ScoutlinkApplication;
+import uk.org.mattford.scoutlink.irc.IRCService;
 import uk.org.mattford.scoutlink.model.Settings;
 
 public class SettingsActivity extends ActionBarActivity {
@@ -21,6 +23,7 @@ public class SettingsActivity extends ActionBarActivity {
 
     private final int AUTOJOIN_REQUEST_CODE = 0;
     private final int CONNECT_COMMANDS_REQUEST_CODE = 1;
+    private final int NOTIFY_LIST_REQUEST_CODE = 2;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -72,6 +75,15 @@ public class SettingsActivity extends ActionBarActivity {
         startActivityForResult(intent, CONNECT_COMMANDS_REQUEST_CODE);
     }
 
+    public void openNotifyListSettings(View v) {
+        Intent intent = new Intent(this, ListEditActivity.class);
+
+        intent.putStringArrayListExtra("items", new ArrayList<>(Arrays.asList(settings.getStringArray("notify_list"))));
+        intent.putExtra("title", "Notify List");
+        intent.putExtra("firstChar", "");
+        startActivityForResult(intent, NOTIFY_LIST_REQUEST_CODE);
+    }
+
     @Override
     public void onPause() {
         super.onPause();
@@ -106,6 +118,21 @@ public class SettingsActivity extends ActionBarActivity {
             case CONNECT_COMMANDS_REQUEST_CODE:
                 if (resultCode == RESULT_OK) {
                     settings.putStringArrayList("command_on_connect", data.getStringArrayListExtra("items"));
+                }
+                break;
+            case NOTIFY_LIST_REQUEST_CODE:
+                if (resultCode == RESULT_OK) {
+                    settings.putStringArrayList("notify_list", data.getStringArrayListExtra("items"));
+                    ArrayList<String> newItems = data.getStringArrayListExtra("newItems");
+                    ArrayList<String> removedItems = data.getStringArrayListExtra("removedItems");
+                    Intent addNotify = new Intent(this, IRCService.class);
+                    addNotify.setAction("ADD_NOTIFY");
+                    addNotify.putStringArrayListExtra("items", newItems);
+                    startService(addNotify);
+                    Intent removeNotify = new Intent(this, IRCService.class);
+                    removeNotify.setAction("REMOVE_NOTIFY");
+                    removeNotify.putStringArrayListExtra("items", removedItems);
+                    startService(removeNotify);
                 }
                 break;
 

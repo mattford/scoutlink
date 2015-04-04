@@ -67,7 +67,8 @@ public class Settings {
 
     public String[] getStringArray(String key) {
         String string = this.getString(key);
-        return string.split(",");
+		String[] strings = string.split(",");
+		return strings;
     }
 
 	

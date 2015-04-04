@@ -114,7 +114,19 @@
     <string name="message_unset_topicprotect">%1$s has disabled topic protection</string>
     <string name="message_action">*%1$s</string>
     <string name="message_notice_sender">-%1$s-</string>
-    <string name="message_whois">Whois Response for %1$s:\n%1$s!%2$s@%3$s - %4$s\nServer: %5$s\nAway: %6$s\nRegistered as: %7$s\nChannels: %8$s</string>
+    <string name="message_whois_fullhost">%1$s!%2$s@%3$s - %4$s\n</string>
+    <string name="message_whois_server">Server: %1$s\n</string>
+    <string name="message_whois_away">Away: %1$s\n</string>
+    <string name="message_whois_registered">Registered as: %1$s\n</string>
+    <string name="message_whois_channels">Channels: %1$s\n</string>
+    <string name="message_whois_idle">Idle for: %1$s\n</string>
+
+    <string name="message_notify_online">%1$s is online</string>
+    <string name="message_notify_offline">%1$s is offline</string>
+    <string name="message_notify_away">%1$s is away: %2$s</string>
+    <string name="message_notify_back">%1$s is no longer away</string>
+    <string name="message_notify_added">%1$s was added to notify list</string>
+    <string name="message_notify_removed">%1$s was removed from notify list</string>
 
     <string name="action_kick_dialog_title">Reason for kick:</string>
 
@@ -125,12 +137,14 @@
     <string name="settings_nickserv_user_label">Nickserv Username:</string>
     <string name="settings_nickserv_password_label">Nickserv Password:</string>
 
+
     <string name="title_activity_list_view_edit">Edit List</string>
     <string name="edit_list_remove_item_confirm_title">Remove Item?</string>
     <string name="edit_list_remove_item_confirm_text">Are you sure you want to remove this item?</string>
 
     <string name="settings_autojoin_channels_label">Autojoin Channels</string>
     <string name="settings_command_on_connect_label">Run commands on connect</string>
+    <string name="settings_notify_list_label">Notify List</string>
 
     <string name="title_activity_channel_settings">Channel Settings</string>
 
@@ -149,6 +163,8 @@
     <string name="channel_settings_topic_change">Change</string>
     <string name="channel_settings_need_op">You must be an op to change channel settings</string>
     <string name="channel_settings_not_channel">You can only change settings in channels</string>
+
+
     <string name="default_quit_message">ScoutLink for Android!</string>
     <string name="nick_already_in_use">This nickname is already in use, please select a different nickname and try again.</string>
 

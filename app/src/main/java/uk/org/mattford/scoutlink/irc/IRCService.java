@@ -50,6 +50,20 @@ public class IRCService extends Service {
 	}
 		
 	public int onStartCommand(Intent intent, int flags, int startId) {
+        if (intent != null && intent.getAction() != null) {
+            switch(intent.getAction()) {
+                case "ADD_NOTIFY":
+                    for (String item : intent.getStringArrayListExtra("items")) {
+                        getConnection().sendRaw().rawLineNow("WATCH "+getConnection().getNick()+" +"+item);
+                    }
+                    break;
+                case "REMOVE_NOTIFY":
+                    for (String item : intent.getStringArrayListExtra("items")) {
+                        getConnection().sendRaw().rawLineNow("WATCH "+getConnection().getNick()+" -"+item);
+                    }
+                    break;
+            }
+        }
 		return START_STICKY;
 	}
 	
@@ -158,7 +172,7 @@ public class IRCService extends Service {
         if (conversationsWithNewMsg.size() > 0) {
             if (conversationsWithNewMsg.size() == 1 && newMsgTotal <= 3) {
                 Conversation conv = conversationsWithNewMsg.get(0);
-                Iterator msgIter = conv.getBuffer().iterator(); // USe an iterator to avoid ConcurrentModificationException when the notification is updated while new messages are received
+                Iterator msgIter = conv.getBuffer().iterator(); // Use an iterator to avoid ConcurrentModificationException when the notification is updated while new messages are received
                 while(msgIter.hasNext()) {
                     Message msg = (Message)msgIter.next();
                     lines.add(getString(R.string.notification_new_messages_multi, conv.getName(), msg.getSender(), msg.getText()));
@@ -220,15 +234,28 @@ public class IRCService extends Service {
                 getConnection().sendRaw().rawLineNow(command);
             }
         }
+
+        String[] notify_users = settings.getStringArray("notify_list");
+        if (notify_users.length > 1 || !notify_users[0].equals("")) {
+            for(String user : notify_users) {
+                getConnection().sendRaw().rawLineNow("WATCH "+getConnection().getNick()+" +"+user);
+            }
+        }
+
     }
 
+    // Deprecated, use sendToast()
     public void onNickAlreadyInUse() {
+        sendToast(getString(R.string.nick_already_in_use));
+    }
+
+    public void sendToast(final String text) {
         Handler mainThread = new Handler(getMainLooper());
         final Context context = this;
         mainThread.post(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(context, getString(R.string.nick_already_in_use), Toast.LENGTH_LONG).show();
+                Toast.makeText(context, text, Toast.LENGTH_LONG).show();
             }
         });
     }
