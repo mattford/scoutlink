@@ -32,9 +32,6 @@ public class ListEditActivity extends ListActivity {
 
         Intent callingIntent = getIntent();
         items = callingIntent.getStringArrayListExtra("items");
-        if (items.size() > 0 && items.get(0).equals("")) {
-            items.remove(0);
-        }
         adapter = new ArrayAdapter<>(this, R.layout.list_view_edit_item, items);
         setListAdapter(adapter);
 
@@ -86,7 +83,6 @@ public class ListEditActivity extends ListActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 items.remove(s);
-
                 adapter.notifyDataSetChanged();
                 onItemRemoved(s);
             }

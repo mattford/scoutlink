@@ -8,9 +8,6 @@ package uk.org.mattford.scoutlink.utils;
 public class Validator {
 
     public static boolean isValidNickname(String nickname) {
-        if (nickname.matches("\\A[a-z_\\-\\[\\]\\\\^{}|`][a-z0-9_\\-\\[\\]\\\\^{}|`]*\\z")) {
-            return true;
-        }
-        return false;
+        return nickname.matches("\\A[a-z_\\-\\[\\]\\\\^{}|`][a-z0-9_\\-\\[\\]\\\\^{}|`]*\\z");
     }
 }

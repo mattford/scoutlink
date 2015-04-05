@@ -3,8 +3,10 @@ package uk.org.mattford.scoutlink.model;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.text.TextUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Settings {
 	
@@ -32,31 +34,28 @@ public class Settings {
 	}
 	
 	public Boolean getBoolean(String key) {
-		return this.getBoolean(key, false);
+		return getBoolean(key, false);
 	}
 	
 	public Boolean getBoolean(String key, Boolean defValue) {
-		return this.prefs.getBoolean(key, defValue);
+		return prefs.getBoolean(key, defValue);
 	}
 	
 	public void putString(String key, String value) {
-		SharedPreferences.Editor editor = this.prefs.edit();
+		SharedPreferences.Editor editor = prefs.edit();
 		editor.putString(key, value);
 		editor.apply();
 	}
 	
 	public void putBoolean(String key, Boolean value) {
-		SharedPreferences.Editor editor = this.prefs.edit();
+		SharedPreferences.Editor editor = prefs.edit();
 		editor.putBoolean(key, value);
 		editor.apply();
 	}
 
     public void putStringArray(String key, String[] value) {
-        StringBuilder sb = new StringBuilder();
-        for (String val : value) {
-            sb.append(val).append(",");
-        }
-        putString(key, sb.toString());
+		String joinedString = TextUtils.join(",", value);
+        putString(key, joinedString);
     }
 
     public void putStringArrayList(String key, ArrayList<String> value) {
@@ -65,10 +64,14 @@ public class Settings {
         putStringArray(key, strArr);
     }
 
+	public ArrayList<String> getStringArrayList(String key) {
+		String string = getString(key);
+		return new ArrayList<>(Arrays.asList(TextUtils.split(string, ",")));
+	}
+
     public String[] getStringArray(String key) {
-        String string = this.getString(key);
-		String[] strings = string.split(",");
-		return strings;
+        String string = getString(key);
+		return string.split(",");
     }
 
 	

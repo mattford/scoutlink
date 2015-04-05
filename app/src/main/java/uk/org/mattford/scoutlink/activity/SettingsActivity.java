@@ -6,14 +6,9 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.widget.EditText;
 
-import com.google.android.gms.analytics.GoogleAnalytics;
-
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import uk.org.mattford.scoutlink.R;
-import uk.org.mattford.scoutlink.ScoutlinkApplication;
 import uk.org.mattford.scoutlink.irc.IRCService;
 import uk.org.mattford.scoutlink.model.Settings;
 
@@ -62,14 +57,14 @@ public class SettingsActivity extends ActionBarActivity {
 
         intent.putExtra("title", "Autojoin Channels");
         intent.putExtra("firstChar", "#");
-        intent.putStringArrayListExtra("items", new ArrayList<>(Arrays.asList(settings.getStringArray("autojoin_channels"))));
+        intent.putStringArrayListExtra("items", settings.getStringArrayList("autojoin_channels"));
         startActivityForResult(intent, AUTOJOIN_REQUEST_CODE);
     }
 
     public void openCommandOnConnectSettings(View v) {
         Intent intent = new Intent(this, ListEditActivity.class);
 
-        intent.putStringArrayListExtra("items", new ArrayList<>(Arrays.asList(settings.getStringArray("command_on_connect"))));
+        intent.putStringArrayListExtra("items", settings.getStringArrayList("command_on_connect"));
         intent.putExtra("title", "Commands on Connect");
         intent.putExtra("firstChar", "/");
         startActivityForResult(intent, CONNECT_COMMANDS_REQUEST_CODE);
@@ -78,7 +73,7 @@ public class SettingsActivity extends ActionBarActivity {
     public void openNotifyListSettings(View v) {
         Intent intent = new Intent(this, ListEditActivity.class);
 
-        intent.putStringArrayListExtra("items", new ArrayList<>(Arrays.asList(settings.getStringArray("notify_list"))));
+        intent.putStringArrayListExtra("items", settings.getStringArrayList("notify_list"));
         intent.putExtra("title", "Notify List");
         intent.putExtra("firstChar", "");
         startActivityForResult(intent, NOTIFY_LIST_REQUEST_CODE);

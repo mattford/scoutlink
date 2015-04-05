@@ -2,10 +2,6 @@ package uk.org.mattford.scoutlink.irc;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.util.Log;
-import android.widget.Toast;
-
-import com.google.common.collect.Lists;
 
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
@@ -58,7 +54,6 @@ import org.pircbotx.hooks.events.WhoisEvent;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import uk.org.mattford.scoutlink.R;
 import uk.org.mattford.scoutlink.event.NotifyEvent;

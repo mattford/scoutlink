@@ -3,7 +3,6 @@ package uk.org.mattford.scoutlink.irc;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.pircbotx.Configuration;
@@ -18,7 +17,6 @@ import uk.org.mattford.scoutlink.model.Server;
 import uk.org.mattford.scoutlink.model.ServerWindow;
 import uk.org.mattford.scoutlink.model.Settings;
 import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
@@ -28,7 +26,6 @@ import android.os.Binder;
 import android.os.Handler;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
-import android.util.Log;
 import android.widget.Toast;
 
 public class IRCService extends Service {
@@ -53,13 +50,18 @@ public class IRCService extends Service {
         if (intent != null && intent.getAction() != null) {
             switch(intent.getAction()) {
                 case "ADD_NOTIFY":
-                    for (String item : intent.getStringArrayListExtra("items")) {
-                        getConnection().sendRaw().rawLineNow("WATCH "+getConnection().getNick()+" +"+item);
+                    if (getConnection() != null && getConnection().isConnected()) {
+                        for (String item : intent.getStringArrayListExtra("items")) {
+
+                            getConnection().sendRaw().rawLineNow("WATCH " + getConnection().getNick() + " +" + item);
+                        }
                     }
                     break;
                 case "REMOVE_NOTIFY":
-                    for (String item : intent.getStringArrayListExtra("items")) {
-                        getConnection().sendRaw().rawLineNow("WATCH "+getConnection().getNick()+" -"+item);
+                    if (getConnection() != null && getConnection().isConnected()) {
+                        for (String item : intent.getStringArrayListExtra("items")) {
+                            getConnection().sendRaw().rawLineNow("WATCH " + getConnection().getNick() + " -" + item);
+                        }
                     }
                     break;
             }
