@@ -50,10 +50,12 @@
                     android:onClick="connectClick"
                     />
             </LinearLayout>
+            <CheckBox
+                android:id="@+id/channel_list_on_connect"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/channel_list_on_connect"/>
         </LinearLayout>
-
-
-
 
     </RelativeLayout>
 

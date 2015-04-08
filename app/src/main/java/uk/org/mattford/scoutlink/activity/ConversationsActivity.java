@@ -101,6 +101,7 @@ public class ConversationsActivity extends ActionBarActivity implements ServiceC
 		registerReceiver(this.receiver, new IntentFilter(Broadcast.REMOVE_CONVERSATION));
 		registerReceiver(this.receiver, new IntentFilter(Broadcast.INVITE));
 		registerReceiver(this.receiver, new IntentFilter(Broadcast.DISCONNECTED));
+        registerReceiver(this.receiver, new IntentFilter(Broadcast.CONNECTED));
 		
 		Intent serviceIntent = new Intent(this, IRCService.class);
 		startService(serviceIntent);
@@ -168,7 +169,16 @@ public class ConversationsActivity extends ActionBarActivity implements ServiceC
 		});
 		adb.show();
 	}
-	
+
+    public void onConnect() {
+        if (settings.getBoolean("channel_list_on_connect", false)) {
+            Intent channelListIntent = new Intent(this, ChannelListActivity.class);
+            ArrayList<String> channels = binder.getService().getServer().getChannelList();
+            channelListIntent.putStringArrayListExtra("channels", channels);
+            startActivityForResult(channelListIntent, JOIN_CHANNEL_RESULT);
+        }
+    }
+
 	public void onDisconnect() {
 		binder.getService().getServer().clearConversations();
 		pagerAdapter.clearConversations();
@@ -296,8 +306,6 @@ public class ConversationsActivity extends ActionBarActivity implements ServiceC
         	break;
         case R.id.action_channel_list:
             Intent channelListIntent = new Intent(this, ChannelListActivity.class);
-            ArrayList<String> channels = binder.getService().getServer().getChannelList();
-            channelListIntent.putStringArrayListExtra("channels", channels);
             startActivityForResult(channelListIntent, JOIN_CHANNEL_RESULT);
             break;
         case R.id.action_channel_settings:

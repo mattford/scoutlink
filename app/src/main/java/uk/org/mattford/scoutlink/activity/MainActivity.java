@@ -17,6 +17,7 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -51,6 +52,8 @@ public class MainActivity extends ActionBarActivity implements ServiceConnection
                 return false;
             }
         });
+        CheckBox showChannelList = (CheckBox)findViewById(R.id.channel_list_on_connect);
+        showChannelList.setChecked(settings.getBoolean("channel_list_on_connect", true));
         Intent service = new Intent(this, IRCService.class);
         startService(service);
         bindService(service, this, 0);
@@ -71,13 +74,14 @@ public class MainActivity extends ActionBarActivity implements ServiceConnection
     
     public void connectClick(View v) {
     	String nick = ((EditText)findViewById(R.id.nickname)).getText().toString();
-
+        boolean channelListOnConnect = ((CheckBox)findViewById(R.id.channel_list_on_connect)).isChecked();
     	if (nick == null || !Validator.isValidNickname(nick)) {
             Toast.makeText(this, getString(R.string.nickname_not_valid), Toast.LENGTH_LONG).show();
             return;
         }
         settings.putString("nickname", nick);
-    	
+    	settings.putBoolean("channel_list_on_connect", channelListOnConnect);
+
     	Intent intent = new Intent(this, ConversationsActivity.class);
     	intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
     	startActivity(intent);

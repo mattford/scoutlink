@@ -121,11 +121,11 @@ public class SettingsActivity extends ActionBarActivity {
                     ArrayList<String> newItems = data.getStringArrayListExtra("newItems");
                     ArrayList<String> removedItems = data.getStringArrayListExtra("removedItems");
                     Intent addNotify = new Intent(this, IRCService.class);
-                    addNotify.setAction("ADD_NOTIFY");
+                    addNotify.setAction(IRCService.ACTION_ADD_NOTIFY);
                     addNotify.putStringArrayListExtra("items", newItems);
                     startService(addNotify);
                     Intent removeNotify = new Intent(this, IRCService.class);
-                    removeNotify.setAction("REMOVE_NOTIFY");
+                    removeNotify.setAction(IRCService.ACTION_REMOVE_NOTIFY);
                     removeNotify.putStringArrayListExtra("items", removedItems);
                     startService(removeNotify);
                 }

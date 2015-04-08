@@ -34,6 +34,9 @@ public class ConversationReceiver extends BroadcastReceiver {
             case Broadcast.DISCONNECTED:
                 activity.onDisconnect();
                 break;
+            case Broadcast.CONNECTED:
+                activity.onConnect();
+                break;
         }
 
 	}

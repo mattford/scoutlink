@@ -37,6 +37,10 @@ public class IRCService extends Service {
 	
 	private final int NOTIFICATION_ID = 1;
 
+    public static final String ACTION_ADD_NOTIFY = "uk.org.mattford.scoutlink.IRCService.ADD_NOTIFY";
+    public static final String ACTION_REMOVE_NOTIFY = "uk.org.mattford.scoutlink.IRCService.REMOVE_NOTIFY";
+    public static final String ACTION_LIST_CHANNELS = "uk.org.mattford.scoutlink.IRCService.LIST_CHANNELS";
+
 	private boolean foreground = false;
 
 	public void onCreate() {
@@ -49,7 +53,7 @@ public class IRCService extends Service {
 	public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent != null && intent.getAction() != null) {
             switch(intent.getAction()) {
-                case "ADD_NOTIFY":
+                case ACTION_ADD_NOTIFY:
                     if (getConnection() != null && getConnection().isConnected()) {
                         for (String item : intent.getStringArrayListExtra("items")) {
 
@@ -57,13 +61,17 @@ public class IRCService extends Service {
                         }
                     }
                     break;
-                case "REMOVE_NOTIFY":
+                case ACTION_REMOVE_NOTIFY:
                     if (getConnection() != null && getConnection().isConnected()) {
                         for (String item : intent.getStringArrayListExtra("items")) {
                             getConnection().sendRaw().rawLineNow("WATCH " + getConnection().getNick() + " -" + item);
                         }
                     }
                     break;
+                case ACTION_LIST_CHANNELS:
+                    if (getConnection() != null && getConnection().isConnected()) {
+                        getConnection().sendIRC().listChannels();
+                    }
             }
         }
 		return START_STICKY;
@@ -243,6 +251,9 @@ public class IRCService extends Service {
                 getConnection().sendRaw().rawLineNow("WATCH "+getConnection().getNick()+" +"+user);
             }
         }
+
+        Intent intent = new Intent(Broadcast.CONNECTED);
+        sendBroadcast(intent);
 
     }
 

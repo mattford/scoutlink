@@ -14,7 +14,7 @@
         Welcome to ScoutLink, the IRC network for Scouts and Guides.\nPlease enter a nickname below.
     </string>
     <string name="sl_header_content_description">Header image</string>
-
+    <string name="channel_list_on_connect">Show channel list after connecting</string>
     <!-- Menu Items -->
     <!-- Opens Application Settings, e.g., nick, ident, realname, quit message -->
     <string name="action_settings">Settings</string>

@@ -2,7 +2,9 @@ package uk.org.mattford.scoutlink.irc;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.util.Log;
 
+import org.pircbotx.ChannelListEntry;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.pircbotx.hooks.ListenerAdapter;
@@ -166,7 +168,7 @@ public class IRCListener extends ListenerAdapter {
     }
 
     public void onConnect(ConnectEvent event) {
-        event.getBot().sendIRC().listChannels();
+        //event.getBot().sendIRC().listChannels();
         service.onConnect();
     }
 
@@ -237,7 +239,7 @@ public class IRCListener extends ListenerAdapter {
 
     public void onAction(ActionEvent event) {
         //Message msg = new Message(service.getString(R.string.message_action, event.getUserHostmask().getNick(), event.getAction()));
-        Message msg = new Message(event.getUserHostmask().getNick(), service.getString(R.string.message_action,event.getAction()));
+        Message msg = new Message(event.getUserHostmask().getNick(), service.getString(R.string.message_action, event.getAction()));
         if (event.getChannel() != null) {
             server.getConversation(event.getChannel().getName()).addMessage(msg);
             service.onNewMessage(event.getChannel().getName());
@@ -494,6 +496,7 @@ public class IRCListener extends ListenerAdapter {
     public void onUserMode(UserModeEvent event) {
         String sender = event.getUserHostmask().getNick();
         String receiver = event.getRecipientHostmask().getNick();
+
         Message msg = new Message(service.getString(R.string.message_usermode, sender, event.getMode(), receiver));
         server.getConversation("ScoutLink").addMessage(msg);
         service.onNewMessage("ScoutLink");
@@ -549,7 +552,14 @@ public class IRCListener extends ListenerAdapter {
 
     @SuppressWarnings("unchecked")
     public void onChannelInfo(ChannelInfoEvent event) {
-        server.setChannelList(event.getList());
+        Intent intent;
+        for (ChannelListEntry entry : event.getList()) {
+            if (!entry.getName().equals("*")) {
+                intent = new Intent(Broadcast.CHANNEL_LIST_INFO);
+                intent.putExtra("value", entry.getName());
+                service.sendBroadcast(intent);
+            }
+        }
     }
 
     public void onServerPing(ServerPingEvent event) {
