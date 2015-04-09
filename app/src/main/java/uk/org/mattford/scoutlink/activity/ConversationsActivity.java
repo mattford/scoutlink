@@ -28,10 +28,12 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.analytics.Tracker;
@@ -47,6 +49,7 @@ public class ConversationsActivity extends ActionBarActivity implements ServiceC
 	private IRCBinder binder;
     private Settings settings;
     private Tracker tracker;
+    private TitlePageIndicator indicator;
 
     private final int USER_LIST_RESULT = 0;
 	private final int JOIN_CHANNEL_RESULT = 1;
@@ -64,18 +67,26 @@ public class ConversationsActivity extends ActionBarActivity implements ServiceC
         pager = (ViewPager) findViewById(R.id.pager);
         pager.setAdapter(pagerAdapter);
 
-        TitlePageIndicator indicator;
+
 
         indicator = (TitlePageIndicator)findViewById(R.id.nav_titles);
         indicator.setViewPager(pager);
 
         indicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+
+            private int currentPage = -1;
+
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
 
             @Override
             public void onPageSelected(int position) {
                 binder.getService().updateNotification();
+                if (currentPage != -1 && pagerAdapter.getItemInfo(currentPage) != null) {
+                    pagerAdapter.getItemInfo(currentPage).conv.setSelected(false);
+                }
+                currentPage = position;
+                pagerAdapter.getItemInfo(position).conv.setSelected(true);
             }
 
             @Override
@@ -105,7 +116,19 @@ public class ConversationsActivity extends ActionBarActivity implements ServiceC
 		
 		Intent serviceIntent = new Intent(this, IRCService.class);
 		startService(serviceIntent);
-		bindService(serviceIntent, this, 0);	
+		bindService(serviceIntent, this, 0);
+
+        EditText newMessage = (EditText)findViewById(R.id.input);
+        newMessage.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (event == null) {
+                    onSendButtonClick(v);
+                    return true;
+                }
+                return false;
+            }
+        });
 	}
 	
 	public void onPause() {
@@ -187,12 +210,18 @@ public class ConversationsActivity extends ActionBarActivity implements ServiceC
         finish();
 	}
 	
-	public void onNewConversation(String name) {
+	public void onNewConversation(String name, boolean selected) {
 		Conversation conv = binder.getService().getServer().getConversation(name);
 		pagerAdapter.addConversation(conv);
-		
+		if (conv.isSelected() || selected) {
+            indicator.setCurrentItem(pagerAdapter.getItemByName(conv.getName()));
+        }
 		onConversationMessage(conv.getName());
 	}
+
+    public void onNewConversation(String name) {
+        onNewConversation(name, false);
+    }
 	
 	public void removeConversation(String name) {
 		int i = pagerAdapter.getItemByName(name);

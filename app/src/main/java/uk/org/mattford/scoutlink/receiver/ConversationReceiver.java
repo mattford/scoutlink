@@ -20,7 +20,7 @@ public class ConversationReceiver extends BroadcastReceiver {
 		String action = intent.getAction();
         switch (action) {
             case Broadcast.NEW_CONVERSATION:
-                activity.onNewConversation(intent.getStringExtra("target"));
+                activity.onNewConversation(intent.getStringExtra("target"), intent.getBooleanExtra("selected", false));
                 break;
             case Broadcast.NEW_MESSAGE:
                 activity.onConversationMessage(intent.getStringExtra("target"));

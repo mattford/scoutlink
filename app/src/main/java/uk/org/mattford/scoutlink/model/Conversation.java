@@ -13,6 +13,8 @@ public class Conversation {
 	public final static int TYPE_QUERY = 1;
 	public final static int TYPE_SERVER = 2;
 
+    private boolean isSelected = false;
+
 	protected Conversation(String name) {
 		this.CONVERSATION_NAME = name;
 		this.messages = new LinkedList<>();
@@ -56,4 +58,12 @@ public class Conversation {
 	public void addMessage(Message msg) {
 		buffer.add(msg);
 	}
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
+    }
 }
