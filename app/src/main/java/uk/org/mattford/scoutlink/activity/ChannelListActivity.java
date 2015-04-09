@@ -11,6 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
 import uk.org.mattford.scoutlink.R;
 import uk.org.mattford.scoutlink.irc.IRCService;
@@ -48,7 +49,21 @@ public class ChannelListActivity extends ListActivity implements AdapterView.OnI
     }
 
     public void onChannelListInfo(String channel) {
-        adapter.add(channel);
+        if (adapter.getPosition(channel) == -1) {
+            adapter.add(channel);
+            adapter.sort(new Comparator<String>() {
+
+                @Override
+                public int compare(String lhs, String rhs) {
+                    int res = String.CASE_INSENSITIVE_ORDER.compare(lhs, rhs);
+                    if (res == 0) {
+                        res = lhs.compareTo(rhs);
+                    }
+                    return res;
+                }
+            });
+        }
+
     }
 
     @Override

@@ -294,7 +294,7 @@ public class IRCListener extends ListenerAdapter {
         if (event.getUserHostmask().getNick().equalsIgnoreCase(event.getBot().getNick())) {
             Conversation conv = new Channel(event.getChannel().getName());
             server.addConversation(conv);
-            Intent intent = new Intent().setAction(Broadcast.NEW_CONVERSATION).putExtra("target", event.getChannel().getName());
+            Intent intent = new Intent().setAction(Broadcast.NEW_CONVERSATION).putExtra("target", event.getChannel().getName()).putExtra("selected", true);
             service.sendBroadcast(intent);
         } else {
             Message msg = new Message(service.getString(R.string.message_join, event.getUserHostmask().getNick(), event.getChannel().getName()));
