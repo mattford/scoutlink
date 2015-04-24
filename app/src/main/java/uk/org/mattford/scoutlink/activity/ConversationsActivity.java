@@ -12,9 +12,7 @@ import uk.org.mattford.scoutlink.irc.IRCService;
 import uk.org.mattford.scoutlink.model.Broadcast;
 import uk.org.mattford.scoutlink.model.Conversation;
 import uk.org.mattford.scoutlink.model.Message;
-import uk.org.mattford.scoutlink.model.Query;
 import uk.org.mattford.scoutlink.model.Settings;
-import uk.org.mattford.scoutlink.model.User;
 import uk.org.mattford.scoutlink.receiver.ConversationReceiver;
 import android.app.AlertDialog;
 import android.content.ComponentName;
@@ -39,8 +37,6 @@ import android.widget.Toast;
 import com.google.android.gms.analytics.Tracker;
 import com.viewpagerindicator.TitlePageIndicator;
 
-import org.pircbotx.Channel;
-
 public class ConversationsActivity extends ActionBarActivity implements ServiceConnection {
 	
 	private ConversationsPagerAdapter pagerAdapter;
@@ -48,12 +44,10 @@ public class ConversationsActivity extends ActionBarActivity implements ServiceC
 	private ConversationReceiver receiver;
 	private IRCBinder binder;
     private Settings settings;
-    private Tracker tracker;
+    //private Tracker tracker;
     private TitlePageIndicator indicator;
 
-    private final int USER_LIST_RESULT = 0;
-	private final int JOIN_CHANNEL_RESULT = 1;
-    private final int NOTICE_RESULT = 2;
+	private final int JOIN_CHANNEL_RESULT = 0;
 	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -213,7 +207,9 @@ public class ConversationsActivity extends ActionBarActivity implements ServiceC
 	public void onNewConversation(String name, boolean selected) {
 		Conversation conv = binder.getService().getServer().getConversation(name);
 		pagerAdapter.addConversation(conv);
+
 		if (conv.isSelected() || selected) {
+
             indicator.setCurrentItem(pagerAdapter.getItemByName(conv.getName()));
         }
 		onConversationMessage(conv.getName());
@@ -312,17 +308,9 @@ public class ConversationsActivity extends ActionBarActivity implements ServiceC
             switch (conversation.getType()) {
                 case Conversation.TYPE_CHANNEL:
                     String chan = conversation.getName();
-                    ArrayList<String> users = new ArrayList<>();
-                    users.addAll(binder.getService().getConnection().getUserChannelDao().getChannel(chan).getUsersNicks());
                     Intent intent = new Intent(this, UserListActivity.class);
-                    intent.putStringArrayListExtra("users", users);
-
-                    boolean isChanOp = binder.getService().getConnection().getUserChannelDao().getChannel(chan).isOp(binder.getService().getConnection().getUserBot());
-                    intent.putExtra("isChanOp", isChanOp);
-                    boolean isIrcOp = binder.getService().getConnection().getUserBot().isIrcop();
-                    intent.putExtra("isIrcOp", isIrcOp);
-
-                    startActivityForResult(intent, USER_LIST_RESULT);
+                    intent.putExtra("channel", chan);
+                    startActivity(intent);
                     break;
                 default:
                     Toast.makeText(this, getResources().getString(R.string.userlist_not_on_channel), Toast.LENGTH_SHORT).show();
@@ -362,101 +350,7 @@ public class ConversationsActivity extends ActionBarActivity implements ServiceC
                     binder.getService().getConnection().sendIRC().joinChannel(channel);
                 }
                 break;
-            case USER_LIST_RESULT:
-                if (resultCode == RESULT_OK) {
-                    String target = data.getStringExtra("target");
-                    String chanStr = pagerAdapter.getItemInfo(pager.getCurrentItem()).conv.getName();
-                    final Channel channel = binder.getService().getConnection().getUserChannelDao().getChannel(chanStr);
-                    final org.pircbotx.User user = binder.getService().getConnection().getUserChannelDao().getUser(target);
-                    switch (data.getIntExtra("action", -1)) {
-                        case User.ACTION_QUERY:
-                            Query query = new Query(target);
-                            binder.getService().getServer().addConversation(query);
-                            onNewConversation(query.getName());
-                            break;
-                        case User.ACTION_NOTICE:
-                            Intent intent = new Intent(this, NoticeActivity.class);
-                            intent.putExtra("target", target);
-                            startActivityForResult(intent, NOTICE_RESULT);
-                            break;
-                        case User.ACTION_KICK:
-                            final EditText input = new EditText(this);
-                            new AlertDialog.Builder(this)
-                                    .setTitle(R.string.action_kick_dialog_title)
-                                    .setView(input)
-                                    .setPositiveButton("Kick", new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int whichButton) {
-                                            channel.send().kick(user, input.getText().toString());
-                                        }
-                                    })
-                                    .setNegativeButton("Cancel", new OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int whichButton) {
-                                            // Nada.
-                                        }
-                                    })
-                                    .show();
-                            break;
-                        case User.ACTION_KILL:
-                            final EditText inputKill = new EditText(this);
-                            new AlertDialog.Builder(this)
-                                    .setTitle(R.string.action_kick_dialog_title)
-                                    .setView(inputKill)
-                                    .setPositiveButton("Kill", new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int whichButton) {
-                                            binder.getService().getConnection().sendRaw().rawLineNow("KILL " + user.getNick() + " " + inputKill.getText().toString());
-                                        }
-                                    })
-                                    .setNegativeButton("Cancel", new OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int whichButton) {
-                                            // Nada.
-                                        }
-                                    })
-                                    .show();
-                            break;
-                        case User.ACTION_OP:
-                            channel.send().op(user);
-                            break;
-                        case User.ACTION_DEOP:
-                            channel.send().deOp(user);
-                            break;
-                        case User.ACTION_HOP:
-                            channel.send().halfOp(user);
-                            break;
-                        case User.ACTION_DEHOP:
-                            channel.send().deHalfOp(user);
-                            break;
-                        case User.ACTION_ADMIN:
-                            channel.send().superOp(user);
-                            break;
-                        case User.ACTION_DEADMIN:
-                            channel.send().deSuperOp(user);
-                            break;
-                        case User.ACTION_OWNER:
-                            channel.send().owner(user);
-                            break;
-                        case User.ACTION_DEOWNER:
-                            channel.send().deOwner(user);
-                            break;
-                        case User.ACTION_VOICE:
-                            channel.send().voice(user);
-                            break;
-                        case User.ACTION_DEVOICE:
-                            channel.send().deVoice(user);
-                            break;
-                    }
-                }
-                break;
-            case NOTICE_RESULT:
-                if (resultCode == RESULT_OK) {
-                    String text = data.getStringExtra("message");
-                    String target = data.getStringExtra("target");
-                    Message msg = new Message("-> -"+target+"-", text);
-                    binder.getService().getConnection().sendIRC().notice(target, text);
-                    ConversationsPagerAdapter.ConversationInfo info = pagerAdapter.getItemInfo(pager.getCurrentItem());
-                    info.conv.addMessage(msg);
-                    onConversationMessage(info.conv.getName());
-                }
-                break;
+
         }
     }
 }

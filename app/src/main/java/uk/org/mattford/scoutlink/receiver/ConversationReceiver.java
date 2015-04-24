@@ -5,6 +5,7 @@ import uk.org.mattford.scoutlink.model.Broadcast;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 public class ConversationReceiver extends BroadcastReceiver {
 	
@@ -20,6 +21,7 @@ public class ConversationReceiver extends BroadcastReceiver {
 		String action = intent.getAction();
         switch (action) {
             case Broadcast.NEW_CONVERSATION:
+                Log.d("SL", "onReceive "+Boolean.toString(intent.getBooleanExtra("selected", false)));
                 activity.onNewConversation(intent.getStringExtra("target"), intent.getBooleanExtra("selected", false));
                 break;
             case Broadcast.NEW_MESSAGE:

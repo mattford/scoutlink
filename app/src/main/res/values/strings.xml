@@ -120,6 +120,7 @@
     <string name="message_whois_registered">Registered as: %1$s\n</string>
     <string name="message_whois_channels">Channels: %1$s\n</string>
     <string name="message_whois_idle">Idle for: %1$s\n</string>
+    <string name="message_join_failed">Cannot join %1$s (%2$s)</string>
 
     <string name="message_notify_online">%1$s is online</string>
     <string name="message_notify_offline">%1$s is offline</string>
@@ -128,7 +129,9 @@
     <string name="message_notify_added">%1$s was added to notify list</string>
     <string name="message_notify_removed">%1$s was removed from notify list</string>
 
-    <string name="action_kick_dialog_title">Reason for kick:</string>
+    <string name="action_kick_dialog_title">Reason for kick</string>
+    <string name="action_kill_dialog_title">Reason for kill</string>
+    <string name="action_notice_dialog_title">Send a notice</string>
 
     <string name="settings_nickname_label">Nickname:</string>
     <string name="settings_ident_label">Username:</string>

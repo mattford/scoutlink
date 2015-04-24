@@ -3,17 +3,13 @@ package uk.org.mattford.scoutlink.activity;
 
 import uk.org.mattford.scoutlink.R;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 
 public class MessageListFragment extends ListFragment {
@@ -42,10 +38,8 @@ public class MessageListFragment extends ListFragment {
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 
                 if (firstVisibleItem+visibleItemCount != totalItemCount) {
-                    Log.d("SL", "Not at bottom "+Integer.toString(firstVisibleItem));
                     view.getRootView().findViewById(R.id.not_at_bottom).setVisibility(View.VISIBLE);
                 } else {
-                    Log.d("SL", "at bottom");
                     view.getRootView().findViewById(R.id.not_at_bottom).setVisibility(View.GONE);
                 }
             }

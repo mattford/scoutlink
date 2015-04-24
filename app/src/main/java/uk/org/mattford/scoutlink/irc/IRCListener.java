@@ -2,7 +2,6 @@ package uk.org.mattford.scoutlink.irc;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.util.Log;
 
 import org.pircbotx.ChannelListEntry;
 import org.pircbotx.PircBotX;
@@ -58,6 +57,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import uk.org.mattford.scoutlink.R;
+import uk.org.mattford.scoutlink.event.JoinFailedEvent;
+import uk.org.mattford.scoutlink.event.MessageNotSentEvent;
 import uk.org.mattford.scoutlink.event.NotifyEvent;
 import uk.org.mattford.scoutlink.model.Broadcast;
 import uk.org.mattford.scoutlink.model.Channel;
@@ -127,7 +128,29 @@ public class IRCListener extends ListenerAdapter {
                 NotifyEvent backEvent = new NotifyEvent(event.getParsedResponse().get(0), NotifyEvent.TYPE_AWAY, false, true, false, event.getParsedResponse().get(4));
                 onNotify(backEvent);
                 break;
+            case 474:
+            case 473:
+            case 475:
+                JoinFailedEvent jfEvent = new JoinFailedEvent(event.getParsedResponse().get(1), event.getParsedResponse().get(2));
+                onJoinFailed(jfEvent);
+                break;
+            case 404:
+                MessageNotSentEvent mnsEvent = new MessageNotSentEvent(event.getParsedResponse().get(1), event.getParsedResponse().get(2));
+                onMessageNotSent(mnsEvent);
+                break;
         }
+    }
+
+    public void onMessageNotSent(MessageNotSentEvent event) {
+        Message msg = new Message(event.getMessage());
+        msg.setColour(Color.RED);
+        server.getConversation(event.getChannel()).addMessage(msg);
+        service.onNewMessage(event.getChannel());
+    }
+
+    public void onJoinFailed(JoinFailedEvent event) {
+        String message = service.getString(R.string.message_join_failed, event.getChannel(), event.getMessage());
+        service.sendToast(message);
     }
 
     public void onNotify(NotifyEvent event) {
@@ -262,7 +285,7 @@ public class IRCListener extends ListenerAdapter {
         if (conversation == null) {
             conversation = new Query(event.getUserHostmask().getNick());
             server.addConversation(conversation);
-            Intent intent = new Intent().setAction(Broadcast.NEW_CONVERSATION).putExtra("target", event.getUserHostmask().getNick());
+            Intent intent = new Intent().setAction(Broadcast.NEW_CONVERSATION).putExtra("target", event.getUserHostmask().getNick()).putExtra("selected", true);
             service.sendBroadcast(intent);
         }
         Message msg = new Message(event.getUserHostmask().getNick(), event.getMessage());
