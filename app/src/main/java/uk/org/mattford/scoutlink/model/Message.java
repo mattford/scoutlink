@@ -1,15 +1,24 @@
 package uk.org.mattford.scoutlink.model;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.net.Uri;
 import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.text.style.URLSpan;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
+import android.webkit.URLUtil;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -88,11 +97,11 @@ public class Message {
         this.colour = colour;
     }
 
-	public LinearLayout renderTextView(Context context) {
+	public LinearLayout renderTextView(final Context context) {
         LayoutInflater li = LayoutInflater.from(context);
 		LinearLayout view;
 
-        SpannableString text = MircColors.toSpannable(getText());
+        SpannableString text = Message.applySpans(getText());
 
         if (getSender() != null) {
             view = (LinearLayout) li.inflate(R.layout.message_list_item, null);
@@ -103,6 +112,7 @@ public class Message {
         }
 
         TextView messageView = (TextView)view.findViewById(R.id.message);
+        //messageView.setMovementMethod(LinkMovementMethod.getInstance());
 		messageView.setText(text);
 
         if (getAlignment() == ALIGN_RIGHT) {
@@ -166,5 +176,33 @@ public class Message {
 
     public void setBackgroundColour(Integer backgroundColour) {
         this.backgroundColour = backgroundColour;
+    }
+
+    public static SpannableString applySpans(String text) {
+        SpannableString out = MircColors.toSpannable(text);
+        //return Message.applyUrlSpans(out);
+        return out;
+    }
+
+    public static SpannableString applyUrlSpans(SpannableString text) {
+        String originalText = text.toString();
+        int index = originalText.indexOf("http");
+        while (index != -1) {
+            int endIndex = originalText.indexOf(" ", index);
+            Log.d("SL", Integer.toString(endIndex));
+            if (endIndex == -1) {
+                endIndex = text.length();
+            }
+            String url = originalText.substring(index, endIndex);
+            if (URLUtil.isValidUrl(url)) {
+                text.setSpan(new URLSpan(url), index, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+            index = originalText.indexOf("http", endIndex);
+        }
+        return text;
+    }
+
+    public static SpannableString applyUrlSpans(String text) {
+        return Message.applyUrlSpans(new SpannableString(text));
     }
 }

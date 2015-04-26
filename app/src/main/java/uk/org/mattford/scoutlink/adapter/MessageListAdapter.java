@@ -9,6 +9,7 @@ import uk.org.mattford.scoutlink.utils.MircColors;
 
 import android.content.Context;
 import android.text.SpannableString;
+import android.text.util.Linkify;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -40,11 +41,12 @@ public class MessageListAdapter extends ArrayAdapter<LinearLayout> {
                 previousMessage.getSender() != null &&
                 previousMessage.getSender().equalsIgnoreCase(message.getSender())) {
 
-            SpannableString msg = MircColors.toSpannable(message.getText());
+            SpannableString msg = Message.applySpans(message.getText());
             LinearLayout lastLayout = getItem(getCount()-1);
             TextView lastTextView = (TextView)lastLayout.findViewById(R.id.message);
             lastTextView.append("\n");
             lastTextView.append(msg);
+            Linkify.addLinks(lastTextView, Linkify.WEB_URLS);
         } else {
             LinearLayout msgView = message.renderTextView(context);
             messages.add(msgView);
