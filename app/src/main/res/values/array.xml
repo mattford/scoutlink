@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-<string-array name="prefixes">
+<string-array name="prefixes" translatable="false">
     <item>~</item>
     <item>&amp;</item>
     <item>\@</item>
