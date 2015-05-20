@@ -33,7 +33,6 @@ public class IRCService extends Service {
 	private PircBotX irc;
 	private Settings settings;
 	private Server server;
-	private Notification notif;
 	
 	private final int NOTIFICATION_ID = 1;
 
@@ -79,7 +78,7 @@ public class IRCService extends Service {
 	
 	public void setIsForeground(boolean fg) {
         if (!foreground && fg) {
-            startForeground(NOTIFICATION_ID, notif);
+            startForeground(NOTIFICATION_ID, getNotification());
         } else {
             stopForeground(true);
         }
@@ -153,8 +152,16 @@ public class IRCService extends Service {
         sendBroadcast(intent);
         updateNotification();
     }
+
+    public void updateNotification() {
+        if (this.isForeground()) {
+            NotificationManagerCompat nm = NotificationManagerCompat.from(this);
+            Notification notification = getNotification();
+            nm.notify(NOTIFICATION_ID, notification);
+        }
+    }
 	
-	public void updateNotification() {
+	public Notification getNotification() {
         Intent notifIntent = new Intent(this, ConversationsActivity.class);
         notifIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent intent = PendingIntent.getActivity(this, 0, notifIntent, 0);
@@ -167,7 +174,8 @@ public class IRCService extends Service {
         for (Conversation conversation : conversations.values()) {
             if (conversation.hasBuffer()) {
                 conversationsWithNewMsg.add(conversation);
-                for (Message msg : conversation.getBuffer()) {
+                ArrayList<Message> msgs = new ArrayList<>(conversation.getBuffer());
+                for (Message msg : msgs) {
                     newMsgTotal++;
                     if (getConnection() != null && msg.getText().contains(getConnection().getNick())) {
                         if (!conversationsWithMentions.contains(conversation)) {
@@ -182,9 +190,8 @@ public class IRCService extends Service {
         if (conversationsWithNewMsg.size() > 0) {
             if (conversationsWithNewMsg.size() == 1 && newMsgTotal <= 3) {
                 Conversation conv = conversationsWithNewMsg.get(0);
-                Iterator msgIter = conv.getBuffer().iterator(); // Use an iterator to avoid ConcurrentModificationException when the notification is updated while new messages are received
-                while(msgIter.hasNext()) {
-                    Message msg = (Message)msgIter.next();
+                ArrayList<Message> msgs = new ArrayList<>(conv.getBuffer()); // Make a copy of the buffer to avoid ConcurrentModificationException
+                for (Message msg : msgs) {
                     lines.add(getString(R.string.notification_new_messages_multi, conv.getName(), msg.getSender(), msg.getText()));
                 }
             } else {
@@ -211,7 +218,7 @@ public class IRCService extends Service {
         for (String line : lines) {
             inboxStyle.addLine(line);
         }
-		this.notif = new NotificationCompat.Builder(this)
+		Notification notification = new NotificationCompat.Builder(this)
 				.setContentTitle(getString(R.string.app_name))
 				.setContentText(basicText)
                 .setStyle(inboxStyle)
@@ -219,10 +226,7 @@ public class IRCService extends Service {
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher))
                 .setContentIntent(intent)
 				.build();
-		if (this.isForeground()) {
-			NotificationManagerCompat nm = NotificationManagerCompat.from(this);
-			nm.notify(NOTIFICATION_ID, notif);
-		}
+        return notification;
 		
 	}
 

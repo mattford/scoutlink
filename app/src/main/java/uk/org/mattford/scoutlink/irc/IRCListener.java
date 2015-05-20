@@ -2,6 +2,7 @@ package uk.org.mattford.scoutlink.irc;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.util.Log;
 
 import org.pircbotx.ChannelListEntry;
 import org.pircbotx.PircBotX;
@@ -331,8 +332,8 @@ public class IRCListener extends ListenerAdapter {
             // We were kicked from a channel.
             Message msg = new Message(service.getString(R.string.message_kicked_self, event.getChannel().getName(), event.getUserHostmask().getNick(), event.getReason()));
             msg.setColour(Color.RED);
-            server.getConversation("ScoutLink").addMessage(msg);
-            service.onNewMessage("ScoutLink");
+            server.getConversation(service.getString(R.string.server_window_title)).addMessage(msg);
+            service.onNewMessage(service.getString(R.string.server_window_title));
             server.removeConversation(event.getChannel().getName());
             Intent intent = new Intent().setAction(Broadcast.REMOVE_CONVERSATION).putExtra("target", event.getChannel().getName());
             service.sendBroadcast(intent);
@@ -360,6 +361,7 @@ public class IRCListener extends ListenerAdapter {
     public void onPart(PartEvent event) {
         if (event.getBot().getNick().equals(event.getUserHostmask().getNick())) {
             // We left a channel.
+            Log.d("SL", "Left " + event.getChannel().getName());
             server.removeConversation(event.getChannel().getName());
             Intent intent = new Intent().setAction(Broadcast.REMOVE_CONVERSATION).putExtra("target", event.getChannel().getName());
             service.sendBroadcast(intent);

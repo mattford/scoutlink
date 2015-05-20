@@ -43,21 +43,25 @@
         <activity
             android:name=".activity.JoinActivity"
             android:label="@string/join_activity_label"
-            android:theme="@style/Dialog" />
+            android:theme="@style/Dialog"
+            android:screenOrientation="locked"/>
         <activity
             android:name=".activity.UserListActivity"
             android:label="@string/userlist_activity_label"
-            android:theme="@style/Dialog" />
+            android:theme="@style/Dialog"
+            android:screenOrientation="locked"/>
         <activity android:name=".activity.SettingsActivity" />
         <activity
             android:name=".activity.ChannelListActivity"
             android:label="@string/title_activity_channel_list"
-            android:theme="@style/Dialog" >
+            android:theme="@style/Dialog"
+            android:screenOrientation="locked">
         </activity>
         <activity
             android:name=".activity.ListEditActivity"
             android:label="@string/title_activity_list_view_edit"
-            android:theme="@style/Dialog" >
+            android:theme="@style/Dialog"
+            android:screenOrientation="locked">
         </activity>
         <activity
             android:name=".activity.ChannelSettingsActivity"
