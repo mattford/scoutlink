@@ -6,10 +6,11 @@ import org.pircbotx.ChannelListEntry;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 public class Server {
 
-	private HashMap<String, Conversation> conversations;
+	private LinkedHashMap<String, Conversation> conversations;
 	private int status = 0;
     private ArrayList<String> channelList = new ArrayList<>();
 	
@@ -17,7 +18,7 @@ public class Server {
 	public final static int STATUS_CONNECTED = 1;
 	
 	public Server() {
-		this.conversations = new HashMap<>();
+		this.conversations = new LinkedHashMap<>();
 	}
 	
 	public Conversation getConversation(String name) {
@@ -50,7 +51,7 @@ public class Server {
 		this.status = status;
 	}
 	
-	public HashMap<String, Conversation> getConversations() {
+	public LinkedHashMap<String, Conversation> getConversations() {
 		return this.conversations;
 	}
 	
