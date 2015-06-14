@@ -1,5 +1,7 @@
 package uk.org.mattford.scoutlink.model;
 
+import android.util.Log;
+
 import com.google.common.collect.ImmutableList;
 
 import org.pircbotx.ChannelListEntry;
@@ -56,6 +58,7 @@ public class Server {
 	}
 	
 	public void addConversation(Conversation conv) {
+		Log.d("SL", "Adding " + conv.getName());
 		conversations.put(conv.getName(), conv);
 	}
 	

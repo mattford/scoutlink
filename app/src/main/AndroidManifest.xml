@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="uk.org.mattford.scoutlink"
-    android:versionCode="10"
-    android:versionName="1.0" >
+    android:versionCode="11"
+    android:versionName="1.1" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -66,6 +66,10 @@
         <activity
             android:name=".activity.ChannelSettingsActivity"
             android:label="@string/title_activity_channel_settings" >
+        </activity>
+        <activity
+            android:name=".activity.RulesActivity"
+            android:label="@string/title_activity_rules" >
         </activity>
     </application>
 

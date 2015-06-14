@@ -16,6 +16,7 @@ import uk.org.mattford.scoutlink.model.Settings;
 import uk.org.mattford.scoutlink.receiver.ConversationReceiver;
 import android.app.AlertDialog;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
@@ -123,6 +124,23 @@ public class ConversationsActivity extends ActionBarActivity implements ServiceC
                 return false;
             }
         });
+
+        if (!settings.getBoolean("rules_viewed", false)) {
+            final Context context = this;
+            new AlertDialog.Builder(this)
+                    .setTitle(getString(R.string.view_rules_dialog_title))
+                    .setMessage(getString(R.string.view_rules_dialog_message))
+                    .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialogInterface, int which) {
+                            Intent intent = new Intent(context, RulesActivity.class);
+                            context.startActivity(intent);
+                        }
+                    })
+                    .setNegativeButton(getString(R.string.no), null)
+                    .show();
+            settings.putBoolean("rules_viewed", true);
+
+        }
 	}
 	
 	public void onPause() {
@@ -206,10 +224,13 @@ public class ConversationsActivity extends ActionBarActivity implements ServiceC
 	
 	public void onNewConversation(String name, boolean selected) {
 		Conversation conv = binder.getService().getServer().getConversation(name);
-		pagerAdapter.addConversation(conv);
+        // Only add the new conversation if the conversation does not already exist.
+        int i = pagerAdapter.getItemByName(name);
+        if (i == -1) {
+            pagerAdapter.addConversation(conv);
+        }
 
 		if (conv.isSelected() || selected) {
-
             indicator.setCurrentItem(pagerAdapter.getItemByName(conv.getName()));
         }
 		onConversationMessage(conv.getName());
@@ -283,9 +304,11 @@ public class ConversationsActivity extends ActionBarActivity implements ServiceC
         // automatically handle clicks on the Home/Up button, so long
     	Conversation conversation = pagerAdapter.getItemInfo(pager.getCurrentItem()).conv;
         int id = item.getItemId();
+        Intent intent = null;
         switch(id) {
         case R.id.action_settings:
-        	startActivity(new Intent(this, SettingsActivity.class));
+            intent = new Intent(this, SettingsActivity.class);
+        	startActivity(intent);
         	break;
         case R.id.action_close:
             switch (conversation.getType()) {
@@ -308,7 +331,7 @@ public class ConversationsActivity extends ActionBarActivity implements ServiceC
             switch (conversation.getType()) {
                 case Conversation.TYPE_CHANNEL:
                     String chan = conversation.getName();
-                    Intent intent = new Intent(this, UserListActivity.class);
+                    intent = new Intent(this, UserListActivity.class);
                     intent.putExtra("channel", chan);
                     startActivity(intent);
                     break;
@@ -318,23 +341,27 @@ public class ConversationsActivity extends ActionBarActivity implements ServiceC
             }
         	break;
         case R.id.action_join:
-        	Intent joinIntent = new Intent(this, JoinActivity.class);
-        	startActivityForResult(joinIntent, JOIN_CHANNEL_RESULT);
+        	intent = new Intent(this, JoinActivity.class);
+        	startActivityForResult(intent, JOIN_CHANNEL_RESULT);
         	break;
         case R.id.action_channel_list:
-            Intent channelListIntent = new Intent(this, ChannelListActivity.class);
-            startActivityForResult(channelListIntent, JOIN_CHANNEL_RESULT);
+            intent = new Intent(this, ChannelListActivity.class);
+            startActivityForResult(intent, JOIN_CHANNEL_RESULT);
             break;
         case R.id.action_channel_settings:
             if (conversation.getType() != Conversation.TYPE_CHANNEL) {
                 Toast.makeText(this, getString(R.string.channel_settings_not_channel), Toast.LENGTH_SHORT).show();
             } else if (binder.getService().getConnection().getUserChannelDao().getChannel(conversation.getName()).isOp(binder.getService().getConnection().getUserBot())) {
-                Intent intent = new Intent(this, ChannelSettingsActivity.class);
+                intent = new Intent(this, ChannelSettingsActivity.class);
                 intent.putExtra("channelName", conversation.getName());
                 startActivity(intent);
             } else {
                 Toast.makeText(this, getString(R.string.channel_settings_need_op), Toast.LENGTH_SHORT).show();
             }
+            break;
+        case R.id.action_rules:
+            intent = new Intent(this, RulesActivity.class);
+            startActivity(intent);
             break;
 
         }

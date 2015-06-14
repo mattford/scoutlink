@@ -124,11 +124,13 @@ public class IRCService extends Service {
         }
 
         this.irc = new PircBotX(config.buildConfiguration());
+        final Context context = this;
         new Thread(new Runnable() {
             public void run() {
                 try {
                     irc.startBot();
                 } catch (Exception e) {
+                    Toast.makeText(context, getString(R.string.connect_failed), Toast.LENGTH_SHORT).show();
                     onDisconnect();
                 }
             }

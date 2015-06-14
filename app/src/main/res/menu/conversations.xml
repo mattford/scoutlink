@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" >
-    <item android:id="@+id/action_settings" android:orderInCategory="100" app:showAsAction="never" android:title="@string/action_settings"></item>
-    <item android:id="@+id/action_close" android:orderInCategory="100" app:showAsAction="never" android:title="@string/action_close"></item>
-    <item android:id="@+id/action_disconnect" android:orderInCategory="100" app:showAsAction="never" android:title="@string/action_disconnect"></item>
-    <item android:id="@+id/action_userlist" android:orderInCategory="100" app:showAsAction="never" android:title="@string/action_users"></item>
-    <item android:id="@+id/action_join" app:showAsAction="never" android:title="@string/action_join" android:orderInCategory="100"></item>
-    <item android:id="@+id/action_channel_list" app:showAsAction="never" android:title="@string/action_channel_list" android:orderInCategory="100"></item>
-    <item android:id="@+id/action_channel_settings" app:showAsAction="never" android:title="@string/action_channel_settings" android:orderInCategory="100"></item>
+    <item android:id="@+id/action_settings" android:orderInCategory="100" app:showAsAction="never" android:title="@string/action_settings"/>
+    <item android:id="@+id/action_close" android:orderInCategory="100" app:showAsAction="never" android:title="@string/action_close"/>
+    <item android:id="@+id/action_disconnect" android:orderInCategory="100" app:showAsAction="never" android:title="@string/action_disconnect"/>
+    <item android:id="@+id/action_userlist" android:orderInCategory="100" app:showAsAction="never" android:title="@string/action_users"/>
+    <item android:id="@+id/action_join" app:showAsAction="never" android:title="@string/action_join" android:orderInCategory="100"/>
+    <item android:id="@+id/action_channel_list" app:showAsAction="never" android:title="@string/action_channel_list" android:orderInCategory="100"/>
+    <item android:id="@+id/action_channel_settings" app:showAsAction="never" android:title="@string/action_channel_settings" android:orderInCategory="100"/>
+    <item
+        android:id="@+id/action_rules"
+        android:orderInCategory="100"
+        app:showAsAction="never"
+        android:title="@string/action_rules"/>
 
 </menu>

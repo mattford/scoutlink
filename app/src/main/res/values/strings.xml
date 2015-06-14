@@ -20,6 +20,7 @@
     <string name="action_settings">Settings</string>
     <!-- Leaves the current channel or closes PM window, fails in server window, see `close_server_window` string. -->
     <string name="action_close">Close</string>
+    <string name="action_rules">Rules</string>
     <!-- Disconnects from ScoutLink -->
     <string name="action_disconnect">Disconnect</string>
     <!-- Shows users on the current channel, fails if not in a channel - see `userlist_not_on_channel` string. -->
@@ -150,6 +151,9 @@
     <string name="settings_notify_list_label">Notify List</string>
 
     <string name="title_activity_channel_settings">Channel Settings</string>
+    <string name="title_activity_rules">Rules</string>
+    <string name="view_rules_dialog_title">View Rules?</string>
+    <string name="view_rules_dialog_message">Before you get started, would you like to read the ScoutLink rules? (You can view these at any time by selecting "Rules" from the menu</string>
 
     <string name="channel_settings_external_messages">Block external messages</string>
     <string name="channel_settings_topic_protection">Enable topic protection</string>
@@ -185,6 +189,11 @@
 
     <string name="edit_list_add_button">Add</string>
     <string name="edit_list_save_button">Save</string>
+
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+
+    <string name="connect_failed">Connection failed, please try again</string>
 
     <!-- Default settings values -->
     <!-- Default ident to use if the user does not set one, this will show in the users hostmask (nick!ident@host) -->
