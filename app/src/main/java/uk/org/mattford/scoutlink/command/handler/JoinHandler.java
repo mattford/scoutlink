@@ -9,15 +9,20 @@ public class JoinHandler extends CommandHandler {
 	@Override
 	public void execute(String[] params, 
 			Conversation conversation, IRCService service) {
-		
+
 		String channelToJoin = params[1];
-		service.getConnection().sendIRC().joinChannel(channelToJoin);
+		if (params.length > 2) {
+			String key = params[2];
+			service.getConnection().sendIRC().joinChannel(channelToJoin, key);
+		} else {
+			service.getConnection().sendIRC().joinChannel(channelToJoin);
+		}
 		
 	}
 
 	@Override
 	public String getUsage() {
-		return "/join #channel";
+		return "/join #channel channelkey(optional)";
 	}
 
 	@Override

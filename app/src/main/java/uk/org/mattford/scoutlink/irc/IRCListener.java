@@ -299,14 +299,26 @@ public class IRCListener extends ListenerAdapter {
         Message message = new Message(service.getString(R.string.message_notice_sender, sender), event.getMessage());
         message.setBackgroundColour(service.getResources().getColor(R.color.light_green));
         message.setColour(service.getResources().getColor(R.color.white));
+        ArrayList<String> sharedConversations = null;
         if (event.getUser() != null) {
-            for (String channel : getSharedChannels(event.getBot(), event.getUser())) {
+            sharedConversations = getSharedChannels(event.getBot(), event.getUser());
+            for (String channel : sharedConversations) {
                 server.getConversation(channel).addMessage(message);
                 service.onNewMessage(channel);
             }
         }
-        server.getConversation("ScoutLink").addMessage(message);
-        service.onNewMessage("ScoutLink");
+
+        // Add to active conversation unless it is a shared conversation
+        Conversation activeConversation = server.getActiveConversation();
+        if ((sharedConversations == null ||
+                (activeConversation != null && !sharedConversations.contains(activeConversation.getName()))) && !activeConversation.getName().equals(service.getString(R.string.server_window_title))) {
+            server.getActiveConversation().addMessage(message);
+            service.onNewMessage(server.getActiveConversation().getName());
+        }
+
+        // Add to Server Window
+        server.getConversation(service.getString(R.string.server_window_title)).addMessage(message);
+        service.onNewMessage(service.getString(R.string.server_window_title));
     }
 
     public void onInvite(InviteEvent event) {
@@ -542,7 +554,7 @@ public class IRCListener extends ListenerAdapter {
     public void onWhois(WhoisEvent event) {
         StringBuilder channelsBuilder = new StringBuilder();
         for (String channel : event.getChannels()) {
-            channelsBuilder.append(channel + " ");
+            channelsBuilder.append(channel).append(" ");
         }
         StringBuilder messageBuilder = new StringBuilder();
         messageBuilder.append(

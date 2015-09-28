@@ -176,6 +176,12 @@
     <string name="notification_connected">"Connected fel %1$s ."</string>
     <string name="notification_new_multi">"%1$s negeseuon newydd, %2$s newydd sôn."</string>
 
+    <string name="title_activity_rules">Rules</string>
+    <string name="view_rules_dialog_title">View Rules?</string>
+    <string name="view_rules_dialog_message">Before you get started, would you like to read the ScoutLink rules? (You can view these at any time by selecting "Rules" from the menu)</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="connect_failed">Connection failed, please try again</string>
 
     <string name="notice_hint">"Rhowch eich neges"</string>
     <string name="settings_topic_hint">"Sianel Pwnc"</string>

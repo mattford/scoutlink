@@ -153,7 +153,7 @@
     <string name="title_activity_channel_settings">Channel Settings</string>
     <string name="title_activity_rules">Rules</string>
     <string name="view_rules_dialog_title">View Rules?</string>
-    <string name="view_rules_dialog_message">Before you get started, would you like to read the ScoutLink rules? (You can view these at any time by selecting "Rules" from the menu</string>
+    <string name="view_rules_dialog_message">Before you get started, would you like to read the ScoutLink rules? (You can view these at any time by selecting "Rules" from the menu)</string>
 
     <string name="channel_settings_external_messages">Block external messages</string>
     <string name="channel_settings_topic_protection">Enable topic protection</string>
