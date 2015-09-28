@@ -189,6 +189,13 @@
     <string name="edit_list_add_button">"Adicionar"</string>
     <string name="edit_list_save_button">"Salvar"</string>
 
+    <string name="action_rules">Regras</string>
+    <string name="title_activity_rules">Regras</string>
+    <string name="view_rules_dialog_title">Ver Regras?</string>
+    <string name="view_rules_dialog_message">Antes de começar, você gostaria de ler as regras da ScoutLink? (Você pode vê-las a qualquer momento selecionando "Regras" a partir do menu </string>
+    <string name="yes">Sim</string>
+    <string name="no">Não</string>
+    <string name="connect_failed">A conexão falhou, por favor tente novamente</string>
     <!-- Default settings values -->
     <!-- Default ident to use if the user does not set one, this will show in the users hostmask (nick!ident@host) -->
     <string name="default_ident">"SLAndroid"</string>

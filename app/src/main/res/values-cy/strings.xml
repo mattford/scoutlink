@@ -189,6 +189,13 @@
     <string name="edit_list_add_button">"Ychwanegu"</string>
     <string name="edit_list_save_button">"Cadw"</string>
 
+    <string name="action_rules">Rheolau</string>
+    <string name="title_activity_rules">Rheolau</ string>
+    <string name= "view_rules_dialog_title">Rheolau View?</string>
+    <string name = "view_rules_dialog_message">Cyn i chi ddechrau arni, a hoffech ddarllen y rheolau ScoutLink? (Gallwch weld hyn ar unrhyw adeg drwy ddewis "Rheolau" o'r ddewislen</ string>
+    <string name= "yes">Ydw</ string>
+    <string name= "no">Rhif</ string>
+    <string name= "connect_failed">Methodd Cysylltiad, os gwelwch yn dda ceisiwch eto</ string>
     <!-- Default settings values -->
     <!-- Default ident to use if the user does not set one, this will show in the users hostmask (nick!ident@host) -->
     <string name="default_ident">"SLAndroid"</string>
