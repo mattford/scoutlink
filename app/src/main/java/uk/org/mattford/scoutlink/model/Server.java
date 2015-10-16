@@ -9,6 +9,7 @@ import org.pircbotx.ChannelListEntry;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class Server {
 
@@ -58,7 +59,6 @@ public class Server {
 	}
 	
 	public void addConversation(Conversation conv) {
-		Log.d("SL", "Adding " + conv.getName());
 		conversations.put(conv.getName(), conv);
 	}
 	
@@ -68,6 +68,15 @@ public class Server {
 	
 	public void clearConversations() {
 		conversations.clear();
+	}
+
+	public Conversation getActiveConversation() {
+		for(Map.Entry<String,Conversation> conv : conversations.entrySet()) {
+			if (conv.getValue().isSelected()) {
+				return conv.getValue();
+			}
+		}
+		return null;
 	}
 	
 	

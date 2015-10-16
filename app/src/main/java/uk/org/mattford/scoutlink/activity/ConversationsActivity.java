@@ -35,7 +35,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.analytics.Tracker;
 import com.viewpagerindicator.TitlePageIndicator;
 
 public class ConversationsActivity extends ActionBarActivity implements ServiceConnection {
@@ -45,10 +44,15 @@ public class ConversationsActivity extends ActionBarActivity implements ServiceC
 	private ConversationReceiver receiver;
 	private IRCBinder binder;
     private Settings settings;
-    //private Tracker tracker;
+
     private TitlePageIndicator indicator;
 
 	private final int JOIN_CHANNEL_RESULT = 0;
+
+    /**
+     * Required to work around NPE when screen is rotated immediately after selecting a channel, causing the reference to IRCService to be lost briefly.
+     */
+    private ArrayList<String> joinChannelBuffer = new ArrayList<>();
 	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -247,6 +251,9 @@ public class ConversationsActivity extends ActionBarActivity implements ServiceC
 	
 	public void onConversationMessage(String name) {
 		Conversation conv = binder.getService().getServer().getConversation(name);
+        if (conv == null) {
+            return;
+        }
 		int i = pagerAdapter.getItemByName(name);
 		if (i == -1) {
 			onNewConversation(name);
@@ -282,6 +289,12 @@ public class ConversationsActivity extends ActionBarActivity implements ServiceC
     			}
     			onConversationMessage(conv.getKey());
     		}
+            // Join any channels we want to join...
+            if (!joinChannelBuffer.isEmpty()) {
+                for (String channel : joinChannelBuffer) {
+                    binder.getService().getConnection().sendIRC().joinChannel(channel);
+                }
+            }
             binder.getService().updateNotification();
         }
 	}
@@ -304,7 +317,7 @@ public class ConversationsActivity extends ActionBarActivity implements ServiceC
         // automatically handle clicks on the Home/Up button, so long
     	Conversation conversation = pagerAdapter.getItemInfo(pager.getCurrentItem()).conv;
         int id = item.getItemId();
-        Intent intent = null;
+        Intent intent;
         switch(id) {
         case R.id.action_settings:
             intent = new Intent(this, SettingsActivity.class);
@@ -374,7 +387,7 @@ public class ConversationsActivity extends ActionBarActivity implements ServiceC
             case JOIN_CHANNEL_RESULT:
                 if (resultCode == RESULT_OK) {
                     String channel = data.getStringExtra("target");
-                    binder.getService().getConnection().sendIRC().joinChannel(channel);
+                    joinChannelBuffer.add(channel);
                 }
                 break;
 
