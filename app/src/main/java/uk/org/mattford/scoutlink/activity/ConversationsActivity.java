@@ -251,6 +251,9 @@ public class ConversationsActivity extends ActionBarActivity implements ServiceC
 	
 	public void onConversationMessage(String name) {
 		Conversation conv = binder.getService().getServer().getConversation(name);
+        if (conv == null) {
+            return;
+        }
 		int i = pagerAdapter.getItemByName(name);
 		if (i == -1) {
 			onNewConversation(name);

@@ -175,7 +175,7 @@
     <string name="notification_new_messages_multi">"%1$s/%2$s: %3$s"</string>
     <string name="notification_connected">"Conectado como %1$s."</string>
     <string name="notification_new_multi">"%1$s novas mensagens, %2$s novas menções."</string>
-    
+
 
     <string name="notice_hint">"Digite sua mensagem"</string>
     <string name="settings_topic_hint">"Tópico do canal"</string>

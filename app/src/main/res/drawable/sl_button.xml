@@ -5,12 +5,12 @@
         android:width="1dp"
         android:color="@color/scoutlink_orange" />
 
-    <solid android:color="@color/scoutlink_blue" />
+    <solid android:color="@color/scoutlink_blue_dark" />
 
     <padding
-        android:left="5dp"
-        android:right="5dp"
-        android:top="5dp" />
+        android:left="3dp"
+        android:right="3dp"
+        android:top="1dp" />
 
     <corners android:radius="5dp" />
 
