@@ -294,6 +294,7 @@ public class ConversationsActivity extends ActionBarActivity implements ServiceC
                 for (String channel : joinChannelBuffer) {
                     binder.getService().getConnection().sendIRC().joinChannel(channel);
                 }
+                joinChannelBuffer.clear();
             }
             binder.getService().updateNotification();
         }
