@@ -96,7 +96,7 @@ public class IRCService extends Service {
 	public void connect() {
         ServerWindow sw = new ServerWindow(getString(R.string.server_window_title));
         server.addConversation(sw);
-        Message msg = new Message("Connecting to ScoutLink...");
+        Message msg = new Message(getString(R.string.connect_message));
         sw.addMessage(msg);
         Intent intent = new Intent(Broadcast.NEW_CONVERSATION).putExtra("target", getString(R.string.server_window_title));
         sendBroadcast(intent);

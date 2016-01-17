@@ -9,6 +9,8 @@
     <string name="nickname_not_valid">Nickname is not valid, please enter a different one and try again</string>
     <!-- Text on the "Connect" button on the main screen -->
     <string name="connect_button">Start Chatting</string>
+    <!-- Message to say connection is in progress -->
+    <string name="connect_message">Connecting to ScoutLink&#8230;</string>
     <!-- Text displayed below the logo on the main screen -->
     <string name="welcome_text">
         Welcome to ScoutLink, the IRC network for Scouts and Guides.\nPlease enter a nickname below.

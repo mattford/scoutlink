@@ -8,6 +8,8 @@
     <string name="nickname_not_valid">"Llysenw yn ddilys, nodwch un gwahanol a cheisiwch eto"</string>
     <!-- Text on the "Connect" button on the main screen -->
     <string name="connect_button">"Dechreuwch Siarad"</string>
+    <!-- Message to say connection is in progress -->
+    <string name="connect_message">"cysylltu â ScoutLink&#8230;"</string>
     <!-- Text displayed below the logo on the main screen -->
     <string name="welcome_text">"Croeso i ScoutLink, rhwydwaith IRC ar gyfer Sgowtiaid a Geidiau. Rhowch fynd i mewn i llysenw isod."</string>
     <string name="sl_header_content_description">"Header image"</string>
