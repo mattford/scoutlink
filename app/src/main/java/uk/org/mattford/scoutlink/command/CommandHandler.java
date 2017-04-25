@@ -1,7 +1,5 @@
 package uk.org.mattford.scoutlink.command;
 
-import android.text.TextUtils;
-
 import uk.org.mattford.scoutlink.irc.IRCService;
 import uk.org.mattford.scoutlink.model.Conversation;
 

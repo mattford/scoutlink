@@ -2,7 +2,6 @@ package uk.org.mattford.scoutlink.irc;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 import org.pircbotx.Configuration;
@@ -130,12 +129,13 @@ public class IRCService extends Service {
                 try {
                     irc.startBot();
                 } catch (Exception e) {
-                    Toast.makeText(context, getString(R.string.connect_failed), Toast.LENGTH_SHORT).show();
+                    sendToast(context.getString(R.string.connect_failed));
                     onDisconnect();
                 }
             }
         }).start();
 	}
+
 	
 	public Server getServer() {
 		return this.server;

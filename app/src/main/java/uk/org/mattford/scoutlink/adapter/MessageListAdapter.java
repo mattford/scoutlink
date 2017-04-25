@@ -5,7 +5,6 @@ import java.util.LinkedList;
 import uk.org.mattford.scoutlink.R;
 import uk.org.mattford.scoutlink.model.Conversation;
 import uk.org.mattford.scoutlink.model.Message;
-import uk.org.mattford.scoutlink.utils.MircColors;
 
 import android.content.Context;
 import android.text.SpannableString;

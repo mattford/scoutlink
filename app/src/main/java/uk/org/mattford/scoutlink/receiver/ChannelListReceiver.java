@@ -3,7 +3,6 @@ package uk.org.mattford.scoutlink.receiver;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
 import uk.org.mattford.scoutlink.activity.ChannelListActivity;
 import uk.org.mattford.scoutlink.model.Broadcast;

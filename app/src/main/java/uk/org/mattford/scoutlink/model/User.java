@@ -1,6 +1,5 @@
 package uk.org.mattford.scoutlink.model;
 
-
 public class User {
 
     public static final int ACTION_QUERY = 0;

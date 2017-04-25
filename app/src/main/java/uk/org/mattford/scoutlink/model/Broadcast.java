@@ -8,6 +8,7 @@ public class Broadcast {
 	public static final String DISCONNECTED = "uk.org.mattford.scoutlink.DISCONNECTED";
 	public static final String CONNECTED = "uk.org.mattford.scoutlink.CONNECTED";
 	public static final String CHANNEL_LIST_INFO = "uk.org.mattford.scoutlink.CHANNEL_LIST_INFO";
+	public static final String USER_LIST_CHANGED = "uk.org.mattford.scoutlink.USER_LIST_CHANGED";
 	
 	public static final String INVITE = "uk.org.mattford.scoutlink.INVITE";
 }

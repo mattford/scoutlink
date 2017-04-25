@@ -9,12 +9,14 @@ import uk.org.mattford.scoutlink.irc.IRCService;
 import uk.org.mattford.scoutlink.model.Broadcast;
 import uk.org.mattford.scoutlink.model.Message;
 import uk.org.mattford.scoutlink.model.Query;
+import uk.org.mattford.scoutlink.receiver.UserListReceiver;
 
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -30,13 +32,13 @@ import com.google.common.collect.ImmutableSortedSet;
 
 import org.pircbotx.Channel;
 
-
 public class UserListActivity extends ListActivity implements AdapterView.OnItemClickListener, ServiceConnection {
 
     private IRCBinder binder;
     private String channel;
     private ArrayList<String> prefixes;
     private int lastSelectedItem; // I don't like this, but it works.
+    private UserListReceiver receiver;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -48,12 +50,15 @@ public class UserListActivity extends ListActivity implements AdapterView.OnItem
 
     public void onResume() {
         super.onResume();
+        this.receiver = new UserListReceiver(this, channel);
+        registerReceiver(receiver, new IntentFilter(Broadcast.USER_LIST_CHANGED));
         Intent intent = new Intent(this, IRCService.class);
         bindService(intent, this, 0);
     }
 
     public void onPause() {
         super.onPause();
+        unregisterReceiver(receiver);
         unbindService(this);
     }
 
@@ -79,6 +84,10 @@ public class UserListActivity extends ListActivity implements AdapterView.OnItem
         }
         final Channel chan = binder.getService().getConnection().getUserChannelDao().getChannel(channel);
         final org.pircbotx.User user = binder.getService().getConnection().getUserChannelDao().getUser(nick);
+        if (user == null) {
+            closeContextMenu();
+            return false;
+        }
         switch (item.getItemId()) {
             case R.id.action_userlist_query:
                 Query query = new Query(user.getNick());
@@ -189,6 +198,12 @@ public class UserListActivity extends ListActivity implements AdapterView.OnItem
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
         binder = (IRCBinder) service;
+        refreshUserList();
+    }
+
+    public void refreshUserList() {
+        closeContextMenu();
+        lastSelectedItem = -1;
         IRCService srvc = binder.getService();
         Channel chan = srvc.getConnection().getUserChannelDao().getChannel(channel);
         ArrayList<String> userList = new ArrayList<>();

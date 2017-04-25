@@ -209,6 +209,8 @@ public class IRCListener extends ListenerAdapter {
         }
         server.getConversation(event.getChannel().getName()).addMessage(message);
         service.onNewMessage(event.getChannel().getName());
+        Intent intent = new Intent().setAction(Broadcast.USER_LIST_CHANGED).putExtra("target", event.getChannel().getName());
+        service.sendBroadcast(intent);
     }
 
     public void onOp(OpEvent event) {
@@ -220,6 +222,8 @@ public class IRCListener extends ListenerAdapter {
         }
         server.getConversation(event.getChannel().getName()).addMessage(message);
         service.onNewMessage(event.getChannel().getName());
+        Intent intent = new Intent().setAction(Broadcast.USER_LIST_CHANGED).putExtra("target", event.getChannel().getName());
+        service.sendBroadcast(intent);
     }
 
     public void onSuperOp(SuperOpEvent event) {
@@ -231,6 +235,8 @@ public class IRCListener extends ListenerAdapter {
         }
         server.getConversation(event.getChannel().getName()).addMessage(message);
         service.onNewMessage(event.getChannel().getName());
+        Intent intent = new Intent().setAction(Broadcast.USER_LIST_CHANGED).putExtra("target", event.getChannel().getName());
+        service.sendBroadcast(intent);
     }
 
     public void onVoice(VoiceEvent event) {
@@ -242,6 +248,8 @@ public class IRCListener extends ListenerAdapter {
         }
         server.getConversation(event.getChannel().getName()).addMessage(message);
         service.onNewMessage(event.getChannel().getName());
+        Intent intent = new Intent().setAction(Broadcast.USER_LIST_CHANGED).putExtra("target", event.getChannel().getName());
+        service.sendBroadcast(intent);
     }
 
     public void onOwner(OwnerEvent event) {
@@ -253,6 +261,8 @@ public class IRCListener extends ListenerAdapter {
         }
         server.getConversation(event.getChannel().getName()).addMessage(message);
         service.onNewMessage(event.getChannel().getName());
+        Intent intent = new Intent().setAction(Broadcast.USER_LIST_CHANGED).putExtra("target", event.getChannel().getName());
+        service.sendBroadcast(intent);
     }
 
     public void onMessage(MessageEvent event) {
@@ -336,6 +346,8 @@ public class IRCListener extends ListenerAdapter {
             Message msg = new Message(service.getString(R.string.message_join, event.getUserHostmask().getNick(), event.getChannel().getName()));
             server.getConversation(event.getChannel().getName()).addMessage(msg);
             service.onNewMessage(event.getChannel().getName());
+            Intent intent = new Intent().setAction(Broadcast.USER_LIST_CHANGED).putExtra("target", event.getChannel().getName());
+            service.sendBroadcast(intent);
         }
     }
 
@@ -353,6 +365,8 @@ public class IRCListener extends ListenerAdapter {
             Message msg = new Message(service.getString(R.string.message_kicked_other, event.getRecipientHostmask().getNick(), event.getChannel().getName(), event.getUserHostmask().getNick(), event.getReason()));
             server.getConversation(event.getChannel().getName()).addMessage(msg);
             service.onNewMessage(event.getChannel().getName());
+            Intent intent = new Intent().setAction(Broadcast.USER_LIST_CHANGED).putExtra("target", event.getChannel().getName());
+            service.sendBroadcast(intent);
         }
     }
 
@@ -361,7 +375,10 @@ public class IRCListener extends ListenerAdapter {
         for (String channel : getSharedChannels(event.getBot(), event.getUser())) {
             server.getConversation(channel).addMessage(msg);
             service.onNewMessage(channel);
+            Intent intent = new Intent().setAction(Broadcast.USER_LIST_CHANGED).putExtra("target", channel);
+            service.sendBroadcast(intent);
         }
+
     }
 
     public void onMotd(MotdEvent event) {
@@ -381,6 +398,8 @@ public class IRCListener extends ListenerAdapter {
             Message msg = new Message(service.getString(R.string.message_part, event.getUserHostmask().getNick(), event.getChannel().getName(), event.getReason()));
             server.getConversation(event.getChannel().getName()).addMessage(msg);
             service.onNewMessage(event.getChannel().getName());
+            Intent intent = new Intent().setAction(Broadcast.USER_LIST_CHANGED).putExtra("target", event.getChannel().getName());
+            service.sendBroadcast(intent);
         }
     }
 
@@ -398,6 +417,8 @@ public class IRCListener extends ListenerAdapter {
             server.getConversation(channel).addMessage(msg);
             service.onNewMessage(channel);
         }
+        Intent intent = new Intent().setAction(Broadcast.USER_LIST_CHANGED);
+        service.sendBroadcast(intent);
     }
 
     public void onSetChannelBan(SetChannelBanEvent event) {

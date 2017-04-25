@@ -1,6 +1,5 @@
 package uk.org.mattford.scoutlink.adapter;
 
-
 import java.util.LinkedList;
 
 import uk.org.mattford.scoutlink.activity.MessageListFragment;
@@ -20,9 +19,7 @@ public class ConversationsPagerAdapter extends FragmentStatePagerAdapter {
         conversations = new LinkedList<>();
         this.context = context;
     }
-	
 
-	
 	public class ConversationInfo {
 		public Conversation conv;
 		public MessageListAdapter adapter;
