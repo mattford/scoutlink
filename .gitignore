@@ -4,3 +4,10 @@
 /.idea/libraries
 .DS_Store
 /build
+/.idea/
+/gradle/
+/gradlew
+/gradlew.bat
+/import-summary.txt
+/local_history.patch
+/projectFilesBackup/
