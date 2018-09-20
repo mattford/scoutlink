@@ -17,13 +17,11 @@ public class NickHandler extends CommandHandler {
 		if (params.length > 1) {
 			String nickname = params[1];
 			if (nickname != null && Validator.isValidNickname(nickname)) {
-				service.getConnection().sendIRC().changeNick(nickname);
+				new Thread(() -> service.getConnection().sendIRC().changeNick(nickname)).start();
 			} else {
 				Toast.makeText(service, service.getString(R.string.nickname_not_valid), Toast.LENGTH_SHORT).show();
 			}
 		}
-		
-		
 	}
 
 	@Override

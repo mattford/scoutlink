@@ -13,9 +13,9 @@ public class JoinHandler extends CommandHandler {
 		String channelToJoin = params[1];
 		if (params.length > 2) {
 			String key = params[2];
-			service.getConnection().sendIRC().joinChannel(channelToJoin, key);
+			new Thread(() -> service.getConnection().sendIRC().joinChannel(channelToJoin, key)).start();
 		} else {
-			service.getConnection().sendIRC().joinChannel(channelToJoin);
+			new Thread(() -> service.getConnection().sendIRC().joinChannel(channelToJoin)).start();
 		}
 		
 	}

@@ -15,10 +15,10 @@ import uk.org.mattford.scoutlink.model.Conversation;
 
 public class CommandParser {
 	
-	public static CommandParser instance;
+	private static CommandParser instance;
 	
-	public HashMap<String, CommandHandler> commands;
-	public HashMap<String, String> aliases;
+	private HashMap<String, CommandHandler> commands;
+	private HashMap<String, String> aliases;
 	
 	private CommandParser() {
 		commands = new HashMap<>();
@@ -50,14 +50,14 @@ public class CommandParser {
 			}
 			
 		} else {
-			
-			service.getConnection().sendIRC().message(conversation.getName(), command);
+			final String threadedCommand = command;
+			new Thread(() -> service.getConnection().sendIRC().message(conversation.getName(), threadedCommand)).start();
 			service.onNewMessage(conversation.getName());
 			
 		}
 	}
 	
-	public CommandHandler getCommandHandler(String command) {
+	private CommandHandler getCommandHandler(String command) {
 		if (commands.containsKey(command)) {
 			return commands.get(command);
 		} else if (aliases.containsKey(command)) {
@@ -69,25 +69,25 @@ public class CommandParser {
 		return null;
 	}
 	
-	public void handleClientCommand(String[] params, Conversation conversation, IRCService service) {
+	private void handleClientCommand(String[] params, Conversation conversation, IRCService service) {
 		CommandHandler handler = getCommandHandler(params[0]);
 		handler.execute(params, conversation, service);
 	}
 	
-	public void handleServerCommand(String[] params, Conversation conversation, IRCService service) {
+	private void handleServerCommand(String[] params, Conversation conversation, IRCService service) {
 		if (params.length > 1) {
 			params[0] = params[0].toUpperCase(Locale.ENGLISH);
-			service.getConnection().sendRaw().rawLine(mergeParams(params));
+			new Thread(() -> service.getConnection().sendRaw().rawLine(mergeParams(params))).start();
 		} else {
-			service.getConnection().sendRaw().rawLine(params[0].toUpperCase(Locale.ENGLISH));
+			new Thread(() -> service.getConnection().sendRaw().rawLine(params[0].toUpperCase(Locale.ENGLISH))).start();
 		}
 	}
 	
-	public boolean isClientCommand(String command) {
+	private boolean isClientCommand(String command) {
 		return (commands.containsKey(command) || aliases.containsKey(command));
 	}
 	
-	public String mergeParams(String[] params) {
+	private String mergeParams(String[] params) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(params[0]);
 		for (int i = 1; i<params.length; i++) {
@@ -102,6 +102,4 @@ public class CommandParser {
 		}
 		return instance;
 	}
-	
-	
 }

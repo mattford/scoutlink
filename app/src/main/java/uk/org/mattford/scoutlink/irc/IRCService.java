@@ -54,21 +54,20 @@ public class IRCService extends Service {
                 case ACTION_ADD_NOTIFY:
                     if (getConnection() != null && getConnection().isConnected()) {
                         for (String item : intent.getStringArrayListExtra("items")) {
-
-                            getConnection().sendRaw().rawLineNow("WATCH " + getConnection().getNick() + " +" + item);
+                            new Thread(() -> getConnection().sendRaw().rawLineNow("WATCH " + getConnection().getNick() + " +" + item)).start();
                         }
                     }
                     break;
                 case ACTION_REMOVE_NOTIFY:
                     if (getConnection() != null && getConnection().isConnected()) {
                         for (String item : intent.getStringArrayListExtra("items")) {
-                            getConnection().sendRaw().rawLineNow("WATCH " + getConnection().getNick() + " -" + item);
+                            new Thread(() -> getConnection().sendRaw().rawLineNow("WATCH " + getConnection().getNick() + " -" + item)).start();
                         }
                     }
                     break;
                 case ACTION_LIST_CHANNELS:
                     if (getConnection() != null && getConnection().isConnected()) {
-                        getConnection().sendIRC().listChannels();
+                        (new Thread(() -> getConnection().sendIRC().listChannels())).start();
                     }
             }
         }
@@ -124,16 +123,14 @@ public class IRCService extends Service {
 
         this.irc = new PircBotX(config.buildConfiguration());
         final Context context = this;
-        new Thread(new Runnable() {
-            public void run() {
-                try {
-                    irc.startBot();
-                } catch (Exception e) {
-                    sendToast(context.getString(R.string.connect_failed));
-                    onDisconnect();
-                }
+        (new Thread(() -> {
+            try {
+                irc.startBot();
+            } catch (Exception e) {
+                sendToast(context.getString(R.string.connect_failed));
+                onDisconnect();
             }
-        }).start();
+        })).start();
 	}
 
 	
@@ -238,29 +235,32 @@ public class IRCService extends Service {
         updateNotification();
 
         if (!settings.getString("nickserv_user", "").equals("") && !settings.getString("nickserv_password", "").equals("")) {
-            irc.send().message("NickServ", "LOGIN "+settings.getString("nickserv_user", "")+" "+settings.getString("nickserv_password", ""));
+            new Thread(() -> irc.send().message("NickServ", "LOGIN "+settings.getString("nickserv_user", "")+" "+settings.getString("nickserv_password", ""))).start();
         }
 
         String[] commands = settings.getStringArray("command_on_connect");
         if (commands.length > 1 || !commands[0].equals("")) {
-            for (String command : commands) {
-                if (command.startsWith("/")) {
-                    command = command.substring(1, command.length());
+            new Thread(() -> {
+                for (String command : commands) {
+                    if (command.startsWith("/")) {
+                        command = command.substring(1, command.length());
+                    }
+                    getConnection().sendRaw().rawLineNow(command);
                 }
-                getConnection().sendRaw().rawLineNow(command);
-            }
+            }).start();
         }
 
         String[] notify_users = settings.getStringArray("notify_list");
         if (notify_users.length > 1 || !notify_users[0].equals("")) {
-            for(String user : notify_users) {
-                getConnection().sendRaw().rawLineNow("WATCH "+getConnection().getNick()+" +"+user);
-            }
+            new Thread(() -> {
+                for(String user : notify_users) {
+                    getConnection().sendRaw().rawLineNow("WATCH "+getConnection().getNick()+" +"+user);
+                }
+            }).start();
         }
 
         Intent intent = new Intent(Broadcast.CONNECTED);
         sendBroadcast(intent);
-
     }
 
     // Deprecated, use sendToast()
@@ -271,12 +271,7 @@ public class IRCService extends Service {
     public void sendToast(final String text) {
         Handler mainThread = new Handler(getMainLooper());
         final Context context = this;
-        mainThread.post(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(context, text, Toast.LENGTH_LONG).show();
-            }
-        });
+        mainThread.post(() -> Toast.makeText(context, text, Toast.LENGTH_LONG).show());
     }
 
 	@Override

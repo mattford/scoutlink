@@ -1,6 +1,6 @@
 package uk.org.mattford.scoutlink;
 
-import android.app.Application;
+import android.support.multidex.MultiDexApplication;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Logger;
@@ -8,7 +8,7 @@ import com.google.android.gms.analytics.Tracker;
 
 import java.util.HashMap;
 
-public class ScoutlinkApplication extends Application {
+public class ScoutlinkApplication extends MultiDexApplication {
 
         // The following line should be changed to include the correct property id.
         private static final String PROPERTY_ID = "UA-60364072-1";

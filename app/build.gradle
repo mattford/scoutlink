@@ -1,15 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion '25.0.3'
+    compileSdkVersion 27
+    buildToolsVersion '28.0.2'
     defaultConfig {
         applicationId "uk.org.mattford.scoutlink"
         minSdkVersion 14
         targetSdkVersion 25
-        jackOptions {
-            enabled true
-        }
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -40,9 +38,11 @@ repositories {
 }
 
 dependencies {
-    compile 'com.android.support:support-v4:25.3.1'
-    compile 'org.slf4j:slf4j-android:1.7.8'
-    compile 'org.pircbotx:pircbotx:2.1'
-    compile 'com.android.support:appcompat-v7:25.3.1'
-    compile 'com.google.android.gms:play-services:10.2.1'
+    implementation 'org.slf4j:slf4j-android:1.7.8'
+    implementation 'org.pircbotx:pircbotx:2.1'
+    implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation 'com.android.support:support-compat:27.1.1'
+    implementation 'com.google.android.gms:play-services:12.0.1'
+    implementation group: 'com.github.JakeWharton', name: 'ViewPagerIndicator', version: '2.4.1'
+    implementation 'com.android.support:multidex:1.0.3'
 }

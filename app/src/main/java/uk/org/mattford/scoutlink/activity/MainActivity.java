@@ -12,17 +12,15 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.v7.app.ActionBarActivity;
-import android.view.KeyEvent;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends ActionBarActivity implements ServiceConnection {
+public class MainActivity extends AppCompatActivity implements ServiceConnection {
 	
 	private Settings settings;
 	private IRCBinder binder;
@@ -40,19 +38,16 @@ public class MainActivity extends ActionBarActivity implements ServiceConnection
     public void onResume() {
     	super.onResume();
 
-        EditText nick = (EditText)findViewById(R.id.nickname);
+        EditText nick = findViewById(R.id.nickname);
         nick.setText(settings.getString("nickname", ""));
-        nick.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (event == null) {
-                    connectClick(v);
-                    return true;
-                }
-                return false;
+        nick.setOnEditorActionListener((v, actionId, event) -> {
+            if (event == null) {
+                connectClick(v);
+                return true;
             }
+            return false;
         });
-        CheckBox showChannelList = (CheckBox)findViewById(R.id.channel_list_on_connect);
+        CheckBox showChannelList = findViewById(R.id.channel_list_on_connect);
         showChannelList.setChecked(settings.getBoolean("channel_list_on_connect", true));
         Intent service = new Intent(this, IRCService.class);
         startService(service);
@@ -68,10 +63,8 @@ public class MainActivity extends ActionBarActivity implements ServiceConnection
     @Override
     public void onDestroy() {
         super.onDestroy();
-
     }
-    
-    
+
     public void connectClick(View v) {
     	String nick = ((EditText)findViewById(R.id.nickname)).getText().toString();
         boolean channelListOnConnect = ((CheckBox)findViewById(R.id.channel_list_on_connect)).isChecked();
@@ -101,7 +94,7 @@ public class MainActivity extends ActionBarActivity implements ServiceConnection
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        Intent intent = null;
+        Intent intent;
         switch(id) {
             case R.id.action_settings:
                 intent = new Intent(this, SettingsActivity.class);

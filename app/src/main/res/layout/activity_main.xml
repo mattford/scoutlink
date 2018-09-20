@@ -3,32 +3,28 @@
     android:layout_height="fill_parent"
     android:orientation="vertical"
 
+    android:background="@color/scoutlink_blue"
+
     xmlns:android="http://schemas.android.com/apk/res/android">
-        <ImageView
-            android:id="@+id/sl_header"
+
+    <LinearLayout
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:adjustViewBounds="true"
-            android:scaleType="centerCrop"
-            android:src="@drawable/header"
-            android:contentDescription="@string/sl_header_content_description"/>
-        <LinearLayout
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/slightly_rounded_corners"
-            android:layout_alignParentBottom="true"
+            android:layout_alignParentTop="true"
             android:orientation="vertical"
 
             android:layout_marginTop="@dimen/activity_vertical_margin"
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
             android:layout_marginRight="@dimen/activity_horizontal_margin"
             android:layout_marginBottom="@dimen/activity_vertical_margin">
-            <TextView
-                android:id="@+id/welcome_text"
+            <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/white"
-                android:text="@string/welcome_text"/>
+                android:background="@drawable/sl_logo"
+                android:layout_margin="48dp"
+                android:contentDescription="@string/logo_content_description"
+                android:layout_gravity="center"
+                />
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

@@ -25,15 +25,13 @@ public class ActionHandler extends CommandHandler {
 		} else {
 			action = params[1];
 		}
-		service.getConnection().sendIRC().action(conversation.getName(), action);
+		new Thread(() -> service.getConnection().sendIRC().action(conversation.getName(), action)).start();
         Message msg = new Message(nick, service.getString(R.string.message_action, action));
         msg.setBackgroundColour(service.getResources().getColor(R.color.scoutlink_blue));
         msg.setColour(Color.WHITE);
         msg.setAlignment(Message.ALIGN_RIGHT);
 		conversation.addMessage(msg);
 		service.onNewMessage(conversation.getName());
-			
-		
 	}
 
 	@Override

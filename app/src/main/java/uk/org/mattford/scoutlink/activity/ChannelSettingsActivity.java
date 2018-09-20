@@ -5,11 +5,9 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.v7.app.ActionBarActivity;
-import android.view.View;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 
 import org.pircbotx.Channel;
@@ -18,7 +16,7 @@ import uk.org.mattford.scoutlink.R;
 import uk.org.mattford.scoutlink.irc.IRCBinder;
 import uk.org.mattford.scoutlink.irc.IRCService;
 
-public class ChannelSettingsActivity extends ActionBarActivity implements ServiceConnection {
+public class ChannelSettingsActivity extends AppCompatActivity implements ServiceConnection {
 
     private IRCBinder binder;
 
@@ -44,143 +42,102 @@ public class ChannelSettingsActivity extends ActionBarActivity implements Servic
         String channelName = getIntent().getStringExtra("channelName");
         final Channel channel = binder.getService().getConnection().getUserChannelDao().getChannel(channelName);
 
-        final EditText et = (EditText)findViewById(R.id.settings_topic);
+        final EditText et = findViewById(R.id.settings_topic);
         et.setText(channel.getTopic());
 
-        Button changeTopic = (Button)findViewById(R.id.settings_topic_change);
-        changeTopic.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!channel.getTopic().equals(et.getText().toString())) {
-                    channel.send().setTopic(et.getText().toString());
-                }
+        Button changeTopic = findViewById(R.id.settings_topic_change);
+        changeTopic.setOnClickListener(view -> {
+            if (!channel.getTopic().equals(et.getText().toString())) {
+                new Thread(() -> channel.send().setTopic(et.getText().toString())).start();
             }
         });
 
-        CheckBox cb = (CheckBox)findViewById(R.id.settings_no_external);
+        CheckBox cb = findViewById(R.id.settings_no_external);
         cb.setChecked(channel.isNoExternalMessages());
-        cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (b && !channel.isNoExternalMessages()) {
-                    channel.send().setNoExternalMessages();
-                } else if (!b && channel.isNoExternalMessages()) {
-                    channel.send().removeNoExternalMessages();
-                }
-                //compoundButton.setChecked(channel.isNoExternalMessages());
+        cb.setOnCheckedChangeListener((compoundButton, b) -> {
+            if (b && !channel.isNoExternalMessages()) {
+                new Thread(() -> channel.send().setNoExternalMessages()).start();
+            } else if (!b && channel.isNoExternalMessages()) {
+                new Thread(() -> channel.send().removeNoExternalMessages()).start();
             }
         });
 
-        cb = (CheckBox)findViewById(R.id.settings_topic_protection);
+        cb = findViewById(R.id.settings_topic_protection);
         cb.setChecked(channel.hasTopicProtection());
-        cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (b && !channel.hasTopicProtection()) {
-                    channel.send().setTopicProtection();
-                } else if (!b && channel.hasTopicProtection()) {
-                    channel.send().removeTopicProtection();
-                }
-                //compoundButton.setChecked(channel.hasTopicProtection());
+        cb.setOnCheckedChangeListener((compoundButton, b) -> {
+            if (b && !channel.hasTopicProtection()) {
+                new Thread(() -> channel.send().setTopicProtection()).start();
+            } else if (!b && channel.hasTopicProtection()) {
+                new Thread(() -> channel.send().removeTopicProtection()).start();
             }
         });
 
-        cb = (CheckBox)findViewById(R.id.settings_private);
+        cb = findViewById(R.id.settings_private);
         cb.setChecked(channel.isChannelPrivate());
-        cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (b && !channel.isChannelPrivate()) {
-                    channel.send().setChannelPrivate();
-                } else if (!b && channel.isNoExternalMessages()) {
-                    channel.send().removeChannelPrivate();
-                }
-               // compoundButton.setChecked(channel.isChannelPrivate());
+        cb.setOnCheckedChangeListener((compoundButton, b) -> {
+            if (b && !channel.isChannelPrivate()) {
+                new Thread(() -> channel.send().setChannelPrivate()).start();
+            } else if (!b && channel.isNoExternalMessages()) {
+                new Thread(() -> channel.send().removeChannelPrivate()).start();
             }
         });
 
-        cb = (CheckBox)findViewById(R.id.settings_secret);
+        cb = findViewById(R.id.settings_secret);
         cb.setChecked(channel.isSecret());
-        cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (b && !channel.isSecret()) {
-                    channel.send().setSecret();
-                } else if (!b && channel.isNoExternalMessages()) {
-                    channel.send().removeSecret();
-                }
-               // compoundButton.setChecked(channel.isSecret());
+        cb.setOnCheckedChangeListener((compoundButton, b) -> {
+            if (b && !channel.isSecret()) {
+                new Thread(() ->  channel.send().setSecret()).start();
+            } else if (!b && channel.isNoExternalMessages()) {
+                new Thread(() -> channel.send().removeSecret()).start();
             }
         });
 
-        cb = (CheckBox)findViewById(R.id.settings_moderated);
+        cb = findViewById(R.id.settings_moderated);
         cb.setChecked(channel.isModerated());
-        cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (b && !channel.isModerated()) {
-                    channel.send().setModerated();
-                } else if (!b && channel.isNoExternalMessages()) {
-                    channel.send().removeModerated();
-                }
-               // compoundButton.setChecked(channel.isModerated());
+        cb.setOnCheckedChangeListener((compoundButton, b) -> {
+            if (b && !channel.isModerated()) {
+                new Thread(() -> channel.send().setModerated()).start();
+            } else if (!b && channel.isNoExternalMessages()) {
+                new Thread(() -> channel.send().removeModerated()).start();
             }
         });
 
-        cb = (CheckBox)findViewById(R.id.settings_invite_only);
+        cb = findViewById(R.id.settings_invite_only);
         cb.setChecked(channel.isInviteOnly());
-        cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (b && !channel.isInviteOnly()) {
-                    channel.send().setInviteOnly();
-                } else if (!b && channel.isNoExternalMessages()) {
-                    channel.send().removeInviteOnly();
-                }
-               // compoundButton.setChecked(channel.isInviteOnly());
+        cb.setOnCheckedChangeListener((compoundButton, b) -> {
+            if (b && !channel.isInviteOnly()) {
+                new Thread(() -> channel.send().setInviteOnly()).start();
+            } else if (!b && channel.isNoExternalMessages()) {
+                new Thread(() -> channel.send().removeInviteOnly()).start();
             }
         });
 
-        final EditText limit = (EditText)findViewById(R.id.channel_limit);
+        final EditText limit = findViewById(R.id.channel_limit);
         if (channel.getChannelLimit() != -1) {
             limit.setText(Integer.toString(channel.getChannelLimit()));
         }
 
-        Button setLimitButton = (Button)findViewById(R.id.channel_limit_set);
-        setLimitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!limit.getText().toString().equals("")) {
-                    channel.send().setMode("+l " + limit.getText().toString());
-                }
+        Button setLimitButton = findViewById(R.id.channel_limit_set);
+        setLimitButton.setOnClickListener(view -> {
+            if (!limit.getText().toString().equals("")) {
+                new Thread(() -> channel.send().setMode("+l " + limit.getText().toString())).start();
             }
         });
-        Button removeLimitButton = (Button)findViewById(R.id.channel_limit_remove);
-        removeLimitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                channel.send().removeChannelLimit();
-                limit.setText("");
-            }
+        Button removeLimitButton = findViewById(R.id.channel_limit_remove);
+        removeLimitButton.setOnClickListener(view -> {
+            new Thread(() -> channel.send().removeChannelLimit()).start();
+            limit.setText("");
         });
 
-        final EditText key = (EditText)findViewById(R.id.channel_key);
+        final EditText key = findViewById(R.id.channel_key);
         key.setText(channel.getChannelKey());
-        Button setKeyButton = (Button)findViewById(R.id.channel_key_set);
-        setKeyButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                channel.send().setMode("+k " + key.getText().toString());
-            }
-        });
-        Button removeKeyButton = (Button)findViewById(R.id.channel_key_remove);
-        removeKeyButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (channel.getChannelKey() != null) {
-                    channel.send().setMode("-k " + channel.getChannelKey());
-                    key.setText("");
-                }
+        Button setKeyButton = findViewById(R.id.channel_key_set);
+        setKeyButton.setOnClickListener(view -> new Thread(() -> channel.send().setMode("+k " + key.getText().toString())).start());
+        Button removeKeyButton = findViewById(R.id.channel_key_remove);
+        removeKeyButton.setOnClickListener(view -> {
+            if (channel.getChannelKey() != null) {
+                new Thread(() -> channel.send().setMode("-k " + channel.getChannelKey())).start();
+                key.setText("");
             }
         });
     }
@@ -195,9 +152,4 @@ public class ChannelSettingsActivity extends ActionBarActivity implements Servic
     public void onServiceDisconnected(ComponentName componentName) {
         this.binder = null;
     }
-
-
-
-
-
 }

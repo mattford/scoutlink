@@ -10,9 +10,13 @@ public class PartHandler extends CommandHandler {
 	public void execute(String[] params, 
 			Conversation conversation, IRCService service) {
 
+		if (params.length < 2) {
+			return;
+		}
+
 		String channelToPart = params[1];
 		//String channelPartReason = params[2];
-		service.getConnection().getUserChannelDao().getChannel(channelToPart).send().part();
+		new Thread(() -> service.getConnection().getUserChannelDao().getChannel(channelToPart).send().part()).start();
 		
 	}
 

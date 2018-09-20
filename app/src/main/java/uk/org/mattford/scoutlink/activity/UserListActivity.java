@@ -102,19 +102,13 @@ public class UserListActivity extends ListActivity implements AdapterView.OnItem
                 new AlertDialog.Builder(this)
                         .setTitle(R.string.action_notice_dialog_title)
                         .setView(inputNotice)
-                        .setPositiveButton("Send", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                binder.getService().getConnection().sendIRC().notice(user.getNick(), inputNotice.getText().toString());
-                                Message msg = new Message("-> -"+user.getNick()+"-", inputNotice.getText().toString());
-                                binder.getService().getServer().getConversation(channel).addMessage(msg);
-                                binder.getService().onNewMessage(channel);
-                            }
+                        .setPositiveButton("Send", (dialog, whichButton) -> {
+                            new Thread(() -> binder.getService().getConnection().sendIRC().notice(user.getNick(), inputNotice.getText().toString())).start();
+                            Message msg = new Message("-> -"+user.getNick()+"-", inputNotice.getText().toString());
+                            binder.getService().getServer().getConversation(channel).addMessage(msg);
+                            binder.getService().onNewMessage(channel);
                         })
-                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                // Nada.
-                            }
-                        })
+                        .setNegativeButton("Cancel", (dialog, whichButton) -> {})
                         .show();
                 break;
             case R.id.action_userlist_kick:
@@ -122,16 +116,8 @@ public class UserListActivity extends ListActivity implements AdapterView.OnItem
                 new AlertDialog.Builder(this)
                         .setTitle(R.string.action_kick_dialog_title)
                         .setView(input)
-                        .setPositiveButton("Kick", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                chan.send().kick(user, input.getText().toString());
-                            }
-                        })
-                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                // Nada.
-                            }
-                        })
+                        .setPositiveButton("Kick", (dialog, whichButton) -> new Thread(() -> chan.send().kick(user, input.getText().toString())).start())
+                        .setNegativeButton("Cancel", (dialog, whichButton) -> {})
                         .show();
                 break;
             case R.id.action_userlist_kill:
@@ -139,50 +125,40 @@ public class UserListActivity extends ListActivity implements AdapterView.OnItem
                 new AlertDialog.Builder(this)
                         .setTitle(R.string.action_kill_dialog_title)
                         .setView(inputKill)
-                        .setPositiveButton("Kill", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                binder.getService().getConnection().sendRaw().rawLineNow("KILL " + user.getNick() + " " + inputKill.getText().toString());
-                            }
-                        })
-                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                // Nada.
-                            }
-                        })
+                        .setPositiveButton("Kill", (dialog, whichButton) -> new Thread(() -> binder.getService().getConnection().sendRaw().rawLineNow("KILL " + user.getNick() + " " + inputKill.getText().toString())).start())
+                        .setNegativeButton("Cancel", (dialog, whichButton) -> {})
                         .show();
                 break;
             case R.id.action_userlist_op:
-                chan.send().op(user);
+                new Thread(() -> chan.send().op(user)).start();
                 break;
             case R.id.action_userlist_deop:
-                chan.send().deOp(user);
+                new Thread(() -> chan.send().deOp(user)).start();
                 break;
             case R.id.action_userlist_hop:
-                chan.send().halfOp(user);
+                new Thread(() -> chan.send().halfOp(user)).start();
                 break;
             case R.id.action_userlist_dehop:
-                chan.send().deHalfOp(user);
+                new Thread(() -> chan.send().deHalfOp(user)).start();
                 break;
             case R.id.action_userlist_owner:
-                chan.send().owner(user);
+                new Thread(() -> chan.send().owner(user)).start();
                 break;
             case R.id.action_userlist_deowner:
-                chan.send().deOwner(user);
+                new Thread(() -> chan.send().deOwner(user)).start();
                 break;
             case R.id.action_userlist_admin:
-                chan.send().superOp(user);
+                new Thread(() -> chan.send().superOp(user)).start();
                 break;
             case R.id.action_userlist_deadmin:
-                chan.send().deSuperOp(user);
+                new Thread(() -> chan.send().deSuperOp(user)).start();
                 break;
             case R.id.action_userlist_voice:
-                chan.send().voice(user);
+                new Thread(() -> chan.send().voice(user)).start();
                 break;
             case R.id.action_userlist_devoice:
-                chan.send().deVoice(user);
+                new Thread(() -> chan.send().deVoice(user)).start();
                 break;
-
-
         }
         return false;
     }

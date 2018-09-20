@@ -26,7 +26,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -37,7 +37,7 @@ import android.widget.Toast;
 
 import com.viewpagerindicator.TitlePageIndicator;
 
-public class ConversationsActivity extends ActionBarActivity implements ServiceConnection {
+public class ConversationsActivity extends AppCompatActivity implements ServiceConnection {
 	
 	private ConversationsPagerAdapter pagerAdapter;
 	private ViewPager pager;
@@ -63,12 +63,12 @@ public class ConversationsActivity extends ActionBarActivity implements ServiceC
 
         pagerAdapter = new ConversationsPagerAdapter(getSupportFragmentManager(), this);
 
-        pager = (ViewPager) findViewById(R.id.pager);
+        pager = findViewById(R.id.pager);
         pager.setAdapter(pagerAdapter);
 
 
 
-        indicator = (TitlePageIndicator)findViewById(R.id.nav_titles);
+        indicator = findViewById(R.id.nav_titles);
         indicator.setViewPager(pager);
 
         indicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -115,18 +115,16 @@ public class ConversationsActivity extends ActionBarActivity implements ServiceC
 		
 		Intent serviceIntent = new Intent(this, IRCService.class);
 		startService(serviceIntent);
+
 		bindService(serviceIntent, this, 0);
 
-        EditText newMessage = (EditText)findViewById(R.id.input);
-        newMessage.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (event == null) {
-                    onSendButtonClick(v);
-                    return true;
-                }
-                return false;
+        EditText newMessage = findViewById(R.id.input);
+        newMessage.setOnEditorActionListener((v, actionId, event) -> {
+            if (event == null) {
+                onSendButtonClick(v);
+                return true;
             }
+            return false;
         });
 
         if (!settings.getBoolean("rules_viewed", false)) {
@@ -134,11 +132,9 @@ public class ConversationsActivity extends ActionBarActivity implements ServiceC
             new AlertDialog.Builder(this)
                     .setTitle(getString(R.string.view_rules_dialog_title))
                     .setMessage(getString(R.string.view_rules_dialog_message))
-                    .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialogInterface, int which) {
-                            Intent intent = new Intent(context, RulesActivity.class);
-                            context.startActivity(intent);
-                        }
+                    .setPositiveButton(getString(R.string.yes), (dialogInterface, which) -> {
+                        Intent intent = new Intent(context, RulesActivity.class);
+                        context.startActivity(intent);
                     })
                     .setNegativeButton(getString(R.string.no), null)
                     .show();
@@ -155,7 +151,7 @@ public class ConversationsActivity extends ActionBarActivity implements ServiceC
 	}
 	
 	public void onSendButtonClick(View v) {
-		EditText et = (EditText)findViewById(R.id.input);
+		EditText et = findViewById(R.id.input);
 		String message = et.getText().toString();
 		Conversation conv = pagerAdapter.getItemInfo(pager.getCurrentItem()).conv;
 		if (message.isEmpty()) {
@@ -176,36 +172,19 @@ public class ConversationsActivity extends ActionBarActivity implements ServiceC
                 msg.setAlignment(Message.ALIGN_RIGHT);
                 conv.addMessage(msg);
 
-                binder.getService().getConnection().sendIRC().message(conv.getName(), message);
+                new Thread(() -> binder.getService().getConnection().sendIRC().message(conv.getName(), message)).start();
             }
             onConversationMessage(conv.getName());
 		}
 		et.setText("");
-
-       /*tracker.send(new HitBuilders.EventBuilder()
-                .setCategory("Messages")
-                .setAction("Send")
-                .build()
-        );*/
-
 	}
 	
 	public void onInvite(final String channel) {
 		AlertDialog.Builder adb = new AlertDialog.Builder(this);
 		adb.setTitle(getString(R.string.activity_invite_title));
 		adb.setMessage(getString(R.string.invited_to_channel, channel));
-		adb.setPositiveButton("Yes", new OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				binder.getService().getConnection().sendIRC().joinChannel(channel);
-			}
-		});
-		adb.setNegativeButton("No", new OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				// Do nothing.
-			}
-		});
+		adb.setPositiveButton("Yes", (dialog, which) -> new Thread(() -> binder.getService().getConnection().sendIRC().joinChannel(channel)).start());
+		adb.setNegativeButton("No", (dialog, which) -> {});
 		adb.show();
 	}
 
@@ -279,7 +258,7 @@ public class ConversationsActivity extends ActionBarActivity implements ServiceC
         if (binder.getService().getConnection() == null || !binder.getService().getConnection().isConnected()) {
         	binder.getService().connect();
         } else {
-        	/**
+        	/*
         	 * The activity has resumed and the service has been bound, get all the messages we missed...
         	 */
     		for (Map.Entry<String, Conversation> conv : binder.getService().getServer().getConversations().entrySet()) {
@@ -291,10 +270,12 @@ public class ConversationsActivity extends ActionBarActivity implements ServiceC
     		}
             // Join any channels we want to join...
             if (!joinChannelBuffer.isEmpty()) {
-                for (String channel : joinChannelBuffer) {
-                    binder.getService().getConnection().sendIRC().joinChannel(channel);
-                }
-                joinChannelBuffer.clear();
+    		    new Thread(() -> {
+                    for (String channel : joinChannelBuffer) {
+                        binder.getService().getConnection().sendIRC().joinChannel(channel);
+                    }
+                    joinChannelBuffer.clear();
+                }).start();
             }
             binder.getService().updateNotification();
         }
@@ -327,7 +308,7 @@ public class ConversationsActivity extends ActionBarActivity implements ServiceC
         case R.id.action_close:
             switch (conversation.getType()) {
                 case Conversation.TYPE_CHANNEL:
-                    binder.getService().getConnection().getUserChannelDao().getChannel(conversation.getName()).send().part();
+                    new Thread(() -> binder.getService().getConnection().getUserChannelDao().getChannel(conversation.getName()).send().part()).start();
                     break;
                 case Conversation.TYPE_QUERY:
                     binder.getService().getServer().removeConversation(conversation.getName());
@@ -339,7 +320,7 @@ public class ConversationsActivity extends ActionBarActivity implements ServiceC
             }
         	break;
         case R.id.action_disconnect:
-        	binder.getService().getConnection().sendIRC().quitServer(settings.getString("quit_message", getString(R.string.default_quit_message)));
+            new Thread(() -> binder.getService().getConnection().sendIRC().quitServer(settings.getString("quit_message", getString(R.string.default_quit_message)))).start();
         	break;
         case R.id.action_userlist:
             switch (conversation.getType()) {
@@ -391,7 +372,6 @@ public class ConversationsActivity extends ActionBarActivity implements ServiceC
                     joinChannelBuffer.add(channel);
                 }
                 break;
-
         }
     }
 }
