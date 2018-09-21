@@ -10,8 +10,7 @@
     <string name="connect_button">"Iniciar bate-papo"</string>
     <!-- Message to say connection is in progress -->
     <string name="connect_message">"Conectando à ScoutLink&#8230;"</string>
-    <!-- Text displayed below the logo on the main screen -->
-    <string name="welcome_text">"Bem-vindo à ScoutLink, a rede de IRC para Escoteiros e Guias. \n Por favor, digitar um apelido abaixo."</string>
+    <string name="logo_content_description">ScoutLink logo</string>
     <string name="sl_header_content_description">"Imagem de cabeçalho"</string>
     <string name="channel_list_on_connect">"Mostrar lista de canais após a conexão"</string>
     <!-- Menu Items -->

@@ -50,7 +50,6 @@
     <!-- Title of the Join Activity -->
     <string name="join_activity_label">Join Channel</string>
 
-
     <string name="title_activity_channel_list">Channel List</string>
     <string name="userlist_activity_label">User List</string>
     <string name="action_userlist_query_label">Query</string>
@@ -181,7 +180,6 @@
     <string name="notification_new_messages_multi">%1$s/%2$s: %3$s</string>
     <string name="notification_connected">Connected as %1$s.</string>
     <string name="notification_new_multi">%1$s new messages, %2$s new mentions.</string>
-
 
     <string name="notice_hint">Enter your message</string>
     <string name="settings_topic_hint">Channel Topic</string>
