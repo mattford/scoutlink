@@ -29,7 +29,6 @@
         <activity android:name=".activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -47,7 +46,10 @@
             android:label="@string/userlist_activity_label"
             android:theme="@style/Dialog"
             android:screenOrientation="locked"/>
-        <activity android:name=".activity.SettingsActivity" />
+        <activity
+            android:name=".activity.SettingsActivity"
+            android:label="@string/action_settings"
+            />
         <activity
             android:name=".activity.ChannelListActivity"
             android:label="@string/title_activity_channel_list"

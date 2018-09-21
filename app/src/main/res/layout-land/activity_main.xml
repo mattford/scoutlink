@@ -2,9 +2,10 @@
 xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:background="@color/scoutlink_blue"
-    android:padding="@dimen/activity_vertical_margin">
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin">
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -13,50 +14,47 @@ xmlns:android="http://schemas.android.com/apk/res/android"
         android:contentDescription="@string/logo_content_description"
         android:layout_gravity="center"
         />
-
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:orientation="vertical">
-
+        android:orientation="vertical"
+        android:layout_gravity="center">
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
-
             <EditText
                 android:id="@+id/nickname"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ems="10"
-                android:hint="@string/nickname_hint"
-                android:maxLines="1"
-                android:singleLine="true"
                 android:textColor="@color/white"
-                android:textColorHint="@color/white">
-
+                android:hint="@string/nickname_hint"
+                android:textColorHint="@color/white"
+                android:maxLines="1"
+                android:singleLine="true">
                 <requestFocus />
             </EditText>
-
             <Button
                 android:id="@+id/connect_button"
+                android:text="@string/connect_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/sl_button"
+                android:textColor="@color/white"
                 android:onClick="connectClick"
-                android:text="@string/connect_button"
-                android:textColor="@color/white" />
+                />
         </LinearLayout>
-
         <CheckBox
             android:id="@+id/channel_list_on_connect"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/white"
             android:buttonTint="@color/white"
-            android:text="@string/channel_list_on_connect"
-            android:textColor="@color/white" />
+            android:text="@string/channel_list_on_connect"/>
     </LinearLayout>
+
+
 </LinearLayout>
 
 

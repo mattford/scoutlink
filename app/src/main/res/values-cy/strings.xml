@@ -170,13 +170,13 @@
     <string name="default_quit_message">"ScoutLink ar gyfer Android!"</string>
     <string name="nick_already_in_use">"Mae hyn llysenw eisoes yn cael ei ddefnyddio, os gwelwch yn dda dewiswch lysenw gwahanol a cheisiwch eto."</string>
 
-    <string name="notification_new_mentions">"%1$s newydd yn sôn yn %2$s ."</string>
-    <string name="notification_new_mentions_multi">"%1$s newydd yn sôn yn %2$s sgyrsiau."</string>
+    <string name="notification_new_mentions">"%1$d newydd yn sôn yn %2$s ."</string>
+    <string name="notification_new_mentions_multi">"%1$d newydd yn sôn yn %2$d sgyrsiau."</string>
     <string name="notification_new_messages_inbox_title">"Negeseuon newydd ar ScoutLink"</string>
-    <string name="notification_new_messages">"%1$s negeseuon newydd yn %2$s sgyrsiau."</string>
+    <string name="notification_new_messages">"%1$d negeseuon newydd yn %2$d sgyrsiau."</string>
     <string name="notification_new_messages_multi">"%1$s / %2$s : %3$s"</string>
     <string name="notification_connected">"Connected fel %1$s ."</string>
-    <string name="notification_new_multi">"%1$s negeseuon newydd, %2$s newydd sôn."</string>
+    <string name="notification_new_multi">"%1$d negeseuon newydd, %2$d newydd sôn."</string>
 
 
     <string name="notice_hint">"Rhowch eich neges"</string>

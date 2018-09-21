@@ -10,15 +10,15 @@ public class NotifyHandler extends CommandHandler {
         if (params.length == 2) {
             if (params[1].equals("-l")) {
                 // List
-                new Thread(() -> service.getConnection().sendRaw().rawLineNow("WATCH")).start();
+                service.getBackgroundHandler().post(() -> service.getConnection().sendRaw().rawLineNow("WATCH"));
             } else {
                 // Add
-                new Thread(() -> service.getConnection().sendRaw().rawLineNow("WATCH "+service.getConnection().getNick()+" +"+params[1])).start();
+                service.getBackgroundHandler().post(() -> service.getConnection().sendRaw().rawLineNow("WATCH "+service.getConnection().getNick()+" +"+params[1]));
             }
         } else if (params.length == 3) {
             if (params[1].equals("-r")) {
                 // Remove
-                new Thread(() -> service.getConnection().sendRaw().rawLineNow("WATCH "+service.getConnection().getNick()+" -"+params[2])).start();
+                service.getBackgroundHandler().post(() -> service.getConnection().sendRaw().rawLineNow("WATCH "+service.getConnection().getNick()+" -"+params[2]));
             }
         }
     }

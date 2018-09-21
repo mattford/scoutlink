@@ -19,6 +19,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.view.ContextMenu;
 import android.view.MenuInflater;
@@ -84,6 +85,7 @@ public class UserListActivity extends ListActivity implements AdapterView.OnItem
         }
         final Channel chan = binder.getService().getConnection().getUserChannelDao().getChannel(channel);
         final org.pircbotx.User user = binder.getService().getConnection().getUserChannelDao().getUser(nick);
+        Handler backgroundHandler = binder.getService().getBackgroundHandler();
         if (user == null) {
             closeContextMenu();
             return false;
@@ -103,7 +105,7 @@ public class UserListActivity extends ListActivity implements AdapterView.OnItem
                         .setTitle(R.string.action_notice_dialog_title)
                         .setView(inputNotice)
                         .setPositiveButton("Send", (dialog, whichButton) -> {
-                            new Thread(() -> binder.getService().getConnection().sendIRC().notice(user.getNick(), inputNotice.getText().toString())).start();
+                            backgroundHandler.post(() -> binder.getService().getConnection().sendIRC().notice(user.getNick(), inputNotice.getText().toString()));
                             Message msg = new Message("-> -"+user.getNick()+"-", inputNotice.getText().toString());
                             binder.getService().getServer().getConversation(channel).addMessage(msg);
                             binder.getService().onNewMessage(channel);
@@ -116,7 +118,7 @@ public class UserListActivity extends ListActivity implements AdapterView.OnItem
                 new AlertDialog.Builder(this)
                         .setTitle(R.string.action_kick_dialog_title)
                         .setView(input)
-                        .setPositiveButton("Kick", (dialog, whichButton) -> new Thread(() -> chan.send().kick(user, input.getText().toString())).start())
+                        .setPositiveButton("Kick", (dialog, whichButton) -> backgroundHandler.post(() -> chan.send().kick(user, input.getText().toString())))
                         .setNegativeButton("Cancel", (dialog, whichButton) -> {})
                         .show();
                 break;
@@ -125,39 +127,39 @@ public class UserListActivity extends ListActivity implements AdapterView.OnItem
                 new AlertDialog.Builder(this)
                         .setTitle(R.string.action_kill_dialog_title)
                         .setView(inputKill)
-                        .setPositiveButton("Kill", (dialog, whichButton) -> new Thread(() -> binder.getService().getConnection().sendRaw().rawLineNow("KILL " + user.getNick() + " " + inputKill.getText().toString())).start())
+                        .setPositiveButton("Kill", (dialog, whichButton) -> backgroundHandler.post(() -> binder.getService().getConnection().sendRaw().rawLineNow("KILL " + user.getNick() + " " + inputKill.getText().toString())))
                         .setNegativeButton("Cancel", (dialog, whichButton) -> {})
                         .show();
                 break;
             case R.id.action_userlist_op:
-                new Thread(() -> chan.send().op(user)).start();
+                backgroundHandler.post(() -> chan.send().op(user));
                 break;
             case R.id.action_userlist_deop:
-                new Thread(() -> chan.send().deOp(user)).start();
+                backgroundHandler.post(() -> chan.send().deOp(user));
                 break;
             case R.id.action_userlist_hop:
-                new Thread(() -> chan.send().halfOp(user)).start();
+                backgroundHandler.post(() -> chan.send().halfOp(user));
                 break;
             case R.id.action_userlist_dehop:
-                new Thread(() -> chan.send().deHalfOp(user)).start();
+                backgroundHandler.post(() -> chan.send().deHalfOp(user));
                 break;
             case R.id.action_userlist_owner:
-                new Thread(() -> chan.send().owner(user)).start();
+                backgroundHandler.post(() -> chan.send().owner(user));
                 break;
             case R.id.action_userlist_deowner:
-                new Thread(() -> chan.send().deOwner(user)).start();
+                backgroundHandler.post(() -> chan.send().deOwner(user));
                 break;
             case R.id.action_userlist_admin:
-                new Thread(() -> chan.send().superOp(user)).start();
+                backgroundHandler.post(() -> chan.send().superOp(user));
                 break;
             case R.id.action_userlist_deadmin:
-                new Thread(() -> chan.send().deSuperOp(user)).start();
+                backgroundHandler.post(() -> chan.send().deSuperOp(user));
                 break;
             case R.id.action_userlist_voice:
-                new Thread(() -> chan.send().voice(user)).start();
+                backgroundHandler.post(() -> chan.send().voice(user));
                 break;
             case R.id.action_userlist_devoice:
-                new Thread(() -> chan.send().deVoice(user)).start();
+                backgroundHandler.post(() -> chan.send().deVoice(user));
                 break;
         }
         return false;

@@ -51,7 +51,7 @@ public class CommandParser {
 			
 		} else {
 			final String threadedCommand = command;
-			new Thread(() -> service.getConnection().sendIRC().message(conversation.getName(), threadedCommand)).start();
+			service.getBackgroundHandler().post(() -> service.getConnection().sendIRC().message(conversation.getName(), threadedCommand));
 			service.onNewMessage(conversation.getName());
 			
 		}
@@ -77,9 +77,9 @@ public class CommandParser {
 	private void handleServerCommand(String[] params, Conversation conversation, IRCService service) {
 		if (params.length > 1) {
 			params[0] = params[0].toUpperCase(Locale.ENGLISH);
-			new Thread(() -> service.getConnection().sendRaw().rawLine(mergeParams(params))).start();
+			service.getBackgroundHandler().post(() -> service.getConnection().sendRaw().rawLine(mergeParams(params)));
 		} else {
-			new Thread(() -> service.getConnection().sendRaw().rawLine(params[0].toUpperCase(Locale.ENGLISH))).start();
+			service.getBackgroundHandler().post(() -> service.getConnection().sendRaw().rawLine(params[0].toUpperCase(Locale.ENGLISH)));
 		}
 	}
 	

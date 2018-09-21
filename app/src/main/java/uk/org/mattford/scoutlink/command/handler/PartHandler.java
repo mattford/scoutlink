@@ -16,7 +16,7 @@ public class PartHandler extends CommandHandler {
 
 		String channelToPart = params[1];
 		//String channelPartReason = params[2];
-		new Thread(() -> service.getConnection().getUserChannelDao().getChannel(channelToPart).send().part()).start();
+		service.getBackgroundHandler().post(() -> service.getConnection().getUserChannelDao().getChannel(channelToPart).send().part());
 		
 	}
 

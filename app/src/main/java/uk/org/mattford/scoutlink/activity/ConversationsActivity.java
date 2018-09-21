@@ -172,7 +172,7 @@ public class ConversationsActivity extends AppCompatActivity implements ServiceC
                 msg.setAlignment(Message.ALIGN_RIGHT);
                 conv.addMessage(msg);
 
-                new Thread(() -> binder.getService().getConnection().sendIRC().message(conv.getName(), message)).start();
+                binder.getService().getBackgroundHandler().post(() -> binder.getService().getConnection().sendIRC().message(conv.getName(), message));
             }
             onConversationMessage(conv.getName());
 		}
@@ -183,7 +183,7 @@ public class ConversationsActivity extends AppCompatActivity implements ServiceC
 		AlertDialog.Builder adb = new AlertDialog.Builder(this);
 		adb.setTitle(getString(R.string.activity_invite_title));
 		adb.setMessage(getString(R.string.invited_to_channel, channel));
-		adb.setPositiveButton("Yes", (dialog, which) -> new Thread(() -> binder.getService().getConnection().sendIRC().joinChannel(channel)).start());
+		adb.setPositiveButton("Yes", (dialog, which) -> binder.getService().getBackgroundHandler().post(() -> binder.getService().getConnection().sendIRC().joinChannel(channel)));
 		adb.setNegativeButton("No", (dialog, which) -> {});
 		adb.show();
 	}
@@ -270,12 +270,12 @@ public class ConversationsActivity extends AppCompatActivity implements ServiceC
     		}
             // Join any channels we want to join...
             if (!joinChannelBuffer.isEmpty()) {
-    		    new Thread(() -> {
+    		    binder.getService().getBackgroundHandler().post(() -> {
                     for (String channel : joinChannelBuffer) {
                         binder.getService().getConnection().sendIRC().joinChannel(channel);
                     }
                     joinChannelBuffer.clear();
-                }).start();
+                });
             }
             binder.getService().updateNotification();
         }
@@ -308,7 +308,7 @@ public class ConversationsActivity extends AppCompatActivity implements ServiceC
         case R.id.action_close:
             switch (conversation.getType()) {
                 case Conversation.TYPE_CHANNEL:
-                    new Thread(() -> binder.getService().getConnection().getUserChannelDao().getChannel(conversation.getName()).send().part()).start();
+                    binder.getService().getBackgroundHandler().post(() -> binder.getService().getConnection().getUserChannelDao().getChannel(conversation.getName()).send().part());
                     break;
                 case Conversation.TYPE_QUERY:
                     binder.getService().getServer().removeConversation(conversation.getName());
@@ -320,7 +320,7 @@ public class ConversationsActivity extends AppCompatActivity implements ServiceC
             }
         	break;
         case R.id.action_disconnect:
-            new Thread(() -> binder.getService().getConnection().sendIRC().quitServer(settings.getString("quit_message", getString(R.string.default_quit_message)))).start();
+            binder.getService().getBackgroundHandler().post(() -> binder.getService().getConnection().sendIRC().quitServer(settings.getString("quit_message", getString(R.string.default_quit_message))));
         	break;
         case R.id.action_userlist:
             switch (conversation.getType()) {

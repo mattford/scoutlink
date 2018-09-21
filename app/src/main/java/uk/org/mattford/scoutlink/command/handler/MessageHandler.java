@@ -19,7 +19,7 @@ public class MessageHandler extends CommandHandler {
                 messageBuilder.append(params[i]);
                 messageBuilder.append(" ");
             }
-            new Thread(() -> service.getConnection().sendIRC().message(target, messageBuilder.toString())).start();
+            service.getBackgroundHandler().post(() -> service.getConnection().sendIRC().message(target, messageBuilder.toString()));
         }
     }
 

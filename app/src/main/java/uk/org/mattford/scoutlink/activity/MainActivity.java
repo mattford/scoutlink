@@ -31,6 +31,12 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
 
         ((ScoutlinkApplication) getApplication()).getTracker(ScoutlinkApplication.TrackerName.APP_TRACKER);
         this.settings = new Settings(this);
+
+        try {
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+        } catch (NullPointerException e) {
+            // Not a big deal, so let's just get on with our lives
+        }
         setContentView(R.layout.activity_main);
     }
 

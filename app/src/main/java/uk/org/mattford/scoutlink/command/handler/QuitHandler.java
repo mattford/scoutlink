@@ -13,11 +13,11 @@ public class QuitHandler extends CommandHandler {
 		
 		if (params.length > 1) {
 			String reason = params[1];
-			new Thread(() -> service.getConnection().sendIRC().quitServer(reason)).start();
+			service.getBackgroundHandler().post(() -> service.getConnection().sendIRC().quitServer(reason));
 		} else {
 			Settings settings = new Settings(service);
 			String quitMessage = settings.getString("quit_message");
-			new Thread(() -> service.getConnection().sendIRC().quitServer(quitMessage)).start();
+			service.getBackgroundHandler().post(() -> service.getConnection().sendIRC().quitServer(quitMessage));
 		}
 	}
 

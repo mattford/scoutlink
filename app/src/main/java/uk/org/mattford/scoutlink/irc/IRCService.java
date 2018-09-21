@@ -23,8 +23,10 @@ import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Binder;
 import android.os.Handler;
+import android.os.HandlerThread;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
+import android.util.Log;
 import android.widget.Toast;
 
 public class IRCService extends Service {
@@ -32,7 +34,10 @@ public class IRCService extends Service {
 	private PircBotX irc;
 	private Settings settings;
 	private Server server;
-	
+
+	private Handler handler;
+	private HandlerThread handlerThread;
+
 	private final int NOTIFICATION_ID = 1;
 
     public static final String ACTION_ADD_NOTIFY = "uk.org.mattford.scoutlink.IRCService.ADD_NOTIFY";
@@ -54,20 +59,20 @@ public class IRCService extends Service {
                 case ACTION_ADD_NOTIFY:
                     if (getConnection() != null && getConnection().isConnected()) {
                         for (String item : intent.getStringArrayListExtra("items")) {
-                            new Thread(() -> getConnection().sendRaw().rawLineNow("WATCH " + getConnection().getNick() + " +" + item)).start();
+                            getBackgroundHandler().post(() -> getConnection().sendRaw().rawLineNow("WATCH " + getConnection().getNick() + " +" + item));
                         }
                     }
                     break;
                 case ACTION_REMOVE_NOTIFY:
                     if (getConnection() != null && getConnection().isConnected()) {
                         for (String item : intent.getStringArrayListExtra("items")) {
-                            new Thread(() -> getConnection().sendRaw().rawLineNow("WATCH " + getConnection().getNick() + " -" + item)).start();
+                            getBackgroundHandler().post(() -> getConnection().sendRaw().rawLineNow("WATCH " + getConnection().getNick() + " -" + item));
                         }
                     }
                     break;
                 case ACTION_LIST_CHANNELS:
                     if (getConnection() != null && getConnection().isConnected()) {
-                        (new Thread(() -> getConnection().sendIRC().listChannels())).start();
+                        getBackgroundHandler().post(() -> getConnection().sendIRC().listChannels());
                     }
             }
         }
@@ -123,14 +128,14 @@ public class IRCService extends Service {
 
         this.irc = new PircBotX(config.buildConfiguration());
         final Context context = this;
-        (new Thread(() -> {
+        new Thread(() -> {
             try {
                 irc.startBot();
             } catch (Exception e) {
                 sendToast(context.getString(R.string.connect_failed));
                 onDisconnect();
             }
-        })).start();
+        }).start();
 	}
 
 	
@@ -140,6 +145,11 @@ public class IRCService extends Service {
 
     public void onDisconnect() {
         updateNotification();
+        if (handlerThread != null) {
+            handlerThread.quit();
+            handlerThread = null;
+            handler = null;
+        }
         setIsForeground(false);
         server.setStatus(Server.STATUS_DISCONNECTED);
         Intent intent = new Intent().setAction(Broadcast.DISCONNECTED);
@@ -235,28 +245,28 @@ public class IRCService extends Service {
         updateNotification();
 
         if (!settings.getString("nickserv_user", "").equals("") && !settings.getString("nickserv_password", "").equals("")) {
-            new Thread(() -> irc.send().message("NickServ", "LOGIN "+settings.getString("nickserv_user", "")+" "+settings.getString("nickserv_password", ""))).start();
+            getBackgroundHandler().post(() -> irc.send().message("NickServ", "LOGIN "+settings.getString("nickserv_user", "")+" "+settings.getString("nickserv_password", "")));
         }
 
         String[] commands = settings.getStringArray("command_on_connect");
         if (commands.length > 1 || !commands[0].equals("")) {
-            new Thread(() -> {
+            getBackgroundHandler().post(() -> {
                 for (String command : commands) {
                     if (command.startsWith("/")) {
                         command = command.substring(1, command.length());
                     }
                     getConnection().sendRaw().rawLineNow(command);
                 }
-            }).start();
+            });
         }
 
         String[] notify_users = settings.getStringArray("notify_list");
         if (notify_users.length > 1 || !notify_users[0].equals("")) {
-            new Thread(() -> {
+            getBackgroundHandler().post(() -> {
                 for(String user : notify_users) {
                     getConnection().sendRaw().rawLineNow("WATCH "+getConnection().getNick()+" +"+user);
                 }
-            }).start();
+            });
         }
 
         Intent intent = new Intent(Broadcast.CONNECTED);
@@ -279,4 +289,15 @@ public class IRCService extends Service {
 		return new IRCBinder(this);
 	}
 
+	public Handler getBackgroundHandler()
+    {
+        if (this.handler != null) {
+            return this.handler;
+        }
+        handlerThread = new HandlerThread("NetworkHandler");
+        handlerThread.start();
+        this.handler = new Handler(handlerThread.getLooper());
+
+        return this.handler;
+    }
 }

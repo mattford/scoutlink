@@ -4,6 +4,7 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
@@ -42,13 +43,14 @@ public class ChannelSettingsActivity extends AppCompatActivity implements Servic
         String channelName = getIntent().getStringExtra("channelName");
         final Channel channel = binder.getService().getConnection().getUserChannelDao().getChannel(channelName);
 
+        Handler backgroundHandler = binder.getService().getBackgroundHandler();
         final EditText et = findViewById(R.id.settings_topic);
         et.setText(channel.getTopic());
 
         Button changeTopic = findViewById(R.id.settings_topic_change);
         changeTopic.setOnClickListener(view -> {
             if (!channel.getTopic().equals(et.getText().toString())) {
-                new Thread(() -> channel.send().setTopic(et.getText().toString())).start();
+                backgroundHandler.post(() -> channel.send().setTopic(et.getText().toString()));
             }
         });
 
@@ -56,9 +58,9 @@ public class ChannelSettingsActivity extends AppCompatActivity implements Servic
         cb.setChecked(channel.isNoExternalMessages());
         cb.setOnCheckedChangeListener((compoundButton, b) -> {
             if (b && !channel.isNoExternalMessages()) {
-                new Thread(() -> channel.send().setNoExternalMessages()).start();
+                backgroundHandler.post(() -> channel.send().setNoExternalMessages());
             } else if (!b && channel.isNoExternalMessages()) {
-                new Thread(() -> channel.send().removeNoExternalMessages()).start();
+                backgroundHandler.post(() -> channel.send().removeNoExternalMessages());
             }
         });
 
@@ -66,9 +68,9 @@ public class ChannelSettingsActivity extends AppCompatActivity implements Servic
         cb.setChecked(channel.hasTopicProtection());
         cb.setOnCheckedChangeListener((compoundButton, b) -> {
             if (b && !channel.hasTopicProtection()) {
-                new Thread(() -> channel.send().setTopicProtection()).start();
+                backgroundHandler.post(() -> channel.send().setTopicProtection());
             } else if (!b && channel.hasTopicProtection()) {
-                new Thread(() -> channel.send().removeTopicProtection()).start();
+                backgroundHandler.post(() -> channel.send().removeTopicProtection());
             }
         });
 
@@ -76,9 +78,9 @@ public class ChannelSettingsActivity extends AppCompatActivity implements Servic
         cb.setChecked(channel.isChannelPrivate());
         cb.setOnCheckedChangeListener((compoundButton, b) -> {
             if (b && !channel.isChannelPrivate()) {
-                new Thread(() -> channel.send().setChannelPrivate()).start();
+                backgroundHandler.post(() -> channel.send().setChannelPrivate());
             } else if (!b && channel.isNoExternalMessages()) {
-                new Thread(() -> channel.send().removeChannelPrivate()).start();
+                backgroundHandler.post(() -> channel.send().removeChannelPrivate());
             }
         });
 
@@ -86,9 +88,9 @@ public class ChannelSettingsActivity extends AppCompatActivity implements Servic
         cb.setChecked(channel.isSecret());
         cb.setOnCheckedChangeListener((compoundButton, b) -> {
             if (b && !channel.isSecret()) {
-                new Thread(() ->  channel.send().setSecret()).start();
+                backgroundHandler.post(() ->  channel.send().setSecret());
             } else if (!b && channel.isNoExternalMessages()) {
-                new Thread(() -> channel.send().removeSecret()).start();
+                backgroundHandler.post(() -> channel.send().removeSecret());
             }
         });
 
@@ -96,9 +98,9 @@ public class ChannelSettingsActivity extends AppCompatActivity implements Servic
         cb.setChecked(channel.isModerated());
         cb.setOnCheckedChangeListener((compoundButton, b) -> {
             if (b && !channel.isModerated()) {
-                new Thread(() -> channel.send().setModerated()).start();
+                backgroundHandler.post(() -> channel.send().setModerated());
             } else if (!b && channel.isNoExternalMessages()) {
-                new Thread(() -> channel.send().removeModerated()).start();
+                backgroundHandler.post(() -> channel.send().removeModerated());
             }
         });
 
@@ -106,9 +108,9 @@ public class ChannelSettingsActivity extends AppCompatActivity implements Servic
         cb.setChecked(channel.isInviteOnly());
         cb.setOnCheckedChangeListener((compoundButton, b) -> {
             if (b && !channel.isInviteOnly()) {
-                new Thread(() -> channel.send().setInviteOnly()).start();
+                backgroundHandler.post(() -> channel.send().setInviteOnly());
             } else if (!b && channel.isNoExternalMessages()) {
-                new Thread(() -> channel.send().removeInviteOnly()).start();
+                backgroundHandler.post(() -> channel.send().removeInviteOnly());
             }
         });
 
@@ -120,23 +122,23 @@ public class ChannelSettingsActivity extends AppCompatActivity implements Servic
         Button setLimitButton = findViewById(R.id.channel_limit_set);
         setLimitButton.setOnClickListener(view -> {
             if (!limit.getText().toString().equals("")) {
-                new Thread(() -> channel.send().setMode("+l " + limit.getText().toString())).start();
+                backgroundHandler.post(() -> channel.send().setMode("+l " + limit.getText().toString()));
             }
         });
         Button removeLimitButton = findViewById(R.id.channel_limit_remove);
         removeLimitButton.setOnClickListener(view -> {
-            new Thread(() -> channel.send().removeChannelLimit()).start();
+            backgroundHandler.post(() -> channel.send().removeChannelLimit());
             limit.setText("");
         });
 
         final EditText key = findViewById(R.id.channel_key);
         key.setText(channel.getChannelKey());
         Button setKeyButton = findViewById(R.id.channel_key_set);
-        setKeyButton.setOnClickListener(view -> new Thread(() -> channel.send().setMode("+k " + key.getText().toString())).start());
+        setKeyButton.setOnClickListener(view -> backgroundHandler.post(() -> channel.send().setMode("+k " + key.getText().toString())));
         Button removeKeyButton = findViewById(R.id.channel_key_remove);
         removeKeyButton.setOnClickListener(view -> {
             if (channel.getChannelKey() != null) {
-                new Thread(() -> channel.send().setMode("-k " + channel.getChannelKey())).start();
+                backgroundHandler.post(() -> channel.send().setMode("-k " + channel.getChannelKey()));
                 key.setText("");
             }
         });
