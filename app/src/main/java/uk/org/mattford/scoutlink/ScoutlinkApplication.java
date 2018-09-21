@@ -1,6 +1,6 @@
 package uk.org.mattford.scoutlink;
 
-import android.support.multidex.MultiDexApplication;
+import android.app.Application;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Logger;
@@ -8,15 +8,10 @@ import com.google.android.gms.analytics.Tracker;
 
 import java.util.HashMap;
 
-public class ScoutlinkApplication extends MultiDexApplication {
+public class ScoutlinkApplication extends Application {
 
         // The following line should be changed to include the correct property id.
         private static final String PROPERTY_ID = "UA-60364072-1";
-
-        //Logging TAG
-        private static final String TAG = "ScoutLink";
-
-        public static int GENERAL_TRACKER = 0;
 
         public enum TrackerName {
             APP_TRACKER, // Tracker used only in this app.
@@ -36,7 +31,7 @@ public class ScoutlinkApplication extends MultiDexApplication {
                 analytics.setLocalDispatchPeriod(30);
                 analytics.setDryRun(false);
                 analytics.getLogger().setLogLevel(Logger.LogLevel.VERBOSE);
-                Tracker t = null;
+                Tracker t;
                 switch (trackerId) {
                     case APP_TRACKER:
                         t = analytics.newTracker(R.xml.app_tracker);
@@ -52,7 +47,4 @@ public class ScoutlinkApplication extends MultiDexApplication {
             }
             return mTrackers.get(trackerId);
         }
-
-
-
 }
