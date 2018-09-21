@@ -173,13 +173,13 @@
     <string name="default_quit_message">ScoutLink for Android!</string>
     <string name="nick_already_in_use">This nickname is already in use, please select a different nickname and try again.</string>
 
-    <string name="notification_new_mentions">%1$s new mentions in %2$s.</string>
-    <string name="notification_new_mentions_multi">%1$s new mentions in %2$s conversations.</string>
+    <string name="notification_new_mentions">%1$d new mentions in %2$s.</string>
+    <string name="notification_new_mentions_multi">%1$d new mentions in %2$d conversations.</string>
     <string name="notification_new_messages_inbox_title">New messages on ScoutLink</string>
-    <string name="notification_new_messages">%1$s new messages in %2$s conversations.</string>
+    <string name="notification_new_messages">%1$d new messages in %2$d conversations.</string>
     <string name="notification_new_messages_multi">%1$s/%2$s: %3$s</string>
     <string name="notification_connected">Connected as %1$s.</string>
-    <string name="notification_new_multi">%1$s new messages, %2$s new mentions.</string>
+    <string name="notification_new_multi">%1$d new messages, %2$d new mentions.</string>
 
     <string name="notice_hint">Enter your message</string>
     <string name="settings_topic_hint">Channel Topic</string>
