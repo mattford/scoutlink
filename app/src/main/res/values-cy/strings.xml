@@ -118,7 +118,7 @@
     <string name="message_whois_away">"Away: %1$s \ n"</string>
     <string name="message_whois_registered">"Cofrestru fel: %1$s \ n"</string>
     <string name="message_whois_channels">"Sianeli: %1$s \ n"</string>
-    <string name="message_whois_idle">"Idle ar gyfer: %1$s \ n"</string>
+    <string name="message_whois_idle">"Idle ar gyfer: %1$d \ n"</string>
     <string name="message_join_failed">"Methu ymuno â %1$s ( %2$s )"</string>
 
     <string name="message_notify_online">"%1$s ar-lein"</string>
@@ -197,6 +197,8 @@
     <string name="default_ident">"SLAndroid"</string>
     <!-- Default Real Name to use if the user does not set one, this will show in WHOIS -->
     <string name="default_gecos">"ScoutLink IRC ar gyfer Android!"</string>
+
+    <string name="failed_to_load_user_list">Failed to load user list</string>
 
     <!-- Core App Settings, probably don't need localising. -->
     <string name="server_window_title">"ScoutLink"</string>

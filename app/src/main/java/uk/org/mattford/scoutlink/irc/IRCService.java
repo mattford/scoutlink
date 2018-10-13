@@ -16,12 +16,15 @@ import uk.org.mattford.scoutlink.model.Server;
 import uk.org.mattford.scoutlink.model.ServerWindow;
 import uk.org.mattford.scoutlink.model.Settings;
 import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Binder;
+import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.support.v4.app.NotificationCompat;
@@ -39,6 +42,7 @@ public class IRCService extends Service {
 	private HandlerThread handlerThread;
 
 	private final int NOTIFICATION_ID = 1;
+	private final String NOTIFICATION_CHANNEL_ID = "uk.org.mattford.scoutlink.IRCService.NOTIFICATION_CHANNEL";
 
     public static final String ACTION_ADD_NOTIFY = "uk.org.mattford.scoutlink.IRCService.ADD_NOTIFY";
     public static final String ACTION_REMOVE_NOTIFY = "uk.org.mattford.scoutlink.IRCService.REMOVE_NOTIFY";
@@ -81,6 +85,7 @@ public class IRCService extends Service {
 	
 	public void setIsForeground(boolean fg) {
         if (!foreground && fg) {
+            createNotificationChannel();
             startForeground(NOTIFICATION_ID, getNotification());
         } else {
             stopForeground(true);
@@ -222,15 +227,9 @@ public class IRCService extends Service {
             basicText = getString(R.string.notification_new_multi, newMsgTotal, newMentionTotal);
         }
 
-        NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
-        inboxStyle.setBigContentTitle(getString(R.string.notification_new_messages_inbox_title));
-        for (String line : lines) {
-            inboxStyle.addLine(line);
-        }
-		Notification notification = new NotificationCompat.Builder(this)
+		Notification notification = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
 				.setContentTitle(getString(R.string.app_name))
 				.setContentText(basicText)
-                .setStyle(inboxStyle)
 				.setSmallIcon(R.drawable.notification_icon)
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher))
                 .setContentIntent(intent)
@@ -299,5 +298,28 @@ public class IRCService extends Service {
         this.handler = new Handler(handlerThread.getLooper());
 
         return this.handler;
+    }
+
+    private void createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "sl_service";
+            String description = "ScoutLink Notification Service";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
+
+    public void onTopicChange(String channel, String topic) {
+        Intent topicIntent = new Intent(Broadcast.TOPIC_CHANGE);
+        topicIntent.putExtra("target", channel);
+        topicIntent.putExtra("new_topic", topic);
+        sendBroadcast(topicIntent);
     }
 }

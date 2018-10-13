@@ -42,7 +42,7 @@ public class MessageListAdapter extends ArrayAdapter<LinearLayout> {
 
             SpannableString msg = Message.applySpans(message.getText());
             LinearLayout lastLayout = getItem(getCount()-1);
-            TextView lastTextView = (TextView)lastLayout.findViewById(R.id.message);
+            TextView lastTextView = lastLayout.findViewById(R.id.message);
             lastTextView.append("\n");
             lastTextView.append(msg);
             Linkify.addLinks(lastTextView, Linkify.WEB_URLS);
@@ -74,7 +74,4 @@ public class MessageListAdapter extends ArrayAdapter<LinearLayout> {
 		convertView = getItem(position);
 		return convertView;
 	}
-
-
-
 }

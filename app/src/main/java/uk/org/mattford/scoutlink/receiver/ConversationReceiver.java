@@ -37,6 +37,9 @@ public class ConversationReceiver extends BroadcastReceiver {
             case Broadcast.CONNECTED:
                 activity.onConnect();
                 break;
+            case Broadcast.TOPIC_CHANGE:
+                activity.onTopicChange(intent.getStringExtra("target"), intent.getStringExtra("new_topic"));
+                break;
         }
 
 	}

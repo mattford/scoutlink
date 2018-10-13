@@ -26,9 +26,6 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
         settings = new Settings(this);
 
-       // ((ScoutlinkApplication) getApplication()).getTracker(ScoutlinkApplication.TrackerName.APP_TRACKER);
-
-
         EditText et;
 
         et = findViewById(R.id.settings_nickname);
@@ -48,8 +45,6 @@ public class SettingsActivity extends AppCompatActivity {
 
         et = findViewById(R.id.settings_quit_message);
         et.setText(settings.getString("quit_message", getString(R.string.default_quit_message)));
-
-
     }
 
     public void openAutojoinSettings(View v) {
@@ -130,9 +125,6 @@ public class SettingsActivity extends AppCompatActivity {
                     startService(removeNotify);
                 }
                 break;
-
-
         }
     }
-
 }

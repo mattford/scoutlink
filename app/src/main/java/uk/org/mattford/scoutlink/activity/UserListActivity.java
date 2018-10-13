@@ -14,7 +14,6 @@ import uk.org.mattford.scoutlink.receiver.UserListReceiver;
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.ComponentName;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
@@ -28,10 +27,12 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.common.collect.ImmutableSortedSet;
 
 import org.pircbotx.Channel;
+import org.pircbotx.exception.DaoException;
 
 public class UserListActivity extends ListActivity implements AdapterView.OnItemClickListener, ServiceConnection {
 
@@ -183,24 +184,30 @@ public class UserListActivity extends ListActivity implements AdapterView.OnItem
         closeContextMenu();
         lastSelectedItem = -1;
         IRCService srvc = binder.getService();
-        Channel chan = srvc.getConnection().getUserChannelDao().getChannel(channel);
         ArrayList<String> userList = new ArrayList<>();
-        ImmutableSortedSet<org.pircbotx.User> users = chan.getUsers();
-        for (org.pircbotx.User user : users) {
-            if  (chan.isOwner(user)) {
-                userList.add("~"+user.getNick());
-            } else if (chan.isSuperOp(user)) {
-                userList.add("&"+user.getNick());
-            } else if (chan.isOp(user)) {
-                userList.add("@"+user.getNick());
-            } else if (chan.isHalfOp(user)) {
-                userList.add("%"+user.getNick());
-            } else if (chan.hasVoice(user)) {
-                userList.add("+"+user.getNick());
-            } else {
-                userList.add(user.getNick());
+        try {
+            Channel chan = srvc.getConnection().getUserChannelDao().getChannel(channel);
+            ImmutableSortedSet<org.pircbotx.User> users = chan.getUsers();
+            for (org.pircbotx.User user : users) {
+                if  (chan.isOwner(user)) {
+                    userList.add("~"+user.getNick());
+                } else if (chan.isSuperOp(user)) {
+                    userList.add("&"+user.getNick());
+                } else if (chan.isOp(user)) {
+                    userList.add("@"+user.getNick());
+                } else if (chan.isHalfOp(user)) {
+                    userList.add("%"+user.getNick());
+                } else if (chan.hasVoice(user)) {
+                    userList.add("+"+user.getNick());
+                } else {
+                    userList.add(user.getNick());
+                }
             }
+        } catch (DaoException dex) {
+            Toast.makeText(this, getString(R.string.failed_to_load_user_list), Toast.LENGTH_LONG).show();
+            return;
         }
+
         setListAdapter(new ArrayAdapter<>(this, R.layout.user_list_item, userList));
     }
 

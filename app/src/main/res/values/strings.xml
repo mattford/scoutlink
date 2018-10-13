@@ -118,7 +118,7 @@
     <string name="message_whois_away">Away: %1$s\n</string>
     <string name="message_whois_registered">Registered as: %1$s\n</string>
     <string name="message_whois_channels">Channels: %1$s\n</string>
-    <string name="message_whois_idle">Idle for: %1$s\n</string>
+    <string name="message_whois_idle">Idle for: %1$d\n</string>
     <string name="message_join_failed">Cannot join %1$s (%2$s)</string>
 
     <string name="message_notify_online">%1$s is online</string>
@@ -197,6 +197,8 @@
     <string name="default_ident">SLAndroid</string>
     <!-- Default Real Name to use if the user does not set one, this will show in WHOIS -->
     <string name="default_gecos">ScoutLink IRC for Android!</string>
+
+    <string name="failed_to_load_user_list">Failed to load user list</string>
 
     <!-- Core App Settings, probably don't need localising. -->
     <string name="server_window_title">ScoutLink</string>

@@ -6,5 +6,4 @@ public class Channel extends Conversation {
 		super(name);
 		setType(TYPE_CHANNEL);
 	}
-
 }
