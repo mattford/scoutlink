@@ -17,6 +17,8 @@ import uk.org.mattford.scoutlink.receiver.ConversationReceiver;
 import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
@@ -25,12 +27,12 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.viewpagerindicator.TitlePageIndicator;
@@ -44,7 +46,6 @@ public class ConversationsActivity extends AppCompatActivity implements ServiceC
     private Settings settings;
 
     private TitlePageIndicator indicator;
-    private boolean isTabletView = false;
 
 	private final int JOIN_CHANNEL_RESULT = 0;
 
@@ -63,7 +64,13 @@ public class ConversationsActivity extends AppCompatActivity implements ServiceC
 
         pager = findViewById(R.id.pager);
         pager.setAdapter(pagerAdapter);
-        pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+
+
+
+        indicator = findViewById(R.id.nav_titles);
+        indicator.setViewPager(pager);
+
+        indicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
             private int currentPage = -1;
 
@@ -77,34 +84,13 @@ public class ConversationsActivity extends AppCompatActivity implements ServiceC
                     pagerAdapter.getItemInfo(currentPage).conv.setSelected(false);
                 }
                 currentPage = position;
-                Conversation newConversation = pagerAdapter.getItemInfo(position).conv;
-                newConversation.setSelected(true);
-
-                String title = "ScoutLink";
-                if (newConversation.getType() == Conversation.TYPE_CHANNEL) {
-                    title = binder.getService().getConnection().getUserChannelDao().getChannel(newConversation.getName()).getTopic();
-                }
-                setTitle(title);
+                pagerAdapter.getItemInfo(position).conv.setSelected(true);
             }
 
             @Override
             public void onPageScrollStateChanged(int state) {}
         });
-
-        indicator = findViewById(R.id.nav_titles);
-
-        if (indicator != null && indicator.getVisibility() == View.VISIBLE) {
-            indicator.setViewPager(pager);
-        } else {
-            isTabletView = true;
-            // Create tabs from ListView
-            ListView verticalTabs = findViewById(R.id.nav_vertical_tabs);
-            ArrayList<String> conversationNames = pagerAdapter.getConversationNames();
-
-            verticalTabs.setOnItemClickListener((adapterView, view, i, l) -> pager.setCurrentItem(i));
-            ArrayAdapter<String> tabsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, conversationNames);
-            verticalTabs.setAdapter(tabsAdapter);
-        }
+        
     }
 
 	/**
@@ -125,7 +111,6 @@ public class ConversationsActivity extends AppCompatActivity implements ServiceC
 		registerReceiver(this.receiver, new IntentFilter(Broadcast.INVITE));
 		registerReceiver(this.receiver, new IntentFilter(Broadcast.DISCONNECTED));
         registerReceiver(this.receiver, new IntentFilter(Broadcast.CONNECTED));
-        registerReceiver(this.receiver, new IntentFilter(Broadcast.TOPIC_CHANGE));
 		
 		Intent serviceIntent = new Intent(this, IRCService.class);
 		startService(serviceIntent);
@@ -156,14 +141,6 @@ public class ConversationsActivity extends AppCompatActivity implements ServiceC
 
         }
 	}
-
-	public void onTopicChange(String target, String newTopic) {
-        Conversation conv = pagerAdapter.getItemInfo(pager.getCurrentItem()).conv;
-
-        if (conv.getName().equalsIgnoreCase(target)) {
-            setTitle(newTopic);
-        }
-    }
 	
 	public void onPause() {
 		super.onPause();
@@ -236,13 +213,7 @@ public class ConversationsActivity extends AppCompatActivity implements ServiceC
         }
 
 		if (conv.isSelected() || selected) {
-            int position = pagerAdapter.getItemByName(conv.getName());
-            if (isTabletView) {
-                // Do something
-                pager.setCurrentItem(position);
-            } else {
-                indicator.setCurrentItem(position);
-            }
+            indicator.setCurrentItem(pagerAdapter.getItemByName(conv.getName()));
         }
 		onConversationMessage(conv.getName());
 	}

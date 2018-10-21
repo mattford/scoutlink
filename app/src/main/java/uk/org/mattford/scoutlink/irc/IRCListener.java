@@ -527,16 +527,14 @@ public class IRCListener extends ListenerAdapter {
         if (!event.isComplete()) {
             return;
         }
-        String channel = event.getChannel().getName();
-
         String userList = "";
         for (User user : event.getUsers()) {
-            userList = userList.concat(" ").concat(user.getNick());
+            userList = userList + " " + user.getNick();
         }
         Message msg = new Message("Users on channel: " + userList);
         msg.setColour(service.getResources().getColor(R.color.scoutlink_blue));
-        server.getConversation(channel).addMessage(msg);
-        service.onNewMessage(channel);
+        server.getConversation(event.getChannel().getName()).addMessage(msg);
+        service.onNewMessage(event.getChannel().getName());
     }
 
     @Override
@@ -554,18 +552,15 @@ public class IRCListener extends ListenerAdapter {
     }
 
     public void onTopic(TopicEvent event) {
-        String channel = event.getChannel().getName();
-        String newTopic = event.getTopic();
         Message msg;
-        if (event.isChanged()) {
-            msg = new Message(service.getString(R.string.message_topic_changed, event.getUser().getNick(), newTopic));
+        if (!event.isChanged()) {
+            msg = new Message(service.getString(R.string.message_topic, event.getTopic(), event.getUser().getNick()));
         } else {
-            msg = new Message(service.getString(R.string.message_topic, newTopic, event.getUser().getNick()));
+            msg = new Message(service.getString(R.string.message_topic_changed, event.getUser().getNick(), event.getTopic()));
         }
         msg.setColour(service.getResources().getColor(R.color.scoutlink_blue));
-        server.getConversation(channel).addMessage(msg);
-        service.onNewMessage(channel);
-        service.onTopicChange(channel, newTopic);
+        server.getConversation(event.getChannel().getName()).addMessage(msg);
+        service.onNewMessage(event.getChannel().getName());
     }
 
     public void onWhois(WhoisEvent event) {
@@ -620,7 +615,7 @@ public class IRCListener extends ListenerAdapter {
         //event.respond(event.getResponse());
     }
 
-    private ArrayList<String> getSharedChannels(PircBotX bot, User user) {
+    public ArrayList<String> getSharedChannels(PircBotX bot, User user) {
         ArrayList<String> channels = new ArrayList<>();
         for (org.pircbotx.Channel userChan : user.getChannels()) {
             if (bot.getUserBot().getChannels().contains(userChan)) {

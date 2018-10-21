@@ -1,6 +1,5 @@
 package uk.org.mattford.scoutlink.adapter;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 
 import uk.org.mattford.scoutlink.activity.MessageListFragment;
@@ -13,26 +12,25 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 public class ConversationsPagerAdapter extends FragmentStatePagerAdapter {
 	
 	private LinkedList<ConversationInfo> conversations;
-	private ArrayList<String> conversationNames;
 	private Context context;
 
 	public ConversationsPagerAdapter(FragmentManager fm, Context context) {
         super(fm);
         conversations = new LinkedList<>();
-        conversationNames = new ArrayList<>();
         this.context = context;
     }
 
 	public class ConversationInfo {
 		public Conversation conv;
-		MessageListAdapter adapter;
-		MessageListFragment frag;
+		public MessageListAdapter adapter;
+		public MessageListFragment frag;
 		
-		ConversationInfo(Conversation conv) {
+		public ConversationInfo(Conversation conv) {
 			this.conv = conv;
 			this.adapter = new MessageListAdapter(context, conv);
 			this.frag = null;
 		}
+
 	}
 	
 	@Override
@@ -77,19 +75,16 @@ public class ConversationsPagerAdapter extends FragmentStatePagerAdapter {
     }
 
     public void addConversation(Conversation conv) {
-		conversationNames.add(conv.getName());
     	conversations.add(new ConversationInfo(conv));
     	notifyDataSetChanged();
     }
     
     public void removeConversation(int position) {
-		conversationNames.remove(position);
     	conversations.remove(position);
     	notifyDataSetChanged();
     }
     
     public void clearConversations() {
-		conversationNames.clear();
     	conversations.clear();
     	notifyDataSetChanged();
     }
@@ -122,8 +117,6 @@ public class ConversationsPagerAdapter extends FragmentStatePagerAdapter {
         return frag;
     }
 
-    public ArrayList<String> getConversationNames()
-	{
-		return this.conversationNames;
-	}
+    
+
 }
