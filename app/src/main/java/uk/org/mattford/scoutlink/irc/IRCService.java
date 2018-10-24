@@ -29,7 +29,6 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
-import android.util.Log;
 import android.widget.Toast;
 
 public class IRCService extends Service {
@@ -58,26 +57,20 @@ public class IRCService extends Service {
 	}
 		
 	public int onStartCommand(Intent intent, int flags, int startId) {
-        if (intent != null && intent.getAction() != null) {
+        if (intent != null && intent.getAction() != null && isConnected()) {
             switch(intent.getAction()) {
                 case ACTION_ADD_NOTIFY:
-                    if (getConnection() != null && getConnection().isConnected()) {
-                        for (String item : intent.getStringArrayListExtra("items")) {
-                            getBackgroundHandler().post(() -> getConnection().sendRaw().rawLineNow("WATCH " + getConnection().getNick() + " +" + item));
-                        }
+                    for (String item : intent.getStringArrayListExtra("items")) {
+                        getBackgroundHandler().post(() -> getConnection().sendRaw().rawLineNow("WATCH " + getConnection().getNick() + " +" + item));
                     }
                     break;
                 case ACTION_REMOVE_NOTIFY:
-                    if (getConnection() != null && getConnection().isConnected()) {
-                        for (String item : intent.getStringArrayListExtra("items")) {
-                            getBackgroundHandler().post(() -> getConnection().sendRaw().rawLineNow("WATCH " + getConnection().getNick() + " -" + item));
-                        }
+                    for (String item : intent.getStringArrayListExtra("items")) {
+                        getBackgroundHandler().post(() -> getConnection().sendRaw().rawLineNow("WATCH " + getConnection().getNick() + " -" + item));
                     }
                     break;
                 case ACTION_LIST_CHANNELS:
-                    if (getConnection() != null && getConnection().isConnected()) {
-                        getBackgroundHandler().post(() -> getConnection().sendIRC().listChannels());
-                    }
+                    getBackgroundHandler().post(() -> getConnection().sendIRC().listChannels());
             }
         }
 		return START_STICKY;
@@ -316,10 +309,18 @@ public class IRCService extends Service {
         }
     }
 
-    public void onTopicChange(String channel, String topic) {
-        Intent topicIntent = new Intent(Broadcast.TOPIC_CHANGE);
-        topicIntent.putExtra("target", channel);
-        topicIntent.putExtra("new_topic", topic);
-        sendBroadcast(topicIntent);
+    /**
+     * Using this method to check state as using isConnected is synchronised and
+     * will crash if long network operation is in progress. In practice the only
+     * method which will take that long is connect() so we check if the state is
+     * connected, and if it is we can then check if the socket is open.
+     *
+     * @return boolean
+     */
+    public boolean isConnected() {
+        PircBotX connection = getConnection();
+	    return connection != null &&
+                //connection.getState().equals(PircBotX.State.CONNECTED) &&
+                connection.isConnected();
     }
 }

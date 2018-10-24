@@ -37,6 +37,6 @@ dependencies {
     implementation 'org.pircbotx:pircbotx:2.1'
     implementation 'com.android.support:appcompat-v7:27.1.1'
     implementation 'com.android.support:support-compat:27.1.1'
-    implementation 'com.google.android.gms:play-services-analytics:16.0.3'
+    implementation 'com.google.android.gms:play-services-analytics:16.0.4'
     implementation group: 'com.github.JakeWharton', name: 'ViewPagerIndicator', version: '2.4.1'
 }

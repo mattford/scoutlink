@@ -254,7 +254,7 @@ public class ConversationsActivity extends AppCompatActivity implements ServiceC
 	@Override
 	public void onServiceConnected(ComponentName name, IBinder service) {
 		this.binder = (IRCBinder)service;
-        if (binder.getService().getConnection() == null || !binder.getService().getConnection().isConnected()) {
+        if (binder.getService().isConnected()) {
         	binder.getService().connect();
         } else {
         	/*
