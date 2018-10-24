@@ -65,11 +65,8 @@ public class ConversationsActivity extends AppCompatActivity implements ServiceC
         pager = findViewById(R.id.pager);
         pager.setAdapter(pagerAdapter);
 
-
-
         indicator = findViewById(R.id.nav_titles);
         indicator.setViewPager(pager);
-
         indicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
             private int currentPage = -1;
@@ -254,7 +251,7 @@ public class ConversationsActivity extends AppCompatActivity implements ServiceC
 	@Override
 	public void onServiceConnected(ComponentName name, IBinder service) {
 		this.binder = (IRCBinder)service;
-        if (binder.getService().isConnected()) {
+        if (!binder.getService().isConnected()) {
         	binder.getService().connect();
         } else {
         	/*

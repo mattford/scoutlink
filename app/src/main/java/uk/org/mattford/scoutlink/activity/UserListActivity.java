@@ -28,10 +28,12 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.common.collect.ImmutableSortedSet;
 
 import org.pircbotx.Channel;
+import org.pircbotx.exception.DaoException;
 
 public class UserListActivity extends ListActivity implements AdapterView.OnItemClickListener, ServiceConnection {
 
