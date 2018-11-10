@@ -17,8 +17,6 @@ import uk.org.mattford.scoutlink.receiver.ConversationReceiver;
 import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
@@ -27,12 +25,10 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.viewpagerindicator.TitlePageIndicator;
@@ -65,11 +61,8 @@ public class ConversationsActivity extends AppCompatActivity implements ServiceC
         pager = findViewById(R.id.pager);
         pager.setAdapter(pagerAdapter);
 
-
-
         indicator = findViewById(R.id.nav_titles);
         indicator.setViewPager(pager);
-
         indicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
             private int currentPage = -1;
@@ -254,7 +247,7 @@ public class ConversationsActivity extends AppCompatActivity implements ServiceC
 	@Override
 	public void onServiceConnected(ComponentName name, IBinder service) {
 		this.binder = (IRCBinder)service;
-        if (binder.getService().getConnection() == null || !binder.getService().getConnection().isConnected()) {
+        if (!binder.getService().isConnected()) {
         	binder.getService().connect();
         } else {
         	/*

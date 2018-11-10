@@ -29,7 +29,6 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
-import android.util.Log;
 import android.widget.Toast;
 
 public class IRCService extends Service {
@@ -50,6 +49,8 @@ public class IRCService extends Service {
 
 	private boolean foreground = false;
 
+	private ArrayList<Intent> queuedIntents = new ArrayList<>();
+
 	public void onCreate() {
 		this.server = new Server();
 		
@@ -58,30 +59,36 @@ public class IRCService extends Service {
 	}
 		
 	public int onStartCommand(Intent intent, int flags, int startId) {
+
         if (intent != null && intent.getAction() != null) {
-            switch(intent.getAction()) {
-                case ACTION_ADD_NOTIFY:
-                    if (getConnection() != null && getConnection().isConnected()) {
-                        for (String item : intent.getStringArrayListExtra("items")) {
-                            getBackgroundHandler().post(() -> getConnection().sendRaw().rawLineNow("WATCH " + getConnection().getNick() + " +" + item));
-                        }
-                    }
-                    break;
-                case ACTION_REMOVE_NOTIFY:
-                    if (getConnection() != null && getConnection().isConnected()) {
-                        for (String item : intent.getStringArrayListExtra("items")) {
-                            getBackgroundHandler().post(() -> getConnection().sendRaw().rawLineNow("WATCH " + getConnection().getNick() + " -" + item));
-                        }
-                    }
-                    break;
-                case ACTION_LIST_CHANNELS:
-                    if (getConnection() != null && getConnection().isConnected()) {
-                        getBackgroundHandler().post(() -> getConnection().sendIRC().listChannels());
-                    }
+            if (isConnected()) {
+                processIntent(intent);
+            } else {
+                queuedIntents.add(intent);
             }
         }
 		return START_STICKY;
 	}
+
+	private void processIntent(Intent intent) {
+        String action = intent.getAction();
+        if (action != null) {
+            switch (action) {
+                case ACTION_ADD_NOTIFY:
+                    for (String item : intent.getStringArrayListExtra("items")) {
+                        getBackgroundHandler().post(() -> getConnection().sendRaw().rawLineNow("WATCH " + getConnection().getNick() + " +" + item));
+                    }
+                    break;
+                case ACTION_REMOVE_NOTIFY:
+                    for (String item : intent.getStringArrayListExtra("items")) {
+                        getBackgroundHandler().post(() -> getConnection().sendRaw().rawLineNow("WATCH " + getConnection().getNick() + " -" + item));
+                    }
+                    break;
+                case ACTION_LIST_CHANNELS:
+                    getBackgroundHandler().post(() -> getConnection().sendIRC().listChannels());
+            }
+        }
+    }
 	
 	public void setIsForeground(boolean fg) {
         if (!foreground && fg) {
@@ -142,7 +149,6 @@ public class IRCService extends Service {
             }
         }).start();
 	}
-
 	
 	public Server getServer() {
 		return this.server;
@@ -200,42 +206,20 @@ public class IRCService extends Service {
                 }
             }
         }
-        ArrayList<String> lines = new ArrayList<>();
-        if (conversationsWithNewMsg.size() > 0) {
-            if (conversationsWithNewMsg.size() == 1 && newMsgTotal <= 3) {
-                Conversation conv = conversationsWithNewMsg.get(0);
-                ArrayList<Message> msgs = new ArrayList<>(conv.getBuffer()); // Make a copy of the buffer to avoid ConcurrentModificationException
-                for (Message msg : msgs) {
-                    lines.add(getString(R.string.notification_new_messages_multi, conv.getName(), msg.getSender(), msg.getText()));
-                }
-            } else {
-                lines.add(getString(R.string.notification_new_messages, newMsgTotal, conversationsWithNewMsg.size()));
-            }
-        }
-        if (conversationsWithMentions.size() > 0) {
-            if (conversationsWithMentions.size() == 1) {
-                lines.add(getString(R.string.notification_new_mentions, newMentionTotal, conversationsWithMentions.get(0).getName()));
-            } else {
-                lines.add(getString(R.string.notification_new_mentions_multi, newMentionTotal, conversationsWithMentions.size()));
-            }
-        }
         String basicText;
         if (getConnection() != null && conversationsWithNewMsg.size() == 0 && conversationsWithMentions.size() == 0) {
-            lines.clear();
             basicText = getString(R.string.notification_connected, getConnection().getNick());
         } else {
             basicText = getString(R.string.notification_new_multi, newMsgTotal, newMentionTotal);
         }
 
-		Notification notification = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
+		return new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
 				.setContentTitle(getString(R.string.app_name))
 				.setContentText(basicText)
 				.setSmallIcon(R.drawable.notification_icon)
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher))
                 .setContentIntent(intent)
 				.build();
-        return notification;
-		
 	}
 
     public void onConnect() {
@@ -267,6 +251,11 @@ public class IRCService extends Service {
                 }
             });
         }
+
+        for (Intent queuedIntent : queuedIntents) {
+            processIntent(queuedIntent);
+        }
+        queuedIntents.clear();
 
         Intent intent = new Intent(Broadcast.CONNECTED);
         sendBroadcast(intent);
@@ -316,10 +305,14 @@ public class IRCService extends Service {
         }
     }
 
-    public void onTopicChange(String channel, String topic) {
-        Intent topicIntent = new Intent(Broadcast.TOPIC_CHANGE);
-        topicIntent.putExtra("target", channel);
-        topicIntent.putExtra("new_topic", topic);
-        sendBroadcast(topicIntent);
+    /**
+     * Using this method to check state as using isConnected is synchronised and
+     * will ANR if long network operation is in progress. In practice the only
+     * method which will take that long is connect() I think.
+     *
+     * @return boolean
+     */
+    public boolean isConnected() {
+	    return server.getStatus() == Server.STATUS_CONNECTED;
     }
 }
