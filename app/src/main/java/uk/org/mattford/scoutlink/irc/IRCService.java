@@ -307,7 +307,7 @@ public class IRCService extends Service {
 
     /**
      * Using this method to check state as using isConnected is synchronised and
-     * will crash if long network operation is in progress. In practice the only
+     * will ANR if long network operation is in progress. In practice the only
      * method which will take that long is connect() I think.
      *
      * @return boolean
