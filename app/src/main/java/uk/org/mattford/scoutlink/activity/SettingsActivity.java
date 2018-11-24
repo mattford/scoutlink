@@ -50,7 +50,7 @@ public class SettingsActivity extends AppCompatActivity {
     public void openAutojoinSettings(View v) {
         Intent intent = new Intent(this, ListEditActivity.class);
 
-        intent.putExtra("title", "Autojoin Channels");
+        intent.putExtra("title", getString(R.string.settings_autojoin_channels_label));
         intent.putExtra("firstChar", "#");
         intent.putStringArrayListExtra("items", settings.getStringArrayList("autojoin_channels"));
         startActivityForResult(intent, AUTOJOIN_REQUEST_CODE);
@@ -60,7 +60,7 @@ public class SettingsActivity extends AppCompatActivity {
         Intent intent = new Intent(this, ListEditActivity.class);
 
         intent.putStringArrayListExtra("items", settings.getStringArrayList("command_on_connect"));
-        intent.putExtra("title", "Commands on Connect");
+        intent.putExtra("title", getString(R.string.settings_command_on_connect_label));
         intent.putExtra("firstChar", "/");
         startActivityForResult(intent, CONNECT_COMMANDS_REQUEST_CODE);
     }
@@ -69,7 +69,7 @@ public class SettingsActivity extends AppCompatActivity {
         Intent intent = new Intent(this, ListEditActivity.class);
 
         intent.putStringArrayListExtra("items", settings.getStringArrayList("notify_list"));
-        intent.putExtra("title", "Notify List");
+        intent.putExtra("title", getString(R.string.settings_notify_list_label));
         intent.putExtra("firstChar", "");
         startActivityForResult(intent, NOTIFY_LIST_REQUEST_CODE);
     }
