@@ -27,9 +27,9 @@ import android.os.Binder;
 import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
-import android.util.Log;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+
 import android.widget.Toast;
 
 public class IRCService extends Service {
@@ -314,12 +314,5 @@ public class IRCService extends Service {
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
         }
-    }
-
-    public void onTopicChange(String channel, String topic) {
-        Intent topicIntent = new Intent(Broadcast.TOPIC_CHANGE);
-        topicIntent.putExtra("target", channel);
-        topicIntent.putExtra("new_topic", topic);
-        sendBroadcast(topicIntent);
     }
 }

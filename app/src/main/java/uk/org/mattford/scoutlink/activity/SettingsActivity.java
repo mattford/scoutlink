@@ -2,7 +2,8 @@ package uk.org.mattford.scoutlink.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
 
@@ -72,29 +73,6 @@ public class SettingsActivity extends AppCompatActivity {
         intent.putExtra("title", "Notify List");
         intent.putExtra("firstChar", "");
         startActivityForResult(intent, NOTIFY_LIST_REQUEST_CODE);
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        EditText et;
-        et = findViewById(R.id.settings_nickname);
-        settings.putString("nickname", et.getText().toString()); // Validate here?
-
-        et = findViewById(R.id.settings_ident);
-        settings.putString("ident", et.getText().toString());
-
-        et = findViewById(R.id.settings_gecos);
-        settings.putString("gecos", et.getText().toString());
-
-        et = findViewById(R.id.settings_nickserv_user);
-        settings.putString("nickserv_user", et.getText().toString());
-
-        et = findViewById(R.id.settings_nickserv_password);
-        settings.putString("nickserv_password", et.getText().toString());
-
-        et = findViewById(R.id.settings_quit_message);
-        settings.putString("quit_message", et.getText().toString());
     }
 
     @Override

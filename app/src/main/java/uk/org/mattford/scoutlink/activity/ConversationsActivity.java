@@ -3,10 +3,14 @@ package uk.org.mattford.scoutlink.activity;
 import java.util.ArrayList;
 import java.util.Map;
 
+import androidx.room.Room;
 import uk.org.mattford.scoutlink.R;
 import uk.org.mattford.scoutlink.adapter.ConversationsPagerAdapter;
 import uk.org.mattford.scoutlink.adapter.MessageListAdapter;
 import uk.org.mattford.scoutlink.command.CommandParser;
+import uk.org.mattford.scoutlink.database.LogDatabase;
+import uk.org.mattford.scoutlink.database.entities.LogMessage;
+import uk.org.mattford.scoutlink.database.migrations.LogDatabaseMigrations;
 import uk.org.mattford.scoutlink.irc.IRCBinder;
 import uk.org.mattford.scoutlink.irc.IRCService;
 import uk.org.mattford.scoutlink.model.Broadcast;
@@ -17,22 +21,19 @@ import uk.org.mattford.scoutlink.receiver.ConversationReceiver;
 import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
-import android.view.KeyEvent;
+import androidx.viewpager.widget.ViewPager;
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.viewpagerindicator.TitlePageIndicator;
@@ -44,6 +45,7 @@ public class ConversationsActivity extends AppCompatActivity implements ServiceC
 	private ConversationReceiver receiver;
 	private IRCBinder binder;
     private Settings settings;
+    private LogDatabase db;
 
     private TitlePageIndicator indicator;
 
@@ -64,8 +66,6 @@ public class ConversationsActivity extends AppCompatActivity implements ServiceC
 
         pager = findViewById(R.id.pager);
         pager.setAdapter(pagerAdapter);
-
-
 
         indicator = findViewById(R.id.nav_titles);
         indicator.setViewPager(pager);
@@ -103,7 +103,11 @@ public class ConversationsActivity extends AppCompatActivity implements ServiceC
 	
 	public void onResume() {
 		super.onResume();
-		
+
+        db = Room.databaseBuilder(getApplicationContext(), LogDatabase.class, "logs")
+                .addMigrations(LogDatabaseMigrations.MIGRATION_0_1)
+                .build();
+
 		this.receiver = new ConversationReceiver(this);
 		registerReceiver(this.receiver, new IntentFilter(Broadcast.NEW_CONVERSATION));
 		registerReceiver(this.receiver, new IntentFilter(Broadcast.NEW_MESSAGE));
@@ -144,6 +148,10 @@ public class ConversationsActivity extends AppCompatActivity implements ServiceC
 	
 	public void onPause() {
 		super.onPause();
+
+		if (db != null) {
+            db.close();
+        }
 
 		unregisterReceiver(this.receiver);
 		unbindService(this);
@@ -245,6 +253,16 @@ public class ConversationsActivity extends AppCompatActivity implements ServiceC
 
 		while (conv.hasBuffer()) {
 			Message msg = conv.pollBuffer();
+
+			binder.getService().getBackgroundHandler().post(() -> {
+                LogMessage logMessage = new LogMessage(
+                    name,
+                    conv.getType(),
+                    msg.getSender(),
+                    msg.getText()
+                );
+                db.logMessageDao().insert(logMessage);
+            });
 			adapter.addMessage(msg);
 		}
 
