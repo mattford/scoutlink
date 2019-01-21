@@ -117,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
 	@Override
 	public void onServiceConnected(ComponentName name, IBinder service) {
 		binder = (IRCBinder)service;
-		if (binder.getService().getConnection() != null && binder.getService().getConnection().isConnected()) {
+		if (binder.getService().isConnected()) {
 			Intent intent = new Intent(this, ConversationsActivity.class);
 			startActivity(intent);
 			finish();

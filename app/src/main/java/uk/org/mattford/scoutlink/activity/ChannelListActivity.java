@@ -25,7 +25,7 @@ public class ChannelListActivity extends ListActivity implements AdapterView.OnI
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_channel_list);
-        adapter = new ArrayAdapter<>(this, R.layout.channel_list_item, new ArrayList<String>());
+        adapter = new ArrayAdapter<>(this, R.layout.channel_list_item, new ArrayList<>());
         setListAdapter(adapter);
 
         getListView().setOnItemClickListener(this);
@@ -55,8 +55,10 @@ public class ChannelListActivity extends ListActivity implements AdapterView.OnI
                 }
                 return res;
             });
+            adapter.notifyDataSetChanged();
         }
 
+        findViewById(R.id.loadingPanel).setVisibility(View.GONE);
     }
 
     @Override

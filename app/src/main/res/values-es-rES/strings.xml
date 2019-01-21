@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Name of the App -->
+    <string name="app_name">ScoutLink</string>
+
+    <!-- Text displayed if the nickname field in main screen is blank -->
+    <string name="nickname_hint">Nickname</string>
+    <!-- Message displayed if the nickname is not valid. -->
+    <string name="nickname_not_valid">El nickname no es válido, por favor ingresa otro nickname e intenta de nuevo</string>
+    <!-- Text on the "Connect" button on the main screen -->
+    <string name="connect_button">Conectarse</string>
+    <!-- Message to say connection is in progress -->
+    <string name="connect_message">Conectando a ScoutLink&#8230;</string>
+    <string name="logo_content_description">ScoutLink logo</string>
+    <string name="sl_header_content_description">Imagen de cabecera</string>
+    <string name="channel_list_on_connect">Mostrar lista de canales después de conectarse</string>
+    <!-- Menu Items -->
+    <!-- Opens Application Settings, e.g., nick, ident, realname, quit message -->
+    <string name="action_settings">Ajustes</string>
+    <!-- Leaves the current channel or closes PM window, fails in server window, see `close_server_window` string. -->
+    <string name="action_close">Cerrar</string>
+    <string name="action_rules">Reglas</string>
+    <!-- Disconnects from ScoutLink -->
+    <string name="action_disconnect">Desconectar</string>
+    <!-- Shows users on the current channel, fails if not in a channel - see `userlist_not_on_channel` string. -->
+    <string name="action_users">Lista de usuarios</string>
+    <!-- Opens an interface to join a new channel -->
+    <string name="action_join">Unirse a un canal</string>
+    <!-- Displays a list of all available channels -->
+    <string name="action_channel_list">Lista de canales</string>
+    <!-- Displays a window where channel settings such as topic, and common modes can be changed -->
+    <string name="action_channel_settings">Configuraciones del  canal</string>
+
+    <!-- Text displayed on the "Send" button in a channel -->
+    <string name="label_send_message_button">Enviar</string>
+    <!-- Text shown when no text has been typed into the new message box on a channel. -->
+    <string name="send_message_hint">Escribe para enviar el mensaje</string>
+
+    <!-- Displayed when no messages have been sent to a channel yet (very rarely seen as channels almost immediately display topic info when joined) -->
+    <string name="message_list_no_messages">No hay mensajes todavía, escribe abajo para comenzar a chatear</string>
+    <!-- Displayed if the user tries to close the Server Window -->
+    <string name="close_server_window">No puedes cerrar la ventana servidor</string>
+    <!-- Displayed if the user tries to open the user list on a non-channel conversation -->
+    <string name="userlist_not_on_channel">Esta función solo sirve en los canales</string>
+    <!-- Displayed if the user tries to send a non-command message to the server window -->
+    <string name="send_message_in_server_window">No puedes enviar mensajes en la ventana servidor.</string>
+    <!-- Displayed on the Join button in JoinActivity (opened when "action_join" is selected -->
+    <string name="join_button">Unirse</string>
+    <!-- Title of the Join Activity -->
+    <string name="join_activity_label">Unirse al canal</string>
+
+    <string name="title_activity_channel_list">Lista de canales</string>
+    <string name="userlist_activity_label">Lista de usuarios</string>
+    <string name="action_userlist_query_label">Privado</string>
+    <string name="action_userlist_notice_label">Notice</string>
+    <string name="action_userlist_kill_label">Kill</string>
+    <string name="action_userlist_kick_label">Kick</string>
+    <string name="action_userlist_op">Op</string>
+    <string name="action_userlist_deop">Deop</string>
+    <string name="action_userlist_hop">Half-Op</string>
+    <string name="action_userlist_dehop">DeHalf-Op</string>
+    <string name="action_userlist_owner">Owner</string>
+    <string name="action_userlist_deowner">De-Owner</string>
+    <string name="action_userlist_admin">Admin</string>
+    <string name="action_userlist_deadmin">De-Admin</string>
+    <string name="action_userlist_voice">Voice</string>
+    <string name="action_userlist_devoice">Devoice</string>
+
+    <string name="title_activity_notice">Enviar un notice</string>
+    <string name="send_notice_button">Enviar</string>
+
+    <string name="activity_invite_title">Invitar al canal</string>
+    <string name="invited_to_channel">Has sido invitado a %1$s, te gustaría unirte?</string>
+    <string name="message_halfopevent">%1$s le dio halfop a %2$s</string>
+    <string name="message_dehalfopevent">%1$s tomó halfop de %2$s</string>
+    <string name="message_opevent">%1$s le dio op a %2$s</string>
+    <string name="message_deopevent">%1$s tomó op de %2$s</string>
+    <string name="message_superopevent">%1$s le dio admin a %2$s</string>
+    <string name="message_desuperopevent">%1$s tomó admin de %2$s</string>
+    <string name="message_ownerevent">%1$s le dio owner a %2$s</string>
+    <string name="message_deownerevent">%1$s tomó owner de %2$s</string>
+    <string name="message_voiceevent">%1$s le dio voice a %2$s</string>
+    <string name="message_devoiceevent">%1$s tomó voice de %2$s</string>
+    <string name="message_join">%1$s se ha unido %2$s</string>
+    <string name="message_kicked_self">Fuiste kickeado de %1$s por %2$s (%3$s)</string>
+    <string name="message_kicked_other">%1$s fue kickeado de %2$s por %3$s (%4$s)</string>
+    <string name="message_nickchange">%1$s cambió su nick por %2$s</string>
+    <string name="message_part">%1$s ha dejado %2$s (%3$s)</string>
+    <string name="message_quit">%1$s ha dejado ScoutLink (%2$s)</string>
+    <string name="message_version">ScoutLink para Android</string>
+    <string name="message_ban_add">%1$s ha baneado %2$s</string>
+    <string name="message_ban_remove">%1$s ha desbaneado %2$s</string>
+    <string name="message_set_private">%1$s ha colocado el canal en modo privado</string>
+    <string name="message_unset_private">%1$s ha colocado el canal en modo publico</string>
+    <string name="message_set_secret">%1$s ha colocado el canal en modo sercreto</string>
+    <string name="message_unset_secret">%1$s ha colocado el canal en modo visible</string>
+    <string name="message_set_key">%1$s le ha colocado al canal la clave %2$s</string>
+    <string name="message_unset_key">%1$s le ha quitado la clave al canal</string>
+    <string name="message_set_limit">%1$s ha colocado el límite de usuario en %2$s</string>
+    <string name="message_unset_limit">%1$s ha quitado el límite de usuarios</string>
+    <string name="message_set_invite">%1$s ha colocado el canal en modo invitación</string>
+    <string name="message_unset_invite">%1$s ha quitado el modo invitación del canal</string>
+    <string name="message_set_moderated">%1$s ha habilitado el modo moderado(solo voices y superiores pueden escribir)</string>
+    <string name="message_unset_moderated">%1$s ha deshabilitado el modo moderado (todos pueden escribir)</string>
+    <string name="message_set_no_external">%1$s ha deshabilitado mensajes externos</string>
+    <string name="message_unset_no_external">%1$s ha habilitado mesnajes externos</string>
+    <string name="message_usermode">%1$s coloco el modo: %2$s %3$s</string>
+    <string name="message_topic">Topic es %1$s (colocado por%2$s)</string>
+    <string name="message_topic_changed">%1$s cambió topic a %2$s</string>
+    <string name="message_set_topicprotect">%1$s ha habilitado la protección del topic</string>
+    <string name="message_unset_topicprotect">%1$s ha deshabilitado la protección del topic</string>
+    <string name="message_action">*%1$s</string>
+    <string name="message_notice_sender">-%1$s-</string>
+    <string name="message_whois_fullhost">%1$s!%2$s@%3$s - %4$s\n</string>
+    <string name="message_whois_server">Server: %1$s\n</string>
+    <string name="message_whois_away">Away: %1$s\n</string>
+    <string name="message_whois_registered">Registrado como: %1$s\n</string>
+    <string name="message_whois_channels">Canales: %1$s\n</string>
+    <string name="message_whois_idle">Idle por: %1$d\n</string>
+    <string name="message_join_failed">No se puede unir %1$s (%2$s)</string>
+
+    <string name="message_notify_online">%1$s está en línea</string>
+    <string name="message_notify_offline">%1$s no está en línea</string>
+    <string name="message_notify_away">%1$s está ausente: %2$s</string>
+    <string name="message_notify_back">%1$s ya no está ausente</string>
+    <string name="message_notify_added">%1$s ha sido añadido a la lista de notificación</string>
+    <string name="message_notify_removed">%1$s fue removido de la lista de notificación</string>
+
+    <string name="action_kick_dialog_title">Razón de kick</string>
+    <string name="action_kill_dialog_title">Razón del kill</string>
+    <string name="action_notice_dialog_title">Enviar un notice</string>
+
+    <string name="settings_nickname_label">Nickname del usuario:</string>
+    <string name="settings_ident_label">Username del usuario:</string>
+    <string name="settings_gecos_label">Nombre real:</string>
+    <string name="settings_quit_message_label">Mensaje de salida:</string>n
+    <string name="settings_nickserv_user_label">Nickserv Username:</string>
+    <string name="settings_nickserv_password_label">Nickserv Password:</string>
+
+
+    <string name="title_activity_list_view_edit">Lista de edición</string>
+    <string name="edit_list_remove_item_confirm_title">Remover item?</string>
+    <string name="edit_list_remove_item_confirm_text">Estas seguro que quieres remover este item?</string>
+
+    <string name="settings_autojoin_channels_label">Auto ingreso al canal</string>
+    <string name="settings_command_on_connect_label">Ejecutar comandos al conectarse</string>
+    <string name="settings_notify_list_label">Lista de notificación</string>
+
+    <string name="title_activity_channel_settings">Ajustes de canal</string>
+    <string name="title_activity_rules">Reglas</string>
+    <string name="view_rules_dialog_title">Ver reglas?</string>
+    <string name="view_rules_dialog_message">Antes de comenzar, deseas leer las reglas? (Las puedes ver en cualquier momento seleccionando "Reglas" en el menú)</string>
+
+    <string name="channel_settings_external_messages">Bloquear mensajes externos</string>
+    <string name="channel_settings_topic_protection">Habilitar protección del topic</string>
+    <string name="channel_settings_private">Privado</string>
+    <string name="channel_settings_secret">Secreto</string>
+    <string name="channel_settings_invite_only">Solo invitación</string>
+    <string name="channel_settings_moderated">Moderado</string>
+    <string name="channel_settings_limit">Límite de usuarios</string>
+    <string name="channel_limit_set">set</string>
+    <string name="channel_limit_remove">Remover</string>
+    <string name="channel_key_set">Set</string>
+    <string name="channel_key_remove">Remover</string>
+    <string name="channel_settings_key">Clave</string>
+    <string name="channel_settings_topic_change">Cambiar</string>
+    <string name="channel_settings_need_op">Tienes que ser un op para cambiar los ajustes del canal</string>
+    <string name="channel_settings_not_channel">Solo puedes cambiar los ajustes en los canales</string>
+
+    <string name="default_quit_message">ScoutLink para Android!</string>
+    <string name="nick_already_in_use">Este apodo ya está en uso, selecciona otro apodo e intenta de nuevo.</string>
+
+    <string name="notification_new_mentions">%1$d nuevas menciones en %2$s.</string>
+    <string name="notification_new_mentions_multi">%1$d nuevos mensajes en %2$d conversaciones.</string>
+    <string name="notification_new_messages_inbox_title">Nuevos mensajes en ScoutLink</string>
+    <string name="notification_new_messages">%1$d nuevos mensajes en %2$d conversaciones.</string>
+    <string name="notification_new_messages_multi">%1$s/%2$s: %3$s</string>
+    <string name="notification_connected">Conectado como %1$s.</string>
+    <string name="notification_new_multi">%1$d nuevos mensajes, %2$d menciones.</string>
+
+    <string name="notice_hint">Ingresa tu mensaje</string>
+    <string name="settings_topic_hint">Topic del canal</string>
+
+    <string name="edit_list_add_button">Añadir</string>
+    <string name="edit_list_save_button">Salvar</string>
+
+    <string name="yes">Si</string>
+    <string name="no">No</string>
+
+    <string name="connect_failed">Conexión fallida, intenta de nuevo</string>
+
+    <!-- Default settings values -->
+    <!-- Default ident to use if the user does not set one, this will show in the users hostmask (nick!ident@host) -->
+    <string name="default_ident">SLAndroid</string>
+    <!-- Default Real Name to use if the user does not set one, this will show in WHOIS -->
+    <string name="default_gecos">ScoutLink IRC para Android!</string>
+
+    <string name="failed_to_load_user_list">Error al cargar lista de usuarios</string>
+
+    <!-- Core App Settings, probably don't need localising. -->
+    <string name="server_window_title">ScoutLink</string>
+    <string name="channel_name_prefix">#</string>
+
+    <string name="server_address">chat.scoutlink.net</string>
+</resources>

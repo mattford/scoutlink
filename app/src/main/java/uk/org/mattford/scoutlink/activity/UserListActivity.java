@@ -14,7 +14,6 @@ import uk.org.mattford.scoutlink.receiver.UserListReceiver;
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.ComponentName;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
