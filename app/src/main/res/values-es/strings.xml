@@ -202,4 +202,9 @@
     <string name="channel_name_prefix">#</string>
 
     <string name="server_address">chat.scoutlink.net</string>
+
+    <string name="title_activity_log_view">Vista de registro</string>
+    <string name="title_activity_log_list">Troncos</string>
+    <string name="logs_deleted">" Registros para %1$s eliminado"</string>
+    <string name="no_logs_to_view">" No hay registros para ver"</string>
 </resources>
