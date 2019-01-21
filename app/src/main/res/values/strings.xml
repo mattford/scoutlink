@@ -139,6 +139,8 @@
     <string name="settings_nickserv_user_label">Nickserv Username:</string>
     <string name="settings_nickserv_password_label">Nickserv Password:</string>
 
+    <string name="title_activity_log_list">Logs</string>
+    <string name="title_activity_log_view">Log view</string>
 
     <string name="title_activity_list_view_edit">Edit List</string>
     <string name="edit_list_remove_item_confirm_title">Remove Item?</string>

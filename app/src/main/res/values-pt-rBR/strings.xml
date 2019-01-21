@@ -48,6 +48,7 @@
     <!-- Title of the Join Activity -->
     <string name="join_activity_label">"Entrar no Canal"</string>
 
+    <string name="title_activity_log_list">Toras</string>
 
     <string name="title_activity_channel_list">"Lista de Canais"</string>
     <string name="userlist_activity_label">"Lista de usuários"</string>

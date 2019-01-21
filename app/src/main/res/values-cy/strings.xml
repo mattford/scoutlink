@@ -139,6 +139,7 @@
     <string name="settings_nickserv_user_label">"Nickserv Enw defnyddiwr:"</string>
     <string name="settings_nickserv_password_label">"Nickserv cyfrinair:"</string>
 
+    <string name="title_activity_log_list">Logiau</string>
 
     <string name="title_activity_list_view_edit">"Golygu Rhestr"</string>
     <string name="edit_list_remove_item_confirm_title">"Cael gwared eitem?"</string>

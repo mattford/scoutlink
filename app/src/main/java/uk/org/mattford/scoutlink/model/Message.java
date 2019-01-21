@@ -30,7 +30,7 @@ public class Message {
     private Date timestamp;
     private Integer colour;
     private Integer backgroundColour;
-
+    private boolean showDate = false;
 
     public Date getTimestamp() {
         return timestamp;
@@ -44,8 +44,6 @@ public class Message {
     public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
     }
-
-
 
     public int getAlignment() {
         return alignment;
@@ -76,6 +74,12 @@ public class Message {
         this.timestamp = new Date();
     }
 
+    public Message (String sender, String text, Date timestamp, boolean showDate) {
+	    this(sender, text);
+	    this.timestamp = timestamp;
+	    this.showDate = showDate;
+    }
+
 	public String getText() {
 		return text;
 	}
@@ -100,13 +104,13 @@ public class Message {
 
         if (getSender() != null) {
             view = (LinearLayout) li.inflate(R.layout.message_list_item, null);
-            TextView senderView = (TextView)view.findViewById(R.id.sender);
+            TextView senderView = view.findViewById(R.id.sender);
             senderView.setText(getSender());
         } else {
             view = (LinearLayout) li.inflate(R.layout.message_list_item_no_sender, null);
         }
 
-        TextView messageView = (TextView)view.findViewById(R.id.message);
+        TextView messageView = view.findViewById(R.id.message);
         //messageView.setMovementMethod(LinkMovementMethod.getInstance());
 		messageView.setText(text);
 
@@ -135,21 +139,23 @@ public class Message {
             DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(context);
             String dateString = timeFormat.format(getTimestamp());
 
-            TextView timestampView = (TextView)view.findViewById(R.id.timestamp);
+            if (showDate) {
+                DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(context);
+                dateString = dateFormat.format(getTimestamp()) + " " + dateString;
+            }
+
+            TextView timestampView = view.findViewById(R.id.timestamp);
             timestampView.setText(dateString);
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    TextView ts = (TextView)view.findViewById(R.id.timestamp);
-                    if (ts.getVisibility() == TextView.VISIBLE) {
-                        Animation out = new AlphaAnimation(1.0f, 0.0f);
-                        ts.startAnimation(out);
-                        ts.setVisibility(TextView.GONE);
-                    } else {
-                        Animation in = new AlphaAnimation(0.0f, 1.0f);
-                        ts.startAnimation(in);
-                        ts.setVisibility(TextView.VISIBLE);
-                    }
+            view.setOnClickListener(view1 -> {
+                TextView ts = view1.findViewById(R.id.timestamp);
+                if (ts.getVisibility() == TextView.VISIBLE) {
+                    Animation out = new AlphaAnimation(1.0f, 0.0f);
+                    ts.startAnimation(out);
+                    ts.setVisibility(TextView.GONE);
+                } else {
+                    Animation in = new AlphaAnimation(0.0f, 1.0f);
+                    ts.startAnimation(in);
+                    ts.setVisibility(TextView.VISIBLE);
                 }
             });
         }

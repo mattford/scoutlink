@@ -1,6 +1,7 @@
 package uk.org.mattford.scoutlink.adapter;
 
 import java.util.LinkedList;
+import java.util.List;
 
 import uk.org.mattford.scoutlink.R;
 import uk.org.mattford.scoutlink.model.Conversation;
@@ -19,17 +20,26 @@ public class MessageListAdapter extends ArrayAdapter<LinearLayout> {
 	
 	private LinkedList<LinearLayout> messages;
 	private Context context;
-	private Conversation conversation;
     private Message previousMessage;
 		
 	public MessageListAdapter(Context context, Conversation conv) {
 		super(context, 0);
 
 		this.context = context;
-		this.conversation = conv;
 		this.messages = new LinkedList<>();
 		
-		for (Message msg : conversation.getMessages()) {
+		for (Message msg : conv.getMessages()) {
+			addMessage(msg);
+		}
+	}
+
+	public MessageListAdapter(Context context, List<Message> messages) {
+		super(context, 0);
+
+		this.context = context;
+		this.messages = new LinkedList<>();
+
+		for (Message msg : messages) {
 			addMessage(msg);
 		}
 	}

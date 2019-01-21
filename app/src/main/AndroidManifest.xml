@@ -61,5 +61,7 @@
             android:name=".activity.RulesActivity"
             android:label="@string/title_activity_rules" >
         </activity>
+        <activity android:name=".activity.LogListActivity" android:label="@string/title_activity_log_list"/>
+        <activity android:name=".activity.LogViewActivity" android:label="@string/title_activity_log_view"/>
     </application>
 </manifest>

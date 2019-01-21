@@ -253,16 +253,18 @@ public class ConversationsActivity extends AppCompatActivity implements ServiceC
 
 		while (conv.hasBuffer()) {
 			Message msg = conv.pollBuffer();
-
-			binder.getService().getBackgroundHandler().post(() -> {
-                LogMessage logMessage = new LogMessage(
-                    name,
-                    conv.getType(),
-                    msg.getSender(),
-                    msg.getText()
-                );
-                db.logMessageDao().insert(logMessage);
-            });
+            // Don't log server window messages
+			if (conv.getType() != Conversation.TYPE_SERVER) {
+                binder.getService().getBackgroundHandler().post(() -> {
+                    LogMessage logMessage = new LogMessage(
+                        name,
+                        conv.getType(),
+                        msg.getSender(),
+                        msg.getText()
+                    );
+                    db.logMessageDao().insert(logMessage);
+                });
+            }
 			adapter.addMessage(msg);
 		}
 
