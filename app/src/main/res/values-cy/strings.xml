@@ -140,6 +140,9 @@
     <string name="settings_nickserv_password_label">"Nickserv cyfrinair:"</string>
 
     <string name="title_activity_log_list">Logiau</string>
+    <string name="title_activity_log_view">Gweld log</string>
+    <string name="logs_deleted">Logiau ar gyfer %1$s dileu</string>
+    <string name="no_logs_to_view">" Nid oes unrhyw logiau i'w gweld"</string>
 
     <string name="title_activity_list_view_edit">"Golygu Rhestr"</string>
     <string name="edit_list_remove_item_confirm_title">"Cael gwared eitem?"</string>
@@ -199,11 +202,12 @@
     <!-- Default Real Name to use if the user does not set one, this will show in WHOIS -->
     <string name="default_gecos">"ScoutLink IRC ar gyfer Android!"</string>
 
-    <string name="failed_to_load_user_list">Failed to load user list</string>
+    <string name="failed_to_load_user_list">Methu llwytho rhestr y defnyddwyr</string>
 
     <!-- Core App Settings, probably don't need localising. -->
     <string name="server_window_title">"ScoutLink"</string>
     <string name="channel_name_prefix">"#"</string>
 
     <string name="server_address">"chat.scoutlink.net"</string>
+    <string name="title_activity_log_list">Logiau</string>
 </resources>

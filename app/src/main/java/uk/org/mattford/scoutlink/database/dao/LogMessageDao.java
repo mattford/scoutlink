@@ -21,5 +21,5 @@ public interface LogMessageDao {
     void insert(LogMessage message);
 
     @Query("DELETE FROM log_messages WHERE conversation_name = :conversationName")
-    void deleteByConversation(String conversationName);
+    int deleteByConversation(String conversationName);
 }

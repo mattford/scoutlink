@@ -320,63 +320,67 @@ public class ConversationsActivity extends AppCompatActivity implements ServiceC
         int id = item.getItemId();
         Intent intent;
         switch(id) {
-        case R.id.action_settings:
-            intent = new Intent(this, SettingsActivity.class);
-        	startActivity(intent);
-        	break;
-        case R.id.action_close:
-            switch (conversation.getType()) {
-                case Conversation.TYPE_CHANNEL:
-                    binder.getService().getBackgroundHandler().post(() -> binder.getService().getConnection().getUserChannelDao().getChannel(conversation.getName()).send().part());
-                    break;
-                case Conversation.TYPE_QUERY:
-                    binder.getService().getServer().removeConversation(conversation.getName());
-                    removeConversation(conversation.getName());
-                    break;
-                default:
-                    Toast.makeText(this, getResources().getString(R.string.close_server_window), Toast.LENGTH_SHORT).show();
-                    break;
-            }
-        	break;
-        case R.id.action_disconnect:
-            binder.getService().getBackgroundHandler().post(() -> binder.getService().getConnection().sendIRC().quitServer(settings.getString("quit_message", getString(R.string.default_quit_message))));
-        	break;
-        case R.id.action_userlist:
-            switch (conversation.getType()) {
-                case Conversation.TYPE_CHANNEL:
-                    String chan = conversation.getName();
-                    intent = new Intent(this, UserListActivity.class);
-                    intent.putExtra("channel", chan);
-                    startActivity(intent);
-                    break;
-                default:
-                    Toast.makeText(this, getResources().getString(R.string.userlist_not_on_channel), Toast.LENGTH_SHORT).show();
-                    break;
-            }
-        	break;
-        case R.id.action_join:
-        	intent = new Intent(this, JoinActivity.class);
-        	startActivityForResult(intent, JOIN_CHANNEL_RESULT);
-        	break;
-        case R.id.action_channel_list:
-            intent = new Intent(this, ChannelListActivity.class);
-            startActivityForResult(intent, JOIN_CHANNEL_RESULT);
-            break;
-        case R.id.action_channel_settings:
-            if (conversation.getType() != Conversation.TYPE_CHANNEL) {
-                Toast.makeText(this, getString(R.string.channel_settings_not_channel), Toast.LENGTH_SHORT).show();
-            } else if (binder.getService().getConnection().getUserChannelDao().getChannel(conversation.getName()).isOp(binder.getService().getConnection().getUserBot())) {
-                intent = new Intent(this, ChannelSettingsActivity.class);
-                intent.putExtra("channelName", conversation.getName());
+            case R.id.action_settings:
+                intent = new Intent(this, SettingsActivity.class);
                 startActivity(intent);
-            } else {
-                Toast.makeText(this, getString(R.string.channel_settings_need_op), Toast.LENGTH_SHORT).show();
-            }
-            break;
-        case R.id.action_rules:
-            intent = new Intent(this, RulesActivity.class);
-            startActivity(intent);
-            break;
+                break;
+            case R.id.action_close:
+                switch (conversation.getType()) {
+                    case Conversation.TYPE_CHANNEL:
+                        binder.getService().getBackgroundHandler().post(() -> binder.getService().getConnection().getUserChannelDao().getChannel(conversation.getName()).send().part());
+                        break;
+                    case Conversation.TYPE_QUERY:
+                        binder.getService().getServer().removeConversation(conversation.getName());
+                        removeConversation(conversation.getName());
+                        break;
+                    default:
+                        Toast.makeText(this, getResources().getString(R.string.close_server_window), Toast.LENGTH_SHORT).show();
+                        break;
+                }
+                break;
+            case R.id.action_disconnect:
+                binder.getService().getBackgroundHandler().post(() -> binder.getService().getConnection().sendIRC().quitServer(settings.getString("quit_message", getString(R.string.default_quit_message))));
+                break;
+            case R.id.action_userlist:
+                switch (conversation.getType()) {
+                    case Conversation.TYPE_CHANNEL:
+                        String chan = conversation.getName();
+                        intent = new Intent(this, UserListActivity.class);
+                        intent.putExtra("channel", chan);
+                        startActivity(intent);
+                        break;
+                    default:
+                        Toast.makeText(this, getResources().getString(R.string.userlist_not_on_channel), Toast.LENGTH_SHORT).show();
+                        break;
+                }
+                break;
+            case R.id.action_join:
+                intent = new Intent(this, JoinActivity.class);
+                startActivityForResult(intent, JOIN_CHANNEL_RESULT);
+                break;
+            case R.id.action_channel_list:
+                intent = new Intent(this, ChannelListActivity.class);
+                startActivityForResult(intent, JOIN_CHANNEL_RESULT);
+                break;
+            case R.id.action_channel_settings:
+                if (conversation.getType() != Conversation.TYPE_CHANNEL) {
+                    Toast.makeText(this, getString(R.string.channel_settings_not_channel), Toast.LENGTH_SHORT).show();
+                } else if (binder.getService().getConnection().getUserChannelDao().getChannel(conversation.getName()).isOp(binder.getService().getConnection().getUserBot())) {
+                    intent = new Intent(this, ChannelSettingsActivity.class);
+                    intent.putExtra("channelName", conversation.getName());
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(this, getString(R.string.channel_settings_need_op), Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case R.id.action_rules:
+                intent = new Intent(this, RulesActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.action_logs:
+                intent = new Intent(this, LogListActivity.class);
+                startActivity(intent);
+                break;
 
         }
         return super.onOptionsItemSelected(item);

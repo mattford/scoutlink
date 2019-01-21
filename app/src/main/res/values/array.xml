@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-<string-array name="prefixes" translatable="false">
-    <item>~</item>
-    <item>&amp;</item>
-    <item>\@</item>
-    <item>&#x0025;</item>
-    <item>+</item>
-</string-array>
+    <string-array name="prefixes" translatable="false">
+        <item>~</item>
+        <item>&amp;</item>
+        <item>\@</item>
+        <item>&#x0025;</item>
+        <item>+</item>
+    </string-array>
 
+    <string-array name="log_list_context_menu" translatable="true">
+        <item>Delete</item>
+    </string-array>
 
 </resources>
