@@ -67,6 +67,7 @@ public class LogListActivity extends AppCompatActivity {
                     startActivity(intent);
                 }
             });
+            lv.setEmptyView(findViewById(android.R.id.empty));
             registerForContextMenu(lv);
         });
     }
