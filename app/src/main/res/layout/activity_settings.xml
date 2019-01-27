@@ -96,6 +96,18 @@
         android:inputType="text"
         />
 
+    <Switch
+        android:id="@+id/settings_enable_logging"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/settings_enable_logging" />
+
+    <Switch
+        android:id="@+id/settings_load_previous_messages_on_join"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/settings_load_previous_messages_on_join" />
+
     <Button
     android:id="@+id/settings_autojoin_channels"
     android:layout_height="wrap_content"

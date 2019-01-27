@@ -26,7 +26,7 @@ public class Settings {
 	
 	public String getString(String key, String defValue) {
 		String str =  prefs.getString(key, defValue);
-        if (str == "") {
+        if ("".equals(str)) {
             return defValue; // Return the default value is the string is blank as opposed to null
         } else {
             return str;
@@ -74,6 +74,14 @@ public class Settings {
 		return string.split(",");
     }
 
-	
+	public void putInteger(String key, Integer value) {
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putInt(key, value);
+		editor.apply();
+	}
+
+	public Integer getInteger(String key, Integer defaultValue) {
+		return prefs.getInt(key, defaultValue);
+	}
 	
 }

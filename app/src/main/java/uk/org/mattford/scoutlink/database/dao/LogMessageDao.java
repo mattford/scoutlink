@@ -20,6 +20,9 @@ public interface LogMessageDao {
     @Query("SELECT conversation_name FROM log_messages WHERE conversation_type != 2 GROUP BY conversation_name")
     LiveData<List<LogMessage>> findConversationNamesExcludingServerWindow();
 
+    @Query("SELECT * FROM log_messages WHERE conversation_name = :conversationName ORDER BY message_date DESC LIMIT :limit")
+    List<LogMessage> findConversationMessagesWithLimit(String conversationName, Integer limit);
+
     @Insert
     void insert(LogMessage message);
 

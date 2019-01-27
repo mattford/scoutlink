@@ -147,6 +147,8 @@
     <string name="log_action_export">Allforio</string>
     <string name="log_exported">Allforio ffeil log i %1$s</string>
     <string name="error_exporting_logs">Gwall wrth allforio ffeil log</string>
+    <string name="settings_enable_logging">Galluogi logio</string>
+    <string name="settings_load_previous_messages_on_join">Llwythwch negeseuon blaenorol ar ymuno</string>
 
     <string name="title_activity_list_view_edit">"Golygu Rhestr"</string>
     <string name="edit_list_remove_item_confirm_title">"Cael gwared eitem?"</string>

@@ -147,6 +147,8 @@
     <string name="log_action_export">Export</string>
     <string name="log_exported">Log file exported to %1$s</string>
     <string name="error_exporting_logs">Error exporting log file</string>
+    <string name="settings_enable_logging">Enable logging</string>
+    <string name="settings_load_previous_messages_on_join">Load previous messages on join</string>
 
     <string name="title_activity_list_view_edit">Edit List</string>
     <string name="edit_list_remove_item_confirm_title">Remove Item?</string>

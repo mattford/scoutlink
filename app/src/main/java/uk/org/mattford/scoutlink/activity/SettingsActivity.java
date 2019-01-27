@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Switch;
 
 import java.util.ArrayList;
 
@@ -46,7 +47,45 @@ public class SettingsActivity extends AppCompatActivity {
 
         et = findViewById(R.id.settings_quit_message);
         et.setText(settings.getString("quit_message", getString(R.string.default_quit_message)));
+
+        // Checkbox
+        Switch loggingSwitch = findViewById(R.id.settings_enable_logging);
+        loggingSwitch.setChecked(settings.getBoolean("logging_enabled", true));
+
+        Switch loadPreviousMessagesSwitch = findViewById(R.id.settings_load_previous_messages_on_join);
+        loadPreviousMessagesSwitch.setChecked(settings.getBoolean("load_previous_messages_on_join", true));
     }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        EditText et;
+        et = findViewById(R.id.settings_nickname);
+        settings.putString("nickname", et.getText().toString()); // Validate here?
+
+        et = findViewById(R.id.settings_ident);
+        settings.putString("ident", et.getText().toString());
+
+        et = findViewById(R.id.settings_gecos);
+        settings.putString("gecos", et.getText().toString());
+
+        et = findViewById(R.id.settings_nickserv_user);
+        settings.putString("nickserv_user", et.getText().toString());
+
+        et = findViewById(R.id.settings_nickserv_password);
+        settings.putString("nickserv_password", et.getText().toString());
+
+        et = findViewById(R.id.settings_quit_message);
+        settings.putString("quit_message", et.getText().toString());
+
+        // Checkbox
+        Switch loggingSwitch = findViewById(R.id.settings_enable_logging);
+        settings.putBoolean("logging_enabled", loggingSwitch.isChecked());
+
+        Switch loadPreviousMessagesSwitch = findViewById(R.id.settings_load_previous_messages_on_join);
+        settings.putBoolean("load_previous_messages_on_join", loadPreviousMessagesSwitch.isChecked());
+    }
+
 
     public void openAutojoinSettings(View v) {
         Intent intent = new Intent(this, ListEditActivity.class);
