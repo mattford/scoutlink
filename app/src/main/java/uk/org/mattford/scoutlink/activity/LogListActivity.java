@@ -95,13 +95,11 @@ public class LogListActivity extends AppCompatActivity {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
         String conversationName = conversationNames.get(info.position);
         switch(item.getItemId()) {
-            case R.id.log_action_view:
+            case R.id.log_action_delete:
                 new Thread(() -> {
                     int affectedRows = logDatabase.logMessageDao().deleteByConversation(conversationName);
                     if (affectedRows > 0) {
-                        ((LogListActivity) context).runOnUiThread(() -> {
-                            Toast.makeText(context, getString(R.string.logs_deleted, conversationName), Toast.LENGTH_LONG).show();
-                        });
+                        ((LogListActivity) context).runOnUiThread(() -> Toast.makeText(context, getString(R.string.logs_deleted, conversationName), Toast.LENGTH_LONG).show());
                     }
 
                 }).start();

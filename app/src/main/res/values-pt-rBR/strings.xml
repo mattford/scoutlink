@@ -52,9 +52,10 @@
     <string name="title_activity_log_view">Vista de log</string>
     <string name="logs_deleted">Logs para %1$s excluídas</string>
     <string name="no_logs_to_view">Não há registros para visualizar</string>
-    <string name="log_action_view">Visão</string>
+    <string name="log_action_delete">Excluir</string>
     <string name="log_action_export">Exportar</string>
     <string name="log_exported">Arquivo de log exportado para %1$s</string>
+    <string name="error_exporting_logs">Erro ao exportar o arquivo de log</string>
 
     <string name="title_activity_channel_list">"Lista de Canais"</string>
     <string name="userlist_activity_label">"Lista de usuários"</string>

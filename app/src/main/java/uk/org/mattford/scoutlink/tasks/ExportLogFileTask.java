@@ -8,13 +8,10 @@ import android.util.Log;
 import android.widget.Toast;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.text.DateFormat;
-import java.text.FieldPosition;
-import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -39,6 +36,11 @@ public class ExportLogFileTask implements Runnable {
     public void run() {
         File exportFile = getFile();
 
+        if (exportFile == null) {
+            showToast(this.context.getString(R.string.error_exporting_logs));
+            return;
+        }
+
         try (
             FileOutputStream os = new FileOutputStream(exportFile);
             OutputStreamWriter writer = new OutputStreamWriter(os)
@@ -55,16 +57,10 @@ public class ExportLogFileTask implements Runnable {
                 writer.append(logLine);
             }
 
-            (new Handler(Looper.getMainLooper())).post(
-                () -> Toast.makeText(
-                        this.context,
-                        this.context.getString(R.string.log_exported, exportFile.getAbsolutePath()),
-                        Toast.LENGTH_LONG
-                ).show());
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            showToast(this.context.getString(R.string.log_exported, exportFile.getAbsolutePath()));
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e("SL", "Failed to export logs");
+            showToast(this.context.getString(R.string.error_exporting_logs));
         }
     }
 
@@ -76,10 +72,20 @@ public class ExportLogFileTask implements Runnable {
         try {
             if (!file.getParentFile().mkdirs() || !file.createNewFile()) {
                 Log.e("SL", "Failed to create file");
+                return null;
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e("SL", "Failed to create file: " + e.getMessage());
         }
         return file;
+    }
+
+    private void showToast(String message) {
+        (new Handler(Looper.getMainLooper())).post(
+                () -> Toast.makeText(
+                        this.context,
+                        message,
+                        Toast.LENGTH_LONG
+                ).show());
     }
 }

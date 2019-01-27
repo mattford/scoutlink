@@ -143,9 +143,10 @@
     <string name="title_activity_log_view">Log view</string>
     <string name="logs_deleted">Logs for %1$s deleted</string>
     <string name="no_logs_to_view">There are no logs to view</string>
-    <string name="log_action_view">View</string>
+    <string name="log_action_delete">Delete</string>
     <string name="log_action_export">Export</string>
     <string name="log_exported">Log file exported to %1$s</string>
+    <string name="error_exporting_logs">Error exporting log file</string>
 
     <string name="title_activity_list_view_edit">Edit List</string>
     <string name="edit_list_remove_item_confirm_title">Remove Item?</string>
