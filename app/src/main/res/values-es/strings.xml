@@ -207,4 +207,7 @@
     <string name="title_activity_log_list">Troncos</string>
     <string name="logs_deleted">" Registros para %1$s eliminado"</string>
     <string name="no_logs_to_view">" No hay registros para ver"</string>
+    <string name="log_action_view">Ver</string>
+    <string name="log_action_export">Exportar</string>
+    <string name="log_exported">Archivo de registro exportado a %1$s</string>
 </resources>

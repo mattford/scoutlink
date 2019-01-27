@@ -143,6 +143,9 @@
     <string name="title_activity_log_view">Gweld log</string>
     <string name="logs_deleted">Logiau ar gyfer %1$s dileu</string>
     <string name="no_logs_to_view">" Nid oes unrhyw logiau i'w gweld"</string>
+    <string name="log_action_view">Gweld</string>
+    <string name="log_action_export">Allforio</string>
+    <string name="log_exported">Allforio ffeil log i %1$s</string>
 
     <string name="title_activity_list_view_edit">"Golygu Rhestr"</string>
     <string name="edit_list_remove_item_confirm_title">"Cael gwared eitem?"</string>
