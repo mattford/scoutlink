@@ -17,6 +17,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.SpannableString;
 import android.text.util.Linkify;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -55,10 +56,6 @@ public class MessageListAdapter extends ArrayAdapter<LinearLayout> {
 				conversation.getType() == Conversation.TYPE_SERVER ||
 				!settings.getBoolean("logging_enabled", true) ||
 				!settings.getBoolean("load_previous_messages_on_join", true)) {
-
-			for (Message msg : messages) {
-				addMessage(msg);
-			}
 			return;
 		}
 
@@ -71,19 +68,20 @@ public class MessageListAdapter extends ArrayAdapter<LinearLayout> {
 		new Thread(() -> {
 			List<LogMessage> logMessages = logDatabase.logMessageDao().findConversationMessagesWithLimit(conversation.getName(), messagesToLoad);
 			(new Handler(Looper.getMainLooper())).post(() -> {
+				addMessage(new Message(context.getString(R.string.current_session_header)), true);
 				for (LogMessage msg : logMessages) {
 					Message message = new Message(msg.sender, msg.message, msg.date, false);
-					addMessage(message);
+					addMessage(message, true);
 				}
-				for (Message msg : messages) {
-					addMessage(msg);
-				}
+				addMessage(new Message(context.getString(R.string.previous_session_header)), true);
 			});
 		}).start();
 	}
-	
 	public void addMessage(Message message) {
-        if (message.getSender() != null &&
+		addMessage(message, false);
+	}
+	public void addMessage(Message message, boolean prepend) {
+        if (!prepend && message.getSender() != null &&
                 previousMessage != null &&
                 previousMessage.getSender() != null &&
                 previousMessage.getSender().equalsIgnoreCase(message.getSender())) {
@@ -96,7 +94,11 @@ public class MessageListAdapter extends ArrayAdapter<LinearLayout> {
             Linkify.addLinks(lastTextView, Linkify.WEB_URLS);
         } else {
             LinearLayout msgView = message.renderTextView(context);
-            messages.add(msgView);
+            if (prepend) {
+            	messages.add(0, msgView);
+			} else {
+				messages.add(msgView);
+			}
         }
         previousMessage = message;
 		notifyDataSetChanged();

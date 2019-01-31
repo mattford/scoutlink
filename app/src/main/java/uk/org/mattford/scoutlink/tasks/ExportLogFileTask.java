@@ -70,7 +70,7 @@ public class ExportLogFileTask implements Runnable {
         String filePath = Environment.getExternalStorageDirectory() + "/Documents/ScoutLinkLogs";
         File file = new File(filePath, fileName);
         try {
-            if (!file.getParentFile().mkdirs() || !file.createNewFile()) {
+            if ((!file.getParentFile().exists() && !file.getParentFile().mkdirs()) || !file.createNewFile()) {
                 Log.e("SL", "Failed to create file");
                 return null;
             }
