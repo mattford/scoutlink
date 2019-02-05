@@ -1,6 +1,7 @@
 package uk.org.mattford.scoutlink.adapter;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import androidx.room.Room;
@@ -38,7 +39,10 @@ public class MessageListAdapter extends ArrayAdapter<LinearLayout> {
 		this.messages = new ArrayList<>();
 		this.conversation = conv;
 
-		loadLoggedMessages(conv.getMessages());
+		LinkedList<Message> messagesSnapshot = new LinkedList<>();
+		messagesSnapshot.addAll(conv.getMessages());
+
+		loadLoggedMessages(messagesSnapshot);
 	}
 
 	public MessageListAdapter(Context context, List<Message> messages) {
@@ -56,6 +60,11 @@ public class MessageListAdapter extends ArrayAdapter<LinearLayout> {
 				conversation.getType() == Conversation.TYPE_SERVER ||
 				!settings.getBoolean("logging_enabled", true) ||
 				!settings.getBoolean("load_previous_messages_on_join", true)) {
+
+            for (Message msg : messages) {
+                addMessage(msg);
+            }
+
 			return;
 		}
 
@@ -74,6 +83,9 @@ public class MessageListAdapter extends ArrayAdapter<LinearLayout> {
 					addMessage(message, true);
 				}
 				addMessage(new Message(context.getString(R.string.previous_session_header)), true);
+				for (Message msg : messages) {
+					addMessage(msg);
+				}
 			});
 		}).start();
 	}

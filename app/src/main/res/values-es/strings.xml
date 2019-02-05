@@ -213,5 +213,7 @@
     <string name="error_exporting_logs">Error al exportar el archivo de registro</string>
     <string name="settings_enable_logging">Habilitar el registro</string>
     <string name="settings_load_previous_messages_on_join">Cargar mensajes anteriores en unirse</string>
+    <string name="previous_session_header">Mensajes anteriores</string>
+    <string name="current_session_header">Sesión actual</string>
 
 </resources>

@@ -149,8 +149,8 @@
     <string name="error_exporting_logs">Error exporting log file</string>
     <string name="settings_enable_logging">Enable logging</string>
     <string name="settings_load_previous_messages_on_join">Load previous messages on join</string>
-    <string name="previous_session_header">Previous session</string>
-    <string name="current_session_header">This session</string>
+    <string name="previous_session_header">Previous messages</string>
+    <string name="current_session_header">Current session</string>
 
     <string name="title_activity_list_view_edit">Edit List</string>
     <string name="edit_list_remove_item_confirm_title">Remove Item?</string>

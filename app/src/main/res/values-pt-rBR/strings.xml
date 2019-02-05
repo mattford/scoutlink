@@ -214,4 +214,6 @@
     <string name="channel_name_prefix">"#"</string>
 
     <string name="server_address">"chat.scoutlink.net"</string>
+    <string name="previous_session_header">Mensagens anteriores</string>
+    <string name="current_session_header">Sessão atual</string>
 </resources>
