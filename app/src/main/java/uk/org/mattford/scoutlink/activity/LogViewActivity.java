@@ -3,7 +3,9 @@ package uk.org.mattford.scoutlink.activity;
 import android.content.Intent;
 import android.os.Bundle;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -52,7 +54,12 @@ public class LogViewActivity extends AppCompatActivity {
         logDatabase.logMessageDao().findByConversation(channelName).observe(this, (logMessages) -> {
             ArrayList<Message> messages = new ArrayList<>();
             for (LogMessage msg : logMessages) {
-                Message newMsg = new Message(msg.sender, msg.message, msg.date, true);
+                Message newMsg = new Message(
+                    msg.sender,
+                    msg.message,
+                    msg.date,
+                    SimpleDateFormat.getDateTimeInstance()
+                );
                 messages.add(newMsg);
             }
 

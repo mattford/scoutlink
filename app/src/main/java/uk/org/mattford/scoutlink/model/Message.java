@@ -30,7 +30,7 @@ public class Message {
     private Date timestamp;
     private Integer colour;
     private Integer backgroundColour;
-    private boolean showDate = false;
+    private DateFormat dateFormat;
 
     public Date getTimestamp() {
         return timestamp;
@@ -66,18 +66,17 @@ public class Message {
 	}
 
     public Message (String sender, String text) {
-        this.text = text;
+	    this(text);
         this.sender = sender;
         this.alignment = ALIGN_LEFT;
         //this.backgroundColour = Color.LTGRAY;
         this.colour = Color.BLACK;
-        this.timestamp = new Date();
     }
 
-    public Message (String sender, String text, Date timestamp, boolean showDate) {
+    public Message (String sender, String text, Date timestamp, DateFormat dateFormat) {
 	    this(sender, text);
 	    this.timestamp = timestamp;
-	    this.showDate = showDate;
+	    this.dateFormat = dateFormat;
     }
 
 	public String getText() {
@@ -136,13 +135,10 @@ public class Message {
         }
 
         if (getTimestamp() != null) {
-            DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(context);
-            String dateString = timeFormat.format(getTimestamp());
-
-            if (showDate) {
-                DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(context);
-                dateString = dateFormat.format(getTimestamp()) + " " + dateString;
+            if (dateFormat == null) {
+                dateFormat = android.text.format.DateFormat.getTimeFormat(context);
             }
+            String dateString = dateFormat.format(getTimestamp());
 
             TextView timestampView = view.findViewById(R.id.timestamp);
             timestampView.setText(dateString);

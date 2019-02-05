@@ -79,7 +79,7 @@ public class MessageListAdapter extends ArrayAdapter<LinearLayout> {
 			(new Handler(Looper.getMainLooper())).post(() -> {
 				addMessage(new Message(context.getString(R.string.current_session_header)), true);
 				for (LogMessage msg : logMessages) {
-					Message message = new Message(msg.sender, msg.message, msg.date, false);
+					Message message = new Message(msg.sender, msg.message, msg.date, null);
 					addMessage(message, true);
 				}
 				addMessage(new Message(context.getString(R.string.previous_session_header)), true);
