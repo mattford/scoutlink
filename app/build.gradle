@@ -35,8 +35,12 @@ android {
 dependencies {
     implementation 'org.slf4j:slf4j-android:1.7.8'
     implementation 'org.pircbotx:pircbotx:2.1'
-    implementation 'com.android.support:appcompat-v7:27.1.1'
-    implementation 'com.android.support:support-compat:27.1.1'
-    implementation 'com.google.android.gms:play-services-analytics:16.0.4'
+    implementation 'androidx.appcompat:appcompat:1.1.0-alpha01'
+    implementation 'com.google.android.gms:play-services-analytics:16.0.6'
     implementation group: 'com.github.JakeWharton', name: 'ViewPagerIndicator', version: '2.4.1'
+
+    def room_version = "2.1.0-alpha03"
+
+    implementation "androidx.room:room-runtime:$room_version"
+    annotationProcessor "androidx.room:room-compiler:$room_version"
 }

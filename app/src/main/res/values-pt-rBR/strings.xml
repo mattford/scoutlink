@@ -48,6 +48,16 @@
     <!-- Title of the Join Activity -->
     <string name="join_activity_label">"Entrar no Canal"</string>
 
+    <string name="title_activity_log_list">Logs</string>
+    <string name="title_activity_log_view">Vista de log</string>
+    <string name="logs_deleted">Logs para %1$s excluídas</string>
+    <string name="no_logs_to_view">Não há registros para visualizar</string>
+    <string name="log_action_delete">Excluir</string>
+    <string name="log_action_export">Exportar</string>
+    <string name="log_exported">Arquivo de log exportado para %1$s</string>
+    <string name="error_exporting_logs">Erro ao exportar o arquivo de log</string>
+    <string name="settings_enable_logging">Ativar log</string>
+    <string name="settings_load_previous_messages_on_join">Carregar mensagens anteriores ao participar</string>
 
     <string name="title_activity_channel_list">"Lista de Canais"</string>
     <string name="userlist_activity_label">"Lista de usuários"</string>
@@ -197,11 +207,13 @@
     <!-- Default Real Name to use if the user does not set one, this will show in WHOIS -->
     <string name="default_gecos">"ScoutLink IRC para Android!"</string>
 
-    <string name="failed_to_load_user_list">Failed to load user list</string>
+    <string name="failed_to_load_user_list">Falha ao carregar a lista de usuários</string>
 
     <!-- Core App Settings, probably don't need localising. -->
     <string name="server_window_title">"ScoutLink"</string>
     <string name="channel_name_prefix">"#"</string>
 
     <string name="server_address">"chat.scoutlink.net"</string>
+    <string name="previous_session_header">Mensagens anteriores</string>
+    <string name="current_session_header">Sessão atual</string>
 </resources>

@@ -3,10 +3,14 @@ package uk.org.mattford.scoutlink.activity;
 import java.util.ArrayList;
 import java.util.Map;
 
+import androidx.room.Room;
 import uk.org.mattford.scoutlink.R;
 import uk.org.mattford.scoutlink.adapter.ConversationsPagerAdapter;
 import uk.org.mattford.scoutlink.adapter.MessageListAdapter;
 import uk.org.mattford.scoutlink.command.CommandParser;
+import uk.org.mattford.scoutlink.database.LogDatabase;
+import uk.org.mattford.scoutlink.database.entities.LogMessage;
+import uk.org.mattford.scoutlink.database.migrations.LogDatabaseMigrations;
 import uk.org.mattford.scoutlink.irc.IRCBinder;
 import uk.org.mattford.scoutlink.irc.IRCService;
 import uk.org.mattford.scoutlink.model.Broadcast;
@@ -23,8 +27,9 @@ import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
+import androidx.viewpager.widget.ViewPager;
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -40,6 +45,7 @@ public class ConversationsActivity extends AppCompatActivity implements ServiceC
 	private ConversationReceiver receiver;
 	private IRCBinder binder;
     private Settings settings;
+    private LogDatabase db;
 
     private TitlePageIndicator indicator;
 
@@ -63,6 +69,7 @@ public class ConversationsActivity extends AppCompatActivity implements ServiceC
 
         indicator = findViewById(R.id.nav_titles);
         indicator.setViewPager(pager);
+
         indicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
             private int currentPage = -1;
@@ -96,7 +103,11 @@ public class ConversationsActivity extends AppCompatActivity implements ServiceC
 	
 	public void onResume() {
 		super.onResume();
-		
+
+        db = Room.databaseBuilder(getApplicationContext(), LogDatabase.class, "logs")
+                .addMigrations(LogDatabaseMigrations.MIGRATION_0_1)
+                .build();
+
 		this.receiver = new ConversationReceiver(this);
 		registerReceiver(this.receiver, new IntentFilter(Broadcast.NEW_CONVERSATION));
 		registerReceiver(this.receiver, new IntentFilter(Broadcast.NEW_MESSAGE));
@@ -137,6 +148,10 @@ public class ConversationsActivity extends AppCompatActivity implements ServiceC
 	
 	public void onPause() {
 		super.onPause();
+
+		if (db != null) {
+            db.close();
+        }
 
 		unregisterReceiver(this.receiver);
 		unbindService(this);
@@ -238,6 +253,18 @@ public class ConversationsActivity extends AppCompatActivity implements ServiceC
 
 		while (conv.hasBuffer()) {
 			Message msg = conv.pollBuffer();
+            // Don't log server window messages
+			if (conv.getType() != Conversation.TYPE_SERVER) {
+                binder.getService().getBackgroundHandler().post(() -> {
+                    LogMessage logMessage = new LogMessage(
+                        name,
+                        conv.getType(),
+                        msg.getSender(),
+                        msg.getText()
+                    );
+                    db.logMessageDao().insert(logMessage);
+                });
+            }
 			adapter.addMessage(msg);
 		}
 
@@ -247,7 +274,7 @@ public class ConversationsActivity extends AppCompatActivity implements ServiceC
 	@Override
 	public void onServiceConnected(ComponentName name, IBinder service) {
 		this.binder = (IRCBinder)service;
-        if (!binder.getService().isConnected()) {
+        if (binder.getService().getConnection() == null || !binder.getService().getConnection().isConnected()) {
         	binder.getService().connect();
         } else {
         	/*
@@ -293,63 +320,67 @@ public class ConversationsActivity extends AppCompatActivity implements ServiceC
         int id = item.getItemId();
         Intent intent;
         switch(id) {
-        case R.id.action_settings:
-            intent = new Intent(this, SettingsActivity.class);
-        	startActivity(intent);
-        	break;
-        case R.id.action_close:
-            switch (conversation.getType()) {
-                case Conversation.TYPE_CHANNEL:
-                    binder.getService().getBackgroundHandler().post(() -> binder.getService().getConnection().getUserChannelDao().getChannel(conversation.getName()).send().part());
-                    break;
-                case Conversation.TYPE_QUERY:
-                    binder.getService().getServer().removeConversation(conversation.getName());
-                    removeConversation(conversation.getName());
-                    break;
-                default:
-                    Toast.makeText(this, getResources().getString(R.string.close_server_window), Toast.LENGTH_SHORT).show();
-                    break;
-            }
-        	break;
-        case R.id.action_disconnect:
-            binder.getService().getBackgroundHandler().post(() -> binder.getService().getConnection().sendIRC().quitServer(settings.getString("quit_message", getString(R.string.default_quit_message))));
-        	break;
-        case R.id.action_userlist:
-            switch (conversation.getType()) {
-                case Conversation.TYPE_CHANNEL:
-                    String chan = conversation.getName();
-                    intent = new Intent(this, UserListActivity.class);
-                    intent.putExtra("channel", chan);
-                    startActivity(intent);
-                    break;
-                default:
-                    Toast.makeText(this, getResources().getString(R.string.userlist_not_on_channel), Toast.LENGTH_SHORT).show();
-                    break;
-            }
-        	break;
-        case R.id.action_join:
-        	intent = new Intent(this, JoinActivity.class);
-        	startActivityForResult(intent, JOIN_CHANNEL_RESULT);
-        	break;
-        case R.id.action_channel_list:
-            intent = new Intent(this, ChannelListActivity.class);
-            startActivityForResult(intent, JOIN_CHANNEL_RESULT);
-            break;
-        case R.id.action_channel_settings:
-            if (conversation.getType() != Conversation.TYPE_CHANNEL) {
-                Toast.makeText(this, getString(R.string.channel_settings_not_channel), Toast.LENGTH_SHORT).show();
-            } else if (binder.getService().getConnection().getUserChannelDao().getChannel(conversation.getName()).isOp(binder.getService().getConnection().getUserBot())) {
-                intent = new Intent(this, ChannelSettingsActivity.class);
-                intent.putExtra("channelName", conversation.getName());
+            case R.id.action_settings:
+                intent = new Intent(this, SettingsActivity.class);
                 startActivity(intent);
-            } else {
-                Toast.makeText(this, getString(R.string.channel_settings_need_op), Toast.LENGTH_SHORT).show();
-            }
-            break;
-        case R.id.action_rules:
-            intent = new Intent(this, RulesActivity.class);
-            startActivity(intent);
-            break;
+                break;
+            case R.id.action_close:
+                switch (conversation.getType()) {
+                    case Conversation.TYPE_CHANNEL:
+                        binder.getService().getBackgroundHandler().post(() -> binder.getService().getConnection().getUserChannelDao().getChannel(conversation.getName()).send().part());
+                        break;
+                    case Conversation.TYPE_QUERY:
+                        binder.getService().getServer().removeConversation(conversation.getName());
+                        removeConversation(conversation.getName());
+                        break;
+                    default:
+                        Toast.makeText(this, getResources().getString(R.string.close_server_window), Toast.LENGTH_SHORT).show();
+                        break;
+                }
+                break;
+            case R.id.action_disconnect:
+                binder.getService().getBackgroundHandler().post(() -> binder.getService().getConnection().sendIRC().quitServer(settings.getString("quit_message", getString(R.string.default_quit_message))));
+                break;
+            case R.id.action_userlist:
+                switch (conversation.getType()) {
+                    case Conversation.TYPE_CHANNEL:
+                        String chan = conversation.getName();
+                        intent = new Intent(this, UserListActivity.class);
+                        intent.putExtra("channel", chan);
+                        startActivity(intent);
+                        break;
+                    default:
+                        Toast.makeText(this, getResources().getString(R.string.userlist_not_on_channel), Toast.LENGTH_SHORT).show();
+                        break;
+                }
+                break;
+            case R.id.action_join:
+                intent = new Intent(this, JoinActivity.class);
+                startActivityForResult(intent, JOIN_CHANNEL_RESULT);
+                break;
+            case R.id.action_channel_list:
+                intent = new Intent(this, ChannelListActivity.class);
+                startActivityForResult(intent, JOIN_CHANNEL_RESULT);
+                break;
+            case R.id.action_channel_settings:
+                if (conversation.getType() != Conversation.TYPE_CHANNEL) {
+                    Toast.makeText(this, getString(R.string.channel_settings_not_channel), Toast.LENGTH_SHORT).show();
+                } else if (binder.getService().getConnection().getUserChannelDao().getChannel(conversation.getName()).isOp(binder.getService().getConnection().getUserBot())) {
+                    intent = new Intent(this, ChannelSettingsActivity.class);
+                    intent.putExtra("channelName", conversation.getName());
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(this, getString(R.string.channel_settings_need_op), Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case R.id.action_rules:
+                intent = new Intent(this, RulesActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.action_logs:
+                intent = new Intent(this, LogListActivity.class);
+                startActivity(intent);
+                break;
 
         }
         return super.onOptionsItemSelected(item);

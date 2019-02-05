@@ -27,8 +27,9 @@ import android.os.Binder;
 import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+
 import android.widget.Toast;
 
 public class IRCService extends Service {
@@ -149,6 +150,7 @@ public class IRCService extends Service {
             }
         }).start();
 	}
+
 	
 	public Server getServer() {
 		return this.server;

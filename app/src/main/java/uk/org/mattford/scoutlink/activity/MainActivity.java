@@ -12,7 +12,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -66,11 +66,6 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         unbindService(this);
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-    }
-
     public void connectClick(View v) {
     	String nick = ((EditText)findViewById(R.id.nickname)).getText().toString();
         boolean channelListOnConnect = ((CheckBox)findViewById(R.id.channel_list_on_connect)).isChecked();
@@ -108,6 +103,10 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
                 break;
             case R.id.action_rules:
                 intent = new Intent(this, RulesActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.action_logs:
+                intent = new Intent(this, LogListActivity.class);
                 startActivity(intent);
                 break;
         	

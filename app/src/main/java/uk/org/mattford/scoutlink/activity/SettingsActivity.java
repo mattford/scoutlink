@@ -2,9 +2,11 @@ package uk.org.mattford.scoutlink.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Switch;
 
 import java.util.ArrayList;
 
@@ -45,33 +47,13 @@ public class SettingsActivity extends AppCompatActivity {
 
         et = findViewById(R.id.settings_quit_message);
         et.setText(settings.getString("quit_message", getString(R.string.default_quit_message)));
-    }
 
-    public void openAutojoinSettings(View v) {
-        Intent intent = new Intent(this, ListEditActivity.class);
+        // Checkbox
+        Switch loggingSwitch = findViewById(R.id.settings_enable_logging);
+        loggingSwitch.setChecked(settings.getBoolean("logging_enabled", true));
 
-        intent.putExtra("title", "Autojoin Channels");
-        intent.putExtra("firstChar", "#");
-        intent.putStringArrayListExtra("items", settings.getStringArrayList("autojoin_channels"));
-        startActivityForResult(intent, AUTOJOIN_REQUEST_CODE);
-    }
-
-    public void openCommandOnConnectSettings(View v) {
-        Intent intent = new Intent(this, ListEditActivity.class);
-
-        intent.putStringArrayListExtra("items", settings.getStringArrayList("command_on_connect"));
-        intent.putExtra("title", "Commands on Connect");
-        intent.putExtra("firstChar", "/");
-        startActivityForResult(intent, CONNECT_COMMANDS_REQUEST_CODE);
-    }
-
-    public void openNotifyListSettings(View v) {
-        Intent intent = new Intent(this, ListEditActivity.class);
-
-        intent.putStringArrayListExtra("items", settings.getStringArrayList("notify_list"));
-        intent.putExtra("title", "Notify List");
-        intent.putExtra("firstChar", "");
-        startActivityForResult(intent, NOTIFY_LIST_REQUEST_CODE);
+        Switch loadPreviousMessagesSwitch = findViewById(R.id.settings_load_previous_messages_on_join);
+        loadPreviousMessagesSwitch.setChecked(settings.getBoolean("load_previous_messages_on_join", true));
     }
 
     @Override
@@ -95,6 +77,41 @@ public class SettingsActivity extends AppCompatActivity {
 
         et = findViewById(R.id.settings_quit_message);
         settings.putString("quit_message", et.getText().toString());
+
+        // Checkbox
+        Switch loggingSwitch = findViewById(R.id.settings_enable_logging);
+        settings.putBoolean("logging_enabled", loggingSwitch.isChecked());
+
+        Switch loadPreviousMessagesSwitch = findViewById(R.id.settings_load_previous_messages_on_join);
+        settings.putBoolean("load_previous_messages_on_join", loadPreviousMessagesSwitch.isChecked());
+    }
+
+
+    public void openAutojoinSettings(View v) {
+        Intent intent = new Intent(this, ListEditActivity.class);
+
+        intent.putExtra("title", getString(R.string.settings_autojoin_channels_label));
+        intent.putExtra("firstChar", "#");
+        intent.putStringArrayListExtra("items", settings.getStringArrayList("autojoin_channels"));
+        startActivityForResult(intent, AUTOJOIN_REQUEST_CODE);
+    }
+
+    public void openCommandOnConnectSettings(View v) {
+        Intent intent = new Intent(this, ListEditActivity.class);
+
+        intent.putStringArrayListExtra("items", settings.getStringArrayList("command_on_connect"));
+        intent.putExtra("title", getString(R.string.settings_command_on_connect_label));
+        intent.putExtra("firstChar", "/");
+        startActivityForResult(intent, CONNECT_COMMANDS_REQUEST_CODE);
+    }
+
+    public void openNotifyListSettings(View v) {
+        Intent intent = new Intent(this, ListEditActivity.class);
+
+        intent.putStringArrayListExtra("items", settings.getStringArrayList("notify_list"));
+        intent.putExtra("title", getString(R.string.settings_notify_list_label));
+        intent.putExtra("firstChar", "");
+        startActivityForResult(intent, NOTIFY_LIST_REQUEST_CODE);
     }
 
     @Override

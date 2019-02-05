@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="uk.org.mattford.scoutlink"
-    android:versionCode="15"
-    android:versionName="1.4" >
+    android:versionCode="16"
+    android:versionName="1.5" >
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme"
-        android:name="uk.org.mattford.scoutlink.ScoutlinkApplication">
+        android:name="uk.org.mattford.scoutlink.ScoutlinkApplication"
+        tools:ignore="GoogleAppIndexingWarning">
 
         <!-- Google Analytics Version v4 needs this value for easy tracking -->
         <!--<meta-data android:name="com.google.android.gms.analytics.globalConfigResource"
@@ -61,5 +64,7 @@
             android:name=".activity.RulesActivity"
             android:label="@string/title_activity_rules" >
         </activity>
+        <activity android:name=".activity.LogListActivity" android:label="@string/title_activity_log_list"/>
+        <activity android:name=".activity.LogViewActivity" android:label="@string/title_activity_log_view"/>
     </application>
 </manifest>
