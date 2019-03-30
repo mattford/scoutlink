@@ -68,7 +68,7 @@ public class LogListActivity extends AppCompatActivity {
                 conversationNames.add(msg.conversationName);
             }
             ListView lv = findViewById(R.id.conversation_list);
-            lv.setAdapter(new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1, conversationNames));
+            lv.setAdapter(new ArrayAdapter<>(LogListActivity.this, android.R.layout.simple_list_item_1, conversationNames));
             lv.setOnItemClickListener((parent, view, position, id) -> {
                 String name = conversationNames.get(position);
                 if (name != null) {

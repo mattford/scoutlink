@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="uk.org.mattford.scoutlink"
-    android:versionCode="17"
+    android:versionCode="18"
     android:versionName="1.5" >
 
     <uses-permission android:name="android.permission.INTERNET" />

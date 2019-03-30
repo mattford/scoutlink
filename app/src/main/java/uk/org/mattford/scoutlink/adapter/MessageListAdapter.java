@@ -82,9 +82,11 @@ public class MessageListAdapter extends ArrayAdapter<LinearLayout> {
 					Message message = new Message(msg.sender, msg.message, msg.date, null);
 					addMessage(message, true);
 				}
-				addMessage(new Message(context.getString(R.string.previous_session_header)), true);
-				for (Message msg : messages) {
-					addMessage(msg);
+				if (!messages.isEmpty()) {
+					addMessage(new Message(context.getString(R.string.previous_session_header)), true);
+					for (Message msg : messages) {
+						addMessage(msg);
+					}
 				}
 			});
 		}).start();
