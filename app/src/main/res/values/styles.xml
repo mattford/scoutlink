@@ -5,6 +5,21 @@
 
     </style>
 
+    <style name="DarkDrawer">
+        <item name="android:background">@color/scoutlink_blue</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+    <style name="UnreadMessagesBadge">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:background">@drawable/unread_messages_badge</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="colorPrimaryDark">@color/scoutlink_blue_dark</item>
+        <item name="colorPrimary">@color/scoutlink_blue</item>
+        <item name="colorAccent">@color/scoutlink_orange</item>
+    </style>
     <style name="Dialog" parent="Dialog.Base">
 
     </style>

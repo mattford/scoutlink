@@ -1,9 +1,5 @@
 package uk.org.mattford.scoutlink.model;
 
-import com.google.common.collect.ImmutableList;
-
-import org.pircbotx.ChannelListEntry;
-
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -25,19 +21,9 @@ public class Server {
 
 		if (conversations.containsKey(name)) {
 			return conversations.get(name);
-		} else {
-			return null;
 		}
+		return null;
 	}
-
-    public void setChannelList(ImmutableList<ChannelListEntry> channels) {
-        channelList.clear();
-        for (ChannelListEntry entry : channels) {
-            if (entry.getName().startsWith("#")) {
-                channelList.add(entry.getName());
-            }
-        }
-    }
 
     public ArrayList<String> getChannelList() {
         return channelList;
@@ -75,6 +61,4 @@ public class Server {
 		}
 		return null;
 	}
-	
-	
 }

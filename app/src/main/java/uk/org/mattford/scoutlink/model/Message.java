@@ -4,16 +4,10 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.style.URLSpan;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
-import android.webkit.URLUtil;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -69,7 +63,6 @@ public class Message {
 	    this(text);
         this.sender = sender;
         this.alignment = ALIGN_LEFT;
-        //this.backgroundColour = Color.LTGRAY;
         this.colour = Color.BLACK;
     }
 
@@ -96,21 +89,17 @@ public class Message {
     }
 
 	public LinearLayout renderTextView(final Context context) {
-        LayoutInflater li = LayoutInflater.from(context);
-		LinearLayout view;
-
+	    LayoutInflater li = LayoutInflater.from(context);
         SpannableString text = Message.applySpans(getText());
-
+        LinearLayout view = (LinearLayout) li.inflate(R.layout.message_list_item, null);
+        TextView senderView = view.findViewById(R.id.sender);
         if (getSender() != null) {
-            view = (LinearLayout) li.inflate(R.layout.message_list_item, null);
-            TextView senderView = view.findViewById(R.id.sender);
             senderView.setText(getSender());
         } else {
-            view = (LinearLayout) li.inflate(R.layout.message_list_item_no_sender, null);
+            senderView.setVisibility(View.GONE);
         }
 
         TextView messageView = view.findViewById(R.id.message);
-        //messageView.setMovementMethod(LinkMovementMethod.getInstance());
 		messageView.setText(text);
 
         if (getAlignment() == ALIGN_RIGHT) {
@@ -142,18 +131,6 @@ public class Message {
 
             TextView timestampView = view.findViewById(R.id.timestamp);
             timestampView.setText(dateString);
-            view.setOnClickListener(view1 -> {
-                TextView ts = view1.findViewById(R.id.timestamp);
-                if (ts.getVisibility() == TextView.VISIBLE) {
-                    Animation out = new AlphaAnimation(1.0f, 0.0f);
-                    ts.startAnimation(out);
-                    ts.setVisibility(TextView.GONE);
-                } else {
-                    Animation in = new AlphaAnimation(0.0f, 1.0f);
-                    ts.startAnimation(in);
-                    ts.setVisibility(TextView.VISIBLE);
-                }
-            });
         }
 
 		return view;
@@ -175,31 +152,7 @@ public class Message {
         this.backgroundColour = backgroundColour;
     }
 
-    public static SpannableString applySpans(String text) {
-        SpannableString out = MircColors.toSpannable(text);
-        //return Message.applyUrlSpans(out);
-        return out;
-    }
-
-    public static SpannableString applyUrlSpans(SpannableString text) {
-        String originalText = text.toString();
-        int index = originalText.indexOf("http");
-        while (index != -1) {
-            int endIndex = originalText.indexOf(" ", index);
-            Log.d("SL", Integer.toString(endIndex));
-            if (endIndex == -1) {
-                endIndex = text.length();
-            }
-            String url = originalText.substring(index, endIndex);
-            if (URLUtil.isValidUrl(url)) {
-                text.setSpan(new URLSpan(url), index, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            }
-            index = originalText.indexOf("http", endIndex);
-        }
-        return text;
-    }
-
-    public static SpannableString applyUrlSpans(String text) {
-        return Message.applyUrlSpans(new SpannableString(text));
+    private static SpannableString applySpans(String text) {
+        return MircColors.toSpannable(text);
     }
 }

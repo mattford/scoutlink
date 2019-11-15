@@ -1,6 +1,8 @@
 package uk.org.mattford.scoutlink.adapter;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -18,7 +20,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.SpannableString;
 import android.text.util.Linkify;
-import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -31,17 +33,14 @@ public class MessageListAdapter extends ArrayAdapter<LinearLayout> {
 	private Context context;
     private Message previousMessage;
     private Conversation conversation;
-		
-	public MessageListAdapter(Context context, Conversation conv) {
+	MessageListAdapter(Context context, Conversation conv) {
 		super(context, 0);
 
 		this.context = context;
 		this.messages = new ArrayList<>();
 		this.conversation = conv;
 
-		LinkedList<Message> messagesSnapshot = new LinkedList<>();
-		messagesSnapshot.addAll(conv.getMessages());
-
+		LinkedList<Message> messagesSnapshot = new LinkedList<>(conv.getMessages());
 		loadLoggedMessages(messagesSnapshot);
 	}
 
@@ -57,14 +56,13 @@ public class MessageListAdapter extends ArrayAdapter<LinearLayout> {
 	private void loadLoggedMessages(List<Message> messages) {
 		Settings settings = new Settings(context);
 		if (conversation == null ||
-				conversation.getType() == Conversation.TYPE_SERVER ||
-				!settings.getBoolean("logging_enabled", true) ||
-				!settings.getBoolean("load_previous_messages_on_join", true)) {
-
+			conversation.getType() == Conversation.TYPE_SERVER ||
+			!settings.getBoolean("logging_enabled", true) ||
+			!settings.getBoolean("load_previous_messages_on_join", true)
+		) {
             for (Message msg : messages) {
                 addMessage(msg);
             }
-
 			return;
 		}
 
@@ -77,13 +75,11 @@ public class MessageListAdapter extends ArrayAdapter<LinearLayout> {
 		new Thread(() -> {
 			List<LogMessage> logMessages = logDatabase.logMessageDao().findConversationMessagesWithLimit(conversation.getName(), messagesToLoad);
 			(new Handler(Looper.getMainLooper())).post(() -> {
-				addMessage(new Message(context.getString(R.string.current_session_header)), true);
 				for (LogMessage msg : logMessages) {
 					Message message = new Message(msg.sender, msg.message, msg.date, null);
 					addMessage(message, true);
 				}
 				if (!messages.isEmpty()) {
-					addMessage(new Message(context.getString(R.string.previous_session_header)), true);
 					for (Message msg : messages) {
 						addMessage(msg);
 					}
@@ -94,28 +90,50 @@ public class MessageListAdapter extends ArrayAdapter<LinearLayout> {
 	public void addMessage(Message message) {
 		addMessage(message, false);
 	}
-	public void addMessage(Message message, boolean prepend) {
-        if (!prepend && message.getSender() != null &&
-                previousMessage != null &&
-                previousMessage.getSender() != null &&
-                previousMessage.getSender().equalsIgnoreCase(message.getSender())) {
+	private void addMessage(Message message, boolean prepend) {
+		if (previousMessage == null || (
+				previousMessage.getTimestamp() != null &&
+						message.getTimestamp() != null &&
+						message.getTimestamp().getDay() != previousMessage.getTimestamp().getDay()
+				)
+		) {
+			LayoutInflater li = LayoutInflater.from(context);
+			LinearLayout dateDivider = (LinearLayout)li.inflate(R.layout.message_list_date_divider, null);
+			TextView dateString = dateDivider.findViewById(R.id.date);
+			DateFormat dateFormat = android.text.format.DateFormat.getMediumDateFormat(context);
+			String formattedDate = dateFormat.format(message.getTimestamp());
+			dateString.setText(formattedDate);
+			messages.add(dateDivider);
+		}
 
-            SpannableString msg = Message.applySpans(message.getText());
-            LinearLayout lastLayout = getItem(getCount()-1);
-            TextView lastTextView = lastLayout.findViewById(R.id.message);
-            lastTextView.append("\n");
-            lastTextView.append(msg);
-            Linkify.addLinks(lastTextView, Linkify.WEB_URLS);
-        } else {
-            LinearLayout msgView = message.renderTextView(context);
-            if (prepend) {
-            	messages.add(0, msgView);
-			} else {
-				messages.add(msgView);
-			}
-        }
+		LinearLayout msgView = message.renderTextView(context);
+		if (!prepend && !this.showMessageMetadata(message, previousMessage)) {
+			msgView.findViewById(R.id.message_metadata).setVisibility(View.GONE);
+		}
+		if (prepend) {
+			messages.add(0, msgView);
+		} else {
+			messages.add(msgView);
+		}
+
         previousMessage = message;
 		notifyDataSetChanged();
+	}
+
+	private boolean showMessageMetadata(Message message, Message previousMessage) {
+		if (previousMessage == null ||
+				(message.getSender() != null &&
+						(previousMessage.getSender() == null ||
+						previousMessage.getSender().equalsIgnoreCase(message.getSender()))) ||
+				(message.getTimestamp() != null && previousMessage.getTimestamp() == null)
+		) {
+			return true;
+		}
+
+		// If more that 30 mins has passed, show the meta regardless
+		Date previousTimestamp = previousMessage.getTimestamp();
+		Date currentTimestamp = message.getTimestamp();
+		return (currentTimestamp.getTime() - previousTimestamp.getTime() > (1000 * 60 * 30));
 	}
 
 	@Override
@@ -135,7 +153,6 @@ public class MessageListAdapter extends ArrayAdapter<LinearLayout> {
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		convertView = getItem(position);
-		return convertView;
+		return getItem(position);
 	}
 }

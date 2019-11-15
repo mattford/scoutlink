@@ -32,7 +32,11 @@ public class ConversationsPagerAdapter extends FragmentStatePagerAdapter {
 		}
 
 	}
-	
+
+	public LinkedList<ConversationInfo> getConversations() {
+		return this.conversations;
+	}
+
 	@Override
 	public int getItemPosition(Object object) {
 		return POSITION_NONE;
@@ -116,7 +120,4 @@ public class ConversationsPagerAdapter extends FragmentStatePagerAdapter {
 
         return frag;
     }
-
-    
-
 }

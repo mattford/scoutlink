@@ -1,43 +1,111 @@
-<LinearLayout
+
+<androidx.drawerlayout.widget.DrawerLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+    android:layout_height="fill_parent"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
-    <com.viewpagerindicator.TitlePageIndicator
-        android:background="#0F1B5F"
-        android:id="@+id/nav_titles"
-        android:layout_height="wrap_content"
-        android:layout_width="fill_parent" />
-    <androidx.viewpager.widget.ViewPager
-       android:id="@+id/pager"
-       android:layout_width="fill_parent"
-       android:layout_height="0dp"
-       android:layout_weight="1"
-       android:layout_margin="0px"
-       android:unselectedAlpha="100"
-       android:padding="0dp" />
+    android:id="@+id/conversations_container"
+    >
+
     <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="50dp"
-        android:paddingStart="5dp"
-        android:paddingEnd="5dp"
-        android:orientation="horizontal"
-        android:layout_gravity="center">
-        <EditText
-            android:id="@+id/input"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:inputType="text"
-            android:hint="@string/send_message_hint"
-            />
-        <Button
-            android:id="@+id/send_button"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_gravity="center"
-            android:onClick="onSendButtonClick"
-            android:background="@drawable/ic_send"
-            />
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+            <uk.org.mattford.scoutlink.views.NonSwipeableViewPager
+               android:id="@+id/pager"
+               android:layout_width="fill_parent"
+               android:layout_height="0dp"
+               android:layout_weight="1"
+               android:layout_margin="0px"
+               android:unselectedAlpha="100"
+               android:padding="0dp" />
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="50dp"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:orientation="horizontal"
+                android:layout_gravity="center">
+                <EditText
+                    android:id="@+id/input"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:inputType="text"
+                    android:hint="@string/send_message_hint"/>
+                <Button
+                    android:id="@+id/send_button"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center"
+                    android:onClick="onSendButtonClick"
+                    android:background="@drawable/ic_send"
+                    />
+            </LinearLayout>
     </LinearLayout>
-</LinearLayout>
+
+    <!-- Container for contents of drawer - use NavigationView to make configuration easier -->
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/conversation_list_fragment_container"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:theme="@style/DarkDrawer">
+        <LinearLayout
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/connection_status"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:text="Fordy"
+                    />
+
+                <ImageButton
+                    android:layout_gravity="end"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_settings"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:contentDescription="@string/action_settings"
+                    android:onClick="onSettingsButtonClick" />
+            </LinearLayout>
+            <FrameLayout android:id="@+id/conversation_list_fragment" android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="0dp" />
+        </LinearLayout>
+
+    </com.google.android.material.navigation.NavigationView>
+
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/user_list_fragment_container"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="end"
+        android:theme="@style/DarkDrawer">
+        <FrameLayout android:id="@+id/user_list_fragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </com.google.android.material.navigation.NavigationView>
+
+</androidx.drawerlayout.widget.DrawerLayout>

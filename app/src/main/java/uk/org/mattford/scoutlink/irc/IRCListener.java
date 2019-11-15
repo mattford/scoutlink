@@ -337,7 +337,7 @@ public class IRCListener extends ListenerAdapter {
 
     public void onJoin(JoinEvent event) {
         if (event.getUserHostmask().getNick().equalsIgnoreCase(event.getBot().getNick())) {
-            Conversation conv = new Channel(event.getChannel().getName());
+            Conversation conv = new Channel(event.getChannel().getName(), event.getChannel());
             server.addConversation(conv);
             Intent intent = new Intent().setAction(Broadcast.NEW_CONVERSATION).putExtra("target", event.getChannel().getName()).putExtra("selected", true);
             service.sendBroadcast(intent);
@@ -518,21 +518,6 @@ public class IRCListener extends ListenerAdapter {
 
     public void onRemoveTopicProtection(RemoveTopicProtectionEvent event) {
         Message msg = new Message(service.getString(R.string.message_unset_topicprotect, event.getUserHostmask().getNick()));
-        server.getConversation(event.getChannel().getName()).addMessage(msg);
-        service.onNewMessage(event.getChannel().getName());
-    }
-
-    @SuppressWarnings("unchecked")
-    public void onUserList(UserListEvent event) {
-        if (!event.isComplete()) {
-            return;
-        }
-        String userList = "";
-        for (User user : event.getUsers()) {
-            userList = userList + " " + user.getNick();
-        }
-        Message msg = new Message("Users on channel: " + userList);
-        msg.setColour(service.getResources().getColor(R.color.scoutlink_blue));
         server.getConversation(event.getChannel().getName()).addMessage(msg);
         service.onNewMessage(event.getChannel().getName());
     }

@@ -29,7 +29,8 @@
 
         <service android:name=".irc.IRCService" />
 
-        <activity android:name=".activity.ConversationsActivity" />
+        <activity android:name=".activity.ConversationsActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".activity.JoinActivity"
             android:label="@string/join_activity_label"

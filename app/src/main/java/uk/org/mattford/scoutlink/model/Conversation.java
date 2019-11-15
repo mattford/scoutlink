@@ -1,5 +1,10 @@
 package uk.org.mattford.scoutlink.model;
 
+import com.google.common.collect.ImmutableSortedSet;
+
+import org.pircbotx.User;
+
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class Conversation {
@@ -37,6 +42,10 @@ public class Conversation {
 		Message message = buffer.pollFirst();
 		messages.add(message);
 		return message;
+	}
+
+	public ArrayList<User> getUsers() {
+		return new ArrayList<>();
 	}
 	
 	public boolean hasBuffer() {

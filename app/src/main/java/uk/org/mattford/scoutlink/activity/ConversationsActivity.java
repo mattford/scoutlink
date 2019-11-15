@@ -3,6 +3,12 @@ package uk.org.mattford.scoutlink.activity;
 import java.util.ArrayList;
 import java.util.Map;
 
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.room.Room;
 import uk.org.mattford.scoutlink.R;
 import uk.org.mattford.scoutlink.adapter.ConversationsPagerAdapter;
@@ -11,6 +17,8 @@ import uk.org.mattford.scoutlink.command.CommandParser;
 import uk.org.mattford.scoutlink.database.LogDatabase;
 import uk.org.mattford.scoutlink.database.entities.LogMessage;
 import uk.org.mattford.scoutlink.database.migrations.LogDatabaseMigrations;
+import uk.org.mattford.scoutlink.fragment.ConversationListFragment;
+import uk.org.mattford.scoutlink.fragment.UserListFragment;
 import uk.org.mattford.scoutlink.irc.IRCBinder;
 import uk.org.mattford.scoutlink.irc.IRCService;
 import uk.org.mattford.scoutlink.model.Broadcast;
@@ -29,6 +37,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
+import uk.org.mattford.scoutlink.views.NonSwipeableViewPager;
 
 import android.view.Menu;
 import android.view.MenuItem;
@@ -36,18 +45,15 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.viewpagerindicator.TitlePageIndicator;
-
-public class ConversationsActivity extends AppCompatActivity implements ServiceConnection {
+public class ConversationsActivity extends AppCompatActivity implements ServiceConnection, ConversationListFragment.OnConversationListFragmentInteractionListener, UserListFragment.OnUserListFragmentInteractionListener {
 	
 	private ConversationsPagerAdapter pagerAdapter;
-	private ViewPager pager;
+	private NonSwipeableViewPager pager;
 	private ConversationReceiver receiver;
 	private IRCBinder binder;
     private Settings settings;
     private LogDatabase db;
-
-    private TitlePageIndicator indicator;
+    private DrawerLayout drawerLayout;
 
 	private final int JOIN_CHANNEL_RESULT = 0;
 
@@ -60,47 +66,66 @@ public class ConversationsActivity extends AppCompatActivity implements ServiceC
 		super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_conversations);
 
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle("");
+        setSupportActionBar(toolbar);
+        ActionBar actionbar = getSupportActionBar();
+        actionbar.setDisplayHomeAsUpEnabled(true);
+        actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
+
         settings = new Settings(this);
 
-        pagerAdapter = new ConversationsPagerAdapter(getSupportFragmentManager(), this);
+        drawerLayout = findViewById(R.id.conversations_container);
 
+        pagerAdapter = new ConversationsPagerAdapter(getSupportFragmentManager(), this);
         pager = findViewById(R.id.pager);
         pager.setAdapter(pagerAdapter);
 
-        indicator = findViewById(R.id.nav_titles);
-        indicator.setViewPager(pager);
-
-        indicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-
-            private int currentPage = -1;
-
+        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, GravityCompat.END);
+        pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                ConversationsPagerAdapter.ConversationInfo info = pagerAdapter.getItemInfo(position);
+                drawerLayout.setDrawerLockMode(
+                    info != null && info.conv.getType() == Conversation.TYPE_CHANNEL ? DrawerLayout.LOCK_MODE_UNLOCKED : DrawerLayout.LOCK_MODE_LOCKED_CLOSED,
+                    GravityCompat.END
+                );
+            }
 
             @Override
             public void onPageSelected(int position) {
-                binder.getService().updateNotification();
-                if (currentPage != -1 && pagerAdapter.getItemInfo(currentPage) != null) {
-                    pagerAdapter.getItemInfo(currentPage).conv.setSelected(false);
-                }
-                currentPage = position;
-                pagerAdapter.getItemInfo(position).conv.setSelected(true);
-            }
+                ConversationsPagerAdapter.ConversationInfo info = pagerAdapter.getItemInfo(position);
+                drawerLayout.setDrawerLockMode(
+                    info != null && info.conv.getType() == Conversation.TYPE_CHANNEL ? DrawerLayout.LOCK_MODE_UNLOCKED : DrawerLayout.LOCK_MODE_LOCKED_CLOSED,
+                    GravityCompat.END
+                );            }
 
             @Override
             public void onPageScrollStateChanged(int state) {}
         });
-        
+
+        if (savedInstanceState == null) {
+            Fragment newFragment = new ConversationListFragment(pager);
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.add(R.id.conversation_list_fragment, newFragment).commit();
+
+            Fragment userListFragment = new UserListFragment(pager);
+            FragmentTransaction ft2 = getSupportFragmentManager().beginTransaction();
+            ft2.add(R.id.user_list_fragment, userListFragment).commit();
+        }
     }
 
 	/**
-	 * If this is not overridden, then ConversationsPagerAdapter retains old fragments when the activity is recreated.
+	 * If this is not overridden, then ConversationsPagerAdapter
+     * retains old fragments when the activity is recreated.
+     *
+     * TODO: Find a better way.
 	 */
 	@Override
 	protected void onSaveInstanceState(final Bundle outState) {
 	    // super.onSaveInstanceState(outState);
 	}
-	
+
 	public void onResume() {
 		super.onResume();
 
@@ -115,7 +140,7 @@ public class ConversationsActivity extends AppCompatActivity implements ServiceC
 		registerReceiver(this.receiver, new IntentFilter(Broadcast.INVITE));
 		registerReceiver(this.receiver, new IntentFilter(Broadcast.DISCONNECTED));
         registerReceiver(this.receiver, new IntentFilter(Broadcast.CONNECTED));
-		
+
 		Intent serviceIntent = new Intent(this, IRCService.class);
 		startService(serviceIntent);
 
@@ -219,10 +244,6 @@ public class ConversationsActivity extends AppCompatActivity implements ServiceC
         if (i == -1) {
             pagerAdapter.addConversation(conv);
         }
-
-		if (conv.isSelected() || selected) {
-            indicator.setCurrentItem(pagerAdapter.getItemByName(conv.getName()));
-        }
 		onConversationMessage(conv.getName());
 	}
 
@@ -320,10 +341,6 @@ public class ConversationsActivity extends AppCompatActivity implements ServiceC
         int id = item.getItemId();
         Intent intent;
         switch(id) {
-            case R.id.action_settings:
-                intent = new Intent(this, SettingsActivity.class);
-                startActivity(intent);
-                break;
             case R.id.action_close:
                 switch (conversation.getType()) {
                     case Conversation.TYPE_CHANNEL:
@@ -341,17 +358,14 @@ public class ConversationsActivity extends AppCompatActivity implements ServiceC
             case R.id.action_disconnect:
                 binder.getService().getBackgroundHandler().post(() -> binder.getService().getConnection().sendIRC().quitServer(settings.getString("quit_message", getString(R.string.default_quit_message))));
                 break;
+            case android.R.id.home:
+                drawerLayout.openDrawer(GravityCompat.START);
+                break;
             case R.id.action_userlist:
-                switch (conversation.getType()) {
-                    case Conversation.TYPE_CHANNEL:
-                        String chan = conversation.getName();
-                        intent = new Intent(this, UserListActivity.class);
-                        intent.putExtra("channel", chan);
-                        startActivity(intent);
-                        break;
-                    default:
-                        Toast.makeText(this, getResources().getString(R.string.userlist_not_on_channel), Toast.LENGTH_SHORT).show();
-                        break;
+                if (conversation.getType() == Conversation.TYPE_CHANNEL) {
+                    drawerLayout.openDrawer(GravityCompat.END);
+                } else {
+                    Toast.makeText(this, getResources().getString(R.string.userlist_not_on_channel), Toast.LENGTH_SHORT).show();
                 }
                 break;
             case R.id.action_join:
@@ -385,16 +399,31 @@ public class ConversationsActivity extends AppCompatActivity implements ServiceC
         }
         return super.onOptionsItemSelected(item);
     }
-    
+
+    public void onSettingsButtonClick(View view) {
+        startActivity(new Intent(this, SettingsActivity.class));
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case JOIN_CHANNEL_RESULT:
-                if (resultCode == RESULT_OK) {
-                    String channel = data.getStringExtra("target");
-                    joinChannelBuffer.add(channel);
-                }
-                break;
+	    super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == JOIN_CHANNEL_RESULT && resultCode == RESULT_OK) {
+            String channel = data.getStringExtra("target");
+            joinChannelBuffer.add(channel);
         }
+    }
+
+    @Override
+    public void onConversationSelected(ConversationsPagerAdapter.ConversationInfo item) {
+	    int i = pagerAdapter.getItemByName(item.conv.getName());
+	    if (i != -1) {
+	        pager.setCurrentItem(i);
+        }
+	    drawerLayout.closeDrawer(GravityCompat.START);
+    }
+
+    @Override
+    public void onUserListItemClicked(String username) {
+        Toast.makeText(this, username, Toast.LENGTH_LONG).show();
     }
 }
