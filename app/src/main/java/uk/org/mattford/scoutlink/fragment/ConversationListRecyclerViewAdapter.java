@@ -49,9 +49,14 @@ public class ConversationListRecyclerViewAdapter extends RecyclerView.Adapter<Co
         holder.mItem = this.adapter.getItemInfo(position);
         holder.mConversationNameView.setText(holder.mItem.conv.getName());
 
-        // TODO: Actually implement this
-        holder.mUnreadMessagesView.setText("5");
-        holder.mUnreadMessagesView.setVisibility(View.VISIBLE);
+        holder.mItem.setOnUnreadMessagesChangedListener(unreadMessagesCount -> {
+            holder.mUnreadMessagesView.setText(Integer.toString(unreadMessagesCount));
+            holder.mUnreadMessagesView.setVisibility(unreadMessagesCount == 0 ? View.GONE : View.VISIBLE);
+        });
+
+        int unreadMessagesCount = holder.mItem.unreadMessages;
+        holder.mUnreadMessagesView.setText(Integer.toString(unreadMessagesCount));
+        holder.mUnreadMessagesView.setVisibility(unreadMessagesCount == 0 ? View.GONE : View.VISIBLE);
 
         if (position == pager.getCurrentItem()) {
             holder.mConversationNameView.setTextColor(holder.mConversationNameView.getContext().getResources().getColor(R.color.scoutlink_orange));

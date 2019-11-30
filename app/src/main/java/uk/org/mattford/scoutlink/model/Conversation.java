@@ -1,7 +1,5 @@
 package uk.org.mattford.scoutlink.model;
 
-import com.google.common.collect.ImmutableSortedSet;
-
 import org.pircbotx.User;
 
 import java.util.ArrayList;
@@ -13,7 +11,7 @@ public class Conversation {
 	private int type;
 	private LinkedList<Message> messages;
 	private LinkedList<Message> buffer;
-	
+
 	public final static int TYPE_CHANNEL = 0;
 	public final static int TYPE_QUERY = 1;
 	public final static int TYPE_SERVER = 2;
@@ -37,7 +35,7 @@ public class Conversation {
 	public LinkedList<Message> getBuffer() {
 		return this.buffer;
 	}
-	
+
 	public Message pollBuffer() {
 		Message message = buffer.pollFirst();
 		messages.add(message);
@@ -46,6 +44,10 @@ public class Conversation {
 
 	public ArrayList<User> getUsers() {
 		return new ArrayList<>();
+	}
+
+	public org.pircbotx.Channel getChannel() {
+		return null;
 	}
 	
 	public boolean hasBuffer() {

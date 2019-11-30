@@ -2,6 +2,10 @@ package uk.org.mattford.scoutlink.irc;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Typeface;
+import android.text.SpannableString;
+import android.text.style.StyleSpan;
+import android.util.Log;
 
 import org.pircbotx.ChannelListEntry;
 import org.pircbotx.PircBotX;
@@ -47,7 +51,6 @@ import org.pircbotx.hooks.events.SetSecretEvent;
 import org.pircbotx.hooks.events.SetTopicProtectionEvent;
 import org.pircbotx.hooks.events.SuperOpEvent;
 import org.pircbotx.hooks.events.TopicEvent;
-import org.pircbotx.hooks.events.UserListEvent;
 import org.pircbotx.hooks.events.UserModeEvent;
 import org.pircbotx.hooks.events.VersionEvent;
 import org.pircbotx.hooks.events.VoiceEvent;
@@ -191,7 +194,6 @@ public class IRCListener extends ListenerAdapter {
     }
 
     public void onConnect(ConnectEvent event) {
-        //event.getBot().sendIRC().listChannels();
         service.onConnect();
     }
 
@@ -271,8 +273,10 @@ public class IRCListener extends ListenerAdapter {
     }
 
     public void onAction(ActionEvent event) {
-        //Message msg = new Message(service.getString(R.string.message_action, event.getUserHostmask().getNick(), event.getAction()));
-        Message msg = new Message(event.getUserHostmask().getNick(), service.getString(R.string.message_action, event.getAction()));
+        SpannableString text = new SpannableString("* " + event.getUserHostmask().getNick() + " " + event.getAction());
+        text.setSpan(new StyleSpan(Typeface.ITALIC), 0, text.length(), 0);
+        Message msg = new Message(event.getUserHostmask().getNick(), text.toString());
+        msg.setColour(service.getResources().getColor(R.color.scoutlink_blue_dark));
         if (event.getChannel() != null) {
             server.getConversation(event.getChannel().getName()).addMessage(msg);
             service.onNewMessage(event.getChannel().getName());

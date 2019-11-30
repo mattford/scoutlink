@@ -16,6 +16,7 @@ import org.pircbotx.Channel;
 import uk.org.mattford.scoutlink.R;
 import uk.org.mattford.scoutlink.irc.IRCBinder;
 import uk.org.mattford.scoutlink.irc.IRCService;
+import uk.org.mattford.scoutlink.model.Server;
 
 public class ChannelSettingsActivity extends AppCompatActivity implements ServiceConnection {
 
@@ -41,7 +42,7 @@ public class ChannelSettingsActivity extends AppCompatActivity implements Servic
 
     protected void populateValues() {
         String channelName = getIntent().getStringExtra("channelName");
-        final Channel channel = binder.getService().getConnection().getUserChannelDao().getChannel(channelName);
+        final Channel channel = Server.getInstance().getConnection().getUserChannelDao().getChannel(channelName);
 
         Handler backgroundHandler = binder.getService().getBackgroundHandler();
         final EditText et = findViewById(R.id.settings_topic);

@@ -14,6 +14,10 @@ public class Channel extends Conversation {
 		this.channel = channel;
 	}
 
+	public org.pircbotx.Channel getChannel() {
+		return this.channel;
+	}
+
 	public ArrayList<User> getUsers() {
 		return new ArrayList<>(this.channel.getUsers());
 	}

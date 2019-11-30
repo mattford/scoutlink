@@ -24,13 +24,48 @@ public class ConversationsPagerAdapter extends FragmentStatePagerAdapter {
 		public Conversation conv;
 		public MessageListAdapter adapter;
 		public MessageListFragment frag;
+		public int unreadMessages;
+		public boolean active;
+		private OnUnreadMessagesChangedListener listener;
 		
 		public ConversationInfo(Conversation conv) {
 			this.conv = conv;
 			this.adapter = new MessageListAdapter(context, conv);
 			this.frag = null;
+			this.active = false;
+			this.unreadMessages = 0;
 		}
 
+		public void setActive(boolean active) {
+			if (!active) {
+				this.resetUnreadMessages();
+			}
+			this.active = active;
+		}
+
+		public void resetUnreadMessages() {
+			this.unreadMessages = 0;
+			onUnreadMessagesChanged();
+		}
+
+		public void incrementUnreadMessages() {
+			this.unreadMessages++;
+			onUnreadMessagesChanged();
+		}
+
+		public void setOnUnreadMessagesChangedListener(OnUnreadMessagesChangedListener listener) {
+			this.listener = listener;
+		}
+
+		public void onUnreadMessagesChanged() {
+			if (this.listener != null) {
+				listener.onUnreadMessagesChanged(this.unreadMessages);
+			}
+		}
+	}
+
+	public interface OnUnreadMessagesChangedListener {
+		public void onUnreadMessagesChanged(int unreadMessagesCount);
 	}
 
 	public LinkedList<ConversationInfo> getConversations() {
@@ -41,7 +76,16 @@ public class ConversationsPagerAdapter extends FragmentStatePagerAdapter {
 	public int getItemPosition(Object object) {
 		return POSITION_NONE;
 	}
-	
+
+	public void setActiveItem(int position) {
+		for (int i = 0; i < conversations.size(); i++) {
+			ConversationInfo conversationInfo = conversations.get(i);
+			if (conversationInfo != null) {
+				conversationInfo.setActive(i == position);
+			}
+		}
+	}
+
 	@Override
     public Fragment getItem(int i) {
         return getView(i);
@@ -78,9 +122,10 @@ public class ConversationsPagerAdapter extends FragmentStatePagerAdapter {
     	return info;
     }
 
-    public void addConversation(Conversation conv) {
+    public int addConversation(Conversation conv) {
     	conversations.add(new ConversationInfo(conv));
     	notifyDataSetChanged();
+    	return conversations.size() - 1;
     }
     
     public void removeConversation(int position) {

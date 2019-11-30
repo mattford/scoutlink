@@ -44,10 +44,10 @@ public class UserListActivity extends ListActivity implements AdapterView.OnItem
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_userlist);
-		channel = getIntent().getStringExtra("channel");
-        prefixes = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.prefixes)));
-        getListView().setOnItemClickListener(this);
+		//setContentView(R.layout.activity_userlist);
+//		channel = getIntent().getStringExtra("channel");
+//        prefixes = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.prefixes)));
+//        getListView().setOnItemClickListener(this);
 	}
 
     public void onResume() {

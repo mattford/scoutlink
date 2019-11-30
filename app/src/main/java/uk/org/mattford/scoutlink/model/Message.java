@@ -118,9 +118,7 @@ public class Message {
         }
 
         if (backgroundColour != null) {
-            GradientDrawable bg = (GradientDrawable) messageView.getBackground();
-            bg = (GradientDrawable)bg.mutate();
-            bg.setColor(backgroundColour);
+            view.setBackgroundColor(backgroundColour);
         }
 
         if (getTimestamp() != null) {

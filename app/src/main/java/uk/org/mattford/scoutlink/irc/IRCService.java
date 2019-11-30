@@ -30,11 +30,10 @@ import android.os.HandlerThread;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
+import android.util.Log;
 import android.widget.Toast;
 
 public class IRCService extends Service {
-	
-	private PircBotX irc;
 	private Settings settings;
 	private Server server;
 
@@ -53,7 +52,7 @@ public class IRCService extends Service {
 	private ArrayList<Intent> queuedIntents = new ArrayList<>();
 
 	public void onCreate() {
-		this.server = new Server();
+		this.server = Server.getInstance();
 		
 		this.settings = new Settings(this);
 		this.updateNotification();
@@ -106,7 +105,7 @@ public class IRCService extends Service {
 	}
 	
 	public PircBotX getConnection() {
-		return this.irc;
+		return this.server.getConnection();
 	}
 	
 	public void connect() {
@@ -139,7 +138,8 @@ public class IRCService extends Service {
             }
         }
 
-        this.irc = new PircBotX(config.buildConfiguration());
+        PircBotX irc = new PircBotX(config.buildConfiguration());
+        server.setConnection(irc);
         final Context context = this;
         new Thread(() -> {
             try {
@@ -225,12 +225,15 @@ public class IRCService extends Service {
 	}
 
     public void onConnect() {
+        Intent intent = new Intent(Broadcast.CONNECTED);
+        sendBroadcast(intent);
+
         getServer().setStatus(Server.STATUS_CONNECTED);
         setIsForeground(true);
         updateNotification();
 
         if (!settings.getString("nickserv_user", "").equals("") && !settings.getString("nickserv_password", "").equals("")) {
-            getBackgroundHandler().post(() -> irc.send().message("NickServ", "LOGIN "+settings.getString("nickserv_user", "")+" "+settings.getString("nickserv_password", "")));
+            getBackgroundHandler().post(() -> getConnection().send().message("NickServ", "LOGIN "+settings.getString("nickserv_user", "")+" "+settings.getString("nickserv_password", "")));
         }
 
         String[] commands = settings.getStringArray("command_on_connect");
@@ -238,7 +241,7 @@ public class IRCService extends Service {
             getBackgroundHandler().post(() -> {
                 for (String command : commands) {
                     if (command.startsWith("/")) {
-                        command = command.substring(1, command.length());
+                        command = command.substring(1);
                     }
                     getConnection().sendRaw().rawLineNow(command);
                 }
@@ -258,9 +261,6 @@ public class IRCService extends Service {
             processIntent(queuedIntent);
         }
         queuedIntents.clear();
-
-        Intent intent = new Intent(Broadcast.CONNECTED);
-        sendBroadcast(intent);
     }
 
     // Deprecated, use sendToast()
