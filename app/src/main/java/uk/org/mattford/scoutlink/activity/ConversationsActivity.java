@@ -43,6 +43,7 @@ import uk.org.mattford.scoutlink.views.NonSwipeableViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -55,8 +56,9 @@ public class ConversationsActivity extends AppCompatActivity implements ServiceC
 	private IRCBinder binder;
     private Settings settings;
     private LogDatabase db;
-    private DrawerLayout drawerLayout;
+    private ViewGroup viewContainer;
     private Server server;
+    private boolean hasDrawerLayout;
 
 	private final int JOIN_CHANNEL_RESULT = 0;
 
@@ -69,44 +71,50 @@ public class ConversationsActivity extends AppCompatActivity implements ServiceC
 		super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_conversations);
 
+        settings = new Settings(this);
+
+        viewContainer = findViewById(R.id.conversations_container);
+        hasDrawerLayout = viewContainer instanceof DrawerLayout;
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
         ActionBar actionbar = getSupportActionBar();
-        actionbar.setDisplayHomeAsUpEnabled(true);
+        actionbar.setDisplayHomeAsUpEnabled(hasDrawerLayout);
         actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
-
-        settings = new Settings(this);
-
-        drawerLayout = findViewById(R.id.conversations_container);
 
         pagerAdapter = new ConversationsPagerAdapter(getSupportFragmentManager(), this);
         pager = findViewById(R.id.pager);
         pager.setAdapter(pagerAdapter);
 
-        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, GravityCompat.END);
+        if (hasDrawerLayout) {
+            ((DrawerLayout) viewContainer).setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, GravityCompat.END);
+        }
         pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                ConversationsPagerAdapter.ConversationInfo info = pagerAdapter.getItemInfo(position);
-                pagerAdapter.setActiveItem(position);
-                drawerLayout.setDrawerLockMode(
-                    info != null && info.conv.getType() == Conversation.TYPE_CHANNEL ? DrawerLayout.LOCK_MODE_UNLOCKED : DrawerLayout.LOCK_MODE_LOCKED_CLOSED,
-                    GravityCompat.END
-                );
+                this.handlePageChange(position);
             }
 
             @Override
             public void onPageSelected(int position) {
-                ConversationsPagerAdapter.ConversationInfo info = pagerAdapter.getItemInfo(position);
-                pagerAdapter.setActiveItem(position);
-                drawerLayout.setDrawerLockMode(
-                    info != null && info.conv.getType() == Conversation.TYPE_CHANNEL ? DrawerLayout.LOCK_MODE_UNLOCKED : DrawerLayout.LOCK_MODE_LOCKED_CLOSED,
-                    GravityCompat.END
-                );            }
+                this.handlePageChange(position);
+            }
 
             @Override
             public void onPageScrollStateChanged(int state) {}
+
+            private void handlePageChange(int position) {
+                ConversationsPagerAdapter.ConversationInfo info = pagerAdapter.getItemInfo(position);
+                pagerAdapter.setActiveItem(position);
+                toolbar.setTitle(info.conv.getName());
+                if (hasDrawerLayout) {
+                    ((DrawerLayout) viewContainer).setDrawerLockMode(
+                            info != null && info.conv.getType() == Conversation.TYPE_CHANNEL ? DrawerLayout.LOCK_MODE_UNLOCKED : DrawerLayout.LOCK_MODE_LOCKED_CLOSED,
+                            GravityCompat.END
+                    );
+                }
+            }
         });
 
         if (savedInstanceState == null) {
@@ -119,17 +127,6 @@ public class ConversationsActivity extends AppCompatActivity implements ServiceC
             ft2.add(R.id.user_list_fragment, userListFragment).commit();
         }
     }
-
-	/**
-	 * If this is not overridden, then ConversationsPagerAdapter
-     * retains old fragments when the activity is recreated.
-     *
-     * TODO: Find a better way.
-	 */
-	@Override
-	protected void onSaveInstanceState(final Bundle outState) {
-	    // super.onSaveInstanceState(outState);
-	}
 
 	public void onResume() {
 		super.onResume();
@@ -344,6 +341,9 @@ public class ConversationsActivity extends AppCompatActivity implements ServiceC
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.conversations, menu);
+        if (!hasDrawerLayout) {
+            menu.findItem(R.id.action_userlist).setVisible(false);
+        }
         return true;
     }
 
@@ -373,11 +373,15 @@ public class ConversationsActivity extends AppCompatActivity implements ServiceC
                 binder.getService().getBackgroundHandler().post(() -> server.getConnection().sendIRC().quitServer(settings.getString("quit_message", getString(R.string.default_quit_message))));
                 break;
             case android.R.id.home:
-                drawerLayout.openDrawer(GravityCompat.START);
+                if (hasDrawerLayout) {
+                    ((DrawerLayout) viewContainer).openDrawer(GravityCompat.START);
+                }
                 break;
             case R.id.action_userlist:
                 if (conversation.getType() == Conversation.TYPE_CHANNEL) {
-                    drawerLayout.openDrawer(GravityCompat.END);
+                    if (hasDrawerLayout) {
+                        ((DrawerLayout) viewContainer).openDrawer(GravityCompat.END);
+                    }
                 } else {
                     Toast.makeText(this, getResources().getString(R.string.userlist_not_on_channel), Toast.LENGTH_SHORT).show();
                 }
@@ -433,7 +437,9 @@ public class ConversationsActivity extends AppCompatActivity implements ServiceC
 	    if (i != -1) {
 	        pager.setCurrentItem(i);
         }
-	    drawerLayout.closeDrawer(GravityCompat.START);
+	    if (hasDrawerLayout) {
+            ((DrawerLayout) viewContainer).closeDrawer(GravityCompat.START);
+        }
     }
 
     @Override
