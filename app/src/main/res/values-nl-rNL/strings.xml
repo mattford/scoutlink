@@ -34,7 +34,7 @@
     <!-- Text displayed on the "Send" button in a channel -->
     <string name="label_send_message_button">Verzenden</string>
     <!-- Text shown when no text has been typed into the new message box on a channel. -->
-    <string name="send_message_hint">Type om een bericht te versturen</string>
+    <string name="send_message_hint">Typ om een bericht te versturen</string>
 
     <!-- Displayed when no messages have been sent to a channel yet (very rarely seen as channels almost immediately display topic info when joined) -->
     <string name="message_list_no_messages">Er zijn nog geen berichten, praat een beetje!</string>
