@@ -25,6 +25,8 @@ public class ConversationListFragment extends Fragment {
     private OnConversationListFragmentInteractionListener mListener;
     private ViewPager pager;
 
+    public ConversationListFragment() {}
+
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).

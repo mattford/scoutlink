@@ -1,23 +1,28 @@
 package uk.org.mattford.scoutlink.command.handler;
 
+import android.content.Context;
+import android.os.Handler;
+
 import uk.org.mattford.scoutlink.command.CommandHandler;
 import uk.org.mattford.scoutlink.irc.IRCService;
 import uk.org.mattford.scoutlink.model.Conversation;
 import uk.org.mattford.scoutlink.model.Settings;
 
 public class QuitHandler extends CommandHandler {
+	public QuitHandler(Context context) {
+		super(context);
+	}
 
 	@Override
-	public void execute(String[] params, Conversation conversation,
-			IRCService service) {
+	public void execute(String[] params, Conversation conversation, Handler backgroundHandler) {
 		
 		if (params.length > 1) {
 			String reason = params[1];
-			service.getBackgroundHandler().post(() -> service.getConnection().sendIRC().quitServer(reason));
+			backgroundHandler.post(() -> server.getConnection().sendIRC().quitServer(reason));
 		} else {
-			Settings settings = new Settings(service);
+			Settings settings = new Settings(context);
 			String quitMessage = settings.getString("quit_message");
-			service.getBackgroundHandler().post(() -> service.getConnection().sendIRC().quitServer(quitMessage));
+			backgroundHandler.post(() -> server.getConnection().sendIRC().quitServer(quitMessage));
 		}
 	}
 

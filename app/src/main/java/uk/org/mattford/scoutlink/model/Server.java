@@ -72,6 +72,10 @@ public class Server {
 		return null;
 	}
 
+	public boolean isConnected() {
+		return this.bot != null && this.bot.isConnected();
+	}
+
 	public PircBotX getConnection() {
 		return this.bot;
 	}

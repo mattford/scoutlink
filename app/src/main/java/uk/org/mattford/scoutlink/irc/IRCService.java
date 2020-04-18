@@ -7,7 +7,9 @@ import java.util.List;
 import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
 
+import androidx.annotation.Nullable;
 import uk.org.mattford.scoutlink.R;
+import uk.org.mattford.scoutlink.ScoutlinkApplication;
 import uk.org.mattford.scoutlink.activity.ConversationsActivity;
 import uk.org.mattford.scoutlink.model.Broadcast;
 import uk.org.mattford.scoutlink.model.Conversation;
@@ -23,22 +25,17 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
-import android.os.Binder;
 import android.os.Build;
-import android.os.Handler;
-import android.os.HandlerThread;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
-import android.util.Log;
+import android.os.Handler;
+import android.os.IBinder;
 import android.widget.Toast;
 
 public class IRCService extends Service {
 	private Settings settings;
 	private Server server;
-
-	private Handler handler;
-	private HandlerThread handlerThread;
 
 	private final int NOTIFICATION_ID = 1;
 	private final String NOTIFICATION_CHANNEL_ID = "uk.org.mattford.scoutlink.IRCService.NOTIFICATION_CHANNEL";
@@ -53,15 +50,22 @@ public class IRCService extends Service {
 
 	public void onCreate() {
 		this.server = Server.getInstance();
-		
 		this.settings = new Settings(this);
 		this.updateNotification();
 	}
+
+	@Override
+	public void onDestroy() {
+        super.onDestroy();
+    }
 		
 	public int onStartCommand(Intent intent, int flags, int startId) {
-
         if (intent != null && intent.getAction() != null) {
-            if (isConnected()) {
+            if (Broadcast.CONNECT.equals(intent.getAction())) {
+                if (!isConnected()) {
+                    connect();
+                }
+            } else if (isConnected()) {
                 processIntent(intent);
             } else {
                 queuedIntents.add(intent);
@@ -70,7 +74,13 @@ public class IRCService extends Service {
 		return START_STICKY;
 	}
 
-	private void processIntent(Intent intent) {
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
+    }
+
+    private void processIntent(Intent intent) {
         String action = intent.getAction();
         if (action != null) {
             switch (action) {
@@ -158,11 +168,6 @@ public class IRCService extends Service {
 
     public void onDisconnect() {
         updateNotification();
-        if (handlerThread != null) {
-            handlerThread.quit();
-            handlerThread = null;
-            handler = null;
-        }
         setIsForeground(false);
         server.setStatus(Server.STATUS_DISCONNECTED);
         Intent intent = new Intent().setAction(Broadcast.DISCONNECTED);
@@ -263,32 +268,13 @@ public class IRCService extends Service {
         queuedIntents.clear();
     }
 
-    // Deprecated, use sendToast()
-    public void onNickAlreadyInUse() {
-        sendToast(getString(R.string.nick_already_in_use));
-    }
-
     public void sendToast(final String text) {
         Handler mainThread = new Handler(getMainLooper());
-        final Context context = this;
-        mainThread.post(() -> Toast.makeText(context, text, Toast.LENGTH_LONG).show());
+        mainThread.post(() -> Toast.makeText(getApplicationContext(), text, Toast.LENGTH_LONG).show());
     }
 
-	@Override
-	public Binder onBind(Intent intent) {
-		return new IRCBinder(this);
-	}
-
-	public Handler getBackgroundHandler()
-    {
-        if (this.handler != null) {
-            return this.handler;
-        }
-        handlerThread = new HandlerThread("NetworkHandler");
-        handlerThread.start();
-        this.handler = new Handler(handlerThread.getLooper());
-
-        return this.handler;
+    private Handler getBackgroundHandler() {
+	    return ((ScoutlinkApplication)getApplication()).getBackgroundHandler();
     }
 
     private void createNotificationChannel() {

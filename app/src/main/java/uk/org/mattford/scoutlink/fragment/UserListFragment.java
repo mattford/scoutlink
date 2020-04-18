@@ -30,6 +30,8 @@ public class UserListFragment extends Fragment {
     private RecyclerView recyclerView;
     private UserListChangedBroadcastReceiver receiver;
 
+    public UserListFragment() {}
+
     public UserListFragment(ViewPager pager) {
         this.pager = pager;
         this.adapter = (ConversationsPagerAdapter)pager.getAdapter();

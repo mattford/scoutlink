@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.room.Room;
 import uk.org.mattford.scoutlink.R;
+import uk.org.mattford.scoutlink.ScoutlinkApplication;
 import uk.org.mattford.scoutlink.adapter.ConversationsPagerAdapter;
 import uk.org.mattford.scoutlink.adapter.MessageListAdapter;
 import uk.org.mattford.scoutlink.command.CommandParser;
@@ -19,7 +20,6 @@ import uk.org.mattford.scoutlink.database.entities.LogMessage;
 import uk.org.mattford.scoutlink.database.migrations.LogDatabaseMigrations;
 import uk.org.mattford.scoutlink.fragment.ConversationListFragment;
 import uk.org.mattford.scoutlink.fragment.UserListFragment;
-import uk.org.mattford.scoutlink.irc.IRCBinder;
 import uk.org.mattford.scoutlink.irc.IRCService;
 import uk.org.mattford.scoutlink.model.Broadcast;
 import uk.org.mattford.scoutlink.model.Conversation;
@@ -28,18 +28,17 @@ import uk.org.mattford.scoutlink.model.Server;
 import uk.org.mattford.scoutlink.model.Settings;
 import uk.org.mattford.scoutlink.receiver.ConversationReceiver;
 import android.app.AlertDialog;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.IBinder;
+import android.os.Handler;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 import uk.org.mattford.scoutlink.views.NonSwipeableViewPager;
 
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -48,17 +47,24 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class ConversationsActivity extends AppCompatActivity implements ServiceConnection, ConversationListFragment.OnConversationListFragmentInteractionListener, UserListFragment.OnUserListFragmentInteractionListener {
+import com.google.common.base.CharMatcher;
+
+import org.apache.commons.lang3.StringUtils;
+
+public class ConversationsActivity extends AppCompatActivity implements
+        ConversationListFragment.OnConversationListFragmentInteractionListener,
+        UserListFragment.OnUserListFragmentInteractionListener
+{
 	
 	private ConversationsPagerAdapter pagerAdapter;
 	private NonSwipeableViewPager pager;
 	private ConversationReceiver receiver;
-	private IRCBinder binder;
     private Settings settings;
     private LogDatabase db;
     private ViewGroup viewContainer;
     private Server server;
     private boolean hasDrawerLayout;
+    private Handler backgroundHandler;
 
 	private final int JOIN_CHANNEL_RESULT = 0;
 
@@ -132,6 +138,7 @@ public class ConversationsActivity extends AppCompatActivity implements ServiceC
 		super.onResume();
 
         server = Server.getInstance();
+        backgroundHandler = ((ScoutlinkApplication)getApplication()).getBackgroundHandler();
 
         db = Room.databaseBuilder(getApplicationContext(), LogDatabase.class, "logs")
                 .addMigrations(LogDatabaseMigrations.MIGRATION_0_1)
@@ -144,10 +151,6 @@ public class ConversationsActivity extends AppCompatActivity implements ServiceC
 		registerReceiver(this.receiver, new IntentFilter(Broadcast.INVITE));
 		registerReceiver(this.receiver, new IntentFilter(Broadcast.DISCONNECTED));
         registerReceiver(this.receiver, new IntentFilter(Broadcast.CONNECTED));
-
-		Intent serviceIntent = new Intent(this, IRCService.class);
-		startService(serviceIntent);
-		bindService(serviceIntent, this, 0);
 
         EditText newMessage = findViewById(R.id.input);
         newMessage.setOnEditorActionListener((v, actionId, event) -> {
@@ -170,8 +173,16 @@ public class ConversationsActivity extends AppCompatActivity implements ServiceC
                     .setNegativeButton(getString(R.string.no), null)
                     .show();
             settings.putBoolean("rules_viewed", true);
-
         }
+
+        if (server.getConnection() != null && server.getConnection().isConnected()) {
+            onConnect(false);
+            return;
+        }
+        ((TextView)findViewById(R.id.connection_status)).setText(R.string.connect_message);
+        Intent connectIntent = new Intent(getApplicationContext(), IRCService.class);
+        connectIntent.setAction(Broadcast.CONNECT);
+        startService(connectIntent);
 	}
 	
 	public void onPause() {
@@ -182,7 +193,6 @@ public class ConversationsActivity extends AppCompatActivity implements ServiceC
         }
 
 		unregisterReceiver(this.receiver);
-		unbindService(this);
 	}
 	
 	public void onSendButtonClick(View v) {
@@ -193,7 +203,7 @@ public class ConversationsActivity extends AppCompatActivity implements ServiceC
 			return;
 		}
 		if (message.startsWith("/")) {
-			CommandParser.getInstance().parse(message, conv, this.binder.getService());
+			CommandParser.getInstance(getApplicationContext()).parse(message, conv, backgroundHandler);
 		} else {
             if (conv.getType() == (Conversation.TYPE_SERVER)) {
                 Message msg = new Message(getString(R.string.send_message_in_server_window));
@@ -205,7 +215,7 @@ public class ConversationsActivity extends AppCompatActivity implements ServiceC
                 msg.setAlignment(Message.ALIGN_RIGHT);
                 conv.addMessage(msg);
 
-                binder.getService().getBackgroundHandler().post(() -> server.getConnection().sendIRC().message(conv.getName(), message));
+                backgroundHandler.post(() -> server.getConnection().sendIRC().message(conv.getName(), message));
             }
             onConversationMessage(conv.getName());
 		}
@@ -216,19 +226,44 @@ public class ConversationsActivity extends AppCompatActivity implements ServiceC
 		AlertDialog.Builder adb = new AlertDialog.Builder(this);
 		adb.setTitle(getString(R.string.activity_invite_title));
 		adb.setMessage(getString(R.string.invited_to_channel, channel));
-		adb.setPositiveButton("Yes", (dialog, which) -> binder.getService().getBackgroundHandler().post(() -> server.getConnection().sendIRC().joinChannel(channel)));
+		adb.setPositiveButton("Yes", (dialog, which) -> backgroundHandler.post(() -> server.getConnection().sendIRC().joinChannel(channel)));
 		adb.setNegativeButton("No", (dialog, which) -> {});
 		adb.show();
 	}
 
-    public void onConnect() {
-        if (settings.getBoolean("channel_list_on_connect", false)) {
-            Intent channelListIntent = new Intent(this, ChannelListActivity.class);
-            ArrayList<String> channels = server.getChannelList();
-            channelListIntent.putStringArrayListExtra("channels", channels);
-            startActivityForResult(channelListIntent, JOIN_CHANNEL_RESULT);
+    public void onConnect(boolean initialConnection) {
+	    if (initialConnection) {
+            if (settings.getBoolean("channel_list_on_connect", false)) {
+                Intent channelListIntent = new Intent(this, ChannelListActivity.class);
+                ArrayList<String> channels = server.getChannelList();
+                channelListIntent.putStringArrayListExtra("channels", channels);
+                startActivityForResult(channelListIntent, JOIN_CHANNEL_RESULT);
+            }
+            ((TextView) findViewById(R.id.connection_status)).setText(server.getConnection().getNick());
         }
-        ((TextView)findViewById(R.id.connection_status)).setText(server.getConnection().getNick());
+
+        /*
+         * The activity has resumed and the service has been bound, get all the messages we missed...
+         */
+        for (Map.Entry<String, Conversation> conv : server.getConversations().entrySet()) {
+            int i = pagerAdapter.getItemByName(conv.getKey());
+            if (i == -1) {
+                onNewConversation(conv.getKey());
+            }
+            onConversationMessage(conv.getKey());
+        }
+        // Join any channels we want to join...
+        if (!joinChannelBuffer.isEmpty()) {
+            backgroundHandler.post(() -> {
+                for (String channel : joinChannelBuffer) {
+                    server.getConnection().sendIRC().joinChannel(channel);
+                }
+                joinChannelBuffer.clear();
+            });
+        }
+        Intent updateNotificationIntent = new Intent();
+        updateNotificationIntent.setAction(Broadcast.UPDATE_NOTIFICATION);
+        sendBroadcast(updateNotificationIntent);
     }
 
 	public void onDisconnect() {
@@ -286,7 +321,7 @@ public class ConversationsActivity extends AppCompatActivity implements ServiceC
 			Message msg = conv.pollBuffer();
             // Don't log server window messages
 			if (conv.getType() != Conversation.TYPE_SERVER) {
-                binder.getService().getBackgroundHandler().post(() -> {
+                backgroundHandler.post(() -> {
                     LogMessage logMessage = new LogMessage(
                         name,
                         conv.getType(),
@@ -299,42 +334,9 @@ public class ConversationsActivity extends AppCompatActivity implements ServiceC
 			adapter.addMessage(msg);
 		}
 
-        binder.getService().updateNotification();
-	}
-
-	@Override
-	public void onServiceConnected(ComponentName name, IBinder service) {
-		this.binder = (IRCBinder)service;
-        if (server.getConnection() == null || !server.getConnection().isConnected()) {
-            ((TextView)findViewById(R.id.connection_status)).setText(R.string.connect_message);
-        	binder.getService().connect();
-        } else {
-        	/*
-        	 * The activity has resumed and the service has been bound, get all the messages we missed...
-        	 */
-    		for (Map.Entry<String, Conversation> conv : binder.getService().getServer().getConversations().entrySet()) {
-    			int i = pagerAdapter.getItemByName(conv.getKey());
-    			if (i == -1) {
-    				onNewConversation(conv.getKey());
-    			}
-    			onConversationMessage(conv.getKey());
-    		}
-            // Join any channels we want to join...
-            if (!joinChannelBuffer.isEmpty()) {
-    		    binder.getService().getBackgroundHandler().post(() -> {
-                    for (String channel : joinChannelBuffer) {
-                        server.getConnection().sendIRC().joinChannel(channel);
-                    }
-                    joinChannelBuffer.clear();
-                });
-            }
-            binder.getService().updateNotification();
-        }
-	}
-
-	@Override
-	public void onServiceDisconnected(ComponentName name) {
-		this.binder = null;
+        Intent updateNotificationIntent = new Intent();
+        updateNotificationIntent.setAction(Broadcast.UPDATE_NOTIFICATION);
+        sendBroadcast(updateNotificationIntent);
 	}
 	
     @Override
@@ -358,7 +360,7 @@ public class ConversationsActivity extends AppCompatActivity implements ServiceC
             case R.id.action_close:
                 switch (conversation.getType()) {
                     case Conversation.TYPE_CHANNEL:
-                        binder.getService().getBackgroundHandler().post(() -> server.getConnection().getUserChannelDao().getChannel(conversation.getName()).send().part());
+                        backgroundHandler.post(() -> server.getConnection().getUserChannelDao().getChannel(conversation.getName()).send().part());
                         break;
                     case Conversation.TYPE_QUERY:
                         server.removeConversation(conversation.getName());
@@ -370,7 +372,7 @@ public class ConversationsActivity extends AppCompatActivity implements ServiceC
                 }
                 break;
             case R.id.action_disconnect:
-                binder.getService().getBackgroundHandler().post(() -> server.getConnection().sendIRC().quitServer(settings.getString("quit_message", getString(R.string.default_quit_message))));
+                backgroundHandler.post(() -> server.getConnection().sendIRC().quitServer(settings.getString("quit_message", getString(R.string.default_quit_message))));
                 break;
             case android.R.id.home:
                 if (hasDrawerLayout) {
@@ -397,7 +399,7 @@ public class ConversationsActivity extends AppCompatActivity implements ServiceC
             case R.id.action_channel_settings:
                 if (conversation.getType() != Conversation.TYPE_CHANNEL) {
                     Toast.makeText(this, getString(R.string.channel_settings_not_channel), Toast.LENGTH_SHORT).show();
-                } else if (server.getConnection().getUserChannelDao().getChannel(conversation.getName()).isOp(binder.getService().getConnection().getUserBot())) {
+                } else if (server.getConnection().getUserChannelDao().getChannel(conversation.getName()).isOp(server.getConnection().getUserBot())) {
                     intent = new Intent(this, ChannelSettingsActivity.class);
                     intent.putExtra("channelName", conversation.getName());
                     startActivity(intent);

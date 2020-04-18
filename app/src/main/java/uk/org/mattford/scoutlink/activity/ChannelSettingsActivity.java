@@ -1,11 +1,7 @@
 package uk.org.mattford.scoutlink.activity;
 
-import android.content.ComponentName;
-import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
 import androidx.appcompat.app.AppCompatActivity;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -14,37 +10,22 @@ import android.widget.EditText;
 import org.pircbotx.Channel;
 
 import uk.org.mattford.scoutlink.R;
-import uk.org.mattford.scoutlink.irc.IRCBinder;
-import uk.org.mattford.scoutlink.irc.IRCService;
+import uk.org.mattford.scoutlink.ScoutlinkApplication;
 import uk.org.mattford.scoutlink.model.Server;
 
-public class ChannelSettingsActivity extends AppCompatActivity implements ServiceConnection {
-
-    private IRCBinder binder;
-
+public class ChannelSettingsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_channel_settings);
-    }
-
-    public void onResume() {
-        super.onResume();
-        Intent intent = new Intent(this, IRCService.class);
-        startService(intent);
-        bindService(intent, this, 0);
-    }
-
-    public void onPause() {
-        super.onPause();
-        unbindService(this);
+        populateValues();
     }
 
     protected void populateValues() {
         String channelName = getIntent().getStringExtra("channelName");
         final Channel channel = Server.getInstance().getConnection().getUserChannelDao().getChannel(channelName);
 
-        Handler backgroundHandler = binder.getService().getBackgroundHandler();
+        Handler backgroundHandler = ((ScoutlinkApplication)getApplication()).getBackgroundHandler();
         final EditText et = findViewById(R.id.settings_topic);
         et.setText(channel.getTopic());
 
@@ -143,16 +124,5 @@ public class ChannelSettingsActivity extends AppCompatActivity implements Servic
                 key.setText("");
             }
         });
-    }
-
-    @Override
-    public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-        this.binder = (IRCBinder)iBinder;
-        populateValues();
-    }
-
-    @Override
-    public void onServiceDisconnected(ComponentName componentName) {
-        this.binder = null;
     }
 }

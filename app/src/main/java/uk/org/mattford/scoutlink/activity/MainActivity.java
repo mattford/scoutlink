@@ -2,16 +2,12 @@ package uk.org.mattford.scoutlink.activity;
 
 import uk.org.mattford.scoutlink.R;
 import uk.org.mattford.scoutlink.ScoutlinkApplication;
-import uk.org.mattford.scoutlink.irc.IRCBinder;
-import uk.org.mattford.scoutlink.irc.IRCService;
+import uk.org.mattford.scoutlink.model.Server;
 import uk.org.mattford.scoutlink.model.Settings;
 import uk.org.mattford.scoutlink.utils.Validator;
 
-import android.content.ComponentName;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.IBinder;
 import androidx.appcompat.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,10 +16,9 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity implements ServiceConnection {
+public class MainActivity extends AppCompatActivity {
 	
 	private Settings settings;
-	private IRCBinder binder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +39,16 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
     public void onResume() {
     	super.onResume();
 
+        /*
+         * If we are already connected, send the user to ConversationsActivity
+         */
+    	if (Server.getInstance().isConnected()) {
+            Intent intent = new Intent(this, ConversationsActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            finish();
+        }
+
         EditText nick = findViewById(R.id.nickname);
         nick.setText(settings.getString("nickname", ""));
         nick.setOnEditorActionListener((v, actionId, event) -> {
@@ -55,21 +60,12 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         });
         CheckBox showChannelList = findViewById(R.id.channel_list_on_connect);
         showChannelList.setChecked(settings.getBoolean("channel_list_on_connect", true));
-        Intent service = new Intent(this, IRCService.class);
-        startService(service);
-        bindService(service, this, 0);
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        unbindService(this);
     }
 
     public void connectClick(View v) {
     	String nick = ((EditText)findViewById(R.id.nickname)).getText().toString();
         boolean channelListOnConnect = ((CheckBox)findViewById(R.id.channel_list_on_connect)).isChecked();
-    	if (nick == null || !Validator.isValidNickname(nick)) {
+    	if ("".equals(nick) || !Validator.isValidNickname(nick)) {
             Toast.makeText(this, getString(R.string.nickname_not_valid), Toast.LENGTH_LONG).show();
             return;
         }
@@ -113,20 +109,4 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         }
         return super.onOptionsItemSelected(item);
     }
-
-	@Override
-	public void onServiceConnected(ComponentName name, IBinder service) {
-		binder = (IRCBinder)service;
-		if (binder.getService().isConnected()) {
-			Intent intent = new Intent(this, ConversationsActivity.class);
-			startActivity(intent);
-			finish();
-		}
-	}
-
-	@Override
-	public void onServiceDisconnected(ComponentName name) {
-		this.binder = null;	
-	}
-
 }

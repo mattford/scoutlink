@@ -1,25 +1,21 @@
 package uk.org.mattford.scoutlink.activity;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import uk.org.mattford.scoutlink.R;
-import uk.org.mattford.scoutlink.irc.IRCBinder;
-import uk.org.mattford.scoutlink.irc.IRCService;
+import uk.org.mattford.scoutlink.ScoutlinkApplication;
 import uk.org.mattford.scoutlink.model.Broadcast;
 import uk.org.mattford.scoutlink.model.Message;
 import uk.org.mattford.scoutlink.model.Query;
+import uk.org.mattford.scoutlink.model.Server;
 import uk.org.mattford.scoutlink.receiver.UserListReceiver;
 
 import android.app.AlertDialog;
 import android.app.ListActivity;
-import android.content.ComponentName;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
 import android.view.ContextMenu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -32,36 +28,34 @@ import android.widget.Toast;
 import com.google.common.collect.ImmutableSortedSet;
 
 import org.pircbotx.Channel;
-import org.pircbotx.exception.DaoException;
+import org.pircbotx.UserChannelDao;
 
-public class UserListActivity extends ListActivity implements AdapterView.OnItemClickListener, ServiceConnection {
-
-    private IRCBinder binder;
-    private String channel;
+public class UserListActivity extends ListActivity implements AdapterView.OnItemClickListener {
     private ArrayList<String> prefixes;
     private int lastSelectedItem; // I don't like this, but it works.
     private UserListReceiver receiver;
+    private String channel;
+    private Server server;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		//setContentView(R.layout.activity_userlist);
-//		channel = getIntent().getStringExtra("channel");
+		channel = getIntent().getStringExtra("channel");
 //        prefixes = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.prefixes)));
 //        getListView().setOnItemClickListener(this);
+        server = Server.getInstance();
 	}
 
     public void onResume() {
         super.onResume();
         this.receiver = new UserListReceiver(this, channel);
         registerReceiver(receiver, new IntentFilter(Broadcast.USER_LIST_CHANGED));
-        Intent intent = new Intent(this, IRCService.class);
-        bindService(intent, this, 0);
+        refreshUserList();
     }
 
     public void onPause() {
         super.onPause();
         unregisterReceiver(receiver);
-        unbindService(this);
     }
 
     @Override
@@ -69,10 +63,10 @@ public class UserListActivity extends ListActivity implements AdapterView.OnItem
         menu.clear();
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.userlist_context_menu, menu);
-        if (binder.getService().getConnection().getUserChannelDao().getChannel(channel).isOp(binder.getService().getConnection().getUserBot())) {
+        if (server.getConnection().getUserChannelDao().getChannel(channel).isOp(server.getConnection().getUserBot())) {
             inflater.inflate(R.menu.userlist_context_menu_chanop, menu);
         }
-        if (binder.getService().getConnection().getUserBot().isIrcop()) {
+        if (server.getConnection().getUserBot().isIrcop()) {
             inflater.inflate(R.menu.userlist_context_menu_ircop, menu);
         }
         super.onCreateContextMenu(menu, v, menuInfo);
@@ -84,9 +78,9 @@ public class UserListActivity extends ListActivity implements AdapterView.OnItem
         if (prefixes.contains(String.valueOf(nick.charAt(0)))) {
             nick = nick.substring(1);
         }
-        final Channel chan = binder.getService().getConnection().getUserChannelDao().getChannel(channel);
-        final org.pircbotx.User user = binder.getService().getConnection().getUserChannelDao().getUser(nick);
-        Handler backgroundHandler = binder.getService().getBackgroundHandler();
+        final Channel chan = server.getConnection().getUserChannelDao().getChannel(channel);
+        final org.pircbotx.User user = server.getConnection().getUserChannelDao().getUser(nick);
+        Handler backgroundHandler = ((ScoutlinkApplication)getApplication()).getBackgroundHandler();
         if (user == null) {
             closeContextMenu();
             return false;
@@ -95,7 +89,7 @@ public class UserListActivity extends ListActivity implements AdapterView.OnItem
             case R.id.action_userlist_query:
                 Query query = new Query(user.getNick());
                 query.setSelected(true);
-                binder.getService().getServer().addConversation(query);
+                server.addConversation(query);
                 Intent cIntent = new Intent().setAction(Broadcast.NEW_CONVERSATION).putExtra("target", user.getNick()).putExtra("selected", true);
                 sendBroadcast(cIntent);
                 finish();
@@ -106,10 +100,11 @@ public class UserListActivity extends ListActivity implements AdapterView.OnItem
                         .setTitle(R.string.action_notice_dialog_title)
                         .setView(inputNotice)
                         .setPositiveButton("Send", (dialog, whichButton) -> {
-                            backgroundHandler.post(() -> binder.getService().getConnection().sendIRC().notice(user.getNick(), inputNotice.getText().toString()));
+                            backgroundHandler.post(() -> server.getConnection().sendIRC().notice(user.getNick(), inputNotice.getText().toString()));
                             Message msg = new Message("-> -"+user.getNick()+"-", inputNotice.getText().toString());
-                            binder.getService().getServer().getConversation(channel).addMessage(msg);
-                            binder.getService().onNewMessage(channel);
+                            server.getConversation(channel).addMessage(msg);
+                            Intent intent = new Intent().setAction(Broadcast.NEW_MESSAGE).putExtra("target", channel);
+                            sendBroadcast(intent);
                         })
                         .setNegativeButton("Cancel", (dialog, whichButton) -> {})
                         .show();
@@ -128,7 +123,7 @@ public class UserListActivity extends ListActivity implements AdapterView.OnItem
                 new AlertDialog.Builder(this)
                         .setTitle(R.string.action_kill_dialog_title)
                         .setView(inputKill)
-                        .setPositiveButton("Kill", (dialog, whichButton) -> backgroundHandler.post(() -> binder.getService().getConnection().sendRaw().rawLineNow("KILL " + user.getNick() + " " + inputKill.getText().toString())))
+                        .setPositiveButton("Kill", (dialog, whichButton) -> backgroundHandler.post(() -> server.getConnection().sendRaw().rawLineNow("KILL " + user.getNick() + " " + inputKill.getText().toString())))
                         .setNegativeButton("Cancel", (dialog, whichButton) -> {})
                         .show();
                 break;
@@ -174,45 +169,34 @@ public class UserListActivity extends ListActivity implements AdapterView.OnItem
         unregisterForContextMenu(view);
     }
 
-    @Override
-    public void onServiceConnected(ComponentName name, IBinder service) {
-        binder = (IRCBinder) service;
-        refreshUserList();
-    }
-
     public void refreshUserList() {
         closeContextMenu();
         lastSelectedItem = -1;
-        IRCService srvc = binder.getService();
+        UserChannelDao userChannelDao = Server.getInstance().getConnection().getUserChannelDao();
         ArrayList<String> userList = new ArrayList<>();
-        try {
-            Channel chan = srvc.getConnection().getUserChannelDao().getChannel(channel);
-            ImmutableSortedSet<org.pircbotx.User> users = chan.getUsers();
-            for (org.pircbotx.User user : users) {
-                if  (chan.isOwner(user)) {
-                    userList.add("~"+user.getNick());
-                } else if (chan.isSuperOp(user)) {
-                    userList.add("&"+user.getNick());
-                } else if (chan.isOp(user)) {
-                    userList.add("@"+user.getNick());
-                } else if (chan.isHalfOp(user)) {
-                    userList.add("%"+user.getNick());
-                } else if (chan.hasVoice(user)) {
-                    userList.add("+"+user.getNick());
-                } else {
-                    userList.add(user.getNick());
-                }
+
+        Channel chan = userChannelDao.getChannel(channel);
+        ImmutableSortedSet<org.pircbotx.User> users = chan.getUsers();
+        for (org.pircbotx.User user : users) {
+            if  (chan.isOwner(user)) {
+                userList.add("~"+user.getNick());
+            } else if (chan.isSuperOp(user)) {
+                userList.add("&"+user.getNick());
+            } else if (chan.isOp(user)) {
+                userList.add("@"+user.getNick());
+            } else if (chan.isHalfOp(user)) {
+                userList.add("%"+user.getNick());
+            } else if (chan.hasVoice(user)) {
+                userList.add("+"+user.getNick());
+            } else {
+                userList.add(user.getNick());
             }
-        } catch (DaoException dex) {
-            Toast.makeText(this, getString(R.string.failed_to_load_user_list), Toast.LENGTH_LONG).show();
-            return;
         }
 
-        setListAdapter(new ArrayAdapter<>(this, R.layout.user_list_item, userList));
-    }
+//            Toast.makeText(this, getString(R.string.failed_to_load_user_list), Toast.LENGTH_LONG).show();
+//            return;
 
-    @Override
-    public void onServiceDisconnected(ComponentName name) {
-        binder = null;
+
+        setListAdapter(new ArrayAdapter<>(this, R.layout.user_list_item, userList));
     }
 }

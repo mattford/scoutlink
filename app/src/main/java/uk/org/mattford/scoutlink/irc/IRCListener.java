@@ -5,7 +5,6 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.text.SpannableString;
 import android.text.style.StyleSpan;
-import android.util.Log;
 
 import org.pircbotx.ChannelListEntry;
 import org.pircbotx.PircBotX;
@@ -144,19 +143,19 @@ public class IRCListener extends ListenerAdapter {
         }
     }
 
-    public void onMessageNotSent(MessageNotSentEvent event) {
+    private void onMessageNotSent(MessageNotSentEvent event) {
         Message msg = new Message(event.getMessage());
         msg.setColour(Color.RED);
         server.getConversation(event.getChannel()).addMessage(msg);
         service.onNewMessage(event.getChannel());
     }
 
-    public void onJoinFailed(JoinFailedEvent event) {
+    private void onJoinFailed(JoinFailedEvent event) {
         String message = service.getString(R.string.message_join_failed, event.getChannel(), event.getMessage());
         service.sendToast(message);
     }
 
-    public void onNotify(NotifyEvent event) {
+    private void onNotify(NotifyEvent event) {
         String text = "";
         switch (event.getType()) {
             case NotifyEvent.TYPE_ONLINE:
@@ -189,7 +188,7 @@ public class IRCListener extends ListenerAdapter {
     }
 
     public void onNickAlreadyInUse(NickAlreadyInUseEvent event) {
-        service.onNickAlreadyInUse();
+        service.sendToast(service.getString(R.string.nick_already_in_use));
         event.getBot().sendIRC().quitServer();
     }
 
