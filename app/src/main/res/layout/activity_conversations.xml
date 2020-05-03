@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="fill_parent"
     android:layout_width="fill_parent"
-    android:id="@+id/conversations_container"
+    android:id="@+id/conversations_drawer_container"
     >
 
     <LinearLayout
@@ -18,8 +18,9 @@
             android:background="?attr/colorPrimary"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
 
-            <uk.org.mattford.scoutlink.views.NonSwipeableViewPager
-               android:id="@+id/pager"
+            <androidx.fragment.app.FragmentContainerView
+                android:name="uk.org.mattford.scoutlink.fragment.MessageListFragment"
+               android:id="@+id/conversation_view"
                android:layout_width="fill_parent"
                android:layout_height="0dp"
                android:layout_weight="1"
@@ -54,12 +55,12 @@
 
     <!-- Container for contents of drawer - use NavigationView to make configuration easier -->
     <com.google.android.material.navigation.NavigationView
-        android:id="@+id/conversation_list_fragment_container"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:theme="@style/DarkDrawer">
         <LinearLayout
+            android:id="@+id/conversation_list_fragment_container"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:layout_width="match_parent"
@@ -90,7 +91,10 @@
                     android:contentDescription="@string/action_settings"
                     android:onClick="onSettingsButtonClick" />
             </LinearLayout>
-            <FrameLayout android:id="@+id/conversation_list_fragment" android:layout_weight="1"
+            <androidx.fragment.app.FragmentContainerView
+                android:name="uk.org.mattford.scoutlink.fragment.ConversationListFragment"
+                android:id="@+id/conversation_list_fragment"
+                android:layout_weight="1"
                 android:layout_width="match_parent"
                 android:layout_height="0dp" />
 
@@ -113,12 +117,13 @@
     </com.google.android.material.navigation.NavigationView>
 
     <com.google.android.material.navigation.NavigationView
-        android:id="@+id/user_list_fragment_container"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="end"
         android:theme="@style/DarkDrawer">
-        <FrameLayout android:id="@+id/user_list_fragment"
+        <androidx.fragment.app.FragmentContainerView
+            android:name="uk.org.mattford.scoutlink.fragment.UserListFragment"
+            android:id="@+id/user_list_fragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </com.google.android.material.navigation.NavigationView>

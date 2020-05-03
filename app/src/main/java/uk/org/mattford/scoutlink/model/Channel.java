@@ -1,7 +1,5 @@
 package uk.org.mattford.scoutlink.model;
 
-import org.pircbotx.User;
-
 import java.util.ArrayList;
 
 public class Channel extends Conversation {
@@ -12,13 +10,15 @@ public class Channel extends Conversation {
 		super(name);
 		setType(TYPE_CHANNEL);
 		this.channel = channel;
+		onUserListChanged();
 	}
 
 	public org.pircbotx.Channel getChannel() {
 		return this.channel;
 	}
 
-	public ArrayList<User> getUsers() {
-		return new ArrayList<>(this.channel.getUsers());
+	@Override
+	public void onUserListChanged() {
+		usersLiveData.postValue(new ArrayList<>(this.channel.getUsers()));
 	}
 }

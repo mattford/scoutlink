@@ -2,6 +2,7 @@ package uk.org.mattford.scoutlink.activity;
 
 import uk.org.mattford.scoutlink.R;
 import uk.org.mattford.scoutlink.ScoutlinkApplication;
+import uk.org.mattford.scoutlink.databinding.ActivityMainBinding;
 import uk.org.mattford.scoutlink.model.Server;
 import uk.org.mattford.scoutlink.model.Settings;
 import uk.org.mattford.scoutlink.utils.Validator;
@@ -17,13 +18,13 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
-	
+	private ActivityMainBinding binding;
 	private Settings settings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
         ((ScoutlinkApplication) getApplication()).getTracker(ScoutlinkApplication.TrackerName.APP_TRACKER);
         this.settings = new Settings(this);
 
@@ -32,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
         } catch (NullPointerException e) {
             // Not a big deal, so let's just get on with our lives
         }
-        setContentView(R.layout.activity_main);
+        setContentView(binding.getRoot());
     }
 
     @Override
@@ -49,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
             finish();
         }
 
-        EditText nick = findViewById(R.id.nickname);
+        EditText nick = binding.nickname;
         nick.setText(settings.getString("nickname", ""));
         nick.setOnEditorActionListener((v, actionId, event) -> {
             if (event == null) {
@@ -58,13 +59,13 @@ public class MainActivity extends AppCompatActivity {
             }
             return false;
         });
-        CheckBox showChannelList = findViewById(R.id.channel_list_on_connect);
+        CheckBox showChannelList = binding.channelListOnConnect;
         showChannelList.setChecked(settings.getBoolean("channel_list_on_connect", true));
     }
 
     public void connectClick(View v) {
-    	String nick = ((EditText)findViewById(R.id.nickname)).getText().toString();
-        boolean channelListOnConnect = ((CheckBox)findViewById(R.id.channel_list_on_connect)).isChecked();
+    	String nick = binding.nickname.getText().toString();
+        boolean channelListOnConnect = binding.channelListOnConnect.isChecked();
     	if ("".equals(nick) || !Validator.isValidNickname(nick)) {
             Toast.makeText(this, getString(R.string.nickname_not_valid), Toast.LENGTH_LONG).show();
             return;

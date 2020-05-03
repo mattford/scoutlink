@@ -1,124 +1,179 @@
 package uk.org.mattford.scoutlink.fragment;
 
-import android.content.BroadcastReceiver;
+import android.app.AlertDialog;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.os.Handler;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.PopupMenu;
 
+import org.pircbotx.Channel;
 import org.pircbotx.User;
 
-import java.util.ArrayList;
-
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager.widget.ViewPager;
 import uk.org.mattford.scoutlink.R;
-import uk.org.mattford.scoutlink.adapter.ConversationsPagerAdapter;
-import uk.org.mattford.scoutlink.model.Broadcast;
+import uk.org.mattford.scoutlink.ScoutlinkApplication;
+import uk.org.mattford.scoutlink.adapter.UserListRecyclerViewAdapter;
+import uk.org.mattford.scoutlink.model.Conversation;
+import uk.org.mattford.scoutlink.model.Message;
+import uk.org.mattford.scoutlink.model.Query;
+import uk.org.mattford.scoutlink.model.Server;
+import uk.org.mattford.scoutlink.viewmodel.ConversationListViewModel;
 
-public class UserListFragment extends Fragment {
-    private OnUserListFragmentInteractionListener mListener;
-    private ViewPager pager;
-    private ConversationsPagerAdapter adapter;
+public class UserListFragment extends Fragment implements PopupMenu.OnMenuItemClickListener, UserListRecyclerViewAdapter.OnUserListItemClickListener {
     private RecyclerView recyclerView;
-    private UserListChangedBroadcastReceiver receiver;
+    private User selectedUser;
+    private ConversationListViewModel viewModel;
+    private Server server;
 
-    public UserListFragment() {}
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        server = Server.getInstance();
+        viewModel = new ViewModelProvider(requireActivity()).get(ConversationListViewModel.class);
+        setHasOptionsMenu(true);
+    }
 
-    public UserListFragment(ViewPager pager) {
-        this.pager = pager;
-        this.adapter = (ConversationsPagerAdapter)pager.getAdapter();
-        this.pager.addOnAdapterChangeListener((viewPager, oldAdapter, newAdapter) -> this.adapter = (ConversationsPagerAdapter)newAdapter);
-        this.pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                populateUsersForItem(position);
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        viewModel.getActiveConversation().observe(getViewLifecycleOwner(), activeConversation -> {
+            if (activeConversation == null) {
+                return;
             }
-
-            @Override
-            public void onPageSelected(int position) {
-                populateUsersForItem(position);
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {}
+            activeConversation.getUsers().observe(getViewLifecycleOwner(), users -> {
+                recyclerView.setAdapter(new UserListRecyclerViewAdapter(users, activeConversation.getChannel(), this));
+            });
         });
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        receiver = new UserListFragment.UserListChangedBroadcastReceiver();
-        getActivity().registerReceiver(receiver, new IntentFilter(Broadcast.USER_LIST_CHANGED));
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        getActivity().unregisterReceiver(receiver);
-    }
-
-    private void populateUsersForItem(int i) {
-        ConversationsPagerAdapter.ConversationInfo info = this.adapter.getItemInfo(i);
-        if (info != null) {
-            ArrayList<User> users = info.conv.getUsers();
-            recyclerView.setAdapter(new UserListRecyclerViewAdapter(users, info.conv.getChannel(), mListener));
-        }
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_user_list, container, false);
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
             recyclerView = (RecyclerView) view;
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            populateUsersForItem(pager.getCurrentItem());
         }
         return view;
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnUserListFragmentInteractionListener) {
-            mListener = (OnUserListFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+    private void showPopup(View view) {
+        PopupMenu popup = new PopupMenu(requireActivity().getApplicationContext(), view);
+        MenuInflater inflater = popup.getMenuInflater();
+        Menu menu = popup.getMenu();
+        menu.clear();
+        inflater.inflate(R.menu.userlist_context_menu, menu);
+        Conversation activeConversation = viewModel.getActiveConversation().getValue();
+        if (activeConversation != null &&
+                activeConversation.getChannel() != null &&
+                activeConversation.getChannel().isOp(server.getConnection().getUserBot())
+        ) {
+            inflater.inflate(R.menu.userlist_context_menu_chanop, menu);
         }
+        if (server.getConnection().getUserBot().isIrcop()) {
+            inflater.inflate(R.menu.userlist_context_menu_ircop, menu);
+        }
+        popup.setOnMenuItemClickListener(this);
+        popup.show();
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    public interface OnUserListFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onUserListItemClicked(String username);
-    }
-
-    private class UserListChangedBroadcastReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (Broadcast.USER_LIST_CHANGED.equals(intent.getAction())) {
-                String targetChannel = intent.getStringExtra("target");
-                int pos = adapter.getItemByName(targetChannel);
-                if (pos != -1) {
-                    populateUsersForItem(pos);
-                }
-            }
+    public boolean onMenuItemClick(MenuItem item) {
+        Conversation activeConversation = viewModel.getActiveConversation().getValue();
+        Handler backgroundHandler = ((ScoutlinkApplication)requireActivity().getApplication()).getBackgroundHandler();
+        if (selectedUser == null || activeConversation == null) {
+            return false;
         }
+        Channel channel = activeConversation.getChannel();
+        String nickname = selectedUser.getNick();
+        switch (item.getItemId()) {
+            case R.id.action_userlist_query:
+                Query query = new Query(selectedUser.getNick());
+                server.addConversation(query);
+                break;
+            case R.id.action_userlist_notice:
+                final EditText inputNotice = new EditText(getContext());
+                new AlertDialog.Builder(getContext())
+                        .setTitle(R.string.action_notice_dialog_title)
+                        .setView(inputNotice)
+                        .setPositiveButton("Send", (dialog, whichButton) -> {
+                            backgroundHandler.post(() -> server.getConnection().sendIRC().notice(nickname, inputNotice.getText().toString()));
+                            Message msg = new Message("-> -"+nickname+"-", inputNotice.getText().toString());
+                            activeConversation.addMessage(msg);
+                        })
+                        .setNegativeButton("Cancel", (dialog, whichButton) -> {})
+                        .show();
+                break;
+            case R.id.action_userlist_kick:
+                final EditText input = new EditText(getContext());
+                new AlertDialog.Builder(getContext())
+                        .setTitle(R.string.action_kick_dialog_title)
+                        .setView(input)
+                        .setPositiveButton("Kick", (dialog, whichButton) -> backgroundHandler.post(() -> channel.send().kick(selectedUser, input.getText().toString())))
+                        .setNegativeButton("Cancel", (dialog, whichButton) -> {})
+                        .show();
+                break;
+            case R.id.action_userlist_kill:
+                final EditText inputKill = new EditText(getContext());
+                new AlertDialog.Builder(getContext())
+                        .setTitle(R.string.action_kill_dialog_title)
+                        .setView(inputKill)
+                        .setPositiveButton("Kill", (dialog, whichButton) -> backgroundHandler.post(() -> server.getConnection().sendRaw().rawLineNow("KILL " + nickname + " " + inputKill.getText().toString())))
+                        .setNegativeButton("Cancel", (dialog, whichButton) -> {})
+                        .show();
+                break;
+            case R.id.action_userlist_op:
+                backgroundHandler.post(() -> channel.send().op(selectedUser));
+                break;
+            case R.id.action_userlist_deop:
+                backgroundHandler.post(() -> channel.send().deOp(selectedUser));
+                break;
+            case R.id.action_userlist_hop:
+                backgroundHandler.post(() -> channel.send().halfOp(selectedUser));
+                break;
+            case R.id.action_userlist_dehop:
+                backgroundHandler.post(() -> channel.send().deHalfOp(selectedUser));
+                break;
+            case R.id.action_userlist_owner:
+                backgroundHandler.post(() -> channel.send().owner(selectedUser));
+                break;
+            case R.id.action_userlist_deowner:
+                backgroundHandler.post(() -> channel.send().deOwner(selectedUser));
+                break;
+            case R.id.action_userlist_admin:
+                backgroundHandler.post(() -> channel.send().superOp(selectedUser));
+                break;
+            case R.id.action_userlist_deadmin:
+                backgroundHandler.post(() -> channel.send().deSuperOp(selectedUser));
+                break;
+            case R.id.action_userlist_voice:
+                backgroundHandler.post(() -> channel.send().voice(selectedUser));
+                break;
+            case R.id.action_userlist_devoice:
+                backgroundHandler.post(() -> channel.send().deVoice(selectedUser));
+                break;
+        }
+        return false;
+    }
+
+    @Override
+    public void onUserListItemClicked(View view, User user) {
+        selectedUser = user;
+        showPopup(view);
     }
 }

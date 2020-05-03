@@ -5,7 +5,7 @@ import android.os.Bundle;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Locale;
+import java.util.LinkedList;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -17,6 +17,7 @@ import uk.org.mattford.scoutlink.adapter.MessageListAdapter;
 import uk.org.mattford.scoutlink.database.LogDatabase;
 import uk.org.mattford.scoutlink.database.entities.LogMessage;
 import uk.org.mattford.scoutlink.database.migrations.LogDatabaseMigrations;
+import uk.org.mattford.scoutlink.fragment.MessageListFragment;
 import uk.org.mattford.scoutlink.model.Message;
 
 public class LogViewActivity extends AppCompatActivity {
@@ -52,7 +53,7 @@ public class LogViewActivity extends AppCompatActivity {
 
     private void loadMessagesFromChannel(String channelName) {
         logDatabase.logMessageDao().findByConversation(channelName).observe(this, (logMessages) -> {
-            ArrayList<Message> messages = new ArrayList<>();
+            LinkedList<Message> messages = new LinkedList<>();
             for (LogMessage msg : logMessages) {
                 Message newMsg = new Message(
                     msg.sender,
@@ -64,9 +65,9 @@ public class LogViewActivity extends AppCompatActivity {
             }
 
             MessageListAdapter adapter = new MessageListAdapter(this, messages);
-            MessageListFragment fragment = new MessageListFragment();
-            fragment.setListAdapter(adapter);
-            replaceFragment(fragment);
+//            MessageListFragment fragment = new MessageListFragment();
+//            fragment.setListAdapter(adapter);
+//            replaceFragment(fragment);
         });
     }
 

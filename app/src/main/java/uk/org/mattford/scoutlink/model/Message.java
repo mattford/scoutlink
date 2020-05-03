@@ -76,6 +76,8 @@ public class Message {
 		return text;
 	}
 
+	public SpannableString getFormattedText() { return applySpans(getText()); }
+
 	public void setText(String text) {
 		this.text = text;
 	}
@@ -88,51 +90,6 @@ public class Message {
         this.colour = colour;
     }
 
-	public LinearLayout renderTextView(final Context context) {
-	    LayoutInflater li = LayoutInflater.from(context);
-        SpannableString text = Message.applySpans(getText());
-        LinearLayout view = (LinearLayout) li.inflate(R.layout.message_list_item, null);
-        TextView senderView = view.findViewById(R.id.sender);
-        if (getSender() != null) {
-            senderView.setText(getSender());
-        } else {
-            senderView.setVisibility(View.GONE);
-        }
-
-        TextView messageView = view.findViewById(R.id.message);
-		messageView.setText(text);
-
-        if (getAlignment() == ALIGN_RIGHT) {
-            view.setGravity(Gravity.END);
-            messageView.setGravity(Gravity.END);
-        } else if (getAlignment() == ALIGN_CENTER) {
-            ViewGroup.LayoutParams params = messageView.getLayoutParams();
-            params.width = ViewGroup.LayoutParams.MATCH_PARENT;
-            messageView.setLayoutParams(params);
-            view.setGravity(Gravity.CENTER);
-            messageView.setGravity(Gravity.CENTER);
-        }
-
-        if (colour != null) {
-            messageView.setTextColor(colour);
-        }
-
-        if (backgroundColour != null) {
-            view.setBackgroundColor(backgroundColour);
-        }
-
-        if (getTimestamp() != null) {
-            if (dateFormat == null) {
-                dateFormat = android.text.format.DateFormat.getTimeFormat(context);
-            }
-            String dateString = dateFormat.format(getTimestamp());
-
-            TextView timestampView = view.findViewById(R.id.timestamp);
-            timestampView.setText(dateString);
-        }
-
-		return view;
-	}
 
     public String getSender() {
         return sender;

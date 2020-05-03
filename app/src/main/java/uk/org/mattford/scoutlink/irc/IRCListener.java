@@ -50,6 +50,7 @@ import org.pircbotx.hooks.events.SetSecretEvent;
 import org.pircbotx.hooks.events.SetTopicProtectionEvent;
 import org.pircbotx.hooks.events.SuperOpEvent;
 import org.pircbotx.hooks.events.TopicEvent;
+import org.pircbotx.hooks.events.UserListEvent;
 import org.pircbotx.hooks.events.UserModeEvent;
 import org.pircbotx.hooks.events.VersionEvent;
 import org.pircbotx.hooks.events.VoiceEvent;
@@ -147,7 +148,6 @@ public class IRCListener extends ListenerAdapter {
         Message msg = new Message(event.getMessage());
         msg.setColour(Color.RED);
         server.getConversation(event.getChannel()).addMessage(msg);
-        service.onNewMessage(event.getChannel());
     }
 
     private void onJoinFailed(JoinFailedEvent event) {
@@ -184,7 +184,6 @@ public class IRCListener extends ListenerAdapter {
         }
         Message msg = new Message(text);
         server.getConversation(service.getString(R.string.server_window_title)).addMessage(msg);
-        service.onNewMessage(service.getString(R.string.server_window_title));
     }
 
     public void onNickAlreadyInUse(NickAlreadyInUseEvent event) {
@@ -207,10 +206,9 @@ public class IRCListener extends ListenerAdapter {
         } else {
             message = new Message(service.getString(R.string.message_dehalfopevent, event.getUserHostmask().getNick(), event.getRecipientHostmask().getNick()));
         }
-        server.getConversation(event.getChannel().getName()).addMessage(message);
-        service.onNewMessage(event.getChannel().getName());
-        Intent intent = new Intent().setAction(Broadcast.USER_LIST_CHANGED).putExtra("target", event.getChannel().getName());
-        service.sendBroadcast(intent);
+        Conversation conversation = server.getConversation(event.getChannel().getName());
+        conversation.addMessage(message);
+        conversation.onUserListChanged();
     }
 
     public void onOp(OpEvent event) {
@@ -220,10 +218,9 @@ public class IRCListener extends ListenerAdapter {
         } else {
             message = new Message(service.getString(R.string.message_deopevent, event.getUserHostmask().getNick(), event.getRecipientHostmask().getNick()));
         }
-        server.getConversation(event.getChannel().getName()).addMessage(message);
-        service.onNewMessage(event.getChannel().getName());
-        Intent intent = new Intent().setAction(Broadcast.USER_LIST_CHANGED).putExtra("target", event.getChannel().getName());
-        service.sendBroadcast(intent);
+        Conversation conversation = server.getConversation(event.getChannel().getName());
+        conversation.addMessage(message);
+        conversation.onUserListChanged();
     }
 
     public void onSuperOp(SuperOpEvent event) {
@@ -233,10 +230,9 @@ public class IRCListener extends ListenerAdapter {
         } else {
             message = new Message(service.getString(R.string.message_desuperopevent, event.getUserHostmask().getNick(), event.getRecipientHostmask().getNick()));
         }
-        server.getConversation(event.getChannel().getName()).addMessage(message);
-        service.onNewMessage(event.getChannel().getName());
-        Intent intent = new Intent().setAction(Broadcast.USER_LIST_CHANGED).putExtra("target", event.getChannel().getName());
-        service.sendBroadcast(intent);
+        Conversation conversation = server.getConversation(event.getChannel().getName());
+        conversation.addMessage(message);
+        conversation.onUserListChanged();
     }
 
     public void onVoice(VoiceEvent event) {
@@ -246,10 +242,9 @@ public class IRCListener extends ListenerAdapter {
         } else {
             message = new Message(service.getString(R.string.message_devoiceevent, event.getUserHostmask().getNick(), event.getRecipientHostmask().getNick()));
         }
-        server.getConversation(event.getChannel().getName()).addMessage(message);
-        service.onNewMessage(event.getChannel().getName());
-        Intent intent = new Intent().setAction(Broadcast.USER_LIST_CHANGED).putExtra("target", event.getChannel().getName());
-        service.sendBroadcast(intent);
+        Conversation conversation = server.getConversation(event.getChannel().getName());
+        conversation.addMessage(message);
+        conversation.onUserListChanged();
     }
 
     public void onOwner(OwnerEvent event) {
@@ -259,16 +254,14 @@ public class IRCListener extends ListenerAdapter {
         } else {
             message = new Message(service.getString(R.string.message_deownerevent, event.getUserHostmask().getNick(), event.getRecipientHostmask().getNick()));
         }
-        server.getConversation(event.getChannel().getName()).addMessage(message);
-        service.onNewMessage(event.getChannel().getName());
-        Intent intent = new Intent().setAction(Broadcast.USER_LIST_CHANGED).putExtra("target", event.getChannel().getName());
-        service.sendBroadcast(intent);
+        Conversation conversation = server.getConversation(event.getChannel().getName());
+        conversation.addMessage(message);
+        conversation.onUserListChanged();
     }
 
     public void onMessage(MessageEvent event) {
         Message message = new Message(event.getUserHostmask().getNick(), event.getMessage());
         server.getConversation(event.getChannel().getName()).addMessage(message);
-        service.onNewMessage(event.getChannel().getName());
     }
 
     public void onAction(ActionEvent event) {
@@ -278,18 +271,14 @@ public class IRCListener extends ListenerAdapter {
         msg.setColour(service.getResources().getColor(R.color.scoutlink_blue_dark));
         if (event.getChannel() != null) {
             server.getConversation(event.getChannel().getName()).addMessage(msg);
-            service.onNewMessage(event.getChannel().getName());
         } else {
             // It's a private message.
             Conversation conversation = server.getConversation(event.getUserHostmask().getNick());
             if (conversation == null) {
                 conversation = new Query(event.getUserHostmask().getNick());
                 server.addConversation(conversation);
-                Intent intent = new Intent().setAction(Broadcast.NEW_CONVERSATION).putExtra("target", event.getUserHostmask().getNick());
-                service.sendBroadcast(intent);
             }
             conversation.addMessage(msg);
-            service.onNewMessage(event.getUserHostmask().getNick());
         }
     }
 
@@ -298,12 +287,9 @@ public class IRCListener extends ListenerAdapter {
         if (conversation == null) {
             conversation = new Query(event.getUserHostmask().getNick());
             server.addConversation(conversation);
-            Intent intent = new Intent().setAction(Broadcast.NEW_CONVERSATION).putExtra("target", event.getUserHostmask().getNick()).putExtra("selected", true);
-            service.sendBroadcast(intent);
         }
         Message msg = new Message(event.getUserHostmask().getNick(), event.getMessage());
         conversation.addMessage(msg);
-        service.onNewMessage(event.getUserHostmask().getNick());
     }
 
     public void onNotice(NoticeEvent event) {
@@ -316,21 +302,19 @@ public class IRCListener extends ListenerAdapter {
             sharedConversations = getSharedChannels(event.getBot(), event.getUser());
             for (String channel : sharedConversations) {
                 server.getConversation(channel).addMessage(message);
-                service.onNewMessage(channel);
             }
         }
 
         // Add to active conversation unless it is a shared conversation
-        Conversation activeConversation = server.getActiveConversation();
-        if ((sharedConversations == null ||
-                (activeConversation != null && !sharedConversations.contains(activeConversation.getName()))) && !activeConversation.getName().equals(service.getString(R.string.server_window_title))) {
-            server.getActiveConversation().addMessage(message);
-            service.onNewMessage(server.getActiveConversation().getName());
-        }
+//        Conversation activeConversation = server.getActiveConversation();
+//        if ((sharedConversations == null ||
+//                (activeConversation != null && !sharedConversations.contains(activeConversation.getName()))) && !activeConversation.getName().equals(service.getString(R.string.server_window_title))) {
+//            server.getActiveConversation().addMessage(message);
+//            service.onNewMessage(server.getActiveConversation().getName());
+//        }
 
         // Add to Server Window
         server.getConversation(service.getString(R.string.server_window_title)).addMessage(message);
-        service.onNewMessage(service.getString(R.string.server_window_title));
     }
 
     public void onInvite(InviteEvent event) {
@@ -338,19 +322,23 @@ public class IRCListener extends ListenerAdapter {
         service.sendBroadcast(intent);
     }
 
+    public void onUserList(UserListEvent event) {
+        Conversation conversation = server.getConversation(event.getChannel().getName());
+        conversation.onUserListChanged();
+    }
+
     public void onJoin(JoinEvent event) {
+        Conversation conversation;
         if (event.getUserHostmask().getNick().equalsIgnoreCase(event.getBot().getNick())) {
-            Conversation conv = new Channel(event.getChannel().getName(), event.getChannel());
-            server.addConversation(conv);
-            Intent intent = new Intent().setAction(Broadcast.NEW_CONVERSATION).putExtra("target", event.getChannel().getName()).putExtra("selected", true);
-            service.sendBroadcast(intent);
+            conversation = new Channel(event.getChannel().getName(), event.getChannel());
+            server.addConversation(conversation);
+            conversation.addMessage(new Message(String.format("You joined %s", conversation.getName())));
         } else {
             Message msg = new Message(service.getString(R.string.message_join, event.getUserHostmask().getNick(), event.getChannel().getName()));
-            server.getConversation(event.getChannel().getName()).addMessage(msg);
-            service.onNewMessage(event.getChannel().getName());
-            Intent intent = new Intent().setAction(Broadcast.USER_LIST_CHANGED).putExtra("target", event.getChannel().getName());
-            service.sendBroadcast(intent);
+            conversation = server.getConversation(event.getChannel().getName());
+            conversation.addMessage(msg);
         }
+        conversation.onUserListChanged();
     }
 
     public void onKick(KickEvent event) {
@@ -359,47 +347,41 @@ public class IRCListener extends ListenerAdapter {
             Message msg = new Message(service.getString(R.string.message_kicked_self, event.getChannel().getName(), event.getUserHostmask().getNick(), event.getReason()));
             msg.setColour(Color.RED);
             server.getConversation(service.getString(R.string.server_window_title)).addMessage(msg);
-            service.onNewMessage(service.getString(R.string.server_window_title));
             server.removeConversation(event.getChannel().getName());
-            Intent intent = new Intent().setAction(Broadcast.REMOVE_CONVERSATION).putExtra("target", event.getChannel().getName());
-            service.sendBroadcast(intent);
         } else {
             Message msg = new Message(service.getString(R.string.message_kicked_other, event.getRecipientHostmask().getNick(), event.getChannel().getName(), event.getUserHostmask().getNick(), event.getReason()));
-            server.getConversation(event.getChannel().getName()).addMessage(msg);
-            service.onNewMessage(event.getChannel().getName());
-            Intent intent = new Intent().setAction(Broadcast.USER_LIST_CHANGED).putExtra("target", event.getChannel().getName());
-            service.sendBroadcast(intent);
+            Conversation conversation = server.getConversation(event.getChannel().getName());
+            conversation.addMessage(msg);
+            conversation.onUserListChanged();
         }
     }
 
     public void onNickChange(NickChangeEvent event) {
         Message msg = new Message(service.getString(R.string.message_nickchange, event.getOldNick(), event.getNewNick()));
+        if (event.getUser() == null) {
+            return;
+        }
         for (String channel : getSharedChannels(event.getBot(), event.getUser())) {
-            server.getConversation(channel).addMessage(msg);
-            service.onNewMessage(channel);
-            Intent intent = new Intent().setAction(Broadcast.USER_LIST_CHANGED).putExtra("target", channel);
-            service.sendBroadcast(intent);
+            Conversation conversation = server.getConversation(channel);
+            conversation.addMessage(msg);
+            conversation.onUserListChanged();
         }
     }
 
     public void onMotd(MotdEvent event) {
         Message msg = new Message(event.getMotd());
-        server.getConversation("ScoutLink").addMessage(msg);
-        service.onNewMessage("ScoutLink");
+        server.getConversation(service.getString(R.string.server_window_title)).addMessage(msg);
     }
 
     public void onPart(PartEvent event) {
         if (event.getBot().getNick().equals(event.getUserHostmask().getNick())) {
             // We left a channel.
             server.removeConversation(event.getChannel().getName());
-            Intent intent = new Intent().setAction(Broadcast.REMOVE_CONVERSATION).putExtra("target", event.getChannel().getName());
-            service.sendBroadcast(intent);
         } else {
             Message msg = new Message(service.getString(R.string.message_part, event.getUserHostmask().getNick(), event.getChannel().getName(), event.getReason()));
-            server.getConversation(event.getChannel().getName()).addMessage(msg);
-            service.onNewMessage(event.getChannel().getName());
-            Intent intent = new Intent().setAction(Broadcast.USER_LIST_CHANGED).putExtra("target", event.getChannel().getName());
-            service.sendBroadcast(intent);
+            Conversation conversation = server.getConversation(event.getChannelName());
+            conversation.addMessage(msg);
+            conversation.onUserListChanged();
         }
     }
 
@@ -410,119 +392,100 @@ public class IRCListener extends ListenerAdapter {
         }
         Message msg = new Message(service.getString(R.string.message_quit, event.getUserHostmask().getNick(), event.getReason()));
         for (String channel : getSharedChannels(event.getBot(), event.getUser())) {
-            server.getConversation(channel).addMessage(msg);
-            service.onNewMessage(channel);
+            Conversation conversation = server.getConversation(channel);
+            conversation.addMessage(msg);
+            conversation.onUserListChanged();
         }
-        Intent intent = new Intent().setAction(Broadcast.USER_LIST_CHANGED);
-        service.sendBroadcast(intent);
     }
 
     public void onSetChannelBan(SetChannelBanEvent event) {
         Message msg = new Message(service.getString(R.string.message_ban_add, event.getUserHostmask().getNick(), event.getBanHostmask().getHostmask()));
         server.getConversation(event.getChannel().getName()).addMessage(msg);
-        service.onNewMessage(event.getChannel().getName());
     }
 
     public void onRemoveChannelBan(RemoveChannelBanEvent event) {
         Message msg = new Message(service.getString(R.string.message_ban_remove, event.getUserHostmask().getNick(), event.getHostmask().getHostmask()));
         server.getConversation(event.getChannel().getName()).addMessage(msg);
-        service.onNewMessage(event.getChannel().getName());
     }
 
     public void onSetPrivate(SetPrivateEvent event) {
         Message msg = new Message(service.getString(R.string.message_set_private, event.getUserHostmask().getNick()));
         server.getConversation(event.getChannel().getName()).addMessage(msg);
-        service.onNewMessage(event.getChannel().getName());
     }
 
     public void onRemovePrivate(RemovePrivateEvent event) {
         Message msg = new Message(service.getString(R.string.message_unset_private, event.getUserHostmask().getNick()));
         server.getConversation(event.getChannel().getName()).addMessage(msg);
-        service.onNewMessage(event.getChannel().getName());
     }
 
     public void onSetSecret(SetSecretEvent event) {
         Message msg = new Message(service.getString(R.string.message_set_secret, event.getUserHostmask().getNick()));
         server.getConversation(event.getChannel().getName()).addMessage(msg);
-        service.onNewMessage(event.getChannel().getName());
     }
 
     public void onRemoveSecret(RemoveSecretEvent event) {
         Message msg = new Message(service.getString(R.string.message_unset_secret, event.getUserHostmask().getNick()));
         server.getConversation(event.getChannel().getName()).addMessage(msg);
-        service.onNewMessage(event.getChannel().getName());
     }
 
     public void onSetChannelKey(SetChannelKeyEvent event) {
         Message msg = new Message(service.getString(R.string.message_set_key, event.getUserHostmask().getNick(), event.getKey()));
         server.getConversation(event.getChannel().getName()).addMessage(msg);
-        service.onNewMessage(event.getChannel().getName());
     }
 
     public void onRemoveChannelKey(RemoveChannelKeyEvent event) {
         Message msg = new Message(service.getString(R.string.message_unset_key, event.getUserHostmask().getNick()));
         server.getConversation(event.getChannel().getName()).addMessage(msg);
-        service.onNewMessage(event.getChannel().getName());
     }
 
     public void onSetChannelLimit(SetChannelLimitEvent event) {
         Message msg = new Message(service.getString(R.string.message_set_limit, event.getUserHostmask().getNick(), Integer.toString(event.getLimit())));
         server.getConversation(event.getChannel().getName()).addMessage(msg);
-        service.onNewMessage(event.getChannel().getName());
     }
 
     public void onRemoveChannelLimit(RemoveChannelLimitEvent event) {
         Message msg = new Message(service.getString(R.string.message_unset_limit, event.getUserHostmask().getNick()));
         server.getConversation(event.getChannel().getName()).addMessage(msg);
-        service.onNewMessage(event.getChannel().getName());
     }
 
     public void onSetInviteOnly(SetInviteOnlyEvent event) {
         Message msg = new Message(service.getString(R.string.message_set_invite, event.getUserHostmask().getNick()));
         server.getConversation(event.getChannel().getName()).addMessage(msg);
-        service.onNewMessage(event.getChannel().getName());
     }
 
     public void onRemoveInviteOnly(RemoveInviteOnlyEvent event) {
         Message msg = new Message(service.getString(R.string.message_unset_invite, event.getUserHostmask().getNick()));
         server.getConversation(event.getChannel().getName()).addMessage(msg);
-        service.onNewMessage(event.getChannel().getName());
     }
 
     public void onSetModerated(SetModeratedEvent event) {
         Message msg = new Message(service.getString(R.string.message_set_moderated, event.getUserHostmask().getNick()));
         server.getConversation(event.getChannel().getName()).addMessage(msg);
-        service.onNewMessage(event.getChannel().getName());
     }
 
     public void onRemoveModerated(RemoveModeratedEvent event) {
         Message msg = new Message(service.getString(R.string.message_unset_moderated, event.getUserHostmask().getNick()));
         server.getConversation(event.getChannel().getName()).addMessage(msg);
-        service.onNewMessage(event.getChannel().getName());
     }
 
     public void onSetNoExternalMessages(SetNoExternalMessagesEvent event) {
         Message msg = new Message(service.getString(R.string.message_set_no_external, event.getUserHostmask().getNick()));
         server.getConversation(event.getChannel().getName()).addMessage(msg);
-        service.onNewMessage(event.getChannel().getName());
     }
 
     public void onRemoveNoExternalMessages(RemoveNoExternalMessagesEvent event) {
         Message msg = new Message(service.getString(R.string.message_unset_no_external, event.getUserHostmask().getNick()));
         server.getConversation(event.getChannel().getName()).addMessage(msg);
-        service.onNewMessage(event.getChannel().getName());
     }
 
     public void onSetTopicProtection(SetTopicProtectionEvent event) {
         Message msg = new Message(service.getString(R.string.message_set_topicprotect, event.getUserHostmask().getNick()));
         server.getConversation(event.getChannel().getName()).addMessage(msg);
-        service.onNewMessage(event.getChannel().getName());
     }
 
     public void onRemoveTopicProtection(RemoveTopicProtectionEvent event) {
         Message msg = new Message(service.getString(R.string.message_unset_topicprotect, event.getUserHostmask().getNick()));
         server.getConversation(event.getChannel().getName()).addMessage(msg);
-        service.onNewMessage(event.getChannel().getName());
     }
 
     @Override
@@ -535,8 +498,7 @@ public class IRCListener extends ListenerAdapter {
         String receiver = event.getRecipientHostmask().getNick();
 
         Message msg = new Message(service.getString(R.string.message_usermode, sender, event.getMode(), receiver));
-        server.getConversation("ScoutLink").addMessage(msg);
-        service.onNewMessage("ScoutLink");
+        server.getConversation(service.getString(R.string.server_window_title)).addMessage(msg);
     }
 
     public void onTopic(TopicEvent event) {
@@ -548,7 +510,6 @@ public class IRCListener extends ListenerAdapter {
         }
         msg.setColour(service.getResources().getColor(R.color.scoutlink_blue));
         server.getConversation(event.getChannel().getName()).addMessage(msg);
-        service.onNewMessage(event.getChannel().getName());
     }
 
     public void onWhois(WhoisEvent event) {
@@ -584,7 +545,6 @@ public class IRCListener extends ListenerAdapter {
             messageBuilder.toString()
         );
         server.getConversation(service.getString(R.string.server_window_title)).addMessage(msg);
-        service.onNewMessage(service.getString(R.string.server_window_title));
     }
 
     @SuppressWarnings("unchecked")
@@ -603,12 +563,10 @@ public class IRCListener extends ListenerAdapter {
         //event.respond(event.getResponse());
     }
 
-    public ArrayList<String> getSharedChannels(PircBotX bot, User user) {
+    private ArrayList<String> getSharedChannels(PircBotX bot, User user) {
         ArrayList<String> channels = new ArrayList<>();
-        for (org.pircbotx.Channel userChan : user.getChannels()) {
-            if (bot.getUserBot().getChannels().contains(userChan)) {
-                channels.add(userChan.getName());
-            }
+        for (org.pircbotx.Channel channel : bot.getUserChannelDao().getChannels(user)) {
+            channels.add(channel.getName());
         }
         return channels;
     }

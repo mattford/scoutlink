@@ -5,76 +5,63 @@ import org.pircbotx.User;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+
 public class Conversation {
 	
 	private String CONVERSATION_NAME;
 	private int type;
 	private LinkedList<Message> messages;
-	private LinkedList<Message> buffer;
+	MutableLiveData<ArrayList<User>> usersLiveData;
+	private MutableLiveData<LinkedList<Message>> messagesLiveData;
+	private int unreadMessages = 0;
 
 	public final static int TYPE_CHANNEL = 0;
 	public final static int TYPE_QUERY = 1;
 	public final static int TYPE_SERVER = 2;
 
-    private boolean isSelected = false;
-
 	protected Conversation(String name) {
 		this.CONVERSATION_NAME = name;
 		this.messages = new LinkedList<>();
-		this.buffer = new LinkedList<>();
+		this.usersLiveData = new MutableLiveData<>(new ArrayList<>());
+		this.messagesLiveData = new MutableLiveData<>(this.messages);
 	}
 	
 	public String getName() {
 		return this.CONVERSATION_NAME;
 	}
 	
-	public LinkedList<Message> getMessages() {
-		return this.messages;
-	}
-	
-	public LinkedList<Message> getBuffer() {
-		return this.buffer;
+	public LiveData<LinkedList<Message>> getMessages() {
+		return this.messagesLiveData;
 	}
 
-	public Message pollBuffer() {
-		Message message = buffer.pollFirst();
-		messages.add(message);
-		return message;
+	private void onMessagesChanged() {
+		this.messagesLiveData.postValue(this.messages);
 	}
 
-	public ArrayList<User> getUsers() {
-		return new ArrayList<>();
+	public void onUserListChanged() {
+		usersLiveData.postValue(new ArrayList<>());
+	}
+
+	public LiveData<ArrayList<User>> getUsers() {
+		return usersLiveData;
 	}
 
 	public org.pircbotx.Channel getChannel() {
 		return null;
 	}
 	
-	public boolean hasBuffer() {
-		return buffer.size() != 0;
-	}
-	
-	public void clearBuffer() {
-		buffer.clear();
-	}
-	
-	protected void setType(int type) {
+	void setType(int type) {
 		this.type = type;
 	}
 	
 	public int getType() {
 		return this.type;
 	}
-	
+
 	public void addMessage(Message msg) {
-		buffer.add(msg);
+		messages.add(msg);
+		onMessagesChanged();
 	}
-
-    public boolean isSelected() {
-        return isSelected;
-    }
-
-    public void setSelected(boolean selected) {
-        isSelected = selected;
-    }
 }

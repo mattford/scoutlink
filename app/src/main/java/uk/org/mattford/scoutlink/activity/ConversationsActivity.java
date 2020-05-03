@@ -1,25 +1,19 @@
 package uk.org.mattford.scoutlink.activity;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.room.Room;
 import uk.org.mattford.scoutlink.R;
 import uk.org.mattford.scoutlink.ScoutlinkApplication;
-import uk.org.mattford.scoutlink.adapter.ConversationsPagerAdapter;
-import uk.org.mattford.scoutlink.adapter.MessageListAdapter;
 import uk.org.mattford.scoutlink.command.CommandParser;
 import uk.org.mattford.scoutlink.database.LogDatabase;
 import uk.org.mattford.scoutlink.database.entities.LogMessage;
 import uk.org.mattford.scoutlink.database.migrations.LogDatabaseMigrations;
-import uk.org.mattford.scoutlink.fragment.ConversationListFragment;
-import uk.org.mattford.scoutlink.fragment.UserListFragment;
+import uk.org.mattford.scoutlink.databinding.ActivityConversationsBinding;
 import uk.org.mattford.scoutlink.irc.IRCService;
 import uk.org.mattford.scoutlink.model.Broadcast;
 import uk.org.mattford.scoutlink.model.Conversation;
@@ -34,34 +28,21 @@ import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
-import uk.org.mattford.scoutlink.views.NonSwipeableViewPager;
+import uk.org.mattford.scoutlink.viewmodel.ConversationListViewModel;
 
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.common.base.CharMatcher;
-
-import org.apache.commons.lang3.StringUtils;
-
-public class ConversationsActivity extends AppCompatActivity implements
-        ConversationListFragment.OnConversationListFragmentInteractionListener,
-        UserListFragment.OnUserListFragmentInteractionListener
-{
-	
-	private ConversationsPagerAdapter pagerAdapter;
-	private NonSwipeableViewPager pager;
+public class ConversationsActivity extends AppCompatActivity {
+    private ActivityConversationsBinding binding;
+	private ConversationListViewModel viewModel;
 	private ConversationReceiver receiver;
     private Settings settings;
     private LogDatabase db;
-    private ViewGroup viewContainer;
     private Server server;
     private boolean hasDrawerLayout;
     private Handler backgroundHandler;
@@ -75,63 +56,53 @@ public class ConversationsActivity extends AppCompatActivity implements
 	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_conversations);
+		binding = ActivityConversationsBinding.inflate(getLayoutInflater());
+        viewModel = new ViewModelProvider(this).get(ConversationListViewModel.class);
+        setContentView(binding.getRoot());
 
         settings = new Settings(this);
 
-        viewContainer = findViewById(R.id.conversations_container);
-        hasDrawerLayout = viewContainer instanceof DrawerLayout;
+        hasDrawerLayout = binding.conversationsDrawerContainer != null;
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        toolbar.setTitle("");
-        setSupportActionBar(toolbar);
+        binding.toolbar.setTitle("");
+        setSupportActionBar(binding.toolbar);
         ActionBar actionbar = getSupportActionBar();
         actionbar.setDisplayHomeAsUpEnabled(hasDrawerLayout);
         actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
 
-        pagerAdapter = new ConversationsPagerAdapter(getSupportFragmentManager(), this);
-        pager = findViewById(R.id.pager);
-        pager.setAdapter(pagerAdapter);
+//        pagerAdapter = new ConversationsPagerAdapter(getSupportFragmentManager(), this);
+//        pager = binding.pager;
+//        pager.setAdapter(pagerAdapter);
 
         if (hasDrawerLayout) {
-            ((DrawerLayout) viewContainer).setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, GravityCompat.END);
+            binding.conversationsDrawerContainer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, GravityCompat.END);
         }
-        pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                this.handlePageChange(position);
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                this.handlePageChange(position);
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {}
-
-            private void handlePageChange(int position) {
-                ConversationsPagerAdapter.ConversationInfo info = pagerAdapter.getItemInfo(position);
-                pagerAdapter.setActiveItem(position);
-                toolbar.setTitle(info.conv.getName());
-                if (hasDrawerLayout) {
-                    ((DrawerLayout) viewContainer).setDrawerLockMode(
-                            info != null && info.conv.getType() == Conversation.TYPE_CHANNEL ? DrawerLayout.LOCK_MODE_UNLOCKED : DrawerLayout.LOCK_MODE_LOCKED_CLOSED,
-                            GravityCompat.END
-                    );
-                }
-            }
-        });
-
-        if (savedInstanceState == null) {
-            Fragment newFragment = new ConversationListFragment(pager);
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.add(R.id.conversation_list_fragment, newFragment).commit();
-
-            Fragment userListFragment = new UserListFragment(pager);
-            FragmentTransaction ft2 = getSupportFragmentManager().beginTransaction();
-            ft2.add(R.id.user_list_fragment, userListFragment).commit();
-        }
+//        pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+//            @Override
+//            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+//                this.handlePageChange(position);
+//            }
+//
+//            @Override
+//            public void onPageSelected(int position) {
+//                this.handlePageChange(position);
+//            }
+//
+//            @Override
+//            public void onPageScrollStateChanged(int state) {}
+//
+//            private void handlePageChange(int position) {
+//                ConversationsPagerAdapter.ConversationInfo info = pagerAdapter.getItemInfo(position);
+//                pagerAdapter.setActiveItem(position);
+//                binding.toolbar.setTitle(info.conv.getName());
+//                if (hasDrawerLayout) {
+//                    binding.conversationsDrawerContainer.setDrawerLockMode(
+//                            info.conv.getType() == Conversation.TYPE_CHANNEL ? DrawerLayout.LOCK_MODE_UNLOCKED : DrawerLayout.LOCK_MODE_LOCKED_CLOSED,
+//                            GravityCompat.END
+//                    );
+//                }
+//            }
+//        });
     }
 
 	public void onResume() {
@@ -145,14 +116,13 @@ public class ConversationsActivity extends AppCompatActivity implements
                 .build();
 
 		this.receiver = new ConversationReceiver(this);
-		registerReceiver(this.receiver, new IntentFilter(Broadcast.NEW_CONVERSATION));
-		registerReceiver(this.receiver, new IntentFilter(Broadcast.NEW_MESSAGE));
-		registerReceiver(this.receiver, new IntentFilter(Broadcast.REMOVE_CONVERSATION));
-		registerReceiver(this.receiver, new IntentFilter(Broadcast.INVITE));
-		registerReceiver(this.receiver, new IntentFilter(Broadcast.DISCONNECTED));
-        registerReceiver(this.receiver, new IntentFilter(Broadcast.CONNECTED));
+		IntentFilter intentFilter = new IntentFilter();
+		intentFilter.addAction(Broadcast.INVITE);
+		intentFilter.addAction(Broadcast.DISCONNECTED);
+		intentFilter.addAction(Broadcast.CONNECTED);
+        registerReceiver(this.receiver, intentFilter);
 
-        EditText newMessage = findViewById(R.id.input);
+        EditText newMessage = binding.input;
         newMessage.setOnEditorActionListener((v, actionId, event) -> {
             if (event == null) {
                 onSendButtonClick(v);
@@ -179,7 +149,7 @@ public class ConversationsActivity extends AppCompatActivity implements
             onConnect(false);
             return;
         }
-        ((TextView)findViewById(R.id.connection_status)).setText(R.string.connect_message);
+        binding.connectionStatus.setText(R.string.connect_message);
         Intent connectIntent = new Intent(getApplicationContext(), IRCService.class);
         connectIntent.setAction(Broadcast.CONNECT);
         startService(connectIntent);
@@ -196,28 +166,27 @@ public class ConversationsActivity extends AppCompatActivity implements
 	}
 	
 	public void onSendButtonClick(View v) {
-		EditText et = findViewById(R.id.input);
+		EditText et = binding.input;
 		String message = et.getText().toString();
-		Conversation conv = pagerAdapter.getItemInfo(pager.getCurrentItem()).conv;
-		if (message.isEmpty()) {
+		Conversation conversation = viewModel.getActiveConversation().getValue();
+		if (message.isEmpty() || conversation == null) {
 			return;
 		}
 		if (message.startsWith("/")) {
-			CommandParser.getInstance(getApplicationContext()).parse(message, conv, backgroundHandler);
+			CommandParser.getInstance(getApplicationContext()).parse(message, conversation, backgroundHandler);
 		} else {
-            if (conv.getType() == (Conversation.TYPE_SERVER)) {
+            if (conversation.getType() == (Conversation.TYPE_SERVER)) {
                 Message msg = new Message(getString(R.string.send_message_in_server_window));
                 msg.setColour(Color.RED);
-                conv.addMessage(msg);
+                conversation.addMessage(msg);
             } else {
                 String nickname = server.getConnection().getNick();
                 Message msg = new Message(nickname, message);
                 msg.setAlignment(Message.ALIGN_RIGHT);
-                conv.addMessage(msg);
+                conversation.addMessage(msg);
 
-                backgroundHandler.post(() -> server.getConnection().sendIRC().message(conv.getName(), message));
+                backgroundHandler.post(() -> server.getConnection().sendIRC().message(conversation.getName(), message));
             }
-            onConversationMessage(conv.getName());
 		}
 		et.setText("");
 	}
@@ -239,19 +208,19 @@ public class ConversationsActivity extends AppCompatActivity implements
                 channelListIntent.putStringArrayListExtra("channels", channels);
                 startActivityForResult(channelListIntent, JOIN_CHANNEL_RESULT);
             }
-            ((TextView) findViewById(R.id.connection_status)).setText(server.getConnection().getNick());
+            binding.connectionStatus.setText(server.getConnection().getNick());
         }
 
         /*
          * The activity has resumed and the service has been bound, get all the messages we missed...
          */
-        for (Map.Entry<String, Conversation> conv : server.getConversations().entrySet()) {
-            int i = pagerAdapter.getItemByName(conv.getKey());
-            if (i == -1) {
-                onNewConversation(conv.getKey());
-            }
-            onConversationMessage(conv.getKey());
-        }
+//        for (Map.Entry<String, Conversation> conv : server.getConversations().entrySet()) {
+//            int i = pagerAdapter.getItemByName(conv.getKey());
+//            if (i == -1) {
+//                onNewConversation(conv.getKey());
+//            }
+//            onConversationMessage(conv.getKey());
+//        }
         // Join any channels we want to join...
         if (!joinChannelBuffer.isEmpty()) {
             backgroundHandler.post(() -> {
@@ -268,76 +237,39 @@ public class ConversationsActivity extends AppCompatActivity implements
 
 	public void onDisconnect() {
         server.clearConversations();
-		pagerAdapter.clearConversations();
 		Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
         finish();
-        ((TextView)findViewById(R.id.connection_status)).setText(R.string.not_connected);
+        binding.connectionStatus.setText(R.string.not_connected);
 	}
 	
-	public void onNewConversation(String name, boolean selected) {
-		Conversation conv = Server.getInstance().getConversation(name);
-        // Only add the new conversation if the conversation does not already exist.
-        int i = pagerAdapter.getItemByName(name);
-        if (i == -1) {
-            i = pagerAdapter.addConversation(conv);
-        }
-        if (selected) {
-            pager.setCurrentItem(i);
-        }
-		onConversationMessage(conv.getName());
-	}
-
-    public void onNewConversation(String name) {
-        onNewConversation(name, false);
-    }
-	
-	public void removeConversation(String name) {
-		int i = pagerAdapter.getItemByName(name);
-		pagerAdapter.removeConversation(i);
-	}
-	
-	public void onConversationMessage(String name) {
-		Conversation conv = Server.getInstance().getConversation(name);
-        if (conv == null) {
-            return;
-        }
-		int i = pagerAdapter.getItemByName(name);
-		if (i == -1) {
-			onNewConversation(name);
-			i = pagerAdapter.getItemByName(name);
-		}
-        ConversationsPagerAdapter.ConversationInfo info = pagerAdapter.getItemInfo(i);
-		if (!info.active) {
-		    info.incrementUnreadMessages();
-        }
-		MessageListAdapter adapter = pagerAdapter.getItemAdapter(i);
-
-		if (adapter == null) {
-			return;
-		}
-
-		while (conv.hasBuffer()) {
-			Message msg = conv.pollBuffer();
-            // Don't log server window messages
-			if (conv.getType() != Conversation.TYPE_SERVER) {
-                backgroundHandler.post(() -> {
-                    LogMessage logMessage = new LogMessage(
-                        name,
-                        conv.getType(),
-                        msg.getSender(),
-                        msg.getText()
-                    );
-                    db.logMessageDao().insert(logMessage);
-                });
-            }
-			adapter.addMessage(msg);
-		}
-
-        Intent updateNotificationIntent = new Intent();
-        updateNotificationIntent.setAction(Broadcast.UPDATE_NOTIFICATION);
-        sendBroadcast(updateNotificationIntent);
-	}
+//	public void onConversationMessage(String name) {
+//		Conversation conversation = Server.getInstance().getConversation(name);
+//        if (conversation == null) {
+//            return;
+//        }
+//
+//		while (conversation.hasBuffer()) {
+//			Message msg = conversation.pollBuffer();
+//            // Don't log server window messages
+//			if (conversation.getType() != Conversation.TYPE_SERVER) {
+//                backgroundHandler.post(() -> {
+//                    LogMessage logMessage = new LogMessage(
+//                        name,
+//                        conversation.getType(),
+//                        msg.getSender(),
+//                        msg.getText()
+//                    );
+//                    db.logMessageDao().insert(logMessage);
+//                });
+//            }
+////			adapter.addMessage(msg);
+//		}
+//
+//        Intent updateNotificationIntent = new Intent();
+//        updateNotificationIntent.setAction(Broadcast.UPDATE_NOTIFICATION);
+//        sendBroadcast(updateNotificationIntent);
+//	}
 	
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -353,18 +285,21 @@ public class ConversationsActivity extends AppCompatActivity implements
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
-    	Conversation conversation = pagerAdapter.getItemInfo(pager.getCurrentItem()).conv;
+        ConversationListViewModel viewModel = new ViewModelProvider(this).get(ConversationListViewModel.class);
+    	Conversation conversation = viewModel.getActiveConversation().getValue();
+    	if (conversation == null) {
+    	    return super.onOptionsItemSelected(item);
+        }
         int id = item.getItemId();
         Intent intent;
         switch(id) {
             case R.id.action_close:
                 switch (conversation.getType()) {
                     case Conversation.TYPE_CHANNEL:
-                        backgroundHandler.post(() -> server.getConnection().getUserChannelDao().getChannel(conversation.getName()).send().part());
+                        backgroundHandler.post(() -> conversation.getChannel().send().part());
                         break;
                     case Conversation.TYPE_QUERY:
                         server.removeConversation(conversation.getName());
-                        removeConversation(conversation.getName());
                         break;
                     default:
                         Toast.makeText(this, getResources().getString(R.string.close_server_window), Toast.LENGTH_SHORT).show();
@@ -375,14 +310,14 @@ public class ConversationsActivity extends AppCompatActivity implements
                 backgroundHandler.post(() -> server.getConnection().sendIRC().quitServer(settings.getString("quit_message", getString(R.string.default_quit_message))));
                 break;
             case android.R.id.home:
-                if (hasDrawerLayout) {
-                    ((DrawerLayout) viewContainer).openDrawer(GravityCompat.START);
+                if (hasDrawerLayout && binding.conversationsDrawerContainer != null) {
+                    binding.conversationsDrawerContainer.openDrawer(GravityCompat.START);
                 }
                 break;
             case R.id.action_userlist:
                 if (conversation.getType() == Conversation.TYPE_CHANNEL) {
-                    if (hasDrawerLayout) {
-                        ((DrawerLayout) viewContainer).openDrawer(GravityCompat.END);
+                    if (hasDrawerLayout && binding.conversationsDrawerContainer != null) {
+                        binding.conversationsDrawerContainer.openDrawer(GravityCompat.END);
                     }
                 } else {
                     Toast.makeText(this, getResources().getString(R.string.userlist_not_on_channel), Toast.LENGTH_SHORT).show();
@@ -399,7 +334,7 @@ public class ConversationsActivity extends AppCompatActivity implements
             case R.id.action_channel_settings:
                 if (conversation.getType() != Conversation.TYPE_CHANNEL) {
                     Toast.makeText(this, getString(R.string.channel_settings_not_channel), Toast.LENGTH_SHORT).show();
-                } else if (server.getConnection().getUserChannelDao().getChannel(conversation.getName()).isOp(server.getConnection().getUserBot())) {
+                } else if (conversation.getChannel().isOp(server.getConnection().getUserBot())) {
                     intent = new Intent(this, ChannelSettingsActivity.class);
                     intent.putExtra("channelName", conversation.getName());
                     startActivity(intent);
@@ -431,21 +366,5 @@ public class ConversationsActivity extends AppCompatActivity implements
             String channel = data.getStringExtra("target");
             joinChannelBuffer.add(channel);
         }
-    }
-
-    @Override
-    public void onConversationSelected(ConversationsPagerAdapter.ConversationInfo item) {
-	    int i = pagerAdapter.getItemByName(item.conv.getName());
-	    if (i != -1) {
-	        pager.setCurrentItem(i);
-        }
-	    if (hasDrawerLayout) {
-            ((DrawerLayout) viewContainer).closeDrawer(GravityCompat.START);
-        }
-    }
-
-    @Override
-    public void onUserListItemClicked(String username) {
-        Toast.makeText(this, username, Toast.LENGTH_LONG).show();
     }
 }

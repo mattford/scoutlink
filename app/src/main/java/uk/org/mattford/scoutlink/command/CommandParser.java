@@ -62,9 +62,6 @@ public class CommandParser {
 		} else {
 			final String threadedCommand = command;
 			backgroundHandler.post(() -> server.getConnection().sendIRC().message(conversation.getName(), threadedCommand));
-			Intent intent = new Intent().setAction(Broadcast.NEW_MESSAGE).putExtra("target", conversation.getName());
-			context.sendBroadcast(intent);
-			
 		}
 	}
 	

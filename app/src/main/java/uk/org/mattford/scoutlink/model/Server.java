@@ -1,13 +1,16 @@
 package uk.org.mattford.scoutlink.model;
 
+import android.util.Log;
+
 import org.pircbotx.PircBotX;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class Server {
-
+	private ArrayList<OnConversationListChangedListener> listeners;
 	private LinkedHashMap<String, Conversation> conversations;
 	private int status = 0;
     private ArrayList<String> channelList = new ArrayList<>();
@@ -26,6 +29,7 @@ public class Server {
 
 	private Server() {
 		this.conversations = new LinkedHashMap<>();
+		this.listeners = new ArrayList<>();
 	}
 	
 	public Conversation getConversation(String name) {
@@ -53,23 +57,17 @@ public class Server {
 	
 	public void addConversation(Conversation conv) {
 		conversations.put(conv.getName(), conv);
+		onConversationListChanged();
 	}
 	
 	public void removeConversation(String name) {
 		conversations.remove(name);
+		onConversationListChanged();
 	}
 	
 	public void clearConversations() {
 		conversations.clear();
-	}
-
-	public Conversation getActiveConversation() {
-		for(Map.Entry<String,Conversation> conv : conversations.entrySet()) {
-			if (conv.getValue().isSelected()) {
-				return conv.getValue();
-			}
-		}
-		return null;
+		onConversationListChanged();
 	}
 
 	public boolean isConnected() {
@@ -82,5 +80,19 @@ public class Server {
 
 	public void setConnection(PircBotX bot) {
 		this.bot = bot;
+	}
+
+	public void addOnConversationListChangedListener(OnConversationListChangedListener listener) {
+		listeners.add(listener);
+	}
+
+	private void onConversationListChanged() {
+		for (OnConversationListChangedListener listener : listeners) {
+			listener.onConversationListChanged(this.conversations);
+		}
+	}
+
+	public interface OnConversationListChangedListener {
+		void onConversationListChanged(HashMap<String, Conversation> conversationHashMap);
 	}
 }

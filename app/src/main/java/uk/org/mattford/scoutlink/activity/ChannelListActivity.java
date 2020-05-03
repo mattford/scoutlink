@@ -12,6 +12,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import uk.org.mattford.scoutlink.R;
+import uk.org.mattford.scoutlink.databinding.ActivityChannelListBinding;
 import uk.org.mattford.scoutlink.irc.IRCService;
 import uk.org.mattford.scoutlink.model.Broadcast;
 import uk.org.mattford.scoutlink.receiver.ChannelListReceiver;
@@ -20,11 +21,13 @@ public class ChannelListActivity extends ListActivity implements AdapterView.OnI
 
     private ChannelListReceiver receiver;
     private ArrayAdapter<String> adapter;
+    private ActivityChannelListBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_channel_list);
+        binding = ActivityChannelListBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         adapter = new ArrayAdapter<>(this, R.layout.channel_list_item, new ArrayList<>());
         setListAdapter(adapter);
 
@@ -58,7 +61,7 @@ public class ChannelListActivity extends ListActivity implements AdapterView.OnI
             adapter.notifyDataSetChanged();
         }
 
-        findViewById(R.id.loadingPanel).setVisibility(View.GONE);
+        binding.loadingPanel.setVisibility(View.GONE);
     }
 
     @Override

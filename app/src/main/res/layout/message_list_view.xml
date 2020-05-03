@@ -1,25 +1,23 @@
  <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-         android:orientation="vertical"
+     android:orientation="vertical"
+     android:gravity="center"
+     android:layout_width="match_parent"
+     android:layout_height="match_parent"
+     android:paddingLeft="4dp"
+     android:paddingRight="4dp">
+     <androidx.recyclerview.widget.RecyclerView
+         android:id="@+id/list"
          android:layout_width="match_parent"
          android:layout_height="match_parent"
-         android:paddingLeft="4dp"
-         android:paddingRight="4dp">
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+         android:visibility="gone"
+         android:drawSelectorOnTop="false"/>
 
-        <ListView android:id="@id/android:list"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:drawSelectorOnTop="false"/>
-
-        <TextView android:id="@id/android:empty"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="@string/message_list_no_messages"/>
-    </LinearLayout>
+     <TextView
+         android:id="@+id/empty"
+         android:drawableTop="@drawable/ic_no_messages_yet"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:text="@string/message_list_no_messages"/>
 
      <ImageView
          android:id="@+id/not_at_bottom"

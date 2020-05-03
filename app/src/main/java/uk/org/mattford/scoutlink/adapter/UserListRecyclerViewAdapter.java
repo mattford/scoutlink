@@ -1,6 +1,5 @@
-package uk.org.mattford.scoutlink.fragment;
+package uk.org.mattford.scoutlink.adapter;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,11 +15,11 @@ import uk.org.mattford.scoutlink.R;
 
 public class UserListRecyclerViewAdapter extends RecyclerView.Adapter<UserListRecyclerViewAdapter.ViewHolder> {
 
-    private final UserListFragment.OnUserListFragmentInteractionListener mListener;
+    private OnUserListItemClickListener mListener;
     private ArrayList<User> users;
     private Channel channel;
 
-    UserListRecyclerViewAdapter(ArrayList<User> users, Channel channel, UserListFragment.OnUserListFragmentInteractionListener listener) {
+    public UserListRecyclerViewAdapter(ArrayList<User> users, Channel channel, OnUserListItemClickListener listener) {
         mListener = listener;
         this.users = users;
         this.channel = channel;
@@ -59,7 +58,7 @@ public class UserListRecyclerViewAdapter extends RecyclerView.Adapter<UserListRe
         }
         holder.mView.setOnClickListener(v -> {
             if (null != mListener) {
-                mListener.onUserListItemClicked(holder.mItem.getNick());
+                mListener.onUserListItemClicked(v, holder.mItem);
             }
         });
     }
@@ -69,7 +68,7 @@ public class UserListRecyclerViewAdapter extends RecyclerView.Adapter<UserListRe
         return users.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         final View mView;
         final TextView mUserNameView;
         final TextView mUserRoleView;
@@ -88,4 +87,7 @@ public class UserListRecyclerViewAdapter extends RecyclerView.Adapter<UserListRe
         }
     }
 
+    public interface OnUserListItemClickListener {
+        void onUserListItemClicked(View view, User user);
+    }
 }

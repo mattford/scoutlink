@@ -123,9 +123,6 @@ public class IRCService extends Service {
         server.addConversation(sw);
         Message msg = new Message(getString(R.string.connect_message));
         sw.addMessage(msg);
-        Intent intent = new Intent(Broadcast.NEW_CONVERSATION).putExtra("target", getString(R.string.server_window_title));
-        sendBroadcast(intent);
-        onNewMessage(getString(R.string.server_window_title));
 
         List<Configuration.ServerEntry> servers = new ArrayList<>();
         servers.add(new Configuration.ServerEntry(getString(R.string.server_address), 6667));
@@ -174,12 +171,6 @@ public class IRCService extends Service {
         sendBroadcast(intent);
     }
 
-    public void onNewMessage(String conversation) {
-        Intent intent = new Intent().setAction(Broadcast.NEW_MESSAGE).putExtra("target", conversation);
-        sendBroadcast(intent);
-        updateNotification();
-    }
-
     public void updateNotification() {
         if (this.isForeground()) {
             NotificationManagerCompat nm = NotificationManagerCompat.from(this);
@@ -198,21 +189,21 @@ public class IRCService extends Service {
         int newMsgTotal = 0;
         ArrayList<Conversation> conversationsWithMentions = new ArrayList<>();
         int newMentionTotal = 0;
-        for (Conversation conversation : conversations.values()) {
-            if (conversation.hasBuffer()) {
-                conversationsWithNewMsg.add(conversation);
-                ArrayList<Message> msgs = new ArrayList<>(conversation.getBuffer());
-                for (Message msg : msgs) {
-                    newMsgTotal++;
-                    if (getConnection() != null && msg.getText().contains(getConnection().getNick())) {
-                        if (!conversationsWithMentions.contains(conversation)) {
-                            conversationsWithMentions.add(conversation);
-                        }
-                        newMentionTotal++;
-                    }
-                }
-            }
-        }
+//        for (Conversation conversation : conversations.values()) {
+//            if (conversation.hasBuffer()) {
+//                conversationsWithNewMsg.add(conversation);
+//                ArrayList<Message> msgs = new ArrayList<>(conversation.getBuffer());
+//                for (Message msg : msgs) {
+//                    newMsgTotal++;
+//                    if (getConnection() != null && msg.getText().contains(getConnection().getNick())) {
+//                        if (!conversationsWithMentions.contains(conversation)) {
+//                            conversationsWithMentions.add(conversation);
+//                        }
+//                        newMentionTotal++;
+//                    }
+//                }
+//            }
+//        }
         String basicText;
         if (getConnection() != null && conversationsWithNewMsg.size() == 0 && conversationsWithMentions.size() == 0) {
             basicText = getString(R.string.notification_connected, getConnection().getNick());

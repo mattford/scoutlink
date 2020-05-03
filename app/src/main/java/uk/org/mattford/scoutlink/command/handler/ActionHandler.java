@@ -36,8 +36,6 @@ public class ActionHandler extends CommandHandler {
         Message msg = new Message(nick, context.getString(R.string.message_action, action));
         msg.setAlignment(Message.ALIGN_RIGHT);
 		conversation.addMessage(msg);
-		Intent intent = new Intent().setAction(Broadcast.NEW_MESSAGE).putExtra("target", conversation.getName());
-		context.sendBroadcast(intent);
 	}
 
 	@Override
