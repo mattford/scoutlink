@@ -11,7 +11,6 @@ import uk.org.mattford.scoutlink.R;
 import uk.org.mattford.scoutlink.ScoutlinkApplication;
 import uk.org.mattford.scoutlink.command.CommandParser;
 import uk.org.mattford.scoutlink.database.LogDatabase;
-import uk.org.mattford.scoutlink.database.entities.LogMessage;
 import uk.org.mattford.scoutlink.database.migrations.LogDatabaseMigrations;
 import uk.org.mattford.scoutlink.databinding.ActivityConversationsBinding;
 import uk.org.mattford.scoutlink.irc.IRCService;
@@ -25,7 +24,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import androidx.appcompat.app.AppCompatActivity;
@@ -69,40 +67,19 @@ public class ConversationsActivity extends AppCompatActivity {
         ActionBar actionbar = getSupportActionBar();
         actionbar.setDisplayHomeAsUpEnabled(hasDrawerLayout);
         actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
-
-//        pagerAdapter = new ConversationsPagerAdapter(getSupportFragmentManager(), this);
-//        pager = binding.pager;
-//        pager.setAdapter(pagerAdapter);
-
-        if (hasDrawerLayout) {
-            binding.conversationsDrawerContainer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, GravityCompat.END);
-        }
-//        pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-//            @Override
-//            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-//                this.handlePageChange(position);
-//            }
-//
-//            @Override
-//            public void onPageSelected(int position) {
-//                this.handlePageChange(position);
-//            }
-//
-//            @Override
-//            public void onPageScrollStateChanged(int state) {}
-//
-//            private void handlePageChange(int position) {
-//                ConversationsPagerAdapter.ConversationInfo info = pagerAdapter.getItemInfo(position);
-//                pagerAdapter.setActiveItem(position);
-//                binding.toolbar.setTitle(info.conv.getName());
-//                if (hasDrawerLayout) {
-//                    binding.conversationsDrawerContainer.setDrawerLockMode(
-//                            info.conv.getType() == Conversation.TYPE_CHANNEL ? DrawerLayout.LOCK_MODE_UNLOCKED : DrawerLayout.LOCK_MODE_LOCKED_CLOSED,
-//                            GravityCompat.END
-//                    );
-//                }
-//            }
-//        });
+        viewModel.getActiveConversation().observe(this, activeConversation -> {
+            if (activeConversation == null) {
+                return;
+            }
+            binding.toolbar.setTitle(activeConversation.getName());
+            if (hasDrawerLayout) {
+                if (activeConversation.getType() == Conversation.TYPE_CHANNEL) {
+                    binding.conversationsDrawerContainer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, GravityCompat.END);
+                } else {
+                    binding.conversationsDrawerContainer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, GravityCompat.END);
+                }
+            }
+        });
     }
 
 	public void onResume() {
@@ -176,13 +153,15 @@ public class ConversationsActivity extends AppCompatActivity {
 			CommandParser.getInstance(getApplicationContext()).parse(message, conversation, backgroundHandler);
 		} else {
             if (conversation.getType() == (Conversation.TYPE_SERVER)) {
-                Message msg = new Message(getString(R.string.send_message_in_server_window));
-                msg.setColour(Color.RED);
+                Message msg = new Message(
+                    getString(R.string.send_message_in_server_window),
+                    Message.SENDER_TYPE_SERVER,
+                    Message.TYPE_ERROR
+                );
                 conversation.addMessage(msg);
             } else {
                 String nickname = server.getConnection().getNick();
-                Message msg = new Message(nickname, message);
-                msg.setAlignment(Message.ALIGN_RIGHT);
+                Message msg = new Message(nickname, message, Message.SENDER_TYPE_SELF, Message.TYPE_MESSAGE);
                 conversation.addMessage(msg);
 
                 backgroundHandler.post(() -> server.getConnection().sendIRC().message(conversation.getName(), message));
@@ -211,16 +190,6 @@ public class ConversationsActivity extends AppCompatActivity {
             binding.connectionStatus.setText(server.getConnection().getNick());
         }
 
-        /*
-         * The activity has resumed and the service has been bound, get all the messages we missed...
-         */
-//        for (Map.Entry<String, Conversation> conv : server.getConversations().entrySet()) {
-//            int i = pagerAdapter.getItemByName(conv.getKey());
-//            if (i == -1) {
-//                onNewConversation(conv.getKey());
-//            }
-//            onConversationMessage(conv.getKey());
-//        }
         // Join any channels we want to join...
         if (!joinChannelBuffer.isEmpty()) {
             backgroundHandler.post(() -> {
@@ -242,34 +211,6 @@ public class ConversationsActivity extends AppCompatActivity {
         finish();
         binding.connectionStatus.setText(R.string.not_connected);
 	}
-	
-//	public void onConversationMessage(String name) {
-//		Conversation conversation = Server.getInstance().getConversation(name);
-//        if (conversation == null) {
-//            return;
-//        }
-//
-//		while (conversation.hasBuffer()) {
-//			Message msg = conversation.pollBuffer();
-//            // Don't log server window messages
-//			if (conversation.getType() != Conversation.TYPE_SERVER) {
-//                backgroundHandler.post(() -> {
-//                    LogMessage logMessage = new LogMessage(
-//                        name,
-//                        conversation.getType(),
-//                        msg.getSender(),
-//                        msg.getText()
-//                    );
-//                    db.logMessageDao().insert(logMessage);
-//                });
-//            }
-////			adapter.addMessage(msg);
-//		}
-//
-//        Intent updateNotificationIntent = new Intent();
-//        updateNotificationIntent.setAction(Broadcast.UPDATE_NOTIFICATION);
-//        sendBroadcast(updateNotificationIntent);
-//	}
 	
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

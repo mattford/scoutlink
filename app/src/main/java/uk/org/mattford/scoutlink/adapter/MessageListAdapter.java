@@ -2,14 +2,17 @@ package uk.org.mattford.scoutlink.adapter;
 
 import java.text.DateFormat;
 import java.util.LinkedList;
-import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import uk.org.mattford.scoutlink.R;
 import uk.org.mattford.scoutlink.model.Message;
+import uk.org.mattford.scoutlink.utils.MircColors;
 
 import android.content.Context;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,76 +20,14 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import static uk.org.mattford.scoutlink.model.Message.ALIGN_CENTER;
-import static uk.org.mattford.scoutlink.model.Message.ALIGN_RIGHT;
-
 public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.ViewHolder> {
-
     private LinkedList<Message> messages;
     private Context context;
 
     public MessageListAdapter(Context context, LinkedList<Message> messages) {
         this.context = context;
         this.messages = messages;
-//        loadLoggedMessages(messagesSnapshot);
     }
-
-    private void loadLoggedMessages(List<Message> messages) {
-//        Settings settings = new Settings(context);
-//        if (conversation == null ||
-//                conversation.getType() == Conversation.TYPE_SERVER ||
-//                !settings.getBoolean("logging_enabled", true) ||
-//                !settings.getBoolean("load_previous_messages_on_join", true)
-//        ) {
-//            for (Message msg : messages) {
-//                addMessage(msg);
-//            }
-//            initialised = true;
-//            processBuffer();
-//            return;
-//        }
-//
-//        int messagesToLoad = settings.getInteger("previous_messages_to_load", 10);
-//
-//        LogDatabase logDatabase = Room.databaseBuilder(context.getApplicationContext(), LogDatabase.class, "logs")
-//                .addMigrations(LogDatabaseMigrations.MIGRATION_0_1)
-//                .build();
-//
-//        new Thread(() -> {
-//            List<LogMessage> logMessages = logDatabase.logMessageDao().findConversationMessagesWithLimit(conversation.getName(), messagesToLoad);
-//            logDatabase.close();
-//            (new Handler(Looper.getMainLooper())).post(() -> {
-//                for (int i = logMessages.size() - 1; i >= 0; i--) {
-//                    LogMessage msg = logMessages.get(i);
-//                    Message message = new Message(msg.sender, msg.message, msg.date, null);
-//                    addMessage(message);
-//                }
-//                if (!messages.isEmpty()) {
-//                    for (Message msg : messages) {
-//                        addMessage(msg);
-//                    }
-//                }
-//                initialised = true;
-//                processBuffer();
-//            });
-//        }).start();
-    }
-
-//    private boolean showMessageMetadata(Message message, Message previousMessage) {
-//        if (previousMessage == null ||
-//                (message.getSender() != null &&
-//                        (previousMessage.getSender() == null ||
-//                                !previousMessage.getSender().equalsIgnoreCase(message.getSender()))) ||
-//                (message.getTimestamp() != null && previousMessage.getTimestamp() == null)
-//        ) {
-//            return true;
-//        }
-//
-//        // If more that 30 mins has passed, show the meta regardless
-//        Date previousTimestamp = previousMessage.getTimestamp();
-//        Date currentTimestamp = message.getTimestamp();
-//        return (currentTimestamp.getTime() - previousTimestamp.getTime() > (1000 * 60 * 30));
-//    }
 
     @NonNull
     @Override
@@ -99,33 +40,54 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Message message = this.messages.get(position);
-        holder.mSenderView.setText(message.getSender());
-        if (message.getSender() != null) {
-            holder.mSenderView.setText(message.getSender());
-        } else {
-            holder.mSenderView.setVisibility(View.GONE);
+
+        String messageText = message.getText();
+        if (message.isType(Message.TYPE_ACTION)) {
+            messageText = context.getString(R.string.message_action, message.getText());
+        } else if (message.isType(Message.TYPE_ERROR)) {
+            holder.mMessageView.setTextColor(context.getResources().getColor(R.color.red));
         }
+        holder.mMessageView.setText(MircColors.toSpannable(messageText));
 
-        holder.mMessageView.setText(message.getFormattedText());
-
-        if (message.getAlignment() == ALIGN_RIGHT) {
+        String sender = message.getSender();
+        if (sender == null || !message.isSenderType(Message.SENDER_TYPE_OTHER)) {
+            holder.mSenderView.setVisibility(View.GONE);
+        } else {
+            holder.mSenderView.setVisibility(View.VISIBLE);
+            if (message.isType(Message.TYPE_NOTICE)) {
+                sender = context.getString(R.string.message_notice_sender, sender);
+            }
+            holder.mSenderView.setText(sender);
+        }
+        int defaultMarginPx = (int) TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            5,
+            context.getResources().getDisplayMetrics()
+        );
+        int marginPx = (int) TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            100,
+            context.getResources().getDisplayMetrics()
+        );
+        Drawable background = context.getResources().getDrawable(R.drawable.rounded_corners);
+        RecyclerView.LayoutParams layoutParams = (RecyclerView.LayoutParams)holder.mView.getLayoutParams();
+        if (message.isSenderType(Message.SENDER_TYPE_SELF)) {
             holder.mView.setGravity(Gravity.END);
-            holder.mMessageView.setGravity(Gravity.END);
-        } else if (message.getAlignment() == ALIGN_CENTER) {
-            ViewGroup.LayoutParams params = holder.mMessageView.getLayoutParams();
-            params.width = ViewGroup.LayoutParams.MATCH_PARENT;
-            holder.mMessageView.setLayoutParams(params);
-            holder.mView.setGravity(Gravity.CENTER);
+            background.setColorFilter(holder.mView.getResources().getColor(R.color.light_green), PorterDuff.Mode.MULTIPLY);
+            layoutParams.leftMargin = marginPx;
+            layoutParams.rightMargin = defaultMarginPx;
+            holder.mView.setLayoutParams(layoutParams);
+        } else if (message.isSenderType(Message.SENDER_TYPE_OTHER)) {
+            layoutParams.leftMargin = defaultMarginPx;
+            layoutParams.rightMargin = marginPx;
+            holder.mMessageView.setGravity(Gravity.START);
+        } else if (message.isSenderType(Message.SENDER_TYPE_SERVER)) {
+            layoutParams.leftMargin = defaultMarginPx;
+            layoutParams.rightMargin = defaultMarginPx;
             holder.mMessageView.setGravity(Gravity.CENTER);
         }
-
-        if (message.getColour() != null) {
-            holder.mMessageView.setTextColor(message.getColour());
-        }
-
-        if (message.getBackgroundColour() != null) {
-            holder.mView.setBackgroundColor(message.getBackgroundColour());
-        }
+        holder.mView.setBackgroundDrawable(background);
+        holder.mView.setLayoutParams(layoutParams);
 
         if (message.getTimestamp() != null) {
             DateFormat dateFormat = android.text.format.DateFormat.getTimeFormat(context);

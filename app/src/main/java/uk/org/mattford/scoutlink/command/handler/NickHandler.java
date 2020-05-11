@@ -6,7 +6,6 @@ import android.widget.Toast;
 
 import uk.org.mattford.scoutlink.R;
 import uk.org.mattford.scoutlink.command.CommandHandler;
-import uk.org.mattford.scoutlink.irc.IRCService;
 import uk.org.mattford.scoutlink.model.Conversation;
 import uk.org.mattford.scoutlink.utils.Validator;
 

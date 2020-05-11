@@ -1,7 +1,6 @@
 package uk.org.mattford.scoutlink.irc;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.text.SpannableString;
 import android.text.style.StyleSpan;
@@ -145,8 +144,7 @@ public class IRCListener extends ListenerAdapter {
     }
 
     private void onMessageNotSent(MessageNotSentEvent event) {
-        Message msg = new Message(event.getMessage());
-        msg.setColour(Color.RED);
+        Message msg = new Message(event.getMessage(), Message.SENDER_TYPE_SERVER, Message.TYPE_ERROR);
         server.getConversation(event.getChannel()).addMessage(msg);
     }
 
@@ -182,7 +180,7 @@ public class IRCListener extends ListenerAdapter {
                 service.sendToast(text);
                 break;
         }
-        Message msg = new Message(text);
+        Message msg = new Message(text, Message.SENDER_TYPE_SERVER, Message.TYPE_EVENT);
         server.getConversation(service.getString(R.string.server_window_title)).addMessage(msg);
     }
 
@@ -202,9 +200,17 @@ public class IRCListener extends ListenerAdapter {
     public void onHalfOp(HalfOpEvent event) {
         Message message;
         if (event.isHalfOp()) {
-            message = new Message(service.getString(R.string.message_halfopevent, event.getUserHostmask().getNick(), event.getRecipientHostmask().getNick()));
+            message = new Message(
+                service.getString(R.string.message_halfopevent, event.getUserHostmask().getNick(), event.getRecipientHostmask().getNick()),
+                Message.SENDER_TYPE_SERVER,
+                Message.TYPE_EVENT
+            );
         } else {
-            message = new Message(service.getString(R.string.message_dehalfopevent, event.getUserHostmask().getNick(), event.getRecipientHostmask().getNick()));
+            message = new Message(
+                service.getString(R.string.message_dehalfopevent, event.getUserHostmask().getNick(), event.getRecipientHostmask().getNick()),
+                Message.SENDER_TYPE_SERVER,
+                Message.TYPE_EVENT
+            );
         }
         Conversation conversation = server.getConversation(event.getChannel().getName());
         conversation.addMessage(message);
@@ -214,9 +220,17 @@ public class IRCListener extends ListenerAdapter {
     public void onOp(OpEvent event) {
         Message message;
         if (event.isOp()) {
-            message = new Message(service.getString(R.string.message_opevent, event.getUserHostmask().getNick(), event.getRecipientHostmask().getNick()));
+            message = new Message(
+                service.getString(R.string.message_opevent, event.getUserHostmask().getNick(), event.getRecipientHostmask().getNick()),
+                Message.SENDER_TYPE_SERVER,
+                Message.TYPE_EVENT
+            );
         } else {
-            message = new Message(service.getString(R.string.message_deopevent, event.getUserHostmask().getNick(), event.getRecipientHostmask().getNick()));
+            message = new Message(
+                service.getString(R.string.message_deopevent, event.getUserHostmask().getNick(), event.getRecipientHostmask().getNick()),
+                Message.SENDER_TYPE_SERVER,
+                Message.TYPE_EVENT
+            );
         }
         Conversation conversation = server.getConversation(event.getChannel().getName());
         conversation.addMessage(message);
@@ -226,9 +240,17 @@ public class IRCListener extends ListenerAdapter {
     public void onSuperOp(SuperOpEvent event) {
         Message message;
         if (event.isSuperOp()) {
-            message = new Message(service.getString(R.string.message_superopevent, event.getUserHostmask().getNick(), event.getRecipientHostmask().getNick()));
+            message = new Message(
+                service.getString(R.string.message_superopevent, event.getUserHostmask().getNick(), event.getRecipientHostmask().getNick()),
+                Message.SENDER_TYPE_SERVER,
+                Message.TYPE_EVENT
+            );
         } else {
-            message = new Message(service.getString(R.string.message_desuperopevent, event.getUserHostmask().getNick(), event.getRecipientHostmask().getNick()));
+            message = new Message(
+                service.getString(R.string.message_desuperopevent, event.getUserHostmask().getNick(), event.getRecipientHostmask().getNick()),
+                Message.SENDER_TYPE_SERVER,
+                Message.TYPE_EVENT
+            );
         }
         Conversation conversation = server.getConversation(event.getChannel().getName());
         conversation.addMessage(message);
@@ -238,9 +260,17 @@ public class IRCListener extends ListenerAdapter {
     public void onVoice(VoiceEvent event) {
         Message message;
         if (event.hasVoice()) {
-            message = new Message(service.getString(R.string.message_voiceevent, event.getUserHostmask().getNick(), event.getRecipientHostmask().getNick()));
+            message = new Message(
+                service.getString(R.string.message_voiceevent, event.getUserHostmask().getNick(), event.getRecipientHostmask().getNick()),
+                Message.SENDER_TYPE_SERVER,
+                Message.TYPE_EVENT
+            );
         } else {
-            message = new Message(service.getString(R.string.message_devoiceevent, event.getUserHostmask().getNick(), event.getRecipientHostmask().getNick()));
+            message = new Message(
+                service.getString(R.string.message_devoiceevent, event.getUserHostmask().getNick(), event.getRecipientHostmask().getNick()),
+                Message.SENDER_TYPE_SERVER,
+                Message.TYPE_EVENT
+            );
         }
         Conversation conversation = server.getConversation(event.getChannel().getName());
         conversation.addMessage(message);
@@ -250,9 +280,17 @@ public class IRCListener extends ListenerAdapter {
     public void onOwner(OwnerEvent event) {
         Message message;
         if (event.isOwner()) {
-            message = new Message(service.getString(R.string.message_ownerevent, event.getUserHostmask().getNick(), event.getRecipientHostmask().getNick()));
+            message = new Message(
+                service.getString(R.string.message_ownerevent, event.getUserHostmask().getNick(), event.getRecipientHostmask().getNick()),
+                Message.SENDER_TYPE_SERVER,
+                Message.TYPE_EVENT
+            );
         } else {
-            message = new Message(service.getString(R.string.message_deownerevent, event.getUserHostmask().getNick(), event.getRecipientHostmask().getNick()));
+            message = new Message(
+                service.getString(R.string.message_deownerevent, event.getUserHostmask().getNick(), event.getRecipientHostmask().getNick()),
+                Message.SENDER_TYPE_SERVER,
+                Message.TYPE_EVENT
+            );
         }
         Conversation conversation = server.getConversation(event.getChannel().getName());
         conversation.addMessage(message);
@@ -260,15 +298,15 @@ public class IRCListener extends ListenerAdapter {
     }
 
     public void onMessage(MessageEvent event) {
-        Message message = new Message(event.getUserHostmask().getNick(), event.getMessage());
+        Message message = new Message(event.getUserHostmask().getNick(), event.getMessage(), Message.SENDER_TYPE_OTHER, Message.TYPE_MESSAGE);
         server.getConversation(event.getChannel().getName()).addMessage(message);
     }
 
     public void onAction(ActionEvent event) {
         SpannableString text = new SpannableString("* " + event.getUserHostmask().getNick() + " " + event.getAction());
         text.setSpan(new StyleSpan(Typeface.ITALIC), 0, text.length(), 0);
-        Message msg = new Message(event.getUserHostmask().getNick(), text.toString());
-        msg.setColour(service.getResources().getColor(R.color.scoutlink_blue_dark));
+        Message msg = new Message(
+            event.getUserHostmask().getNick(), text.toString(), Message.SENDER_TYPE_OTHER, Message.TYPE_ACTION);
         if (event.getChannel() != null) {
             server.getConversation(event.getChannel().getName()).addMessage(msg);
         } else {
@@ -288,30 +326,30 @@ public class IRCListener extends ListenerAdapter {
             conversation = new Query(event.getUserHostmask().getNick());
             server.addConversation(conversation);
         }
-        Message msg = new Message(event.getUserHostmask().getNick(), event.getMessage());
+        Message msg = new Message(
+            event.getUserHostmask().getNick(),
+            event.getMessage(),
+            Message.SENDER_TYPE_OTHER,
+            Message.TYPE_MESSAGE
+        );
         conversation.addMessage(msg);
     }
 
     public void onNotice(NoticeEvent event) {
         String sender = event.getUserHostmask().getNick();
-        Message message = new Message(service.getString(R.string.message_notice_sender, sender), event.getMessage());
-        message.setBackgroundColour(service.getResources().getColor(R.color.light_green));
-        message.setColour(service.getResources().getColor(R.color.white));
-        ArrayList<String> sharedConversations = null;
-        if (event.getUser() != null) {
-            sharedConversations = getSharedChannels(event.getBot(), event.getUser());
-            for (String channel : sharedConversations) {
-                server.getConversation(channel).addMessage(message);
+        Message message;
+        if (sender.contains(".scoutlink.net")) {
+            // Treat as a server message
+            message = new Message(event.getMessage(), Message.SENDER_TYPE_SERVER, Message.TYPE_SERVER);
+        } else {
+            message = new Message(sender, event.getMessage(), Message.SENDER_TYPE_OTHER, Message.TYPE_NOTICE);
+            if (event.getUser() != null) {
+                ArrayList<String> sharedConversations = getSharedChannels(event.getBot(), event.getUser());
+                for (String channel : sharedConversations) {
+                    server.getConversation(channel).addMessage(message);
+                }
             }
         }
-
-        // Add to active conversation unless it is a shared conversation
-//        Conversation activeConversation = server.getActiveConversation();
-//        if ((sharedConversations == null ||
-//                (activeConversation != null && !sharedConversations.contains(activeConversation.getName()))) && !activeConversation.getName().equals(service.getString(R.string.server_window_title))) {
-//            server.getActiveConversation().addMessage(message);
-//            service.onNewMessage(server.getActiveConversation().getName());
-//        }
 
         // Add to Server Window
         server.getConversation(service.getString(R.string.server_window_title)).addMessage(message);
@@ -332,9 +370,20 @@ public class IRCListener extends ListenerAdapter {
         if (event.getUserHostmask().getNick().equalsIgnoreCase(event.getBot().getNick())) {
             conversation = new Channel(event.getChannel().getName(), event.getChannel());
             server.addConversation(conversation);
-            conversation.addMessage(new Message(String.format("You joined %s", conversation.getName())));
+            service.loadLoggedMessages(conversation);
+            conversation.addMessage(
+                new Message(
+                    String.format("You joined %s", conversation.getName()),
+                    Message.SENDER_TYPE_SERVER,
+                    Message.TYPE_EVENT
+                )
+            );
         } else {
-            Message msg = new Message(service.getString(R.string.message_join, event.getUserHostmask().getNick(), event.getChannel().getName()));
+            Message msg = new Message(
+                service.getString(R.string.message_join, event.getUserHostmask().getNick(), event.getChannel().getName()),
+                Message.SENDER_TYPE_SERVER,
+                Message.TYPE_EVENT
+            );
             conversation = server.getConversation(event.getChannel().getName());
             conversation.addMessage(msg);
         }
@@ -344,12 +393,19 @@ public class IRCListener extends ListenerAdapter {
     public void onKick(KickEvent event) {
         if (event.getRecipientHostmask().getNick().equals(event.getBot().getNick())) {
             // We were kicked from a channel.
-            Message msg = new Message(service.getString(R.string.message_kicked_self, event.getChannel().getName(), event.getUserHostmask().getNick(), event.getReason()));
-            msg.setColour(Color.RED);
+            Message msg = new Message(
+                service.getString(R.string.message_kicked_self, event.getChannel().getName(), event.getUserHostmask().getNick(), event.getReason()),
+                Message.SENDER_TYPE_SERVER,
+                Message.TYPE_EVENT
+            );
             server.getConversation(service.getString(R.string.server_window_title)).addMessage(msg);
             server.removeConversation(event.getChannel().getName());
         } else {
-            Message msg = new Message(service.getString(R.string.message_kicked_other, event.getRecipientHostmask().getNick(), event.getChannel().getName(), event.getUserHostmask().getNick(), event.getReason()));
+            Message msg = new Message(
+                service.getString(R.string.message_kicked_other, event.getRecipientHostmask().getNick(), event.getChannel().getName(), event.getUserHostmask().getNick(), event.getReason()),
+                Message.SENDER_TYPE_SERVER,
+                Message.TYPE_EVENT
+            );
             Conversation conversation = server.getConversation(event.getChannel().getName());
             conversation.addMessage(msg);
             conversation.onUserListChanged();
@@ -357,10 +413,14 @@ public class IRCListener extends ListenerAdapter {
     }
 
     public void onNickChange(NickChangeEvent event) {
-        Message msg = new Message(service.getString(R.string.message_nickchange, event.getOldNick(), event.getNewNick()));
         if (event.getUser() == null) {
             return;
         }
+        Message msg = new Message(
+            service.getString(R.string.message_nickchange, event.getOldNick(), event.getNewNick()),
+            Message.SENDER_TYPE_SERVER,
+            Message.TYPE_EVENT
+        );
         for (String channel : getSharedChannels(event.getBot(), event.getUser())) {
             Conversation conversation = server.getConversation(channel);
             conversation.addMessage(msg);
@@ -369,7 +429,7 @@ public class IRCListener extends ListenerAdapter {
     }
 
     public void onMotd(MotdEvent event) {
-        Message msg = new Message(event.getMotd());
+        Message msg = new Message(event.getMotd(), Message.SENDER_TYPE_SERVER, Message.TYPE_SERVER);
         server.getConversation(service.getString(R.string.server_window_title)).addMessage(msg);
     }
 
@@ -378,7 +438,11 @@ public class IRCListener extends ListenerAdapter {
             // We left a channel.
             server.removeConversation(event.getChannel().getName());
         } else {
-            Message msg = new Message(service.getString(R.string.message_part, event.getUserHostmask().getNick(), event.getChannel().getName(), event.getReason()));
+            Message msg = new Message(
+                service.getString(R.string.message_part, event.getUserHostmask().getNick(), event.getChannel().getName(), event.getReason()),
+                Message.SENDER_TYPE_SERVER,
+                Message.TYPE_EVENT
+            );
             Conversation conversation = server.getConversation(event.getChannelName());
             conversation.addMessage(msg);
             conversation.onUserListChanged();
@@ -390,7 +454,11 @@ public class IRCListener extends ListenerAdapter {
             // We have quit, do nothing.
             return;
         }
-        Message msg = new Message(service.getString(R.string.message_quit, event.getUserHostmask().getNick(), event.getReason()));
+        Message msg = new Message(
+            service.getString(R.string.message_quit, event.getUserHostmask().getNick(), event.getReason()),
+            Message.SENDER_TYPE_SERVER,
+            Message.TYPE_EVENT
+        );
         for (String channel : getSharedChannels(event.getBot(), event.getUser())) {
             Conversation conversation = server.getConversation(channel);
             conversation.addMessage(msg);
@@ -399,92 +467,164 @@ public class IRCListener extends ListenerAdapter {
     }
 
     public void onSetChannelBan(SetChannelBanEvent event) {
-        Message msg = new Message(service.getString(R.string.message_ban_add, event.getUserHostmask().getNick(), event.getBanHostmask().getHostmask()));
+        Message msg = new Message(
+            service.getString(R.string.message_ban_add, event.getUserHostmask().getNick(), event.getBanHostmask().getHostmask()),
+            Message.SENDER_TYPE_SERVER,
+            Message.TYPE_EVENT
+        );
         server.getConversation(event.getChannel().getName()).addMessage(msg);
     }
 
     public void onRemoveChannelBan(RemoveChannelBanEvent event) {
-        Message msg = new Message(service.getString(R.string.message_ban_remove, event.getUserHostmask().getNick(), event.getHostmask().getHostmask()));
+        Message msg = new Message(
+            service.getString(R.string.message_ban_remove, event.getUserHostmask().getNick(), event.getHostmask().getHostmask()),
+            Message.SENDER_TYPE_SERVER,
+            Message.TYPE_EVENT
+        );
         server.getConversation(event.getChannel().getName()).addMessage(msg);
     }
 
     public void onSetPrivate(SetPrivateEvent event) {
-        Message msg = new Message(service.getString(R.string.message_set_private, event.getUserHostmask().getNick()));
+        Message msg = new Message(
+            service.getString(R.string.message_set_private, event.getUserHostmask().getNick()),
+            Message.SENDER_TYPE_SERVER,
+            Message.TYPE_EVENT
+        );
         server.getConversation(event.getChannel().getName()).addMessage(msg);
     }
 
     public void onRemovePrivate(RemovePrivateEvent event) {
-        Message msg = new Message(service.getString(R.string.message_unset_private, event.getUserHostmask().getNick()));
+        Message msg = new Message(
+            service.getString(R.string.message_unset_private, event.getUserHostmask().getNick()),
+            Message.SENDER_TYPE_SERVER,
+            Message.TYPE_EVENT
+        );
         server.getConversation(event.getChannel().getName()).addMessage(msg);
     }
 
     public void onSetSecret(SetSecretEvent event) {
-        Message msg = new Message(service.getString(R.string.message_set_secret, event.getUserHostmask().getNick()));
+        Message msg = new Message(
+            service.getString(R.string.message_set_secret, event.getUserHostmask().getNick()),
+            Message.SENDER_TYPE_SERVER,
+            Message.TYPE_EVENT
+        );
         server.getConversation(event.getChannel().getName()).addMessage(msg);
     }
 
     public void onRemoveSecret(RemoveSecretEvent event) {
-        Message msg = new Message(service.getString(R.string.message_unset_secret, event.getUserHostmask().getNick()));
+        Message msg = new Message(
+            service.getString(R.string.message_unset_secret, event.getUserHostmask().getNick()),
+            Message.SENDER_TYPE_SERVER,
+            Message.TYPE_EVENT
+        );
         server.getConversation(event.getChannel().getName()).addMessage(msg);
     }
 
     public void onSetChannelKey(SetChannelKeyEvent event) {
-        Message msg = new Message(service.getString(R.string.message_set_key, event.getUserHostmask().getNick(), event.getKey()));
+        Message msg = new Message(
+            service.getString(R.string.message_set_key, event.getUserHostmask().getNick(), event.getKey()),
+            Message.SENDER_TYPE_SERVER,
+            Message.TYPE_EVENT
+        );
         server.getConversation(event.getChannel().getName()).addMessage(msg);
     }
 
     public void onRemoveChannelKey(RemoveChannelKeyEvent event) {
-        Message msg = new Message(service.getString(R.string.message_unset_key, event.getUserHostmask().getNick()));
+        Message msg = new Message(
+            service.getString(R.string.message_unset_key, event.getUserHostmask().getNick()),
+            Message.SENDER_TYPE_SERVER,
+            Message.TYPE_EVENT
+        );
         server.getConversation(event.getChannel().getName()).addMessage(msg);
     }
 
     public void onSetChannelLimit(SetChannelLimitEvent event) {
-        Message msg = new Message(service.getString(R.string.message_set_limit, event.getUserHostmask().getNick(), Integer.toString(event.getLimit())));
+        Message msg = new Message(
+            service.getString(R.string.message_set_limit, event.getUserHostmask().getNick(), Integer.toString(event.getLimit())),
+            Message.SENDER_TYPE_SERVER,
+            Message.TYPE_EVENT
+        );
         server.getConversation(event.getChannel().getName()).addMessage(msg);
     }
 
     public void onRemoveChannelLimit(RemoveChannelLimitEvent event) {
-        Message msg = new Message(service.getString(R.string.message_unset_limit, event.getUserHostmask().getNick()));
+        Message msg = new Message(
+            service.getString(R.string.message_unset_limit, event.getUserHostmask().getNick()),
+            Message.SENDER_TYPE_SERVER,
+            Message.TYPE_EVENT
+        );
         server.getConversation(event.getChannel().getName()).addMessage(msg);
     }
 
     public void onSetInviteOnly(SetInviteOnlyEvent event) {
-        Message msg = new Message(service.getString(R.string.message_set_invite, event.getUserHostmask().getNick()));
+        Message msg = new Message(
+            service.getString(R.string.message_set_invite, event.getUserHostmask().getNick()),
+            Message.SENDER_TYPE_SERVER,
+            Message.TYPE_EVENT
+        );
         server.getConversation(event.getChannel().getName()).addMessage(msg);
     }
 
     public void onRemoveInviteOnly(RemoveInviteOnlyEvent event) {
-        Message msg = new Message(service.getString(R.string.message_unset_invite, event.getUserHostmask().getNick()));
+        Message msg = new Message(
+            service.getString(R.string.message_unset_invite, event.getUserHostmask().getNick()),
+            Message.SENDER_TYPE_SERVER,
+            Message.TYPE_EVENT
+        );
         server.getConversation(event.getChannel().getName()).addMessage(msg);
     }
 
     public void onSetModerated(SetModeratedEvent event) {
-        Message msg = new Message(service.getString(R.string.message_set_moderated, event.getUserHostmask().getNick()));
+        Message msg = new Message(
+            service.getString(R.string.message_set_moderated, event.getUserHostmask().getNick()),
+            Message.SENDER_TYPE_SERVER,
+            Message.TYPE_EVENT
+        );
         server.getConversation(event.getChannel().getName()).addMessage(msg);
     }
 
     public void onRemoveModerated(RemoveModeratedEvent event) {
-        Message msg = new Message(service.getString(R.string.message_unset_moderated, event.getUserHostmask().getNick()));
+        Message msg = new Message(
+            service.getString(R.string.message_unset_moderated, event.getUserHostmask().getNick()),
+            Message.SENDER_TYPE_SERVER,
+            Message.TYPE_EVENT
+        );
         server.getConversation(event.getChannel().getName()).addMessage(msg);
     }
 
     public void onSetNoExternalMessages(SetNoExternalMessagesEvent event) {
-        Message msg = new Message(service.getString(R.string.message_set_no_external, event.getUserHostmask().getNick()));
+        Message msg = new Message(
+            service.getString(R.string.message_set_no_external, event.getUserHostmask().getNick()),
+            Message.SENDER_TYPE_SERVER,
+            Message.TYPE_EVENT
+        );
         server.getConversation(event.getChannel().getName()).addMessage(msg);
     }
 
     public void onRemoveNoExternalMessages(RemoveNoExternalMessagesEvent event) {
-        Message msg = new Message(service.getString(R.string.message_unset_no_external, event.getUserHostmask().getNick()));
+        Message msg = new Message(
+            service.getString(R.string.message_unset_no_external, event.getUserHostmask().getNick()),
+            Message.SENDER_TYPE_SERVER,
+            Message.TYPE_EVENT
+        );
         server.getConversation(event.getChannel().getName()).addMessage(msg);
     }
 
     public void onSetTopicProtection(SetTopicProtectionEvent event) {
-        Message msg = new Message(service.getString(R.string.message_set_topicprotect, event.getUserHostmask().getNick()));
+        Message msg = new Message(
+            service.getString(R.string.message_set_topicprotect, event.getUserHostmask().getNick()),
+            Message.SENDER_TYPE_SERVER,
+            Message.TYPE_EVENT
+        );
         server.getConversation(event.getChannel().getName()).addMessage(msg);
     }
 
     public void onRemoveTopicProtection(RemoveTopicProtectionEvent event) {
-        Message msg = new Message(service.getString(R.string.message_unset_topicprotect, event.getUserHostmask().getNick()));
+        Message msg = new Message(
+            service.getString(R.string.message_unset_topicprotect, event.getUserHostmask().getNick()),
+            Message.SENDER_TYPE_SERVER,
+            Message.TYPE_EVENT
+        );
         server.getConversation(event.getChannel().getName()).addMessage(msg);
     }
 
@@ -497,18 +637,29 @@ public class IRCListener extends ListenerAdapter {
         String sender = event.getUserHostmask().getNick();
         String receiver = event.getRecipientHostmask().getNick();
 
-        Message msg = new Message(service.getString(R.string.message_usermode, sender, event.getMode(), receiver));
+        Message msg = new Message(
+            service.getString(R.string.message_usermode, sender, event.getMode(), receiver),
+            Message.SENDER_TYPE_SERVER,
+            Message.TYPE_EVENT
+        );
         server.getConversation(service.getString(R.string.server_window_title)).addMessage(msg);
     }
 
     public void onTopic(TopicEvent event) {
         Message msg;
         if (!event.isChanged()) {
-            msg = new Message(service.getString(R.string.message_topic, event.getTopic(), event.getUser().getNick()));
+            msg = new Message(
+                service.getString(R.string.message_topic, event.getTopic(), event.getUser().getNick()),
+                Message.SENDER_TYPE_SERVER,
+                Message.TYPE_EVENT
+            );
         } else {
-            msg = new Message(service.getString(R.string.message_topic_changed, event.getUser().getNick(), event.getTopic()));
+            msg = new Message(
+                service.getString(R.string.message_topic_changed, event.getUser().getNick(), event.getTopic()),
+                Message.SENDER_TYPE_SERVER,
+                Message.TYPE_EVENT
+            );
         }
-        msg.setColour(service.getResources().getColor(R.color.scoutlink_blue));
         server.getConversation(event.getChannel().getName()).addMessage(msg);
     }
 
@@ -542,7 +693,9 @@ public class IRCListener extends ListenerAdapter {
             messageBuilder.append(service.getString(R.string.message_whois_registered, event.getRegisteredAs()));
         }
         Message msg = new Message(
-            messageBuilder.toString()
+            messageBuilder.toString(),
+            Message.SENDER_TYPE_SERVER,
+            Message.TYPE_EVENT
         );
         server.getConversation(service.getString(R.string.server_window_title)).addMessage(msg);
     }

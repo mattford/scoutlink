@@ -1,13 +1,10 @@
 package uk.org.mattford.scoutlink.model;
 
-import android.util.Log;
-
 import org.pircbotx.PircBotX;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.Map;
 
 public class Server {
 	private ArrayList<OnConversationListChangedListener> listeners;

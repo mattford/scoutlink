@@ -11,6 +11,8 @@ import androidx.annotation.Nullable;
 import uk.org.mattford.scoutlink.R;
 import uk.org.mattford.scoutlink.ScoutlinkApplication;
 import uk.org.mattford.scoutlink.activity.ConversationsActivity;
+import uk.org.mattford.scoutlink.database.LogDatabase;
+import uk.org.mattford.scoutlink.database.entities.LogMessage;
 import uk.org.mattford.scoutlink.model.Broadcast;
 import uk.org.mattford.scoutlink.model.Conversation;
 import uk.org.mattford.scoutlink.model.Message;
@@ -121,7 +123,7 @@ public class IRCService extends Service {
 	public void connect() {
         ServerWindow sw = new ServerWindow(getString(R.string.server_window_title));
         server.addConversation(sw);
-        Message msg = new Message(getString(R.string.connect_message));
+        Message msg = new Message(getString(R.string.connect_message), Message.SENDER_TYPE_SERVER, Message.TYPE_EVENT);
         sw.addMessage(msg);
 
         List<Configuration.ServerEntry> servers = new ArrayList<>();
@@ -229,7 +231,7 @@ public class IRCService extends Service {
         updateNotification();
 
         if (!settings.getString("nickserv_user", "").equals("") && !settings.getString("nickserv_password", "").equals("")) {
-            getBackgroundHandler().post(() -> getConnection().send().message("NickServ", "LOGIN "+settings.getString("nickserv_user", "")+" "+settings.getString("nickserv_password", "")));
+            getBackgroundHandler().post(() -> getConnection().sendIRC().message("NickServ", "LOGIN "+settings.getString("nickserv_user", "")+" "+settings.getString("nickserv_password", "")));
         }
 
         String[] commands = settings.getStringArray("command_on_connect");
@@ -293,5 +295,18 @@ public class IRCService extends Service {
      */
     public boolean isConnected() {
 	    return server.getStatus() == Server.STATUS_CONNECTED;
+    }
+
+    public void loadLoggedMessages(Conversation conversation) {
+        LogDatabase db = LogDatabase.getInstance(getApplicationContext());
+        Settings settings = new Settings(this);
+        boolean shouldLoadMessages = settings.getBoolean("logging_enabled") && settings.getBoolean("load_previous_messages_on_join", true);
+        int messagesToLoad = settings.getInteger("previous_messages_to_load", 10);
+        if (shouldLoadMessages && messagesToLoad > 0) {
+            List<LogMessage> logMessages = db.logMessageDao().findConversationMessagesWithLimit(conversation.getName(), messagesToLoad);
+            for (LogMessage logMessage : logMessages) {
+                conversation.addMessage(logMessage.toMessage());
+            }
+        }
     }
 }

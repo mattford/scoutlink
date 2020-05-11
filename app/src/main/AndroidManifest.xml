@@ -37,11 +37,6 @@
             android:theme="@style/Dialog"
             android:screenOrientation="locked"/>
         <activity
-            android:name=".activity.UserListActivity"
-            android:label="@string/userlist_activity_label"
-            android:theme="@style/Dialog"
-            android:screenOrientation="locked"/>
-        <activity
             android:name=".activity.SettingsActivity"
             android:label="@string/action_settings"
             />

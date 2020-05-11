@@ -9,13 +9,13 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 public class Conversation {
-	
+	private boolean isActive;
 	private String CONVERSATION_NAME;
 	private int type;
 	private LinkedList<Message> messages;
 	MutableLiveData<ArrayList<User>> usersLiveData;
 	private MutableLiveData<LinkedList<Message>> messagesLiveData;
-	private int unreadMessages = 0;
+	private MutableLiveData<Integer> unreadMessagesLiveData;
 
 	public final static int TYPE_CHANNEL = 0;
 	public final static int TYPE_QUERY = 1;
@@ -26,6 +26,7 @@ public class Conversation {
 		this.messages = new LinkedList<>();
 		this.usersLiveData = new MutableLiveData<>(new ArrayList<>());
 		this.messagesLiveData = new MutableLiveData<>(this.messages);
+		this.unreadMessagesLiveData = new MutableLiveData<>(0);
 	}
 	
 	public String getName() {
@@ -62,6 +63,22 @@ public class Conversation {
 
 	public void addMessage(Message msg) {
 		messages.add(msg);
+		if (!isActive) {
+			int unreadMessages = 0;
+			if (getUnreadMessagesCount().getValue() != null) {
+				unreadMessages = this.getUnreadMessagesCount().getValue();
+			}
+			this.unreadMessagesLiveData.postValue(unreadMessages + 1);
+		}
 		onMessagesChanged();
+	}
+
+	public LiveData<Integer> getUnreadMessagesCount() {
+		return this.unreadMessagesLiveData;
+	}
+
+	public void setActive(boolean active) {
+		this.isActive = active;
+		this.unreadMessagesLiveData.postValue(0);
 	}
 }

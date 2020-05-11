@@ -1,7 +1,6 @@
 package uk.org.mattford.scoutlink.command;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Handler;
 
 import java.util.HashMap;
@@ -14,8 +13,6 @@ import uk.org.mattford.scoutlink.command.handler.NickHandler;
 import uk.org.mattford.scoutlink.command.handler.NotifyHandler;
 import uk.org.mattford.scoutlink.command.handler.PartHandler;
 import uk.org.mattford.scoutlink.command.handler.QuitHandler;
-import uk.org.mattford.scoutlink.irc.IRCService;
-import uk.org.mattford.scoutlink.model.Broadcast;
 import uk.org.mattford.scoutlink.model.Conversation;
 import uk.org.mattford.scoutlink.model.Server;
 
@@ -23,8 +20,7 @@ public class CommandParser {
 	
 	private static CommandParser instance;
 	private Server server;
-	private Context context;
-	
+
 	private HashMap<String, CommandHandler> commands;
 	private HashMap<String, String> aliases;
 	
@@ -32,8 +28,7 @@ public class CommandParser {
 		commands = new HashMap<>();
 		aliases = new HashMap<>();
 		server = Server.getInstance();
-		this.context = context;
-		
+
 		commands.put("join", new JoinHandler(context));
 		commands.put("part", new PartHandler(context));
 		commands.put("nick", new NickHandler(context));

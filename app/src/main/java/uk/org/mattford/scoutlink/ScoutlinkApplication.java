@@ -36,8 +36,6 @@ public class ScoutlinkApplication extends Application {
                     t = analytics.newTracker(R.xml.app_tracker);
                     break;
                 case GLOBAL_TRACKER:
-                    t = analytics.newTracker(PROPERTY_ID);
-                    break;
                 default:
                     t = analytics.newTracker(PROPERTY_ID);
                     break;

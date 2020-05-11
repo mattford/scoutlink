@@ -19,12 +19,18 @@ public class ConversationListRecyclerViewAdapter extends RecyclerView.Adapter<Co
     private Conversation activeConversation;
 
     public ConversationListRecyclerViewAdapter(
-            ConversationListFragment listener,
-            ArrayList<Conversation> conversations,
-            Conversation activeConversation
+            ConversationListFragment listener
     ) {
         mListener = listener;
-        conversationList = conversations;
+        conversationList = new ArrayList<>();
+        activeConversation = null;
+    }
+
+    public void setConversationList(ArrayList<Conversation> conversationList) {
+        this.conversationList = conversationList;
+    }
+
+    public void setActiveConversation(Conversation activeConversation) {
         this.activeConversation = activeConversation;
     }
 
@@ -40,15 +46,13 @@ public class ConversationListRecyclerViewAdapter extends RecyclerView.Adapter<Co
         holder.conversation = conversationList.get(position);
         holder.mConversationNameView.setText(holder.conversation.getName());
 
-//        holder.conversation.setOnUnreadMessagesChangedListener(unreadMessagesCount -> {
-//            holder.mUnreadMessagesView.setText(Integer.toString(unreadMessagesCount));
-//            holder.mUnreadMessagesView.setVisibility(unreadMessagesCount == 0 ? View.GONE : View.VISIBLE);
-//        });
-//
-//        int unreadMessagesCount = holder.conversation.unreadMessages;
-//        holder.mUnreadMessagesView.setText(Integer.toString(unreadMessagesCount));
-//        holder.mUnreadMessagesView.setVisibility(unreadMessagesCount == 0 ? View.GONE : View.VISIBLE);
-
+        if (holder.conversation.getUnreadMessagesCount().getValue() != null) {
+            int unreadMessagesCount = holder.conversation.getUnreadMessagesCount().getValue();
+            holder.mUnreadMessagesView.setText(Integer.toString(unreadMessagesCount));
+            holder.mUnreadMessagesView.setVisibility(unreadMessagesCount == 0 ? View.GONE : View.VISIBLE);
+        } else {
+            holder.mUnreadMessagesView.setVisibility(View.GONE);
+        }
         holder.mConversationNameView
                 .setTextColor(
                         holder.mConversationNameView

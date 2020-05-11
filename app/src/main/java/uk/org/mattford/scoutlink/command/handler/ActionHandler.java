@@ -1,14 +1,8 @@
 package uk.org.mattford.scoutlink.command.handler;
 
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Color;
 import android.os.Handler;
-
-import uk.org.mattford.scoutlink.R;
 import uk.org.mattford.scoutlink.command.CommandHandler;
-import uk.org.mattford.scoutlink.irc.IRCService;
-import uk.org.mattford.scoutlink.model.Broadcast;
 import uk.org.mattford.scoutlink.model.Conversation;
 import uk.org.mattford.scoutlink.model.Message;
 
@@ -33,8 +27,7 @@ public class ActionHandler extends CommandHandler {
 			action = params[1];
 		}
 		backgroundHandler.post(() -> server.getConnection().sendIRC().action(conversation.getName(), action));
-        Message msg = new Message(nick, context.getString(R.string.message_action, action));
-        msg.setAlignment(Message.ALIGN_RIGHT);
+        Message msg = new Message(nick, action, Message.SENDER_TYPE_SELF, Message.TYPE_ACTION);
 		conversation.addMessage(msg);
 	}
 

@@ -113,7 +113,7 @@ public class UserListFragment extends Fragment implements PopupMenu.OnMenuItemCl
                         .setView(inputNotice)
                         .setPositiveButton("Send", (dialog, whichButton) -> {
                             backgroundHandler.post(() -> server.getConnection().sendIRC().notice(nickname, inputNotice.getText().toString()));
-                            Message msg = new Message("-> -"+nickname+"-", inputNotice.getText().toString());
+                            Message msg = new Message(nickname, inputNotice.getText().toString(), Message.SENDER_TYPE_SELF, Message.TYPE_NOTICE);
                             activeConversation.addMessage(msg);
                         })
                         .setNegativeButton("Cancel", (dialog, whichButton) -> {})

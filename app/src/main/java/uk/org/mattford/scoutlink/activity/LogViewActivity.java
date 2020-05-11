@@ -3,8 +3,6 @@ package uk.org.mattford.scoutlink.activity;
 import android.content.Intent;
 import android.os.Bundle;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.LinkedList;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,7 +15,6 @@ import uk.org.mattford.scoutlink.adapter.MessageListAdapter;
 import uk.org.mattford.scoutlink.database.LogDatabase;
 import uk.org.mattford.scoutlink.database.entities.LogMessage;
 import uk.org.mattford.scoutlink.database.migrations.LogDatabaseMigrations;
-import uk.org.mattford.scoutlink.fragment.MessageListFragment;
 import uk.org.mattford.scoutlink.model.Message;
 
 public class LogViewActivity extends AppCompatActivity {
@@ -55,13 +52,7 @@ public class LogViewActivity extends AppCompatActivity {
         logDatabase.logMessageDao().findByConversation(channelName).observe(this, (logMessages) -> {
             LinkedList<Message> messages = new LinkedList<>();
             for (LogMessage msg : logMessages) {
-                Message newMsg = new Message(
-                    msg.sender,
-                    msg.message,
-                    msg.date,
-                    SimpleDateFormat.getDateTimeInstance()
-                );
-                messages.add(newMsg);
+                messages.add(msg.toMessage());
             }
 
             MessageListAdapter adapter = new MessageListAdapter(this, messages);

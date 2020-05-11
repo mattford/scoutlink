@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Handler;
 
 import uk.org.mattford.scoutlink.command.CommandHandler;
-import uk.org.mattford.scoutlink.irc.IRCService;
 import uk.org.mattford.scoutlink.model.Conversation;
 
 public class JoinHandler extends CommandHandler {

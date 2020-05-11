@@ -30,6 +30,12 @@ public class ConversationListViewModel extends ViewModel implements Server.OnCon
     }
 
     public void setActiveConversation(Conversation conversation) {
+        if (getActiveConversation().getValue() != null) {
+            getActiveConversation().getValue().setActive(false);
+        }
+        if (conversation != null) {
+            conversation.setActive(true);
+        }
         this.activeConversationLiveData.postValue(conversation);
     }
 
