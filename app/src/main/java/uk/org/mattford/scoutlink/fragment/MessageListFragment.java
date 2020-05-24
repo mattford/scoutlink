@@ -6,6 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.LinkedList;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -14,6 +16,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import uk.org.mattford.scoutlink.adapter.MessageListAdapter;
 import uk.org.mattford.scoutlink.databinding.MessageListViewBinding;
+import uk.org.mattford.scoutlink.model.Conversation;
+import uk.org.mattford.scoutlink.model.Message;
 import uk.org.mattford.scoutlink.viewmodel.ConversationListViewModel;
 
 public class MessageListFragment extends Fragment {
@@ -44,24 +48,34 @@ public class MessageListFragment extends Fragment {
         Context context = view.getContext();
         RecyclerView recyclerView = binding.list;
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
-        viewModel.getActiveConversation().observe(getViewLifecycleOwner(), activeConversation -> {
-            if (activeConversation == null) {
-                return;
+    }
+
+    public void setDataSource(Conversation conversation) {
+        RecyclerView recyclerView = binding.list;
+        // Reset the adapter to null when the source changes so we don't keep a reference
+        // to the previous active conversation.
+        adapter = null;
+        conversation.getMessages().observe(getViewLifecycleOwner(), messages -> {
+            binding.list.setVisibility(messages != null && messages.size() > 0 ? View.VISIBLE : View.GONE);
+            binding.empty.setVisibility(messages != null && messages.size() > 0 ? View.GONE : View.VISIBLE);
+            boolean isScrolledToBottom = !recyclerView.canScrollVertically(1);
+            if (adapter == null) {
+                adapter = new MessageListAdapter(getContext(), messages);
+                recyclerView.setAdapter(adapter);
             }
-            adapter = null;
-            activeConversation.getMessages().observe(getViewLifecycleOwner(), messages -> {
-                binding.list.setVisibility(messages != null && messages.size() > 0 ? View.VISIBLE : View.GONE);
-                binding.empty.setVisibility(messages != null && messages.size() > 0 ? View.GONE : View.VISIBLE);
-                boolean isScrolledToBottom = !recyclerView.canScrollVertically(1);
-                if (adapter == null) {
-                    adapter = new MessageListAdapter(getContext(), messages);
-                    recyclerView.setAdapter(adapter);
-                }
-                adapter.notifyDataSetChanged();
-                if (isScrolledToBottom) {
-                    recyclerView.scrollToPosition(adapter.getItemCount() - 1);
-                }
-            });
+            adapter.notifyDataSetChanged();
+            if (isScrolledToBottom) {
+                recyclerView.scrollToPosition(adapter.getItemCount() - 1);
+            }
         });
+    }
+
+    public void setDataSource(LinkedList<Message> messages) {
+        RecyclerView recyclerView = binding.list;
+        binding.list.setVisibility(messages != null && messages.size() > 0 ? View.VISIBLE : View.GONE);
+        binding.empty.setVisibility(messages != null && messages.size() > 0 ? View.GONE : View.VISIBLE);
+        adapter = new MessageListAdapter(getContext(), messages);
+        recyclerView.setAdapter(adapter);
+        recyclerView.scrollToPosition(adapter.getItemCount() - 1);
     }
 }

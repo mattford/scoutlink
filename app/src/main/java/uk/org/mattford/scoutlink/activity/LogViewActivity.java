@@ -6,15 +6,12 @@ import android.os.Bundle;
 import java.util.LinkedList;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.room.Room;
 import uk.org.mattford.scoutlink.R;
-import uk.org.mattford.scoutlink.adapter.MessageListAdapter;
 import uk.org.mattford.scoutlink.database.LogDatabase;
 import uk.org.mattford.scoutlink.database.entities.LogMessage;
 import uk.org.mattford.scoutlink.database.migrations.LogDatabaseMigrations;
+import uk.org.mattford.scoutlink.fragment.MessageListFragment;
 import uk.org.mattford.scoutlink.model.Message;
 
 public class LogViewActivity extends AppCompatActivity {
@@ -25,7 +22,6 @@ public class LogViewActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log_view);
-
         Intent startingIntent = getIntent();
         channelName = startingIntent.getStringExtra("channelName");
     }
@@ -42,7 +38,6 @@ public class LogViewActivity extends AppCompatActivity {
     @Override
     public void onPause() {
         super.onPause();
-
         if (logDatabase != null) {
             logDatabase.close();
         }
@@ -55,18 +50,10 @@ public class LogViewActivity extends AppCompatActivity {
                 messages.add(msg.toMessage());
             }
 
-            MessageListAdapter adapter = new MessageListAdapter(this, messages);
-//            MessageListFragment fragment = new MessageListFragment();
-//            fragment.setListAdapter(adapter);
-//            replaceFragment(fragment);
+            MessageListFragment messageListFragment = (MessageListFragment) getSupportFragmentManager().findFragmentById(R.id.conversation_view);
+            if (messageListFragment != null) {
+                messageListFragment.setDataSource(messages);
+            }
         });
-    }
-
-    private void replaceFragment(Fragment destFragment)
-    {
-        FragmentManager fragmentManager = this.getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.fragment_placeholder, destFragment);
-        fragmentTransaction.commit();
     }
 }
