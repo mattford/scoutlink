@@ -74,11 +74,12 @@ public class ConversationsActivity extends AppCompatActivity {
             }
             binding.toolbar.setTitle(activeConversation.getName());
             if (hasDrawerLayout) {
-                if (activeConversation.getType() == Conversation.TYPE_CHANNEL) {
-                    binding.conversationsDrawerContainer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, GravityCompat.END);
-                } else {
-                    binding.conversationsDrawerContainer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, GravityCompat.END);
-                }
+                binding.conversationsDrawerContainer.setDrawerLockMode(
+                    activeConversation.getType() == Conversation.TYPE_CHANNEL ?
+                        DrawerLayout.LOCK_MODE_UNLOCKED :
+                        DrawerLayout.LOCK_MODE_LOCKED_CLOSED,
+                    GravityCompat.END
+                );
             }
             MessageListFragment messageListFragment = (MessageListFragment)getSupportFragmentManager().findFragmentById(R.id.conversation_view);
             if (messageListFragment != null) {

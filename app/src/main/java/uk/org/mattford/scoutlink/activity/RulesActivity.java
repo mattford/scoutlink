@@ -14,6 +14,6 @@ public class RulesActivity extends AppCompatActivity {
         setContentView(R.layout.activity_rules);
         WebView webview = findViewById(R.id.webView);
         webview.setWebViewClient(new WebViewClient());
-        webview.loadUrl("http://www.scoutlink.net/get-connected/rules");
+        webview.loadUrl("https://www.scoutlink.net/get-connected/rules");
     }
 }
