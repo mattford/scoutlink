@@ -11,6 +11,7 @@ import uk.org.mattford.scoutlink.utils.MircColors;
 
 import android.content.Context;
 import android.graphics.PorterDuff;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -48,7 +49,10 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
             holder.mMessageView.setTextColor(context.getResources().getColor(R.color.red));
         }
         holder.mMessageView.setText(MircColors.toSpannable(messageText));
-
+        holder.mMessageView.setTypeface(
+            holder.mMessageView.getTypeface(),
+            message.isType(Message.TYPE_ACTION) ? Typeface.ITALIC : Typeface.NORMAL
+        );
         String sender = message.getSender();
         if (sender == null || !message.isSenderType(Message.SENDER_TYPE_OTHER)) {
             holder.mSenderView.setVisibility(View.GONE);
@@ -73,10 +77,9 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
         RecyclerView.LayoutParams layoutParams = (RecyclerView.LayoutParams)holder.mView.getLayoutParams();
         if (message.isSenderType(Message.SENDER_TYPE_SELF)) {
             holder.mView.setGravity(Gravity.END);
-            background.setColorFilter(holder.mView.getResources().getColor(R.color.light_green), PorterDuff.Mode.MULTIPLY);
+            background.setColorFilter(holder.mView.getResources().getColor(R.color.outgoing_message_background), PorterDuff.Mode.SRC_IN);
             layoutParams.leftMargin = marginPx;
             layoutParams.rightMargin = defaultMarginPx;
-            holder.mView.setLayoutParams(layoutParams);
         } else if (message.isSenderType(Message.SENDER_TYPE_OTHER)) {
             layoutParams.leftMargin = defaultMarginPx;
             layoutParams.rightMargin = marginPx;

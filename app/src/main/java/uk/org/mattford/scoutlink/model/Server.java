@@ -1,18 +1,15 @@
 package uk.org.mattford.scoutlink.model;
 
-import android.content.Context;
-
 import org.pircbotx.PircBotX;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
-import uk.org.mattford.scoutlink.R;
-
 public class Server {
 	private ArrayList<OnConversationListChangedListener> onConversationListChangedListeners;
 	private ArrayList<OnConnectionStatusChangedListener> onConnectionStatusChangedListeners;
+	private ArrayList<OnActiveConversationChangedListener> onActiveConversationChangedListeners;
 	private LinkedHashMap<String, Conversation> conversations;
 	private int status = 0;
     private ArrayList<String> channelList = new ArrayList<>();
@@ -34,11 +31,12 @@ public class Server {
 		this.conversations = new LinkedHashMap<>();
 		this.onConversationListChangedListeners = new ArrayList<>();
 		this.onConnectionStatusChangedListeners = new ArrayList<>();
+		this.onActiveConversationChangedListeners = new ArrayList<>();
 	}
 	
 	public Conversation getConversation(String name) {
-		if (conversations.containsKey(name)) {
-			return conversations.get(name);
+		if (conversations.containsKey(name.toLowerCase())) {
+			return conversations.get(name.toLowerCase());
 		}
 		return null;
 	}
@@ -53,15 +51,23 @@ public class Server {
 	
 	public void setStatus(int status) {
 		this.status = status;
+		onConnectionStatusChanged();
 	}
 	
 	public LinkedHashMap<String, Conversation> getConversations() {
 		return this.conversations;
 	}
-	
-	public void addConversation(Conversation conv) {
-		conversations.put(conv.getName(), conv);
+
+	public void addConversation(Conversation conversation, boolean active) {
+		conversations.put(conversation.getName().toLowerCase(), conversation);
 		onConversationListChanged();
+		if (active) {
+			onActiveConversationChanged(conversation);
+		}
+	}
+
+	public void addConversation(Conversation conversation) {
+		addConversation(conversation, false);
 	}
 	
 	public void removeConversation(String name) {
@@ -104,8 +110,7 @@ public class Server {
 		onConnectionStatusChangedListeners.add(listener);
 	}
 
-	public void onConnectionStatusChanged(Context context) {
-
+	private void onConnectionStatusChanged() {
 		for (OnConnectionStatusChangedListener listener: onConnectionStatusChangedListeners) {
 			listener.onConnectionStatusChanged();
 		}
@@ -113,5 +118,19 @@ public class Server {
 
 	public interface OnConnectionStatusChangedListener {
 		void onConnectionStatusChanged();
+	}
+
+	public void addOnActiveConversationChangedListener(OnActiveConversationChangedListener listener) {
+		onActiveConversationChangedListeners.add(listener);
+	}
+
+	private void onActiveConversationChanged(Conversation conversation) {
+		for (OnActiveConversationChangedListener listener: onActiveConversationChangedListeners) {
+			listener.onActiveConversationChanged(conversation);
+		}
+	}
+
+	public interface OnActiveConversationChangedListener {
+		void onActiveConversationChanged(Conversation conversation);
 	}
 }

@@ -4,7 +4,7 @@
     <color name="scoutlink_blue_dark">#FF0E1344</color>
     <color name="scoutlink_orange">#ECAC00</color>
     <color name="white">#FFFFFF</color>
-    <color name="light_green">#4CD964</color>
+    <color name="outgoing_message_background">#dcf8c6</color>
     <color name="light_grey">#A9A9A9</color>
     <color name="conversation_background">#EBEBEB</color>
     <color name="red">#FF0000</color>

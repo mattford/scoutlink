@@ -303,10 +303,12 @@ public class IRCListener extends ListenerAdapter {
     }
 
     public void onAction(ActionEvent event) {
-        SpannableString text = new SpannableString("* " + event.getUserHostmask().getNick() + " " + event.getAction());
-        text.setSpan(new StyleSpan(Typeface.ITALIC), 0, text.length(), 0);
         Message msg = new Message(
-            event.getUserHostmask().getNick(), text.toString(), Message.SENDER_TYPE_OTHER, Message.TYPE_ACTION);
+            event.getUserHostmask().getNick(),
+            event.getAction(),
+            Message.SENDER_TYPE_OTHER,
+            Message.TYPE_ACTION
+        );
         if (event.getChannel() != null) {
             server.getConversation(event.getChannel().getName()).addMessage(msg);
         } else {
@@ -369,7 +371,7 @@ public class IRCListener extends ListenerAdapter {
         Conversation conversation;
         if (event.getUserHostmask().getNick().equalsIgnoreCase(event.getBot().getNick())) {
             conversation = new Channel(event.getChannel().getName(), event.getChannel());
-            server.addConversation(conversation);
+            server.addConversation(conversation, true);
             service.loadLoggedMessages(conversation);
             conversation.addMessage(
                 new Message(

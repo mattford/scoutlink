@@ -34,6 +34,7 @@
                 android:paddingStart="5dp"
                 android:paddingEnd="5dp"
                 android:orientation="horizontal"
+                android:background="@color/conversation_background"
                 android:layout_gravity="center">
                 <EditText
                     android:id="@+id/input"

@@ -5,6 +5,9 @@ import android.os.Handler;
 
 import uk.org.mattford.scoutlink.command.CommandHandler;
 import uk.org.mattford.scoutlink.model.Conversation;
+import uk.org.mattford.scoutlink.model.Message;
+import uk.org.mattford.scoutlink.model.Query;
+import uk.org.mattford.scoutlink.model.Server;
 
 /**
  * Handles /msg command
@@ -26,7 +29,20 @@ public class MessageHandler extends CommandHandler {
                 messageBuilder.append(params[i]);
                 messageBuilder.append(" ");
             }
-            backgroundHandler.post(() -> server.getConnection().sendIRC().message(target, messageBuilder.toString()));
+            String messageText = messageBuilder.toString();
+            Message message = new Message(
+                messageBuilder.toString(),
+                Message.SENDER_TYPE_SELF,
+                Message.TYPE_MESSAGE
+            );
+            Server server = Server.getInstance();
+            Conversation targetConversation = server.getConversation(target);
+            if (targetConversation == null) {
+                targetConversation = new Query(target);
+                server.addConversation(targetConversation, true);
+            }
+            targetConversation.addMessage(message);
+            backgroundHandler.post(() -> server.getConnection().sendIRC().message(target, messageText));
         }
     }
 

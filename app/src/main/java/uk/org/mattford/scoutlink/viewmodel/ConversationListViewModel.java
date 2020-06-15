@@ -9,13 +9,14 @@ import androidx.lifecycle.ViewModel;
 import uk.org.mattford.scoutlink.model.Conversation;
 import uk.org.mattford.scoutlink.model.Server;
 
-public class ConversationListViewModel extends ViewModel implements Server.OnConversationListChangedListener {
+public class ConversationListViewModel extends ViewModel implements Server.OnConversationListChangedListener, Server.OnActiveConversationChangedListener {
     private MutableLiveData<ArrayList<Conversation>> conversationLiveData;
     private MutableLiveData<Conversation> activeConversationLiveData;
 
     public ConversationListViewModel() {
         Server server = Server.getInstance();
         server.addOnConversationListChangedListener(this);
+        server.addOnActiveConversationChangedListener(this);
         conversationLiveData = new MutableLiveData<>(new ArrayList<>());
         activeConversationLiveData = new MutableLiveData<>(null);
         onConversationListChanged(server.getConversations());
@@ -50,5 +51,10 @@ public class ConversationListViewModel extends ViewModel implements Server.OnCon
                 setActiveConversation(null);
             }
         }
+    }
+
+    @Override
+    public void onActiveConversationChanged(Conversation conversation) {
+        setActiveConversation(conversation);
     }
 }
