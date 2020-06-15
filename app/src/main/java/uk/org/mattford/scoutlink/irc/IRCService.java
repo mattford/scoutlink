@@ -149,6 +149,8 @@ public class IRCService extends Service {
 
         PircBotX irc = new PircBotX(config.buildConfiguration());
         server.setConnection(irc);
+        server.setStatus(Server.STATUS_CONNECTING);
+        server.onConnectionStatusChanged(this);
         final Context context = this;
         new Thread(() -> {
             try {
@@ -169,6 +171,7 @@ public class IRCService extends Service {
         updateNotification();
         setIsForeground(false);
         server.setStatus(Server.STATUS_DISCONNECTED);
+        server.onConnectionStatusChanged(this);
         Intent intent = new Intent().setAction(Broadcast.DISCONNECTED);
         sendBroadcast(intent);
     }
@@ -227,6 +230,7 @@ public class IRCService extends Service {
         sendBroadcast(intent);
 
         getServer().setStatus(Server.STATUS_CONNECTED);
+        server.onConnectionStatusChanged(this);
         setIsForeground(true);
         updateNotification();
 

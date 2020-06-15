@@ -8,7 +8,7 @@ import java.util.LinkedList;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-public class Conversation {
+public class Conversation implements Comparable<Conversation> {
 	private boolean isActive;
 	private String CONVERSATION_NAME;
 	private int type;
@@ -80,5 +80,10 @@ public class Conversation {
 	public void setActive(boolean active) {
 		this.isActive = active;
 		this.unreadMessagesLiveData.postValue(0);
+	}
+
+	@Override
+	public int compareTo(Conversation other) {
+		return getName().compareTo(other.getName());
 	}
 }

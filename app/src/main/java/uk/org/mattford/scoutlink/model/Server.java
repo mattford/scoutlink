@@ -1,20 +1,26 @@
 package uk.org.mattford.scoutlink.model;
 
+import android.content.Context;
+
 import org.pircbotx.PircBotX;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
+import uk.org.mattford.scoutlink.R;
+
 public class Server {
-	private ArrayList<OnConversationListChangedListener> listeners;
+	private ArrayList<OnConversationListChangedListener> onConversationListChangedListeners;
+	private ArrayList<OnConnectionStatusChangedListener> onConnectionStatusChangedListeners;
 	private LinkedHashMap<String, Conversation> conversations;
 	private int status = 0;
     private ArrayList<String> channelList = new ArrayList<>();
     private PircBotX bot;
 	
 	public final static int STATUS_DISCONNECTED = 0;
-	public final static int STATUS_CONNECTED = 1;
+	public final static int STATUS_CONNECTING = 1;
+	public final static int STATUS_CONNECTED = 2;
 
 	private static Server instance;
 	public static Server getInstance() {
@@ -26,7 +32,8 @@ public class Server {
 
 	private Server() {
 		this.conversations = new LinkedHashMap<>();
-		this.listeners = new ArrayList<>();
+		this.onConversationListChangedListeners = new ArrayList<>();
+		this.onConnectionStatusChangedListeners = new ArrayList<>();
 	}
 	
 	public Conversation getConversation(String name) {
@@ -80,16 +87,31 @@ public class Server {
 	}
 
 	public void addOnConversationListChangedListener(OnConversationListChangedListener listener) {
-		listeners.add(listener);
+		onConversationListChangedListeners.add(listener);
 	}
 
 	private void onConversationListChanged() {
-		for (OnConversationListChangedListener listener : listeners) {
+		for (OnConversationListChangedListener listener : onConversationListChangedListeners) {
 			listener.onConversationListChanged(this.conversations);
 		}
 	}
 
 	public interface OnConversationListChangedListener {
 		void onConversationListChanged(HashMap<String, Conversation> conversationHashMap);
+	}
+
+	public void addOnConnectionStatusChangedListener(OnConnectionStatusChangedListener listener) {
+		onConnectionStatusChangedListeners.add(listener);
+	}
+
+	public void onConnectionStatusChanged(Context context) {
+
+		for (OnConnectionStatusChangedListener listener: onConnectionStatusChangedListeners) {
+			listener.onConnectionStatusChanged();
+		}
+	}
+
+	public interface OnConnectionStatusChangedListener {
+		void onConnectionStatusChanged();
 	}
 }

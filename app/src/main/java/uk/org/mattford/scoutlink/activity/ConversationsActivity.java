@@ -28,6 +28,7 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import androidx.appcompat.app.AppCompatActivity;
+import uk.org.mattford.scoutlink.viewmodel.ConnectionStatusViewModel;
 import uk.org.mattford.scoutlink.viewmodel.ConversationListViewModel;
 
 import android.view.Menu;
@@ -39,6 +40,7 @@ import android.widget.Toast;
 public class ConversationsActivity extends AppCompatActivity {
     private ActivityConversationsBinding binding;
 	private ConversationListViewModel viewModel;
+	private ConnectionStatusViewModel connectionStatusViewModel;
 	private ConversationReceiver receiver;
     private Settings settings;
     private LogDatabase db;
@@ -57,6 +59,7 @@ public class ConversationsActivity extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		binding = ActivityConversationsBinding.inflate(getLayoutInflater());
         viewModel = new ViewModelProvider(this).get(ConversationListViewModel.class);
+        connectionStatusViewModel = new ViewModelProvider(this).get(ConnectionStatusViewModel.class);
         setContentView(binding.getRoot());
 
         settings = new Settings(this);
@@ -85,6 +88,10 @@ public class ConversationsActivity extends AppCompatActivity {
             if (messageListFragment != null) {
                 messageListFragment.setDataSource(activeConversation);
             }
+        });
+
+        connectionStatusViewModel.getConnectionStatus().observe(this, connectionStatus -> {
+           binding.connectionStatus.setText(connectionStatus);
         });
     }
 
@@ -132,7 +139,6 @@ public class ConversationsActivity extends AppCompatActivity {
             onConnect(false);
             return;
         }
-        binding.connectionStatus.setText(R.string.connect_message);
         Intent connectIntent = new Intent(getApplicationContext(), IRCService.class);
         connectIntent.setAction(Broadcast.CONNECT);
         startService(connectIntent);
@@ -186,14 +192,11 @@ public class ConversationsActivity extends AppCompatActivity {
 	}
 
     public void onConnect(boolean initialConnection) {
-	    if (initialConnection) {
-            if (settings.getBoolean("channel_list_on_connect", false)) {
-                Intent channelListIntent = new Intent(this, ChannelListActivity.class);
-                ArrayList<String> channels = server.getChannelList();
-                channelListIntent.putStringArrayListExtra("channels", channels);
-                startActivityForResult(channelListIntent, JOIN_CHANNEL_RESULT);
-            }
-            binding.connectionStatus.setText(server.getConnection().getNick());
+	    if (initialConnection && settings.getBoolean("channel_list_on_connect", false)) {
+            Intent channelListIntent = new Intent(this, ChannelListActivity.class);
+            ArrayList<String> channels = server.getChannelList();
+            channelListIntent.putStringArrayListExtra("channels", channels);
+            startActivityForResult(channelListIntent, JOIN_CHANNEL_RESULT);
         }
 
         // Join any channels we want to join...
@@ -205,17 +208,13 @@ public class ConversationsActivity extends AppCompatActivity {
                 joinChannelBuffer.clear();
             });
         }
-        Intent updateNotificationIntent = new Intent();
-        updateNotificationIntent.setAction(Broadcast.UPDATE_NOTIFICATION);
-        sendBroadcast(updateNotificationIntent);
+        sendBroadcast(new Intent(Broadcast.UPDATE_NOTIFICATION));
     }
 
 	public void onDisconnect() {
         server.clearConversations();
-		Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
+        startActivity(new Intent(this, MainActivity.class));
         finish();
-        binding.connectionStatus.setText(R.string.not_connected);
 	}
 	
     @Override

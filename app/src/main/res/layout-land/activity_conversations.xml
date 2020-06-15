@@ -1,0 +1,137 @@
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="fill_parent"
+    android:layout_width="fill_parent"
+    android:id="@+id/conversations_container"
+    android:orientation="vertical"
+    android:baselineAligned="false">
+
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/conversation_list_fragment_container"
+            android:theme="@style/DarkDrawer"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/connection_status"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:text="@string/not_connected"
+                    />
+
+                <ImageButton
+                    android:layout_gravity="end"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_settings"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:contentDescription="@string/action_settings"
+                    android:onClick="onSettingsButtonClick" />
+            </LinearLayout>
+            <androidx.fragment.app.FragmentContainerView
+                android:name="uk.org.mattford.scoutlink.fragment.ConversationListFragment"
+                android:id="@+id/conversation_list_fragment"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="0dp" />
+
+            <LinearLayout
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Join channel" />
+
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <androidx.fragment.app.FragmentContainerView
+                android:name="uk.org.mattford.scoutlink.fragment.MessageListFragment"
+                android:id="@+id/conversation_view"
+                android:layout_width="fill_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:layout_margin="0px"
+                android:unselectedAlpha="100"
+                android:padding="0dp" />
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="50dp"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:orientation="horizontal"
+                android:layout_gravity="center">
+                <EditText
+                    android:id="@+id/input"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:inputType="text"
+                    android:hint="@string/send_message_hint"/>
+                <Button
+                    android:id="@+id/send_button"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center"
+                    android:onClick="onSendButtonClick"
+                    android:background="@drawable/ic_send"
+                    />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/user_list_fragment_container"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:theme="@style/DarkDrawer">
+            <androidx.fragment.app.FragmentContainerView
+                android:name="uk.org.mattford.scoutlink.fragment.UserListFragment"
+                android:id="@+id/user_list_fragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </LinearLayout>
+    </LinearLayout>
+
+
+
+
+
+</LinearLayout>

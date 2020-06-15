@@ -28,10 +28,19 @@ public class ConversationListRecyclerViewAdapter extends RecyclerView.Adapter<Co
 
     public void setConversationList(ArrayList<Conversation> conversationList) {
         this.conversationList = conversationList;
+        notifyDataSetChanged();
     }
 
     public void setActiveConversation(Conversation activeConversation) {
         this.activeConversation = activeConversation;
+        notifyDataSetChanged();
+    }
+
+    public void notifyConversationChanged(Conversation conversation) {
+        int idx = conversationList.indexOf(conversation);
+        if (idx > -1) {
+            notifyItemChanged(idx);
+        }
     }
 
     @Override
