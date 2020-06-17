@@ -13,6 +13,7 @@ import uk.org.mattford.scoutlink.command.CommandParser;
 import uk.org.mattford.scoutlink.database.LogDatabase;
 import uk.org.mattford.scoutlink.database.migrations.LogDatabaseMigrations;
 import uk.org.mattford.scoutlink.databinding.ActivityConversationsBinding;
+import uk.org.mattford.scoutlink.fragment.ConversationListFragment;
 import uk.org.mattford.scoutlink.fragment.MessageListFragment;
 import uk.org.mattford.scoutlink.irc.IRCService;
 import uk.org.mattford.scoutlink.model.Broadcast;
@@ -37,11 +38,10 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-public class ConversationsActivity extends AppCompatActivity {
+public class ConversationsActivity extends AppCompatActivity implements ConversationListFragment.OnJoinChannelButtonClickListener {
     private ActivityConversationsBinding binding;
 	private ConversationListViewModel viewModel;
-	private ConnectionStatusViewModel connectionStatusViewModel;
-	private ConversationReceiver receiver;
+    private ConversationReceiver receiver;
     private Settings settings;
     private LogDatabase db;
     private Server server;
@@ -59,7 +59,7 @@ public class ConversationsActivity extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		binding = ActivityConversationsBinding.inflate(getLayoutInflater());
         viewModel = new ViewModelProvider(this).get(ConversationListViewModel.class);
-        connectionStatusViewModel = new ViewModelProvider(this).get(ConnectionStatusViewModel.class);
+        ConnectionStatusViewModel connectionStatusViewModel = new ViewModelProvider(this).get(ConnectionStatusViewModel.class);
         setContentView(binding.getRoot());
 
         settings = new Settings(this);
@@ -274,8 +274,7 @@ public class ConversationsActivity extends AppCompatActivity {
                 startActivityForResult(intent, JOIN_CHANNEL_RESULT);
                 break;
             case R.id.action_channel_list:
-                intent = new Intent(this, ChannelListActivity.class);
-                startActivityForResult(intent, JOIN_CHANNEL_RESULT);
+                onJoinChannelClick();
                 break;
             case R.id.action_channel_settings:
                 if (conversation.getType() != Conversation.TYPE_CHANNEL) {
@@ -312,5 +311,11 @@ public class ConversationsActivity extends AppCompatActivity {
             String channel = data.getStringExtra("target");
             joinChannelBuffer.add(channel);
         }
+    }
+
+    @Override
+    public void onJoinChannelClick() {
+        Intent intent = new Intent(this, ChannelListActivity.class);
+        startActivityForResult(intent, JOIN_CHANNEL_RESULT);
     }
 }

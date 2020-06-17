@@ -1,10 +1,11 @@
 package uk.org.mattford.scoutlink;
 
-import android.app.Application;
 import android.os.Handler;
 import android.os.HandlerThread;
 
-public class ScoutlinkApplication extends Application {
+import androidx.multidex.MultiDexApplication;
+
+public class ScoutlinkApplication extends MultiDexApplication {
     private Handler handler;
 
     public Handler getBackgroundHandler()

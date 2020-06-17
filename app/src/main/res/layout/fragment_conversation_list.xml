@@ -29,6 +29,7 @@
             android:text="Channels" />
 
         <ImageButton
+            android:id="@+id/join_button"
             android:src="@drawable/ic_plus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

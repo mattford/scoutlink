@@ -1,5 +1,6 @@
 package uk.org.mattford.scoutlink.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -27,6 +28,7 @@ public class ConversationListFragment extends Fragment {
     private ConversationListRecyclerViewAdapter serverWindowAdapter;
     private ConversationListRecyclerViewAdapter channelsAdapter;
     private ConversationListRecyclerViewAdapter directMessagesAdapter;
+    private OnJoinChannelButtonClickListener onJoinChannelButtonClickListener;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -78,6 +80,12 @@ public class ConversationListFragment extends Fragment {
                 });
             }
         });
+
+        view.findViewById(R.id.join_button).setOnClickListener(v -> {
+            if (onJoinChannelButtonClickListener != null) {
+                onJoinChannelButtonClickListener.onJoinChannelClick();
+            }
+        });
     }
 
     private void setActiveConversation(Conversation conversation) {
@@ -95,5 +103,24 @@ public class ConversationListFragment extends Fragment {
     public void onItemClicked(Conversation conversation) {
         ConversationListViewModel viewModel = new ViewModelProvider(requireActivity()).get(ConversationListViewModel.class);
         viewModel.setActiveConversation(conversation);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnJoinChannelButtonClickListener) {
+            onJoinChannelButtonClickListener = (OnJoinChannelButtonClickListener) context;
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        onJoinChannelButtonClickListener = null;
+    }
+
+
+    public interface OnJoinChannelButtonClickListener {
+        public void onJoinChannelClick();
     }
 }
