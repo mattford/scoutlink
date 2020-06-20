@@ -31,10 +31,11 @@ public class MessageListFragment extends Fragment {
         lv.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                binding.notAtBottom.setVisibility(lv.canScrollVertically(1) ? View.VISIBLE : View.GONE);
+            super.onScrollStateChanged(recyclerView, newState);
+            binding.notAtBottom.setVisibility(lv.canScrollVertically(1) ? View.VISIBLE : View.GONE);
             }
         });
+        binding.notAtBottom.setVisibility(lv.canScrollVertically(1) ? View.VISIBLE : View.GONE);
         binding.notAtBottom.setOnClickListener((v) -> binding.list.smoothScrollToPosition(adapter.getItemCount() - 1));
 
         return binding.getRoot();
@@ -58,13 +59,13 @@ public class MessageListFragment extends Fragment {
         conversation.getMessages().observe(getViewLifecycleOwner(), messages -> {
             binding.list.setVisibility(messages != null && messages.size() > 0 ? View.VISIBLE : View.GONE);
             binding.empty.setVisibility(messages != null && messages.size() > 0 ? View.GONE : View.VISIBLE);
-            boolean isScrolledToBottom = !recyclerView.canScrollVertically(1);
+            boolean isScrolledToBottom = adapter == null || !recyclerView.canScrollVertically(1);
             if (adapter == null) {
-                adapter = new MessageListAdapter(getContext(), messages);
+                adapter = new MessageListAdapter(messages);
                 recyclerView.setAdapter(adapter);
             }
             adapter.notifyDataSetChanged();
-            if (isScrolledToBottom) {
+            if (isScrolledToBottom && adapter.getItemCount() > 0) {
                 recyclerView.scrollToPosition(adapter.getItemCount() - 1);
             }
         });
@@ -74,7 +75,7 @@ public class MessageListFragment extends Fragment {
         RecyclerView recyclerView = binding.list;
         binding.list.setVisibility(messages != null && messages.size() > 0 ? View.VISIBLE : View.GONE);
         binding.empty.setVisibility(messages != null && messages.size() > 0 ? View.GONE : View.VISIBLE);
-        adapter = new MessageListAdapter(getContext(), messages);
+        adapter = new MessageListAdapter(messages);
         recyclerView.setAdapter(adapter);
         recyclerView.scrollToPosition(adapter.getItemCount() - 1);
     }

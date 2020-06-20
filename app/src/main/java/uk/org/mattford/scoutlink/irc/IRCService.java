@@ -1,6 +1,7 @@
 package uk.org.mattford.scoutlink.irc;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -305,8 +306,9 @@ public class IRCService extends Service {
         int messagesToLoad = settings.getInteger("previous_messages_to_load", 10);
         if (shouldLoadMessages && messagesToLoad > 0) {
             List<LogMessage> logMessages = db.logMessageDao().findConversationMessagesWithLimit(conversation.getName(), messagesToLoad);
+            Collections.reverse(logMessages);
             for (LogMessage logMessage : logMessages) {
-                conversation.addMessage(logMessage.toMessage());
+                conversation.addMessage(logMessage.toMessage(), false);
             }
         }
     }

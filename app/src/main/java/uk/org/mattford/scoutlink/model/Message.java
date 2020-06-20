@@ -34,13 +34,8 @@ public class Message {
         this.text = message.message;
         this.timestamp = message.date;
         this.sender = message.sender;
-        if (this.sender == null) {
-            this.senderType = SENDER_TYPE_SERVER;
-            this.type = TYPE_SERVER;
-        } else {
-            this.senderType = SENDER_TYPE_OTHER;
-            this.type = TYPE_MESSAGE;
-        }
+        this.type = message.messageType;
+        this.senderType = message.senderType;
     }
 
     public Message (String text, int senderType, int type) {
@@ -101,4 +96,8 @@ public class Message {
     public boolean isSenderType(int otherType) {
         return senderType == otherType;
     }
+
+    public Integer getType() { return this.type; }
+
+    public Integer getSenderType() { return this.senderType; }
 }

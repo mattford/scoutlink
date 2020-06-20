@@ -23,10 +23,8 @@ import android.widget.TextView;
 
 public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.ViewHolder> {
     private LinkedList<Message> messages;
-    private Context context;
 
-    public MessageListAdapter(Context context, LinkedList<Message> messages) {
-        this.context = context;
+    public MessageListAdapter(LinkedList<Message> messages) {
         this.messages = messages;
     }
 
@@ -40,17 +38,22 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        Context context = holder.mView.getContext();
         Message message = this.messages.get(position);
+        TextView defaultTextView = new TextView(context);
+        if (message.isType(Message.TYPE_ERROR)) {
+            holder.mMessageView.setTextColor(context.getResources().getColor(R.color.red));
+        } else {
+            holder.mMessageView.setTextColor(defaultTextView.getTextColors());
+        }
 
         String messageText = message.getText();
         if (message.isType(Message.TYPE_ACTION)) {
             messageText = context.getString(R.string.message_action, message.getText());
-        } else if (message.isType(Message.TYPE_ERROR)) {
-            holder.mMessageView.setTextColor(context.getResources().getColor(R.color.red));
         }
         holder.mMessageView.setText(MircColors.toSpannable(messageText));
         holder.mMessageView.setTypeface(
-            holder.mMessageView.getTypeface(),
+            defaultTextView.getTypeface(),
             message.isType(Message.TYPE_ACTION) ? Typeface.ITALIC : Typeface.NORMAL
         );
         String sender = message.getSender();
@@ -78,17 +81,10 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
         if (message.isSenderType(Message.SENDER_TYPE_SELF)) {
             holder.mView.setGravity(Gravity.END);
             background.setColorFilter(holder.mView.getResources().getColor(R.color.outgoing_message_background), PorterDuff.Mode.SRC_IN);
-            layoutParams.leftMargin = marginPx;
-            layoutParams.rightMargin = defaultMarginPx;
-        } else if (message.isSenderType(Message.SENDER_TYPE_OTHER)) {
-            layoutParams.leftMargin = defaultMarginPx;
-            layoutParams.rightMargin = marginPx;
-            holder.mMessageView.setGravity(Gravity.START);
-        } else if (message.isSenderType(Message.SENDER_TYPE_SERVER)) {
-            layoutParams.leftMargin = defaultMarginPx;
-            layoutParams.rightMargin = defaultMarginPx;
-            holder.mMessageView.setGravity(Gravity.CENTER);
         }
+        layoutParams.leftMargin = message.isSenderType(Message.SENDER_TYPE_SELF) ? marginPx : defaultMarginPx;
+        layoutParams.rightMargin = message.isSenderType(Message.SENDER_TYPE_OTHER) ? marginPx : defaultMarginPx;
+        holder.mMessageView.setGravity(message.isSenderType(Message.SENDER_TYPE_SERVER) ? Gravity.CENTER : Gravity.START);
         holder.mView.setBackgroundDrawable(background);
         holder.mView.setLayoutParams(layoutParams);
 

@@ -7,6 +7,8 @@ import java.util.LinkedList;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import uk.org.mattford.scoutlink.database.LogDatabase;
+import uk.org.mattford.scoutlink.database.entities.LogMessage;
 
 public class Conversation implements Comparable<Conversation> {
 	private boolean isActive;
@@ -62,6 +64,10 @@ public class Conversation implements Comparable<Conversation> {
 	}
 
 	public void addMessage(Message msg) {
+		this.addMessage(msg, true);
+	}
+
+	public void addMessage(Message msg, boolean log) {
 		messages.add(msg);
 		if (!isActive) {
 			int unreadMessages = 0;
@@ -69,6 +75,15 @@ public class Conversation implements Comparable<Conversation> {
 				unreadMessages = this.getUnreadMessagesCount().getValue();
 			}
 			this.unreadMessagesLiveData.postValue(unreadMessages + 1);
+		}
+		if (log) {
+			LogMessage logMessage = new LogMessage(this, msg);
+			LogDatabase db = LogDatabase.getInstance();
+			if (db != null) {
+			    new Thread(() -> {
+                    db.logMessageDao().insert(logMessage);
+                }).start();
+			}
 		}
 		onMessagesChanged();
 	}

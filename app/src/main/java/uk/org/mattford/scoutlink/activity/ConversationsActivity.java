@@ -83,6 +83,7 @@ public class ConversationsActivity extends AppCompatActivity implements Conversa
                         DrawerLayout.LOCK_MODE_LOCKED_CLOSED,
                     GravityCompat.END
                 );
+                binding.conversationsDrawerContainer.closeDrawer(GravityCompat.START);
             }
             MessageListFragment messageListFragment = (MessageListFragment)getSupportFragmentManager().findFragmentById(R.id.conversation_view);
             if (messageListFragment != null) {

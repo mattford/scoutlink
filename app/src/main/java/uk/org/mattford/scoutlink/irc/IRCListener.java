@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.text.SpannableString;
 import android.text.style.StyleSpan;
+import android.util.Log;
 
 import org.pircbotx.ChannelListEntry;
 import org.pircbotx.PircBotX;
@@ -18,6 +19,7 @@ import org.pircbotx.hooks.events.InviteEvent;
 import org.pircbotx.hooks.events.JoinEvent;
 import org.pircbotx.hooks.events.KickEvent;
 import org.pircbotx.hooks.events.MessageEvent;
+import org.pircbotx.hooks.events.ModeEvent;
 import org.pircbotx.hooks.events.MotdEvent;
 import org.pircbotx.hooks.events.NickAlreadyInUseEvent;
 import org.pircbotx.hooks.events.NickChangeEvent;

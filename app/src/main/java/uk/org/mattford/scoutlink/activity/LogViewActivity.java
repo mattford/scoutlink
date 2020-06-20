@@ -6,11 +6,9 @@ import android.os.Bundle;
 import java.util.LinkedList;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.room.Room;
 import uk.org.mattford.scoutlink.R;
 import uk.org.mattford.scoutlink.database.LogDatabase;
 import uk.org.mattford.scoutlink.database.entities.LogMessage;
-import uk.org.mattford.scoutlink.database.migrations.LogDatabaseMigrations;
 import uk.org.mattford.scoutlink.fragment.MessageListFragment;
 import uk.org.mattford.scoutlink.model.Message;
 
@@ -29,18 +27,8 @@ public class LogViewActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        logDatabase = Room.databaseBuilder(getApplicationContext(), LogDatabase.class, "logs")
-                .addMigrations(LogDatabaseMigrations.MIGRATION_0_1)
-                .build();
+        logDatabase = LogDatabase.getInstance();
         loadMessagesFromChannel(channelName);
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        if (logDatabase != null) {
-            logDatabase.close();
-        }
     }
 
     private void loadMessagesFromChannel(String channelName) {

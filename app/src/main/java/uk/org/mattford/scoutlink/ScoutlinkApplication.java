@@ -4,9 +4,16 @@ import android.os.Handler;
 import android.os.HandlerThread;
 
 import androidx.multidex.MultiDexApplication;
+import uk.org.mattford.scoutlink.database.LogDatabase;
 
 public class ScoutlinkApplication extends MultiDexApplication {
     private Handler handler;
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        LogDatabase.getInstance(getApplicationContext());
+    }
 
     public Handler getBackgroundHandler()
     {
