@@ -7,6 +7,7 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.room.Room;
+import uk.org.mattford.scoutlink.BuildConfig;
 import uk.org.mattford.scoutlink.R;
 import uk.org.mattford.scoutlink.ScoutlinkApplication;
 import uk.org.mattford.scoutlink.command.CommandParser;
@@ -26,6 +27,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import androidx.appcompat.app.AppCompatActivity;
@@ -142,7 +144,11 @@ public class ConversationsActivity extends AppCompatActivity implements Conversa
         }
         Intent connectIntent = new Intent(getApplicationContext(), IRCService.class);
         connectIntent.setAction(Broadcast.CONNECT);
-        startService(connectIntent);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(connectIntent);
+        } else {
+            startService(connectIntent);
+        }
 	}
 	
 	public void onPause() {

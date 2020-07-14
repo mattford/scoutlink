@@ -2,7 +2,6 @@ package uk.org.mattford.scoutlink.irc;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 
 import org.pircbotx.Configuration;
@@ -27,7 +26,6 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.os.Build;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -122,6 +120,7 @@ public class IRCService extends Service {
 	}
 	
 	public void connect() {
+        setIsForeground(true);
         ServerWindow sw = new ServerWindow(getString(R.string.server_window_title));
         server.addConversation(sw);
         Message msg = new Message(getString(R.string.connect_message), Message.SENDER_TYPE_SERVER, Message.TYPE_EVENT);
@@ -151,6 +150,7 @@ public class IRCService extends Service {
         PircBotX irc = new PircBotX(config.buildConfiguration());
         server.setConnection(irc);
         server.setStatus(Server.STATUS_CONNECTING);
+        updateNotification();
         final Context context = this;
         new Thread(() -> {
             try {
@@ -168,9 +168,9 @@ public class IRCService extends Service {
 	}
 
     public void onDisconnect() {
+        server.setStatus(Server.STATUS_DISCONNECTED);
         updateNotification();
         setIsForeground(false);
-        server.setStatus(Server.STATUS_DISCONNECTED);
         Intent intent = new Intent().setAction(Broadcast.DISCONNECTED);
         sendBroadcast(intent);
     }
@@ -184,42 +184,28 @@ public class IRCService extends Service {
     }
 	
 	public Notification getNotification() {
-        Intent notifIntent = new Intent(this, ConversationsActivity.class);
-        notifIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        PendingIntent intent = PendingIntent.getActivity(this, 0, notifIntent, 0);
+        Intent notificationIntent = new Intent(this, ConversationsActivity.class);
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        PendingIntent intent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
 
-        HashMap<String, Conversation> conversations = getServer().getConversations();
-        ArrayList<Conversation> conversationsWithNewMsg = new ArrayList<>();
-        int newMsgTotal = 0;
-        ArrayList<Conversation> conversationsWithMentions = new ArrayList<>();
-        int newMentionTotal = 0;
-//        for (Conversation conversation : conversations.values()) {
-//            if (conversation.hasBuffer()) {
-//                conversationsWithNewMsg.add(conversation);
-//                ArrayList<Message> msgs = new ArrayList<>(conversation.getBuffer());
-//                for (Message msg : msgs) {
-//                    newMsgTotal++;
-//                    if (getConnection() != null && msg.getText().contains(getConnection().getNick())) {
-//                        if (!conversationsWithMentions.contains(conversation)) {
-//                            conversationsWithMentions.add(conversation);
-//                        }
-//                        newMentionTotal++;
-//                    }
-//                }
-//            }
-//        }
         String basicText;
-        if (getConnection() != null && conversationsWithNewMsg.size() == 0 && conversationsWithMentions.size() == 0) {
-            basicText = getString(R.string.notification_connected, getConnection().getNick());
-        } else {
-            basicText = getString(R.string.notification_new_multi, newMsgTotal, newMentionTotal);
+        switch (server.getStatus()) {
+            case Server.STATUS_CONNECTED:
+                basicText = getString(R.string.notification_connected, getConnection().getNick());
+                break;
+            case Server.STATUS_CONNECTING:
+                basicText = getString(R.string.connect_message);
+                break;
+            case Server.STATUS_DISCONNECTED:
+            default:
+                basicText = getString(R.string.not_connected);
+                break;
         }
 
 		return new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
 				.setContentTitle(getString(R.string.app_name))
 				.setContentText(basicText)
 				.setSmallIcon(R.drawable.notification_icon)
-                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher))
                 .setContentIntent(intent)
 				.build();
 	}
@@ -227,9 +213,7 @@ public class IRCService extends Service {
     public void onConnect() {
         Intent intent = new Intent(Broadcast.CONNECTED);
         sendBroadcast(intent);
-
         getServer().setStatus(Server.STATUS_CONNECTED);
-        setIsForeground(true);
         updateNotification();
 
         if (!settings.getString("nickserv_user", "").equals("") && !settings.getString("nickserv_password", "").equals("")) {
@@ -276,8 +260,8 @@ public class IRCService extends Service {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = "sl_service";
-            String description = "ScoutLink Notification Service";
+            CharSequence name = "General";
+            String description = "Connection status and new messages";
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
             NotificationChannel channel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, name, importance);
             channel.setDescription(description);
