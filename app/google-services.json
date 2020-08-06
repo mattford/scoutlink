@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "52475471313",
+    "firebase_url": "https://scoutlink-irc-android.firebaseio.com",
+    "project_id": "scoutlink-irc-android",
+    "storage_bucket": "scoutlink-irc-android.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:52475471313:android:4ecf5f58b6ce18a906acf0",
+        "android_client_info": {
+          "package_name": "uk.org.mattford.scoutlink"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "52475471313-pu6d27toucue87uem9m7ftrn7l4hvki4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA01jO47qPMDAjPtI6DElvDwYa0idSiBPE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "52475471313-pu6d27toucue87uem9m7ftrn7l4hvki4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

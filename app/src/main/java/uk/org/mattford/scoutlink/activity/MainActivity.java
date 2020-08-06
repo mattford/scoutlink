@@ -1,17 +1,13 @@
 package uk.org.mattford.scoutlink.activity;
 
 import uk.org.mattford.scoutlink.R;
-import uk.org.mattford.scoutlink.ScoutlinkApplication;
-import uk.org.mattford.scoutlink.irc.IRCBinder;
-import uk.org.mattford.scoutlink.irc.IRCService;
+import uk.org.mattford.scoutlink.databinding.ActivityMainBinding;
+import uk.org.mattford.scoutlink.model.Server;
 import uk.org.mattford.scoutlink.model.Settings;
 import uk.org.mattford.scoutlink.utils.Validator;
 
-import android.content.ComponentName;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.IBinder;
 import androidx.appcompat.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,16 +16,14 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity implements ServiceConnection {
-	
+public class MainActivity extends AppCompatActivity {
+	private ActivityMainBinding binding;
 	private Settings settings;
-	private IRCBinder binder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        ((ScoutlinkApplication) getApplication()).getTracker(ScoutlinkApplication.TrackerName.APP_TRACKER);
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
         this.settings = new Settings(this);
 
         try {
@@ -37,14 +31,24 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         } catch (NullPointerException e) {
             // Not a big deal, so let's just get on with our lives
         }
-        setContentView(R.layout.activity_main);
+        setContentView(binding.getRoot());
     }
 
     @Override
     public void onResume() {
     	super.onResume();
 
-        EditText nick = findViewById(R.id.nickname);
+        /*
+         * If we are already connected, send the user to ConversationsActivity
+         */
+    	if (Server.getInstance().isConnected()) {
+            Intent intent = new Intent(this, ConversationsActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            finish();
+        }
+
+        EditText nick = binding.nickname;
         nick.setText(settings.getString("nickname", ""));
         nick.setOnEditorActionListener((v, actionId, event) -> {
             if (event == null) {
@@ -53,23 +57,14 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
             }
             return false;
         });
-        CheckBox showChannelList = findViewById(R.id.channel_list_on_connect);
+        CheckBox showChannelList = binding.channelListOnConnect;
         showChannelList.setChecked(settings.getBoolean("channel_list_on_connect", true));
-        Intent service = new Intent(this, IRCService.class);
-        startService(service);
-        bindService(service, this, 0);
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        unbindService(this);
     }
 
     public void connectClick(View v) {
-    	String nick = ((EditText)findViewById(R.id.nickname)).getText().toString();
-        boolean channelListOnConnect = ((CheckBox)findViewById(R.id.channel_list_on_connect)).isChecked();
-    	if (nick == null || !Validator.isValidNickname(nick)) {
+    	String nick = binding.nickname.getText().toString();
+        boolean channelListOnConnect = binding.channelListOnConnect.isChecked();
+    	if ("".equals(nick) || !Validator.isValidNickname(nick)) {
             Toast.makeText(this, getString(R.string.nickname_not_valid), Toast.LENGTH_LONG).show();
             return;
         }
@@ -113,20 +108,4 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         }
         return super.onOptionsItemSelected(item);
     }
-
-	@Override
-	public void onServiceConnected(ComponentName name, IBinder service) {
-		binder = (IRCBinder)service;
-		if (binder.getService().isConnected()) {
-			Intent intent = new Intent(this, ConversationsActivity.class);
-			startActivity(intent);
-			finish();
-		}
-	}
-
-	@Override
-	public void onServiceDisconnected(ComponentName name) {
-		this.binder = null;	
-	}
-
 }

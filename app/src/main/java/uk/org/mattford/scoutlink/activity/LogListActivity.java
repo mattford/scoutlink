@@ -1,13 +1,10 @@
 package uk.org.mattford.scoutlink.activity;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.ContextMenu;
-import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,11 +19,9 @@ import java.util.List;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.room.Room;
 import uk.org.mattford.scoutlink.R;
 import uk.org.mattford.scoutlink.database.LogDatabase;
 import uk.org.mattford.scoutlink.database.entities.LogMessage;
-import uk.org.mattford.scoutlink.database.migrations.LogDatabaseMigrations;
 import uk.org.mattford.scoutlink.tasks.ExportLogFileTask;
 
 public class LogListActivity extends AppCompatActivity {
@@ -45,20 +40,8 @@ public class LogListActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        logDatabase = Room.databaseBuilder(getApplicationContext(), LogDatabase.class, "logs")
-                .addMigrations(LogDatabaseMigrations.MIGRATION_0_1)
-                .build();
-
+        logDatabase = LogDatabase.getInstance();
         populateLogChannels();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-
-        if (logDatabase != null) {
-            logDatabase.close();
-        }
     }
 
     private void populateLogChannels() {
@@ -91,7 +74,7 @@ public class LogListActivity extends AppCompatActivity {
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        Context context = this;
+        LogListActivity context = this;
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
         String conversationName = conversationNames.get(info.position);
         switch(item.getItemId()) {
@@ -99,7 +82,7 @@ public class LogListActivity extends AppCompatActivity {
                 new Thread(() -> {
                     int affectedRows = logDatabase.logMessageDao().deleteByConversation(conversationName);
                     if (affectedRows > 0) {
-                        ((LogListActivity) context).runOnUiThread(() -> Toast.makeText(context, getString(R.string.logs_deleted, conversationName), Toast.LENGTH_LONG).show());
+                        context.runOnUiThread(() -> Toast.makeText(context, getString(R.string.logs_deleted, conversationName), Toast.LENGTH_LONG).show());
                     }
 
                 }).start();
@@ -135,12 +118,11 @@ public class LogListActivity extends AppCompatActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case EXPORT_PERMISSION_REQUEST: {
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    doExport();
-                }
-            }
+        if (requestCode == EXPORT_PERMISSION_REQUEST &&
+                grantResults.length > 0 &&
+                grantResults[0] == PackageManager.PERMISSION_GRANTED
+        ) {
+            doExport();
         }
     }
 }

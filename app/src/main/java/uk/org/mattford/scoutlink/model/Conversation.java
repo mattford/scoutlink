@@ -1,69 +1,104 @@
 package uk.org.mattford.scoutlink.model;
 
+import org.pircbotx.User;
+
+import java.util.ArrayList;
 import java.util.LinkedList;
 
-public class Conversation {
-	
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import uk.org.mattford.scoutlink.database.LogDatabase;
+import uk.org.mattford.scoutlink.database.entities.LogMessage;
+
+public class Conversation implements Comparable<Conversation> {
+	private boolean isActive;
 	private String CONVERSATION_NAME;
 	private int type;
 	private LinkedList<Message> messages;
-	private LinkedList<Message> buffer;
-	
+	MutableLiveData<ArrayList<User>> usersLiveData;
+	private MutableLiveData<LinkedList<Message>> messagesLiveData;
+	private MutableLiveData<Integer> unreadMessagesLiveData;
+
 	public final static int TYPE_CHANNEL = 0;
 	public final static int TYPE_QUERY = 1;
 	public final static int TYPE_SERVER = 2;
 
-    private boolean isSelected = false;
-
 	protected Conversation(String name) {
 		this.CONVERSATION_NAME = name;
 		this.messages = new LinkedList<>();
-		this.buffer = new LinkedList<>();
+		this.usersLiveData = new MutableLiveData<>(new ArrayList<>());
+		this.messagesLiveData = new MutableLiveData<>(this.messages);
+		this.unreadMessagesLiveData = new MutableLiveData<>(0);
 	}
 	
 	public String getName() {
 		return this.CONVERSATION_NAME;
 	}
 	
-	public LinkedList<Message> getMessages() {
-		return this.messages;
+	public LiveData<LinkedList<Message>> getMessages() {
+		return this.messagesLiveData;
+	}
+
+	private void onMessagesChanged() {
+		this.messagesLiveData.postValue(this.messages);
+	}
+
+	public void onUserListChanged() {
+		usersLiveData.postValue(new ArrayList<>());
+	}
+
+	public LiveData<ArrayList<User>> getUsers() {
+		return usersLiveData;
+	}
+
+	public org.pircbotx.Channel getChannel() {
+		return null;
 	}
 	
-	public LinkedList<Message> getBuffer() {
-		return this.buffer;
-	}
-	
-	public Message pollBuffer() {
-		Message message = buffer.pollFirst();
-		messages.add(message);
-		return message;
-	}
-	
-	public boolean hasBuffer() {
-		return buffer.size() != 0;
-	}
-	
-	public void clearBuffer() {
-		buffer.clear();
-	}
-	
-	protected void setType(int type) {
+	void setType(int type) {
 		this.type = type;
 	}
 	
 	public int getType() {
 		return this.type;
 	}
-	
+
 	public void addMessage(Message msg) {
-		buffer.add(msg);
+		this.addMessage(msg, true);
 	}
 
-    public boolean isSelected() {
-        return isSelected;
-    }
+	public void addMessage(Message msg, boolean log) {
+		messages.add(msg);
+		if (!isActive) {
+			int unreadMessages = 0;
+			if (getUnreadMessagesCount().getValue() != null) {
+				unreadMessages = this.getUnreadMessagesCount().getValue();
+			}
+			this.unreadMessagesLiveData.postValue(unreadMessages + 1);
+		}
+		if (log) {
+			LogMessage logMessage = new LogMessage(this, msg);
+			LogDatabase db = LogDatabase.getInstance();
+			if (db != null) {
+			    new Thread(() -> {
+                    db.logMessageDao().insert(logMessage);
+                }).start();
+			}
+		}
+		onMessagesChanged();
+	}
 
-    public void setSelected(boolean selected) {
-        isSelected = selected;
-    }
+	public LiveData<Integer> getUnreadMessagesCount() {
+		return this.unreadMessagesLiveData;
+	}
+
+	public void setActive(boolean active) {
+		this.isActive = active;
+		this.unreadMessagesLiveData.postValue(0);
+	}
+
+	@Override
+	public int compareTo(Conversation other) {
+		return getName().compareTo(other.getName());
+	}
 }

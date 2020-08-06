@@ -1,34 +1,38 @@
 package uk.org.mattford.scoutlink.activity;
 
 import java.util.ArrayList;
-import java.util.Map;
 
+import androidx.appcompat.app.ActionBar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.room.Room;
+import uk.org.mattford.scoutlink.BuildConfig;
 import uk.org.mattford.scoutlink.R;
-import uk.org.mattford.scoutlink.adapter.ConversationsPagerAdapter;
-import uk.org.mattford.scoutlink.adapter.MessageListAdapter;
+import uk.org.mattford.scoutlink.ScoutlinkApplication;
 import uk.org.mattford.scoutlink.command.CommandParser;
 import uk.org.mattford.scoutlink.database.LogDatabase;
-import uk.org.mattford.scoutlink.database.entities.LogMessage;
 import uk.org.mattford.scoutlink.database.migrations.LogDatabaseMigrations;
-import uk.org.mattford.scoutlink.irc.IRCBinder;
+import uk.org.mattford.scoutlink.databinding.ActivityConversationsBinding;
+import uk.org.mattford.scoutlink.fragment.ConversationListFragment;
+import uk.org.mattford.scoutlink.fragment.MessageListFragment;
 import uk.org.mattford.scoutlink.irc.IRCService;
 import uk.org.mattford.scoutlink.model.Broadcast;
 import uk.org.mattford.scoutlink.model.Conversation;
 import uk.org.mattford.scoutlink.model.Message;
+import uk.org.mattford.scoutlink.model.Server;
 import uk.org.mattford.scoutlink.model.Settings;
 import uk.org.mattford.scoutlink.receiver.ConversationReceiver;
 import android.app.AlertDialog;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.ServiceConnection;
-import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
-import android.os.IBinder;
-import androidx.viewpager.widget.ViewPager;
+import android.os.Handler;
 import androidx.appcompat.app.AppCompatActivity;
+import uk.org.mattford.scoutlink.viewmodel.ConnectionStatusViewModel;
+import uk.org.mattford.scoutlink.viewmodel.ConversationListViewModel;
 
 import android.view.Menu;
 import android.view.MenuItem;
@@ -36,18 +40,15 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.viewpagerindicator.TitlePageIndicator;
-
-public class ConversationsActivity extends AppCompatActivity implements ServiceConnection {
-	
-	private ConversationsPagerAdapter pagerAdapter;
-	private ViewPager pager;
-	private ConversationReceiver receiver;
-	private IRCBinder binder;
+public class ConversationsActivity extends AppCompatActivity implements ConversationListFragment.OnJoinChannelButtonClickListener {
+    private ActivityConversationsBinding binding;
+	private ConversationListViewModel viewModel;
+    private ConversationReceiver receiver;
     private Settings settings;
     private LogDatabase db;
-
-    private TitlePageIndicator indicator;
+    private Server server;
+    private boolean hasDrawerLayout;
+    private Handler backgroundHandler;
 
 	private final int JOIN_CHANNEL_RESULT = 0;
 
@@ -58,70 +59,63 @@ public class ConversationsActivity extends AppCompatActivity implements ServiceC
 	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_conversations);
+		binding = ActivityConversationsBinding.inflate(getLayoutInflater());
+        viewModel = new ViewModelProvider(this).get(ConversationListViewModel.class);
+        ConnectionStatusViewModel connectionStatusViewModel = new ViewModelProvider(this).get(ConnectionStatusViewModel.class);
+        setContentView(binding.getRoot());
 
         settings = new Settings(this);
 
-        pagerAdapter = new ConversationsPagerAdapter(getSupportFragmentManager(), this);
+        hasDrawerLayout = binding.conversationsDrawerContainer != null;
 
-        pager = findViewById(R.id.pager);
-        pager.setAdapter(pagerAdapter);
-
-        indicator = findViewById(R.id.nav_titles);
-        indicator.setViewPager(pager);
-
-        indicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-
-            private int currentPage = -1;
-
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
-
-            @Override
-            public void onPageSelected(int position) {
-                binder.getService().updateNotification();
-                if (currentPage != -1 && pagerAdapter.getItemInfo(currentPage) != null) {
-                    pagerAdapter.getItemInfo(currentPage).conv.setSelected(false);
-                }
-                currentPage = position;
-                pagerAdapter.getItemInfo(position).conv.setSelected(true);
+        binding.toolbar.setTitle("");
+        setSupportActionBar(binding.toolbar);
+        ActionBar actionbar = getSupportActionBar();
+        actionbar.setDisplayHomeAsUpEnabled(hasDrawerLayout);
+        actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
+        viewModel.getActiveConversation().observe(this, activeConversation -> {
+            if (activeConversation == null) {
+                return;
             }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {}
+            binding.toolbar.setTitle(activeConversation.getName());
+            if (hasDrawerLayout) {
+                binding.conversationsDrawerContainer.setDrawerLockMode(
+                    activeConversation.getType() == Conversation.TYPE_CHANNEL ?
+                        DrawerLayout.LOCK_MODE_UNLOCKED :
+                        DrawerLayout.LOCK_MODE_LOCKED_CLOSED,
+                    GravityCompat.END
+                );
+                binding.conversationsDrawerContainer.closeDrawer(GravityCompat.START);
+            }
+            MessageListFragment messageListFragment = (MessageListFragment)getSupportFragmentManager().findFragmentById(R.id.conversation_view);
+            if (messageListFragment != null) {
+                messageListFragment.setDataSource(activeConversation);
+            }
         });
-        
+
+        connectionStatusViewModel.getConnectionStatus().observe(this, connectionStatus -> {
+           binding.connectionStatus.setText(connectionStatus);
+        });
     }
 
-	/**
-	 * If this is not overridden, then ConversationsPagerAdapter retains old fragments when the activity is recreated.
-	 */
-	@Override
-	protected void onSaveInstanceState(final Bundle outState) {
-	    // super.onSaveInstanceState(outState);
-	}
-	
 	public void onResume() {
 		super.onResume();
+
+        server = Server.getInstance();
+        backgroundHandler = ((ScoutlinkApplication)getApplication()).getBackgroundHandler();
 
         db = Room.databaseBuilder(getApplicationContext(), LogDatabase.class, "logs")
                 .addMigrations(LogDatabaseMigrations.MIGRATION_0_1)
                 .build();
 
 		this.receiver = new ConversationReceiver(this);
-		registerReceiver(this.receiver, new IntentFilter(Broadcast.NEW_CONVERSATION));
-		registerReceiver(this.receiver, new IntentFilter(Broadcast.NEW_MESSAGE));
-		registerReceiver(this.receiver, new IntentFilter(Broadcast.REMOVE_CONVERSATION));
-		registerReceiver(this.receiver, new IntentFilter(Broadcast.INVITE));
-		registerReceiver(this.receiver, new IntentFilter(Broadcast.DISCONNECTED));
-        registerReceiver(this.receiver, new IntentFilter(Broadcast.CONNECTED));
-		
-		Intent serviceIntent = new Intent(this, IRCService.class);
-		startService(serviceIntent);
+		IntentFilter intentFilter = new IntentFilter();
+		intentFilter.addAction(Broadcast.INVITE);
+		intentFilter.addAction(Broadcast.DISCONNECTED);
+		intentFilter.addAction(Broadcast.CONNECTED);
+        registerReceiver(this.receiver, intentFilter);
 
-		bindService(serviceIntent, this, 0);
-
-        EditText newMessage = findViewById(R.id.input);
+        EditText newMessage = binding.input;
         newMessage.setOnEditorActionListener((v, actionId, event) -> {
             if (event == null) {
                 onSendButtonClick(v);
@@ -142,7 +136,18 @@ public class ConversationsActivity extends AppCompatActivity implements ServiceC
                     .setNegativeButton(getString(R.string.no), null)
                     .show();
             settings.putBoolean("rules_viewed", true);
+        }
 
+        if (server.getConnection() != null && server.getConnection().isConnected()) {
+            onConnect(false);
+            return;
+        }
+        Intent connectIntent = new Intent(getApplicationContext(), IRCService.class);
+        connectIntent.setAction(Broadcast.CONNECT);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(connectIntent);
+        } else {
+            startService(connectIntent);
         }
 	}
 	
@@ -154,34 +159,32 @@ public class ConversationsActivity extends AppCompatActivity implements ServiceC
         }
 
 		unregisterReceiver(this.receiver);
-		unbindService(this);
 	}
 	
 	public void onSendButtonClick(View v) {
-		EditText et = findViewById(R.id.input);
+		EditText et = binding.input;
 		String message = et.getText().toString();
-		Conversation conv = pagerAdapter.getItemInfo(pager.getCurrentItem()).conv;
-		if (message.isEmpty()) {
+		Conversation conversation = viewModel.getActiveConversation().getValue();
+		if (message.isEmpty() || conversation == null) {
 			return;
 		}
 		if (message.startsWith("/")) {
-			CommandParser.getInstance().parse(message, conv, this.binder.getService());
+			CommandParser.getInstance(getApplicationContext()).parse(message, conversation, backgroundHandler);
 		} else {
-            if (conv.getType() == (Conversation.TYPE_SERVER)) {
-                Message msg = new Message(getString(R.string.send_message_in_server_window));
-                msg.setColour(Color.RED);
-                conv.addMessage(msg);
+            if (conversation.getType() == (Conversation.TYPE_SERVER)) {
+                Message msg = new Message(
+                    getString(R.string.send_message_in_server_window),
+                    Message.SENDER_TYPE_SERVER,
+                    Message.TYPE_ERROR
+                );
+                conversation.addMessage(msg);
             } else {
-                String nickname = binder.getService().getConnection().getNick();
-                Message msg = new Message(nickname, message);
-                msg.setBackgroundColour(Color.parseColor("#0F1B5F"));
-                msg.setColour(Color.WHITE);
-                msg.setAlignment(Message.ALIGN_RIGHT);
-                conv.addMessage(msg);
+                String nickname = server.getConnection().getNick();
+                Message msg = new Message(nickname, message, Message.SENDER_TYPE_SELF, Message.TYPE_MESSAGE);
+                conversation.addMessage(msg);
 
-                binder.getService().getBackgroundHandler().post(() -> binder.getService().getConnection().sendIRC().message(conv.getName(), message));
+                backgroundHandler.post(() -> server.getConnection().sendIRC().message(conversation.getName(), message));
             }
-            onConversationMessage(conv.getName());
 		}
 		et.setText("");
 	}
@@ -190,125 +193,44 @@ public class ConversationsActivity extends AppCompatActivity implements ServiceC
 		AlertDialog.Builder adb = new AlertDialog.Builder(this);
 		adb.setTitle(getString(R.string.activity_invite_title));
 		adb.setMessage(getString(R.string.invited_to_channel, channel));
-		adb.setPositiveButton("Yes", (dialog, which) -> binder.getService().getBackgroundHandler().post(() -> binder.getService().getConnection().sendIRC().joinChannel(channel)));
+		adb.setPositiveButton("Yes", (dialog, which) -> backgroundHandler.post(() -> server.getConnection().sendIRC().joinChannel(channel)));
 		adb.setNegativeButton("No", (dialog, which) -> {});
 		adb.show();
 	}
 
-    public void onConnect() {
-        if (settings.getBoolean("channel_list_on_connect", false)) {
+    public void onConnect(boolean initialConnection) {
+	    if (initialConnection && settings.getBoolean("channel_list_on_connect", false)) {
             Intent channelListIntent = new Intent(this, ChannelListActivity.class);
-            ArrayList<String> channels = binder.getService().getServer().getChannelList();
+            ArrayList<String> channels = server.getChannelList();
             channelListIntent.putStringArrayListExtra("channels", channels);
             startActivityForResult(channelListIntent, JOIN_CHANNEL_RESULT);
         }
+
+        // Join any channels we want to join...
+        if (!joinChannelBuffer.isEmpty()) {
+            backgroundHandler.post(() -> {
+                for (String channel : joinChannelBuffer) {
+                    server.getConnection().sendIRC().joinChannel(channel);
+                }
+                joinChannelBuffer.clear();
+            });
+        }
+        sendBroadcast(new Intent(Broadcast.UPDATE_NOTIFICATION));
     }
 
 	public void onDisconnect() {
-		binder.getService().getServer().clearConversations();
-		pagerAdapter.clearConversations();
-		Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
+        server.clearConversations();
+        startActivity(new Intent(this, MainActivity.class));
         finish();
-	}
-	
-	public void onNewConversation(String name, boolean selected) {
-		Conversation conv = binder.getService().getServer().getConversation(name);
-        // Only add the new conversation if the conversation does not already exist.
-        int i = pagerAdapter.getItemByName(name);
-        if (i == -1) {
-            pagerAdapter.addConversation(conv);
-        }
-
-		if (conv.isSelected() || selected) {
-            indicator.setCurrentItem(pagerAdapter.getItemByName(conv.getName()));
-        }
-		onConversationMessage(conv.getName());
-	}
-
-    public void onNewConversation(String name) {
-        onNewConversation(name, false);
-    }
-	
-	public void removeConversation(String name) {
-		int i = pagerAdapter.getItemByName(name);
-		pagerAdapter.removeConversation(i);
-	}
-	
-	public void onConversationMessage(String name) {
-		Conversation conv = binder.getService().getServer().getConversation(name);
-        if (conv == null) {
-            return;
-        }
-		int i = pagerAdapter.getItemByName(name);
-		if (i == -1) {
-			onNewConversation(name);
-			i = pagerAdapter.getItemByName(name);
-		}
-		MessageListAdapter adapter = pagerAdapter.getItemAdapter(i);
-
-		if (adapter == null) {
-			return;
-		}
-
-		while (conv.hasBuffer()) {
-			Message msg = conv.pollBuffer();
-            // Don't log server window messages
-			if (conv.getType() != Conversation.TYPE_SERVER) {
-                binder.getService().getBackgroundHandler().post(() -> {
-                    LogMessage logMessage = new LogMessage(
-                        name,
-                        conv.getType(),
-                        msg.getSender(),
-                        msg.getText()
-                    );
-                    db.logMessageDao().insert(logMessage);
-                });
-            }
-			adapter.addMessage(msg);
-		}
-
-        binder.getService().updateNotification();
-	}
-
-	@Override
-	public void onServiceConnected(ComponentName name, IBinder service) {
-		this.binder = (IRCBinder)service;
-        if (binder.getService().getConnection() == null || !binder.getService().getConnection().isConnected()) {
-        	binder.getService().connect();
-        } else {
-        	/*
-        	 * The activity has resumed and the service has been bound, get all the messages we missed...
-        	 */
-    		for (Map.Entry<String, Conversation> conv : binder.getService().getServer().getConversations().entrySet()) {
-    			int i = pagerAdapter.getItemByName(conv.getKey());
-    			if (i == -1) {
-    				onNewConversation(conv.getKey());
-    			}
-    			onConversationMessage(conv.getKey());
-    		}
-            // Join any channels we want to join...
-            if (!joinChannelBuffer.isEmpty()) {
-    		    binder.getService().getBackgroundHandler().post(() -> {
-                    for (String channel : joinChannelBuffer) {
-                        binder.getService().getConnection().sendIRC().joinChannel(channel);
-                    }
-                    joinChannelBuffer.clear();
-                });
-            }
-            binder.getService().updateNotification();
-        }
-	}
-
-	@Override
-	public void onServiceDisconnected(ComponentName name) {
-		this.binder = null;
 	}
 	
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.conversations, menu);
+        if (!hasDrawerLayout) {
+            menu.findItem(R.id.action_userlist).setVisible(false);
+        }
         return true;
     }
 
@@ -316,22 +238,21 @@ public class ConversationsActivity extends AppCompatActivity implements ServiceC
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
-    	Conversation conversation = pagerAdapter.getItemInfo(pager.getCurrentItem()).conv;
+        ConversationListViewModel viewModel = new ViewModelProvider(this).get(ConversationListViewModel.class);
+    	Conversation conversation = viewModel.getActiveConversation().getValue();
+    	if (conversation == null) {
+    	    return super.onOptionsItemSelected(item);
+        }
         int id = item.getItemId();
         Intent intent;
         switch(id) {
-            case R.id.action_settings:
-                intent = new Intent(this, SettingsActivity.class);
-                startActivity(intent);
-                break;
             case R.id.action_close:
                 switch (conversation.getType()) {
                     case Conversation.TYPE_CHANNEL:
-                        binder.getService().getBackgroundHandler().post(() -> binder.getService().getConnection().getUserChannelDao().getChannel(conversation.getName()).send().part());
+                        backgroundHandler.post(() -> conversation.getChannel().send().part());
                         break;
                     case Conversation.TYPE_QUERY:
-                        binder.getService().getServer().removeConversation(conversation.getName());
-                        removeConversation(conversation.getName());
+                        server.removeConversation(conversation.getName());
                         break;
                     default:
                         Toast.makeText(this, getResources().getString(R.string.close_server_window), Toast.LENGTH_SHORT).show();
@@ -339,19 +260,20 @@ public class ConversationsActivity extends AppCompatActivity implements ServiceC
                 }
                 break;
             case R.id.action_disconnect:
-                binder.getService().getBackgroundHandler().post(() -> binder.getService().getConnection().sendIRC().quitServer(settings.getString("quit_message", getString(R.string.default_quit_message))));
+                backgroundHandler.post(() -> server.getConnection().sendIRC().quitServer(settings.getString("quit_message", getString(R.string.default_quit_message))));
+                break;
+            case android.R.id.home:
+                if (hasDrawerLayout && binding.conversationsDrawerContainer != null) {
+                    binding.conversationsDrawerContainer.openDrawer(GravityCompat.START);
+                }
                 break;
             case R.id.action_userlist:
-                switch (conversation.getType()) {
-                    case Conversation.TYPE_CHANNEL:
-                        String chan = conversation.getName();
-                        intent = new Intent(this, UserListActivity.class);
-                        intent.putExtra("channel", chan);
-                        startActivity(intent);
-                        break;
-                    default:
-                        Toast.makeText(this, getResources().getString(R.string.userlist_not_on_channel), Toast.LENGTH_SHORT).show();
-                        break;
+                if (conversation.getType() == Conversation.TYPE_CHANNEL) {
+                    if (hasDrawerLayout && binding.conversationsDrawerContainer != null) {
+                        binding.conversationsDrawerContainer.openDrawer(GravityCompat.END);
+                    }
+                } else {
+                    Toast.makeText(this, getResources().getString(R.string.userlist_not_on_channel), Toast.LENGTH_SHORT).show();
                 }
                 break;
             case R.id.action_join:
@@ -359,13 +281,12 @@ public class ConversationsActivity extends AppCompatActivity implements ServiceC
                 startActivityForResult(intent, JOIN_CHANNEL_RESULT);
                 break;
             case R.id.action_channel_list:
-                intent = new Intent(this, ChannelListActivity.class);
-                startActivityForResult(intent, JOIN_CHANNEL_RESULT);
+                onJoinChannelClick();
                 break;
             case R.id.action_channel_settings:
                 if (conversation.getType() != Conversation.TYPE_CHANNEL) {
                     Toast.makeText(this, getString(R.string.channel_settings_not_channel), Toast.LENGTH_SHORT).show();
-                } else if (binder.getService().getConnection().getUserChannelDao().getChannel(conversation.getName()).isOp(binder.getService().getConnection().getUserBot())) {
+                } else if (conversation.getChannel().isOp(server.getConnection().getUserBot())) {
                     intent = new Intent(this, ChannelSettingsActivity.class);
                     intent.putExtra("channelName", conversation.getName());
                     startActivity(intent);
@@ -385,16 +306,23 @@ public class ConversationsActivity extends AppCompatActivity implements ServiceC
         }
         return super.onOptionsItemSelected(item);
     }
-    
+
+    public void onSettingsButtonClick(View view) {
+        startActivity(new Intent(this, SettingsActivity.class));
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case JOIN_CHANNEL_RESULT:
-                if (resultCode == RESULT_OK) {
-                    String channel = data.getStringExtra("target");
-                    joinChannelBuffer.add(channel);
-                }
-                break;
+	    super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == JOIN_CHANNEL_RESULT && resultCode == RESULT_OK) {
+            String channel = data.getStringExtra("target");
+            joinChannelBuffer.add(channel);
         }
+    }
+
+    @Override
+    public void onJoinChannelClick() {
+        Intent intent = new Intent(this, ChannelListActivity.class);
+        startActivityForResult(intent, JOIN_CHANNEL_RESULT);
     }
 }

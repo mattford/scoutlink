@@ -14,6 +14,7 @@
     <string name="logo_content_description">ScoutLink logo</string>
     <string name="sl_header_content_description">Header image</string>
     <string name="channel_list_on_connect">Show channel list after connecting</string>
+    <string name="not_connected">Not connected</string>
     <!-- Menu Items -->
     <!-- Opens Application Settings, e.g., nick, ident, realname, quit message -->
     <string name="action_settings">Settings</string>
@@ -111,7 +112,7 @@
     <string name="message_topic_changed">%1$s changes topic to %2$s</string>
     <string name="message_set_topicprotect">%1$s has enabled topic protection</string>
     <string name="message_unset_topicprotect">%1$s has disabled topic protection</string>
-    <string name="message_action">*%1$s</string>
+    <string name="message_action">* %1$s</string>
     <string name="message_notice_sender">-%1$s-</string>
     <string name="message_whois_fullhost">%1$s!%2$s@%3$s - %4$s\n</string>
     <string name="message_whois_server">Server: %1$s\n</string>

@@ -1,5 +1,8 @@
 package uk.org.mattford.scoutlink.command;
 
+import android.content.Context;
+import android.os.Handler;
+
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -10,27 +13,29 @@ import uk.org.mattford.scoutlink.command.handler.NickHandler;
 import uk.org.mattford.scoutlink.command.handler.NotifyHandler;
 import uk.org.mattford.scoutlink.command.handler.PartHandler;
 import uk.org.mattford.scoutlink.command.handler.QuitHandler;
-import uk.org.mattford.scoutlink.irc.IRCService;
 import uk.org.mattford.scoutlink.model.Conversation;
+import uk.org.mattford.scoutlink.model.Server;
 
 public class CommandParser {
 	
 	private static CommandParser instance;
-	
+	private Server server;
+
 	private HashMap<String, CommandHandler> commands;
 	private HashMap<String, String> aliases;
 	
-	private CommandParser() {
+	private CommandParser(Context context) {
 		commands = new HashMap<>();
 		aliases = new HashMap<>();
-		
-		commands.put("join", new JoinHandler());
-		commands.put("part", new PartHandler());
-		commands.put("nick", new NickHandler());
-		commands.put("quit", new QuitHandler());
-		commands.put("me", new ActionHandler());
-		commands.put("notify", new NotifyHandler());
-		commands.put("msg", new MessageHandler());
+		server = Server.getInstance();
+
+		commands.put("join", new JoinHandler(context));
+		commands.put("part", new PartHandler(context));
+		commands.put("nick", new NickHandler(context));
+		commands.put("quit", new QuitHandler(context));
+		commands.put("me", new ActionHandler(context));
+		commands.put("notify", new NotifyHandler(context));
+		commands.put("msg", new MessageHandler(context));
 		
 		aliases.put("j", "join");
 		aliases.put("p", "part");
@@ -39,21 +44,19 @@ public class CommandParser {
 		aliases.put("disconnect", "quit");
 	}
 	
-	public void parse(String command, Conversation conversation, IRCService service) {
+	public void parse(String command, Conversation conversation, Handler backgroundHandler) {
 		if (command.startsWith("/")) {
 			command = command.replaceFirst("/", "");
 			String[] params = command.split(" ");
 			if (isClientCommand(params[0])) {
-				handleClientCommand(params, conversation, service);
+				handleClientCommand(params, conversation, backgroundHandler);
 			} else {
-				handleServerCommand(params, conversation, service);
+				handleServerCommand(params, conversation, backgroundHandler);
 			}
 			
 		} else {
 			final String threadedCommand = command;
-			service.getBackgroundHandler().post(() -> service.getConnection().sendIRC().message(conversation.getName(), threadedCommand));
-			service.onNewMessage(conversation.getName());
-			
+			backgroundHandler.post(() -> server.getConnection().sendIRC().message(conversation.getName(), threadedCommand));
 		}
 	}
 	
@@ -69,17 +72,17 @@ public class CommandParser {
 		return null;
 	}
 	
-	private void handleClientCommand(String[] params, Conversation conversation, IRCService service) {
+	private void handleClientCommand(String[] params, Conversation conversation, Handler backgroundHandler) {
 		CommandHandler handler = getCommandHandler(params[0]);
-		handler.execute(params, conversation, service);
+		handler.execute(params, conversation, backgroundHandler);
 	}
 	
-	private void handleServerCommand(String[] params, Conversation conversation, IRCService service) {
+	private void handleServerCommand(String[] params, Conversation conversation, Handler backgroundHandler) {
 		if (params.length > 1) {
 			params[0] = params[0].toUpperCase(Locale.ENGLISH);
-			service.getBackgroundHandler().post(() -> service.getConnection().sendRaw().rawLine(mergeParams(params)));
+			backgroundHandler.post(() -> server.getConnection().sendRaw().rawLine(mergeParams(params)));
 		} else {
-			service.getBackgroundHandler().post(() -> service.getConnection().sendRaw().rawLine(params[0].toUpperCase(Locale.ENGLISH)));
+			backgroundHandler.post(() -> server.getConnection().sendRaw().rawLine(params[0].toUpperCase(Locale.ENGLISH)));
 		}
 	}
 	
@@ -96,9 +99,9 @@ public class CommandParser {
 		return sb.toString();
 	}
 	
-	public static CommandParser getInstance() {
+	public static CommandParser getInstance(Context context) {
 		if (instance == null) {
-			instance = new CommandParser();
+			instance = new CommandParser(context);
 		}
 		return instance;
 	}

@@ -4,26 +4,23 @@ import java.util.Date;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
-import androidx.room.Fts4;
 import androidx.room.PrimaryKey;
+import uk.org.mattford.scoutlink.model.Conversation;
+import uk.org.mattford.scoutlink.model.Message;
 
-@Fts4
 @Entity(tableName = "log_messages")
 public class LogMessage {
 
     public LogMessage() {}
 
-    public LogMessage(
-        String conversationName,
-        int conversationType,
-        String sender,
-        String message
-    ) {
-        this.date = new Date();
-        this.conversationName = conversationName;
-        this.conversationType = conversationType;
-        this.sender = sender;
-        this.message = message;
+    public LogMessage(Conversation conversation, Message message) {
+        this.date = message.getTimestamp();
+        this.conversationName = conversation.getName();
+        this.conversationType = conversation.getType();
+        this.sender = message.getSender();
+        this.message = message.getText();
+        this.senderType = message.getSenderType();
+        this.messageType = message.getType();
     }
 
     @PrimaryKey(autoGenerate = true)
@@ -39,9 +36,19 @@ public class LogMessage {
     @ColumnInfo(name= "conversation_type")
     public Integer conversationType;
 
+    @ColumnInfo(name="sender_type")
+    public Integer senderType;
+
+    @ColumnInfo(name="message_type")
+    public Integer messageType;
+
     @ColumnInfo(name = "sender")
     public String sender;
 
     @ColumnInfo(name = "message")
     public String message;
+
+    public Message toMessage() {
+        return new Message(this);
+    }
 }

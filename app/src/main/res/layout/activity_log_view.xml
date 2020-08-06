@@ -4,10 +4,10 @@
     android:layout_height="match_parent"
     tools:context="uk.org.mattford.scoutlink.activity.LogListActivity">
 
-    <FrameLayout
-        android:id="@+id/fragment_placeholder"
+    <androidx.fragment.app.FragmentContainerView
+        android:name="uk.org.mattford.scoutlink.fragment.MessageListFragment"
+        android:id="@+id/conversation_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        />
+        android:layout_height="match_parent"  />
 
 </RelativeLayout>

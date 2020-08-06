@@ -2,10 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="uk.org.mattford.scoutlink"
-    android:versionCode="19"
-    android:versionName="1.5.1" >
+    android:versionCode="20"
+    android:versionName="2.0" >
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
@@ -16,10 +17,6 @@
         android:name="uk.org.mattford.scoutlink.ScoutlinkApplication"
         tools:ignore="GoogleAppIndexingWarning">
 
-        <!-- Google Analytics Version v4 needs this value for easy tracking -->
-        <!--<meta-data android:name="com.google.android.gms.analytics.globalConfigResource"
-            android:resource="@xml/global_tracker" />-->
-
         <activity android:name=".activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -29,15 +26,11 @@
 
         <service android:name=".irc.IRCService" />
 
-        <activity android:name=".activity.ConversationsActivity" />
+        <activity android:name=".activity.ConversationsActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".activity.JoinActivity"
             android:label="@string/join_activity_label"
-            android:theme="@style/Dialog"
-            android:screenOrientation="locked"/>
-        <activity
-            android:name=".activity.UserListActivity"
-            android:label="@string/userlist_activity_label"
             android:theme="@style/Dialog"
             android:screenOrientation="locked"/>
         <activity

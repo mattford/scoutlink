@@ -5,17 +5,16 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.Switch;
 
 import java.util.ArrayList;
 
 import uk.org.mattford.scoutlink.R;
+import uk.org.mattford.scoutlink.databinding.ActivitySettingsBinding;
 import uk.org.mattford.scoutlink.irc.IRCService;
 import uk.org.mattford.scoutlink.model.Settings;
 
 public class SettingsActivity extends AppCompatActivity {
-
+    private ActivitySettingsBinding binding;
     private Settings settings;
 
     private final int AUTOJOIN_REQUEST_CODE = 0;
@@ -25,67 +24,34 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_settings);
+        binding = ActivitySettingsBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         settings = new Settings(this);
 
-        EditText et;
+        binding.settingsNickname.setText(settings.getString("nickname", ""));
+        binding.settingsIdent.setText(settings.getString("ident", "androidirc"));
+        binding.settingsGecos.setText(settings.getString("gecos", "ScoutLink IRC for Android!"));
+        binding.settingsNickservUser.setText(settings.getString("nickserv_user", ""));
+        binding.settingsNickservPassword.setText(settings.getString("nickserv_password", ""));
+        binding.settingsQuitMessage.setText(settings.getString("quit_message", getString(R.string.default_quit_message)));
 
-        et = findViewById(R.id.settings_nickname);
-        et.setText(settings.getString("nickname", ""));
-
-        et = findViewById(R.id.settings_ident);
-        et.setText(settings.getString("ident", "androidirc"));
-
-        et = findViewById(R.id.settings_gecos);
-        et.setText(settings.getString("gecos", "ScoutLink IRC for Android!"));
-
-        et = findViewById(R.id.settings_nickserv_user);
-        et.setText(settings.getString("nickserv_user", ""));
-
-        et = findViewById(R.id.settings_nickserv_password);
-        et.setText(settings.getString("nickserv_password", ""));
-
-        et = findViewById(R.id.settings_quit_message);
-        et.setText(settings.getString("quit_message", getString(R.string.default_quit_message)));
-
-        // Checkbox
-        Switch loggingSwitch = findViewById(R.id.settings_enable_logging);
-        loggingSwitch.setChecked(settings.getBoolean("logging_enabled", true));
-
-        Switch loadPreviousMessagesSwitch = findViewById(R.id.settings_load_previous_messages_on_join);
-        loadPreviousMessagesSwitch.setChecked(settings.getBoolean("load_previous_messages_on_join", true));
+        binding.settingsEnableLogging.setChecked(settings.getBoolean("logging_enabled", true));
+        binding.settingsLoadPreviousMessagesOnJoin.setChecked(settings.getBoolean("load_previous_messages_on_join", true));
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        EditText et;
-        et = findViewById(R.id.settings_nickname);
-        settings.putString("nickname", et.getText().toString()); // Validate here?
+        settings.putString("nickname", binding.settingsNickname.getText().toString());
+        settings.putString("ident", binding.settingsIdent.getText().toString());
+        settings.putString("gecos", binding.settingsGecos.getText().toString());
+        settings.putString("nickserv_user", binding.settingsNickservUser.getText().toString());
+        settings.putString("nickserv_password", binding.settingsNickservPassword.getText().toString());
+        settings.putString("quit_message", binding.settingsQuitMessage.getText().toString());
 
-        et = findViewById(R.id.settings_ident);
-        settings.putString("ident", et.getText().toString());
-
-        et = findViewById(R.id.settings_gecos);
-        settings.putString("gecos", et.getText().toString());
-
-        et = findViewById(R.id.settings_nickserv_user);
-        settings.putString("nickserv_user", et.getText().toString());
-
-        et = findViewById(R.id.settings_nickserv_password);
-        settings.putString("nickserv_password", et.getText().toString());
-
-        et = findViewById(R.id.settings_quit_message);
-        settings.putString("quit_message", et.getText().toString());
-
-        // Checkbox
-        Switch loggingSwitch = findViewById(R.id.settings_enable_logging);
-        settings.putBoolean("logging_enabled", loggingSwitch.isChecked());
-
-        Switch loadPreviousMessagesSwitch = findViewById(R.id.settings_load_previous_messages_on_join);
-        settings.putBoolean("load_previous_messages_on_join", loadPreviousMessagesSwitch.isChecked());
+        settings.putBoolean("logging_enabled", binding.settingsEnableLogging.isChecked());
+        settings.putBoolean("load_previous_messages_on_join", binding.settingsLoadPreviousMessagesOnJoin.isChecked());
     }
-
 
     public void openAutojoinSettings(View v) {
         Intent intent = new Intent(this, ListEditActivity.class);
@@ -116,6 +82,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case AUTOJOIN_REQUEST_CODE:
                 if (resultCode == RESULT_OK) {
