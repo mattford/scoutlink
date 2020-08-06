@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Name of the App -->
+    <string name="app_name">ScoutLink</string>
+
+    <!-- Text displayed if the nickname field in main screen is blank -->
+    <string name="nickname_hint">Gebruikersnaam</string>
+    <!-- Message displayed if the nickname is not valid. -->
+    <string name="nickname_not_valid">Je gebruikersnaam is niet geldig, probeer iets anders</string>
+    <!-- Text on the "Connect" button on the main screen -->
+    <string name="connect_button">Chat</string>
+    <!-- Message to say connection is in progress -->
+    <string name="connect_message">Verbinden met ScoutLink&#8230;</string>
+    <string name="logo_content_description">ScoutLink logo</string>
+    <string name="sl_header_content_description">Header plaatje</string>
+    <string name="channel_list_on_connect">Laat de kanalen zien na het verbinden</string>
+    <!-- Menu Items -->
+    <!-- Opens Application Settings, e.g., nick, ident, realname, quit message -->
+    <string name="action_settings">Instellingen</string>
+    <!-- Leaves the current channel or closes PM window, fails in server window, see `close_server_window` string. -->
+    <string name="action_close">Sluiten</string>
+    <string name="action_rules">Regels</string>
+    <!-- Disconnects from ScoutLink -->
+    <string name="action_disconnect">Verbinding verbreken</string>
+    <!-- Shows users on the current channel, fails if not in a channel - see `userlist_not_on_channel` string. -->
+    <string name="action_users">Gebruikerslijst</string>
+    <!-- Opens an interface to join a new channel -->
+    <string name="action_join">Enter kanaal</string>
+    <!-- Displays a list of all available channels -->
+    <string name="action_channel_list">Kanaallijst</string>
+    <!-- Displays a window where channel settings such as topic, and common modes can be changed -->
+    <string name="action_channel_settings">Kanaal instellingen</string>
+
+    <!-- Text displayed on the "Send" button in a channel -->
+    <string name="label_send_message_button">Verzenden</string>
+    <!-- Text shown when no text has been typed into the new message box on a channel. -->
+    <string name="send_message_hint">Typ om een bericht te versturen</string>
+
+    <!-- Displayed when no messages have been sent to a channel yet (very rarely seen as channels almost immediately display topic info when joined) -->
+    <string name="message_list_no_messages">Er zijn nog geen berichten, praat een beetje!</string>
+    <!-- Displayed if the user tries to close the Server Window -->
+    <string name="close_server_window">Je kan het server kanaal niet sluiten</string>
+    <!-- Displayed if the user tries to open the user list on a non-channel conversation -->
+    <string name="userlist_not_on_channel">Deze functie werkt alleen binnen kanalen</string>
+    <!-- Displayed if the user tries to send a non-command message to the server window -->
+    <string name="send_message_in_server_window">Je kan geen berichten sturen naar de server.</string>
+
+    <!-- Displayed on the Join button in JoinActivity (opened when "action_join" is selected -->
+    <string name="join_button">Deelnemen</string>
+    <!-- Title of the Join Activity -->
+    <string name="join_activity_label">Enter kanaal</string>
+
+    <string name="title_activity_channel_list">Kanaallijst</string>
+    <string name="userlist_activity_label">Gebruikerslijst</string>
+    <string name="action_userlist_query_label">Vraag</string>
+    <string name="action_userlist_notice_label">aankondiging</string>
+    <string name="action_userlist_kill_label">Vermoord</string>
+    <string name="action_userlist_kick_label">Kick</string>
+    <string name="action_userlist_op">Op</string>
+    <string name="action_userlist_deop">Deop</string>
+    <string name="action_userlist_hop">Half-Op</string>
+    <string name="action_userlist_dehop">DeHalf-Op</string>
+    <string name="action_userlist_owner">Eigenaar</string>
+    <string name="action_userlist_deowner">ont-eigenaar</string>
+    <string name="action_userlist_admin">Admin</string>
+    <string name="action_userlist_deadmin">De-Admin</string>
+    <string name="action_userlist_voice">Voice</string>
+    <string name="action_userlist_devoice">Devoice</string>
+
+    <string name="title_activity_notice">Stuur een aankondiging</string>
+    <string name="send_notice_button">versturen</string>
+
+    <string name="activity_invite_title">Uitgenodigd in kanaal</string>
+    <string name="invited_to_channel">Je bent uitnodigigd in %1$s, wil je mee doen?</string>
+
+    <string name="message_halfopevent">%1$s maakte %2$s half-op</string>
+    <string name="message_dehalfopevent">%1$s ontnam %2$s half-op</string>
+    <string name="message_opevent">%1$s maakte %2$s op</string>
+    <string name="message_deopevent">%1$s ontnam %2$s op</string>
+    <string name="message_superopevent">%1$s maakte %2$s admin</string>
+    <string name="message_desuperopevent">%1$s ontnam %2$s admin</string>
+    <string name="message_ownerevent">%1$s maakte %2$s eigenaar</string>
+    <string name="message_deownerevent">%1$s ontnam %2$s eigenaar</string>
+    <string name="message_voiceevent">%1$s gaf %2$s voice</string>
+    <string name="message_devoiceevent">%1$s ontnam %2$s voice</string>
+    <string name="message_join">%1$s is er bij gekomen in %2$s</string>
+    <string name="message_kicked_self">Je hebt gekicked uit %1$s door %2$s (%3$s)</string>
+    <string name="message_kicked_other">%1$s is gekicked uit %2$s door %3$s (%4$s)</string>
+    <string name="message_nickchange">%1$s heeft zijn gebruikersnaam veranderd naar %2$s</string>
+    <string name="message_part">%1$s verliet %2$s (%3$s)</string>
+    <string name="message_quit">%1$s heeft scoutlink verlaten (%2$s)</string>
+    <string name="message_version">ScoutLink voor Android</string>
+    <string name="message_ban_add">%1$s heeft %2$s verbannen</string>
+    <string name="message_ban_remove">%1$s heeft %2$s ontbannen</string>
+    <string name="message_set_private">%1$s heeft het kanaal prive gemaakt</string>
+    <string name="message_unset_private">%1$s heeft het kanaal publiek gemaakt</string>
+    <string name="message_set_secret">%1$s heeft het kanaal geheim gemaakt</string>
+    <string name="message_unset_secret">%1$s heeft het kanaal zichtbaar gemaakt</string>
+    <string name="message_set_key">%1$s heeft het wachtwoord gezet op %2$s</string>
+    <string name="message_unset_key">%1$s heeft het wachtwoord verwijderd</string>
+    <string name="message_set_limit">%1$s heeft de gebruikerslimit gezet op %2$s</string>
+    <string name="message_unset_limit">%1$s heeft de gebruikerslimit verwijderd</string>
+    <string name="message_set_invite">%1$s heeft het kanaal op uitnodiging gezet</string>
+    <string name="message_unset_invite">%1$s heeft de uitnodiging weer uitgezet</string>
+    <string name="message_set_moderated">%1$s heeft gemodereerd aangezet (alleen voice of hoger mogen praten)</string>
+    <string name="message_unset_moderated">%1$s heeft gemodereerd uitgezet (iedereen mag praten)</string>
+    <string name="message_set_no_external">%1$s heeft externe berichten uitgezet</string>
+    <string name="message_unset_no_external">%1$s heeft externe berichten aangezet</string>
+    <string name="message_usermode">%1$s zet de mode op: %2$s %3$s</string>
+    <string name="message_topic">Onderwerp is %1$s (door: %2$s)</string>
+    <string name="message_topic_changed">%1$s veranderd het onderwerp naar %2$s</string>
+    <string name="message_set_topicprotect">%1$s heeft het onderwerp beveiligd</string>
+    <string name="message_unset_topicprotect">%1$s heeft het onderwerp beveiliging uitgezet</string>
+    <string name="message_action">*%1$s</string>
+    <string name="message_notice_sender">-%1$s-</string>
+    <string name="message_whois_fullhost">%1$s!%2$s@%3$s - %4$s\n</string>
+    <string name="message_whois_server">Server: %1$s\n</string>
+    <string name="message_whois_away">Weg: %1$s\n</string>
+    <string name="message_whois_registered">Registeerd als: %1$s\n</string>
+    <string name="message_whois_channels">Kanalen: %1$s\n</string>
+    <string name="message_whois_idle">Stil voor: %1$d\n</string>
+    <string name="message_join_failed">Kan niet deelnemen %1$s (%2$s)</string>
+
+    <string name="message_notify_online">%1$s is online</string>
+    <string name="message_notify_offline">%1$s is offline</string>
+    <string name="message_notify_away">%1$s is weg: %2$s</string>
+    <string name="message_notify_back">%1$s is terug</string>
+    <string name="message_notify_added">%1$s is toegevoegd aan de notify lijst</string>
+    <string name="message_notify_removed">%1$s is weggehaald van de notify lijst</string>
+
+    <string name="action_kick_dialog_title">Reden voor kick</string>
+    <string name="action_kill_dialog_title">Reden voor kill</string>
+    <string name="action_notice_dialog_title">Stuur een mededeling</string>
+
+    <string name="settings_nickname_label">Bijnaam:</string>
+    <string name="settings_ident_label">Gebruikernaam:</string>
+    <string name="settings_gecos_label">Echte naam:</string>
+    <string name="settings_quit_message_label">Afscheidsbericht:</string>
+    <string name="settings_nickserv_user_label">Nickserv Gebruikersnaam:</string>
+    <string name="settings_nickserv_password_label">Nickserv Wachtwoord:</string>
+
+    <string name="title_activity_log_list">Logs</string>
+    <string name="title_activity_log_view">Log bekijken</string>
+    <string name="logs_deleted">Logs van %1$s zijn verwijderd</string>
+    <string name="no_logs_to_view">Er zijn geen logs om te bekijken</string>
+    <string name="log_action_delete">Verwijderen</string>
+    <string name="log_action_export">Exporteren</string>
+    <string name="log_exported">Log file geexporteerd naar %1$s</string>
+    <string name="error_exporting_logs">Error exporteren log file</string>
+    <string name="settings_enable_logging">Logging aanzetten</string>
+    <string name="settings_load_previous_messages_on_join">Laad vorige berichten bij deelnemen kanaal</string>
+    <string name="previous_session_header">Vorige berichten</string>
+    <string name="current_session_header">Huidige Sessie</string>
+
+    <string name="title_activity_list_view_edit">Lijst aanpassen</string>
+    <string name="edit_list_remove_item_confirm_title">Verwijderen Item?</string>
+    <string name="edit_list_remove_item_confirm_text">Weet je zeker dat je dit wil verwijderen?</string>
+
+    <string name="settings_autojoin_channels_label">Autojoin Kanalen</string>
+    <string name="settings_command_on_connect_label">Commandos bij opstarten</string>
+    <string name="settings_notify_list_label">Notify Lijst</string>
+
+    <string name="title_activity_channel_settings">Kanaal lijst</string>
+    <string name="title_activity_rules">Regels</string>
+    <string name="view_rules_dialog_title">Bekijk de regels?</string>
+    <string name="view_rules_dialog_message">Voor je begint, wil je de ScoutLink regels lezen? (Je kan ze op elk moment bekijken via menu -> regels)</string>
+
+    <string name="channel_settings_external_messages">Blokkeren externe berichten</string>
+    <string name="channel_settings_topic_protection">Zet onderwerp berscherming aan</string>
+    <string name="channel_settings_private">Prive</string>
+    <string name="channel_settings_secret">Geheim</string>
+    <string name="channel_settings_invite_only">Alleen Op Uitnodiging</string>
+    <string name="channel_settings_moderated">Gemodereerd</string>
+    <string name="channel_settings_limit">Gebruikerslimit</string>
+    <string name="channel_limit_set">Zet</string>
+    <string name="channel_limit_remove">Verwijder</string>
+    <string name="channel_key_set">Set</string>
+    <string name="channel_key_remove">Verwijder</string>
+    <string name="channel_settings_key">Wachtwoord</string>
+    <string name="channel_settings_topic_change">Verander</string>
+    <string name="channel_settings_need_op">Je moet een OP zijn om kanaal instellingen te veranderen</string>
+    <string name="channel_settings_not_channel">Je kan alleen in het kanaal dingen veranderen</string>
+
+
+    <string name="default_quit_message">ScoutLink for Android!</string>
+    <string name="nick_already_in_use">Deze gebruikersnaam is al in gebruik, kies een andere en probeer het opnieuw</string>
+
+    <string name="notification_new_mentions">%1$d genoemd in %2$s.</string>
+    <string name="notification_new_mentions_multi">%1$d genoemd in %2$d gesprekken.</string>
+    <string name="notification_new_messages_inbox_title">Nieuwe berichten op Scoutlink</string>
+    <string name="notification_new_messages">%1$d nieuwe berichten in %2$d gesprekken.</string>
+    <string name="notification_new_messages_multi">%1$s/%2$s: %3$s</string>
+    <string name="notification_connected">Verbonden als %1$s.</string>
+    <string name="notification_new_multi">%1$d nieuwe berichten, %2$d nieuwe benoemingen.</string>
+
+    <string name="notice_hint">Typ je bericht</string>
+    <string name="settings_topic_hint">Kanaal onderwerp</string>
+
+    <string name="edit_list_add_button">Toevoegen</string>
+    <string name="edit_list_save_button">Opslaan</string>
+
+    <string name="yes">Ja</string>
+    <string name="no">Nee</string>
+
+    <string name="connect_failed">Verbinding mislukt, probeer het opnieuw</string>
+
+    <!-- Default settings values -->
+    <!-- Default ident to use if the user does not set one, this will show in the users hostmask (nick!ident@host) -->
+    <string name="default_ident" translatable="false">SLAndroid</string>
+    <!-- Default Real Name to use if the user does not set one, this will show in WHOIS -->
+    <string name="default_gecos">ScoutLink IRC voor Android!</string>
+
+    <string name="failed_to_load_user_list">Kan de gebruikerslijst niet laden</string>
+
+    <!-- Core App Settings, probably don't need localising. -->
+    <string name="server_window_title" translatable="false">ScoutLink</string>
+    <string name="channel_name_prefix" translatable="false">#</string>
+
+    <string name="server_address" translatable="false">chat.scoutlink.net</string>
+</resources>
