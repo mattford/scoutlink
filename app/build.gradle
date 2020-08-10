@@ -11,10 +11,7 @@ android {
         multiDexEnabled true
     }
     buildTypes {
-        release {
-            minifyEnabled true
-            shrinkResources true
-        }
+        release {}
     }
     packagingOptions {
         exclude 'META-INF/DEPENDENCIES'
