@@ -71,7 +71,7 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
             message.isType(Message.TYPE_ACTION) ? Typeface.ITALIC : Typeface.NORMAL
         );
         String sender = message.getSender();
-        if (sender == null || !message.isSenderType(Message.SENDER_TYPE_OTHER)) {
+        if (sender == null || message.isSenderType(Message.SENDER_TYPE_SERVER)) {
             holder.mSenderView.setVisibility(View.GONE);
         } else {
             holder.mSenderView.setVisibility(View.VISIBLE);
