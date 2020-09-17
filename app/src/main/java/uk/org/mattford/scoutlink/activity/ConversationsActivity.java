@@ -34,9 +34,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import uk.org.mattford.scoutlink.viewmodel.ConnectionStatusViewModel;
 import uk.org.mattford.scoutlink.viewmodel.ConversationListViewModel;
 
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -117,11 +119,10 @@ public class ConversationsActivity extends AppCompatActivity implements Conversa
 
         EditText newMessage = binding.input;
         newMessage.setOnEditorActionListener((v, actionId, event) -> {
-            if (event == null) {
+            if (actionId == EditorInfo.IME_NULL && event.getAction() == KeyEvent.ACTION_DOWN) {
                 onSendButtonClick(v);
-                return true;
             }
-            return false;
+            return true;
         });
 
         if (!settings.getBoolean("rules_viewed", false)) {
