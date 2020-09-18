@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Name of the App -->
+    <string name="app_name">ScoutLink</string>
+
+    <!-- Text displayed if the nickname field in main screen is blank -->
+    <string name="nickname_hint">Kallenavn</string>
+    <!-- Message displayed if the nickname is not valid. -->
+    <string name="nickname_not_valid">Ugyldig kallenavn, velg et annet og prøv igjen</string>
+    <!-- Text on the "Connect" button on the main screen -->
+    <string name="connect_button">Chat</string>
+    <!-- Message to say connection is in progress -->
+    <string name="connect_message">Kobler til ScoutLink&#8230;</string>
+    <string name="logo_content_description">ScoutLink logo</string>
+    <string name="sl_header_content_description">Toppbilde</string>
+    <string name="channel_list_on_connect">Vis kanalliste etter tilkobling</string>
+    <string name="not_connected">Ikke tilkoblet</string>
+    <!-- Menu Items -->
+    <!-- Opens Application Settings, e.g., nick, ident, realname, quit message -->
+    <string name="action_settings">Innstillinger</string>
+    <!-- Leaves the current channel or closes PM window, fails in server window, see `close_server_window` string. -->
+    <string name="action_close">Lukk</string>
+    <string name="action_rules">Regler</string>
+    <!-- Disconnects from ScoutLink -->
+    <string name="action_disconnect">Koble ifra</string>
+    <!-- Shows users on the current channel, fails if not in a channel - see `userlist_not_on_channel` string. -->
+    <string name="action_users">Brukerliste</string>
+    <!-- Opens an interface to join a new channel -->
+    <string name="action_join">Bli med i en kanal</string>
+    <!-- Displays a list of all available channels -->
+    <string name="action_channel_list">Kanalliste</string>
+    <!-- Displays a window where channel settings such as topic, and common modes can be changed -->
+    <string name="action_channel_settings">Kanalinnstillinger</string>
+
+    <!-- Text displayed on the "Send" button in a channel -->
+    <string name="label_send_message_button">Send</string>
+    <!-- Text shown when no text has been typed into the new message box on a channel. -->
+    <string name="send_message_hint">Skriv her</string>
+
+    <!-- Displayed when no messages have been sent to a channel yet (very rarely seen as channels almost immediately display topic info when joined) -->
+    <string name="message_list_no_messages">Ingen meldinger ennå. Skriv under her for å starte en chat</string>
+    <!-- Displayed if the user tries to close the Server Window -->
+    <string name="close_server_window">Du kan ikke lukke server-vinduet!</string>
+    <!-- Displayed if the user tries to open the user list on a non-channel conversation -->
+    <string name="userlist_not_on_channel">Denne funksjonen virker kun i en kanal</string>
+    <!-- Displayed if the user tries to send a non-command message to the server window -->
+    <string name="send_message_in_server_window">Du kan ikke sende en melding i server-vinduet.</string>
+
+    <!-- Displayed on the Join button in JoinActivity (opened when "action_join" is selected -->
+    <string name="join_button">Koble til</string>
+    <!-- Title of the Join Activity -->
+    <string name="join_activity_label">Bli med i kanalen</string>
+
+    <string name="title_activity_channel_list">Kanalliste</string>
+    <string name="userlist_activity_label">Brukerliste</string>
+    <string name="action_userlist_query_label">Spørsmål</string>
+    <string name="action_userlist_notice_label">Notis</string>
+    <string name="action_userlist_kill_label">Kill</string>
+    <string name="action_userlist_kick_label">Kaste ut</string>
+    <string name="action_userlist_op">Op</string>
+    <string name="action_userlist_deop">Deop</string>
+    <string name="action_userlist_hop">Half-Op</string>
+    <string name="action_userlist_dehop">DeHalf-Op</string>
+    <string name="action_userlist_owner">Owner</string>
+    <string name="action_userlist_deowner">De-Owner</string>
+    <string name="action_userlist_admin">Admin</string>
+    <string name="action_userlist_deadmin">De-Admin</string>
+    <string name="action_userlist_voice">Voice</string>
+    <string name="action_userlist_devoice">Devoice</string>
+
+    <string name="title_activity_notice">Send en notis</string>
+    <string name="send_notice_button">Send</string>
+
+    <string name="activity_invite_title">Invitert til kanalen</string>
+    <string name="invited_to_channel">Du har blitt invitert til %1$s. Vil du gå inn i kanalen?</string>
+
+    <string name="message_halfopevent">%1$s gav halfop til %2$s</string>
+    <string name="message_dehalfopevent">%1$s fjernet halfop fra %2$s</string>
+    <string name="message_opevent">%1$s gav op til %2$s</string>
+    <string name="message_deopevent">%1$s fjernet op fra %2$s</string>
+    <string name="message_superopevent">%1$s oppnevnte %2$s til admin</string>
+    <string name="message_desuperopevent">%1$s fjernet admin-status fra %2$s</string>
+    <string name="message_ownerevent">%1$s oppnevnte %2$s til owner</string>
+    <string name="message_deownerevent">%1$s fjernet owner-status fra %2$s</string>
+    <string name="message_voiceevent">%1$s gav voice til %2$s</string>
+    <string name="message_devoiceevent">%1$s fjernet voice fra %2$s</string>
+    <string name="message_join">%1$s has blitt med %2$s</string>
+    <string name="message_kicked_self">Du ble sparket ut fra kanalen %1$s av %2$s (%3$s)</string>
+    <string name="message_kicked_other">%1$s ble sparket ut fra %2$s av %3$s (%4$s)</string>
+    <string name="message_nickchange">%1$s endret kallenavnet til %2$s</string>
+    <string name="message_part">%1$s har forlatt %2$s (%3$s)</string>
+    <string name="message_quit">%1$s har logget av ScoutLink (%2$s)</string>
+    <string name="message_version">ScoutLink for Android</string>
+    <string name="message_ban_add">%1$s har bannet %2$s</string>
+    <string name="message_ban_remove">%1$s har opphevet ban av %2$s</string>
+    <string name="message_set_private">%1$s har endret status på kanalen til privat</string>
+    <string name="message_unset_private">%1$s har endret status på kanalen til offentlig</string>
+    <string name="message_set_secret">%1$s har endret status på kanalen til hemmelig</string>
+    <string name="message_unset_secret">%1$s har endret status på kanalen til synlig</string>
+    <string name="message_set_key">%1$s har satt kanalens passord til %2$s</string>
+    <string name="message_unset_key">%1$s har fjernet kanalens passord</string>
+    <string name="message_set_limit">%1$s har begrenset antall brukere i kanalen til %2$s</string>
+    <string name="message_unset_limit">%1$s har fjernet begrensningen på antall brukere</string>
+    <string name="message_set_invite">%1$s har satt kanalens til kun for inviterte</string>
+    <string name="message_unset_invite">%1$s har deaktivert "kun for inviterte"</string>
+    <string name="message_set_moderated">%1$s har moderert kanalen (kun de med voice (+) og oppover kan snakke)</string>
+    <string name="message_unset_moderated">%1$s har deaktivert moderering av kanalen (alle kan nå snakke)</string>
+    <string name="message_set_no_external">%1$s har deaktivert eksterne meldinger</string>
+    <string name="message_unset_no_external">%1$s har aktivert eksterne meldinger</string>
+    <string name="message_usermode">%1$s setter modus: %2$s %3$s</string>
+    <string name="message_topic">Overskriften er %1$s (Satt av %2$s)</string>
+    <string name="message_topic_changed">%1$s endrer overskriften til %2$s</string>
+    <string name="message_set_topicprotect">%1$s har aktivert beskyttelse av overskriften</string>
+    <string name="message_unset_topicprotect">%1$s har deaktivert beskyttelse av overskriften</string>
+    <string name="message_action">* %1$s</string>
+    <string name="message_notice_sender">-%1$s-</string>
+    <string name="message_whois_fullhost">%1$s!%2$s@%3$s - %4$s\n</string>
+    <string name="message_whois_server">Server: %1$s\n</string>
+    <string name="message_whois_away">Away: %1$s\n</string>
+    <string name="message_whois_registered">Registrert som: %1$s\n</string>
+    <string name="message_whois_channels">Kanaler: %1$s\n</string>
+    <string name="message_whois_idle">Innaktiv (idle) for: %1$d\n</string>
+    <string name="message_join_failed">Kan ikke bli med %1$s (%2$s)</string>
+
+    <string name="message_notify_online">%1$s er pålogget</string>
+    <string name="message_notify_offline">%1$s er avlogget</string>
+    <string name="message_notify_away">%1$s er borte: %2$s</string>
+    <string name="message_notify_back">%1$s er tilbake</string>
+    <string name="message_notify_added">%1$s ble lagt til din varslingsliste</string>
+    <string name="message_notify_removed">%1$s ble fjernet fra din varslingsliste</string>
+
+    <string name="action_kick_dialog_title">Årsak til kick</string>
+    <string name="action_kill_dialog_title">Årsak til kill</string>
+    <string name="action_notice_dialog_title">Send en notis</string>
+
+    <string name="settings_nickname_label">Kallenavn:</string>
+    <string name="settings_ident_label">Brukernavn:</string>
+    <string name="settings_gecos_label">Fornavn:</string>
+    <string name="settings_quit_message_label">Quit-melding:</string>
+    <string name="settings_nickserv_user_label">Nickserv brukernavn:</string>
+    <string name="settings_nickserv_password_label">Nickserv passord:</string>
+
+    <string name="title_activity_log_list">Logger</string>
+    <string name="title_activity_log_view">Vis logger</string>
+    <string name="logs_deleted">Loggen for %1$s er slettet</string>
+    <string name="no_logs_to_view">Det er ingen logger å vise</string>
+    <string name="log_action_delete">Slett</string>
+    <string name="log_action_export">Eksporter</string>
+    <string name="log_exported">Loggfilen er eksportert til %1$s</string>
+    <string name="error_exporting_logs">En feil oppstod ved eksportering av loggfil</string>
+    <string name="settings_enable_logging">Aktiver logging</string>
+    <string name="settings_load_previous_messages_on_join">Last inn tidligere meldinger ved tilkobling</string>
+    <string name="previous_session_header">Tidligere meldinger</string>
+    <string name="current_session_header">Nåværende tilkobling</string>
+
+    <string name="title_activity_list_view_edit">Endre listen</string>
+    <string name="edit_list_remove_item_confirm_title">Ta bort?</string>
+    <string name="edit_list_remove_item_confirm_text">Er du sikker på at du vil ta bort?</string>
+
+    <string name="settings_autojoin_channels_label">Auto-join kanalen</string>
+    <string name="settings_command_on_connect_label">Kjør kommando ved tilkobling</string>
+    <string name="settings_notify_list_label">Notisliste</string>
+
+    <string name="title_activity_channel_settings">Kanalinnstillinger</string>
+    <string name="title_activity_rules">Regler</string>
+    <string name="view_rules_dialog_title">Vis reglene?</string>
+    <string name="view_rules_dialog_message">Før du starter, vil du lese ScoutLink sine regler? (Du kan se disse når som helst ved å klikke på "Regler" i menyen)</string>
+
+    <string name="channel_settings_external_messages">Blokker eksterne meldinger</string>
+    <string name="channel_settings_topic_protection">Aktiver beskyttelse av overskrift</string>
+    <string name="channel_settings_private">Privat</string>
+    <string name="channel_settings_secret">Hemmeling</string>
+    <string name="channel_settings_invite_only">Kun invitasjon</string>
+    <string name="channel_settings_moderated">Moderert</string>
+    <string name="channel_settings_limit">Brukergrense</string>
+    <string name="channel_limit_set">Sett</string>
+    <string name="channel_limit_remove">Ta bort</string>
+    <string name="channel_key_set">Sett</string>
+    <string name="channel_key_remove">Ta bort</string>
+    <string name="channel_settings_key">Passord</string>
+    <string name="channel_settings_topic_change">Endre</string>
+    <string name="channel_settings_need_op">Du må være en operatør for å kunne endre kanalens innstilinger</string>
+    <string name="channel_settings_not_channel">Du må være i kanalen for å kunne endre kanalens innstillinger</string>
+
+
+    <string name="default_quit_message">ScoutLink for Android!</string>
+    <string name="nick_already_in_use">Brukernavnet er allerede i bruk. Velg et annet og prøv igjen.</string>
+
+    <string name="notification_new_mentions">Du har blitt nevnt %1$d ganger i %2$s.</string>
+    <string name="notification_new_mentions_multi">Du har blitt nevnt %1$d ganger i %2$d samtaler.</string>
+    <string name="notification_new_messages_inbox_title">Nye meldinger på ScoutLink</string>
+    <string name="notification_new_messages">%1$d nye meldinger i %2$d samtaler.</string>
+    <string name="notification_new_messages_multi">%1$s/%2$s: %3$s</string>
+    <string name="notification_connected">Tilkoblet som %1$s.</string>
+    <string name="notification_new_multi">%1$d nye meldinger, du er nevnt %2$d ganger.</string>
+
+    <string name="notice_hint">Skriv din melding</string>
+    <string name="settings_topic_hint">Kanalens overskrift</string>
+
+    <string name="edit_list_add_button">Legg til</string>
+    <string name="edit_list_save_button">Lagre</string>
+
+    <string name="yes">Ja</string>
+    <string name="no">Nei</string>
+
+    <string name="connect_failed">Tilkobling feilet. Vennligst prøv igjen</string>
+
+    <!-- Default settings values -->
+    <!-- Default ident to use if the user does not set one, this will show in the users hostmask (nick!ident@host) -->
+    <string name="default_ident" translatable="false">SLAndroid</string>
+    <!-- Default Real Name to use if the user does not set one, this will show in WHOIS -->
+    <string name="default_gecos">ScoutLink IRC for Android!</string>
+
+    <string name="failed_to_load_user_list">Klarte ikke å laste inn brukerliste</string>
+
+    <!-- Core App Settings, probably don't need localising. -->
+    <string name="server_window_title" translatable="false">ScoutLink</string>
+    <string name="channel_name_prefix" translatable="false">#</string>
+
+    <string name="server_address" translatable="false">chat.scoutlink.net</string>
+</resources>
