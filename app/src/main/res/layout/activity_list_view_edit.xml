@@ -1,43 +1,39 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:layout_height="match_parent"
+    android:padding="@dimen/activity_horizontal_margin"
     tools:context="uk.org.mattford.scoutlink.activity.ListEditActivity">
 
     <ListView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@android:id/list"
-        ></ListView>
-    <!--<TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@android:id/empty"
-        android:text="No items in list."/>
--->
+        android:id="@android:id/list" />
+
     <LinearLayout
         android:layout_below="@android:id/list"
         android:id="@+id/new_item_controls"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:orientation="horizontal">
-    <EditText
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:id="@+id/new_item"
-        android:layout_weight="1"
-        android:inputType="text"
-        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:text=""
+            android:id="@+id/first_char" />
 
-        </EditText>
-    <Button
-        android:layout_height="match_parent"
-        android:layout_width="wrap_content"
-        android:text="@string/edit_list_add_button"
-        android:onClick="onNewItemButtonClick"
-        ></Button>
+        <EditText
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/new_item"
+            android:layout_weight="1"
+            android:inputType="text" />
+
+        <Button
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="@string/edit_list_add_button"
+            android:onClick="onNewItemButtonClick" />
 
     </LinearLayout>
     <Button

@@ -15,13 +15,12 @@ public class JoinActivity extends Activity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 		binding = ActivityJoinBinding.inflate(getLayoutInflater());
 		setContentView(binding.getRoot());
-        binding.channel.setSelection(1);
 		binding.joinButton.setOnClickListener(this);
 	}
 
 	@Override
 	public void onClick(View v) {
-		String channel = binding.channel.getText().toString();
+		String channel = "#" + binding.channel.getText().toString();
 		Intent intent = new Intent();
 		intent.putExtra("target", channel);
 		setResult(RESULT_OK, intent);
