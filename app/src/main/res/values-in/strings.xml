@@ -6,204 +6,204 @@
     <!-- Text displayed if the nickname field in main screen is blank -->
     <string name="nickname_hint">Nickname</string>
     <!-- Message displayed if the nickname is not valid. -->
-    <string name="nickname_not_valid">Nick anda tidak valid, Mohon masukan Nick yang berbeda dan coba kembali</string>
+    <string name="nickname_not_valid">Nickname tidak valid, silakan coba lagi dengan nick berbeda</string>
     <!-- Text on the "Connect" button on the main screen -->
-    <string name="connect_button">Chat</string>
+    <string name="connect_button">Mulai mengobrol</string>
     <!-- Message to say connection is in progress -->
-    <string name="connect_message">Menghubungkan ke ScoutLink&#8230;</string>
+    <string name="connect_message">Menyambungkan ke ScoutLink&#8230;</string>
     <string name="logo_content_description">ScoutLink logo</string>
     <string name="sl_header_content_description">Header image</string>
-    <string name="channel_list_on_connect">Tampilkan daftar kanal setelah terhubung</string>
-    <string name="not_connected">Not connected</string>
+    <string name="channel_list_on_connect">Menunjukkan daftar saluran setelah terhubung</string>
+    <string name="not_connected">Tidak tersambung</string>
     <!-- Menu Items -->
     <!-- Opens Application Settings, e.g., nick, ident, realname, quit message -->
-    <string name="action_settings">Settings</string>
+    <string name="action_settings">Pengaturan</string>
     <!-- Leaves the current channel or closes PM window, fails in server window, see `close_server_window` string. -->
     <string name="action_close">Tutup</string>
-    <string name="action_rules">Peraturan</string>
-    <!-- Terputus dari ScoutLink -->
-    <string name="action_disconnect">Terputus</string>
+    <string name="action_rules">Aturan</string>
+    <!-- Disconnects from ScoutLink -->
+    <string name="action_disconnect">Putuskan</string>
     <!-- Shows users on the current channel, fails if not in a channel - see `userlist_not_on_channel` string. -->
-    <string name="action_users">Daftar Pengguna</string>
+    <string name="action_users">Daftar pengguna</string>
     <!-- Opens an interface to join a new channel -->
-    <string name="action_join">Bergabung ke Kanal</string>
+    <string name="action_join">Bergabung ke saluran</string>
     <!-- Displays a list of all available channels -->
-    <string name="action_channel_list">Daftar Kanal</string>
+    <string name="action_channel_list">Daftar saluran</string>
     <!-- Displays a window where channel settings such as topic, and common modes can be changed -->
-    <string name="action_channel_settings">Pengaturan Kanal</string>
+    <string name="action_channel_settings">Pengaturan Saluran</string>
 
     <!-- Text displayed on the "Send" button in a channel -->
     <string name="label_send_message_button">Kirim</string>
     <!-- Text shown when no text has been typed into the new message box on a channel. -->
-    <string name="send_message_hint">Ketik untuk mengirimkan pesan</string>
+    <string name="send_message_hint">Ketik sebuah pesan</string>
 
     <!-- Displayed when no messages have been sent to a channel yet (very rarely seen as channels almost immediately display topic info when joined) -->
-    <string name="message_list_no_messages">Tidak ada pesan, ketik dibawah untuk memulai percakapan!</string>
+    <string name="message_list_no_messages">Tidak ada pesan, ketik di bawah untuk memulai!</string>
     <!-- Displayed if the user tries to close the Server Window -->
-    <string name="close_server_window">Anda tidak bisa menutup jendela server!</string>
+    <string name="close_server_window">Kamu tidak dapat menutup jendela peladen!</string>
     <!-- Displayed if the user tries to open the user list on a non-channel conversation -->
-    <string name="userlist_not_on_channel">Fungsi ini hanya berlaku di kanal utama</string>
+    <string name="userlist_not_on_channel">Fungsi ini hanya dapat bekerja di saluran</string>
     <!-- Displayed if the user tries to send a non-command message to the server window -->
-    <string name="send_message_in_server_window">Anda tidak bisa mengirimkan pesan ke jendela server.</string>
+    <string name="send_message_in_server_window">Kamu tidak dapat mengirim pesan ke jendela peladen.</string>
 
     <!-- Displayed on the Join button in JoinActivity (opened when "action_join" is selected -->
-    <string name="join_button">Gabung</string>
+    <string name="join_button">Bergabung</string>
     <!-- Title of the Join Activity -->
-    <string name="join_activity_label">Gabung ke kanal</string>
+    <string name="join_activity_label">Gabung ke Saluran</string>
 
-    <string name="title_activity_channel_list">Daftar Kanal</string>
+    <string name="title_activity_channel_list">Daftar Saluran</string>
     <string name="userlist_activity_label">Daftar Pengguna</string>
     <string name="action_userlist_query_label">Pesan Pribadi</string>
-    <string name="action_userlist_notice_label">Notis</string>
-    <string name="action_userlist_kill_label">Kill</string>
-    <string name="action_userlist_kick_label">Kick</string>
-    <string name="action_userlist_op">Op</string>
-    <string name="action_userlist_deop">Deop</string>
-    <string name="action_userlist_hop">Half-Op</string>
-    <string name="action_userlist_dehop">DeHalf-Op</string>
-    <string name="action_userlist_owner">Owner</string>
-    <string name="action_userlist_deowner">De-Owner</string>
-    <string name="action_userlist_admin">Admin</string>
-    <string name="action_userlist_deadmin">De-Admin</string>
-    <string name="action_userlist_voice">Voice</string>
-    <string name="action_userlist_devoice">Devoice</string>
+    <string name="action_userlist_notice_label">Perhatian</string>
+    <string name="action_userlist_kill_label">Bunuh</string>
+    <string name="action_userlist_kick_label">Tendang</string>
+    <string name="action_userlist_op">Jadikan Op</string>
+    <string name="action_userlist_deop">Lepas Op</string>
+    <string name="action_userlist_hop">Jadikan Paruh-Op</string>
+    <string name="action_userlist_dehop">Lepas Paruh-Op</string>
+    <string name="action_userlist_owner">Jadikan Pemilik</string>
+    <string name="action_userlist_deowner">Lepas Pemilik</string>
+    <string name="action_userlist_admin">Jadikan Admin</string>
+    <string name="action_userlist_deadmin">Lepas Admin</string>
+    <string name="action_userlist_voice">Beri Hak Suara</string>
+    <string name="action_userlist_devoice">Lepas Hak Suara</string>
 
-    <string name="title_activity_notice">Kirim Notis</string>
+    <string name="title_activity_notice">Kirim pesan</string>
     <string name="send_notice_button">Kirim</string>
 
-    <string name="activity_invite_title">Diundang ke Kanal</string>
-    <string name="invited_to_channel">Anda telah diundang ke %1$s, apakah anda ingin bergabung?</string>
+    <string name="activity_invite_title">Terundang ke Saluran</string>
+    <string name="invited_to_channel">Kamu telah diundang ke %1$s, minat bergabung?</string>
 
-    <string name="message_halfopevent">%1$s memberikan status halfop ke %2$s</string>
-    <string name="message_dehalfopevent">%1$s mengambil status halfop dari %2$s</string>
-    <string name="message_opevent">%1$s memberikan status op ke %2$s</string>
-    <string name="message_deopevent">%1$s mengambil status op dari %2$s</string>
-    <string name="message_superopevent">%1$s memberikan status admin ke %2$s</string>
-    <string name="message_desuperopevent">%1$s mengambil status admin dari %2$s</string>
-    <string name="message_ownerevent">%1$s memberikan status owner ke %2$s</string>
-    <string name="message_deownerevent">%1$s mengambil status owner dari %2$s</string>
-    <string name="message_voiceevent">%1$s memberikan status voice ke %2$s</string>
-    <string name="message_devoiceevent">%1$s mengambil status voice dari %2$s</string>
+    <string name="message_halfopevent">%1$s memberi paruh-op ke %2$s</string>
+    <string name="message_dehalfopevent">%1$s melepas paruh-op dari %2$s</string>
+    <string name="message_opevent">%1$s memberi op ke %2$s</string>
+    <string name="message_deopevent">%1$s melepas op dari %2$s</string>
+    <string name="message_superopevent">%1$s memberi hak admin ke %2$s</string>
+    <string name="message_desuperopevent">%1$s mengambil hak admin dari %2$s</string>
+    <string name="message_ownerevent">%1$s memberi hak kepemilikan ke %2$s</string>
+    <string name="message_deownerevent">%1$s mengambil hak kepemilikan dari %2$s</string>
+    <string name="message_voiceevent">%1$s memberi hak suara ke %2$s</string>
+    <string name="message_devoiceevent">%1$s mengambil hak suara dari %2$s</string>
     <string name="message_join">%1$s telah bergabung %2$s</string>
-    <string name="message_kicked_self">Anda telah di-kick dari %1$s by %2$s (%3$s)</string>
-    <string name="message_kicked_other">%1$s was kicked from %2$s by %3$s (%4$s)</string>
-    <string name="message_nickchange">%1$s mengubah nicknya ke %2$s</string>
-    <string name="message_part">%1$s telah meninggalkan %2$s (%3$s)</string>
-    <string name="message_quit">%1$s telah meninggalkan ScoutLink (%2$s)</string>
+    <string name="message_kicked_self">Kamu telah dikeluarkan dari %1$s oleh %2$s (%3$s)</string>
+    <string name="message_kicked_other">%1$s telah dikeluarkan dari %2$s oleh %3$s (%4$s)</string>
+    <string name="message_nickchange">%1$s mengubah nicknya menjadi %2$s</string>
+    <string name="message_part">%1$s telah keluar dari %2$s (%3$s)</string>
+    <string name="message_quit">%1$s telah keluar dari ScoutLink (%2$s)</string>
     <string name="message_version">ScoutLink untuk Android</string>
-    <string name="message_ban_add">%1$s telah di-banned %2$s</string>
-    <string name="message_ban_remove">%1$s telah melepas banned %2$s</string>
-    <string name="message_set_private">%1$s telah mengatur kanal private</string>
-    <string name="message_unset_private">%1$s telah mengatur kanal ke public</string>
-    <string name="message_set_secret">%1$s telah mengatur kanal ke secret</string>
-    <string name="message_unset_secret">%1$s telah mengatur kanal ke visible</string>
-    <string name="message_set_key">%1$s telah mengatur kunci kanal ke to %2$s</string>
-    <string name="message_unset_key">%1$s telah mengambil kunci kanal</string>
-    <string name="message_set_limit">%1$s telah mengatur batas pengguna kanal ke %2$s</string>
-    <string name="message_unset_limit">%1$s telah mengambil batas pengguna kanal</string>
-    <string name="message_set_invite">%1$s telah mengatur kanal ke invite only</string>
-    <string name="message_unset_invite">%1$s telah mengambil pengaturan kanal dari invite only</string>
-    <string name="message_set_moderated">%1$s telah mengaktifkan mode moderasi (only voices and above can talk)</string>
-    <string name="message_unset_moderated">%1$s telah menonaktifkan mode moderasi (everyone can talk)</string>
-    <string name="message_set_no_external">%1$s telah menonaktifkan pesan dari luar</string>
-    <string name="message_unset_no_external">%1$s telah mengaktifkan pesan dari luar</string>
-    <string name="message_usermode">%1$s mengatur mode: %2$s %3$s</string>
-    <string name="message_topic">Topik kanal adalah %1$s (Di set oleh %2$s)</string>
-    <string name="message_topic_changed">%1$s telah mengganti topik kanal ke %2$s</string>
-    <string name="message_set_topicprotect">%1$s telah mengaktifkan topic protection</string>
-    <string name="message_unset_topicprotect">%1$s telah menonaktifkan topic protection</string>
+    <string name="message_ban_add">%1$s telah di-ban %2$s</string>
+    <string name="message_ban_remove">%1$s telah di-unban %2$s</string>
+    <string name="message_set_private">%1$s telah membuat saluran menjadi tertutup</string>
+    <string name="message_unset_private">%1$s telah membuat saluran menjadi terbuka</string>
+    <string name="message_set_secret">%1$s telah membuat saluran menjadi rahasia</string>
+    <string name="message_unset_secret">%1$s telah membuat saluran menjadi terlihat</string>
+    <string name="message_set_key">%1$s telah memasang kata kunci saluran menjadi %2$s</string>
+    <string name="message_unset_key">%1$s telah melepas kata kunci saluran</string>
+    <string name="message_set_limit">%1$s telah mengatur jumlah pengguna maksimal dalam saluran menjadi %2$s</string>
+    <string name="message_unset_limit">%1$s telah melepas jumlah pengguna maksimal dalam saluran</string>
+    <string name="message_set_invite">%1$s telah memubuat saluran menjadi hanya-diundang</string>
+    <string name="message_unset_invite">%1$s telah melepas mode hanya-diundang</string>
+    <string name="message_set_moderated">%1$s telah mengaktifkan moderasi (hanya pemilik hak suara atau lebih tinggi yang dapat bicara)</string>
+    <string name="message_unset_moderated">%1$s telah menonaktifkan moderasi (semua bisa bicara)</string>
+    <string name="message_set_no_external">%1$s telah melarang pesan eksternal</string>
+    <string name="message_unset_no_external">%1$s telah memberi akses pesan eksternal</string>
+    <string name="message_usermode">%1$s memasang mode: %2$s %3$s</string>
+    <string name="message_topic">Topik saluran adalah %1$s (Ditulis oleh %2$s)</string>
+    <string name="message_topic_changed">%1$s mengubah topik menjadi %2$s</string>
+    <string name="message_set_topicprotect">%1$s telah mengaktifkan perlindungan topik saluran</string>
+    <string name="message_unset_topicprotect">%1$s telah menonaktifkan topik saluran</string>
     <string name="message_action">* %1$s</string>
     <string name="message_notice_sender">-%1$s-</string>
     <string name="message_whois_fullhost">%1$s!%2$s@%3$s - %4$s\n</string>
-    <string name="message_whois_server">Server: %1$s\n</string>
-    <string name="message_whois_away">Pergi: %1$s\n</string>
+    <string name="message_whois_server">Peladen: %1$s\n</string>
+    <string name="message_whois_away">Jauh: %1$s\n</string>
     <string name="message_whois_registered">Terdaftar sebagai: %1$s\n</string>
-    <string name="message_whois_channels">Kanal: %1$s\n</string>
+    <string name="message_whois_channels">Saluran: %1$s\n</string>
     <string name="message_whois_idle">Berdiam selama: %1$d\n</string>
     <string name="message_join_failed">Tidak dapat bergabung %1$s (%2$s)</string>
 
-    <string name="message_notify_online">%1$s sedang online</string>
-    <string name="message_notify_offline">%1$s telah offline</string>
-    <string name="message_notify_away">%1$s sedang pergi: %2$s</string>
-    <string name="message_notify_back">%1$s telah kembali</string>
-    <string name="message_notify_added">%1$s Telah menambahkan ke daftar notis</string>
-    <string name="message_notify_removed">%1$s Telah dihapus dari daftar notis</string>
+    <string name="message_notify_online">%1$s sedang berada dalam jaringan</string>
+    <string name="message_notify_offline">%1$s sedang berada di luar jaringan</string>
+    <string name="message_notify_away">%1$s sedang jauh: %2$s</string>
+    <string name="message_notify_back">%1$s tidak lagi jauh</string>
+    <string name="message_notify_added">%1$s telah ditambahkan ke daftar perhatian</string>
+    <string name="message_notify_removed">%1$s telah dihapus dari daftar perhatian</string>
 
-    <string name="action_kick_dialog_title">Alasan kick</string>
-    <string name="action_kill_dialog_title">Alasan kill</string>
-    <string name="action_notice_dialog_title">Kirim sebuah notis</string>
+    <string name="action_kick_dialog_title">alasan untuk mengeluarkan</string>
+    <string name="action_kill_dialog_title">alasan untuk membunuh</string>
+    <string name="action_notice_dialog_title">Kirim pesan perhatian</string>
 
     <string name="settings_nickname_label">Nickname:</string>
-    <string name="settings_ident_label">Username:</string>
+    <string name="settings_ident_label">Nama Pengguna:</string>
     <string name="settings_gecos_label">Nama Asli:</string>
     <string name="settings_quit_message_label">Pesan Keluar:</string>
-    <string name="settings_nickserv_user_label">Nickserv Username:</string>
-    <string name="settings_nickserv_password_label">Nickserv Password:</string>
+    <string name="settings_nickserv_user_label">Nama Nickserv:</string>
+    <string name="settings_nickserv_password_label">Kata Sandi Nickserv:</string>
 
-    <string name="title_activity_log_list">Logs</string>
-    <string name="title_activity_log_view">Melihat catatan</string>
+    <string name="title_activity_log_list">Catatan</string>
+    <string name="title_activity_log_view">Lihat Catatan</string>
     <string name="logs_deleted">Catatan untuk %1$s telah dihapus</string>
     <string name="no_logs_to_view">Tidak ada catatan untuk dilihat</string>
     <string name="log_action_delete">Hapus</string>
     <string name="log_action_export">Ekspor</string>
-    <string name="log_exported">File Catatan telah di ekspor ke %1$s</string>
-    <string name="error_exporting_logs">Terjadi kesalahan ketika mengekspor file</string>
-    <string name="settings_enable_logging">Aktifkan Catatan</string>
-    <string name="settings_load_previous_messages_on_join">Tampilkan pesan sebelumnya ketika bergabung</string>
+    <string name="log_exported">File catatan telah diekspor ke %1$s</string>
+    <string name="error_exporting_logs">Kesalahan saat ekspor file</string>
+    <string name="settings_enable_logging">Nyalakan pencatatan</string>
+    <string name="settings_load_previous_messages_on_join">muat pesan terakhir saat bergabung</string>
     <string name="previous_session_header">Pesan sebelumnya</string>
-    <string name="current_session_header">Sesi yang sedang aktif</string>
+    <string name="current_session_header">Sesi berjalan</string>
 
-    <string name="title_activity_list_view_edit">Edit Daftar</string>
-    <string name="edit_list_remove_item_confirm_title">Menghapus Item?</string>
-    <string name="edit_list_remove_item_confirm_text">Apakah anda serius ingin menghapus item ini?</string>
+    <string name="title_activity_list_view_edit">Sunting Daftar</string>
+    <string name="edit_list_remove_item_confirm_title">Hapus Item?</string>
+    <string name="edit_list_remove_item_confirm_text">Anda yakin untuk menghapus item ini?</string>
 
-    <string name="settings_autojoin_channels_label">Auto-gabung kanal</string>
-    <string name="settings_command_on_connect_label">Jalankan perintah saat terhubung</string>
-    <string name="settings_notify_list_label">Daftar Notis</string>
+    <string name="settings_autojoin_channels_label">Gabung Otomatis ke Saluran</string>
+    <string name="settings_command_on_connect_label">Jalankan Perintah Saat Menyambung</string>
+    <string name="settings_notify_list_label">Daftar Perhatian</string>
 
-    <string name="title_activity_channel_settings">Pengaturan Kanal</string>
-    <string name="title_activity_rules">Peraturan</string>
-    <string name="view_rules_dialog_title">Lihat Peraturan?</string>
-    <string name="view_rules_dialog_message">Sebelum anda memulai, apakah anda mau membaca peraturan ScoutLink? (Anda bisa membacanya kapanpun dengan mengklik opsi "Peraturan" dari menu)</string>
+    <string name="title_activity_channel_settings">Pengaturan Saluran</string>
+    <string name="title_activity_rules">Aturan</string>
+    <string name="view_rules_dialog_title">Lihat Aturan?</string>
+    <string name="view_rules_dialog_message">Sebelum Anda mulai, maukah Anda untuk membaca Aturan Scoutlink? (Anda dapat melihat ini kapanpun dengan klik "Aturan" dari menu)</string>
 
-    <string name="channel_settings_external_messages">Blokir pesan dari luar</string>
-    <string name="channel_settings_topic_protection">Aktifkan topic protection</string>
-    <string name="channel_settings_private">Private</string>
-    <string name="channel_settings_secret">Secret</string>
-    <string name="channel_settings_invite_only">Invite only</string>
-    <string name="channel_settings_moderated">Moderated</string>
-    <string name="channel_settings_limit">Batas pengguna</string>
-    <string name="channel_limit_set">Set</string>
-    <string name="channel_limit_remove">Lepas</string>
-    <string name="channel_key_set">Set</string>
-    <string name="channel_key_remove">Lepas</string>
-    <string name="channel_settings_key">Password</string>
+    <string name="channel_settings_external_messages">Hadang pesan eksternal</string>
+    <string name="channel_settings_topic_protection">Aktifkan perlindungan topik</string>
+    <string name="channel_settings_private">Privat</string>
+    <string name="channel_settings_secret">Rahasia</string>
+    <string name="channel_settings_invite_only">Hanya Undangan</string>
+    <string name="channel_settings_moderated">Termoderasi</string>
+    <string name="channel_settings_limit">Limit Pengguna</string>
+    <string name="channel_limit_set">Atur</string>
+    <string name="channel_limit_remove">Hapus</string>
+    <string name="channel_key_set">Atur</string>
+    <string name="channel_key_remove">Hapus</string>
+    <string name="channel_settings_key">Kata Sandi</string>
     <string name="channel_settings_topic_change">Ubah</string>
-    <string name="channel_settings_need_op">Anda harus bersatus op untuk mengubah pengaturan kanal</string>
-    <string name="channel_settings_not_channel">Anda hanya bisa mengubah pengaturan di kanal</string>
+    <string name="channel_settings_need_op">Anda harus menjadi op untuk mengubah pengaturan saluran</string>
+    <string name="channel_settings_not_channel">Anda hanya dapat mengubah pengaturan di saluran</string>
 
 
-    <string name="default_quit_message">ScoutLink untuk Android!</string>
-    <string name="nick_already_in_use">Nickname Ini telah digunakan, mohon untuk memilih Nick lain dan coba kembali.</string>
+    <string name="default_quit_message">ScoutLink di Android!</string>
+    <string name="nick_already_in_use">Nickname ini telah digunakan, silakan pilih nickname lain dan coba lagi.</string>
 
     <string name="notification_new_mentions">%1$d penyebutan baru di %2$s.</string>
-    <string name="notification_new_mentions_multi">%1$d penyebutan baru pada percakapan di %2$d </string>
+    <string name="notification_new_mentions_multi">%1$d penyebutan baru dari percakapan %2$d.</string>
     <string name="notification_new_messages_inbox_title">Pesan baru di ScoutLink</string>
-    <string name="notification_new_messages">%1$d Pesan baru pada percakapan di %2$d</string>
+    <string name="notification_new_messages">%1$d pesan baru dari percakapan %2$d.</string>
     <string name="notification_new_messages_multi">%1$s/%2$s: %3$s</string>
-    <string name="notification_connected">Terhubung senagai %1$s.</string>
+    <string name="notification_connected">Tersambung sebagai %1$s.</string>
     <string name="notification_new_multi">%1$d pesan baru, %2$d penyebutan baru.</string>
 
-    <string name="notice_hint">Masukan pesan anda</string>
-    <string name="settings_topic_hint">Topik Kanal</string>
+    <string name="notice_hint">Masukkan pesanmu</string>
+    <string name="settings_topic_hint">Topik Saluran</string>
 
-    <string name="edit_list_add_button">Tambahkan</string>
+    <string name="edit_list_add_button">Tambah</string>
     <string name="edit_list_save_button">Simpan</string>
 
     <string name="yes">Ya</string>
     <string name="no">Tidak</string>
 
-    <string name="connect_failed">Koneksi gagal, mohon coba kembali</string>
+    <string name="connect_failed">Sambungan gagal, coba lagi</string>
 
     <!-- Default settings values -->
     <!-- Default ident to use if the user does not set one, this will show in the users hostmask (nick!ident@host) -->
@@ -211,7 +211,7 @@
     <!-- Default Real Name to use if the user does not set one, this will show in WHOIS -->
     <string name="default_gecos">ScoutLink IRC untuk Android!</string>
 
-    <string name="failed_to_load_user_list">Gagal menampilkan daftar pengguna</string>
+    <string name="failed_to_load_user_list">Gagal memuat daftar</string>
 
     <!-- Core App Settings, probably don't need localising. -->
     <string name="server_window_title" translatable="false">ScoutLink</string>
