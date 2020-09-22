@@ -129,8 +129,8 @@
     <string name="message_notify_added">%1$s telah ditambahkan ke daftar perhatian</string>
     <string name="message_notify_removed">%1$s telah dihapus dari daftar perhatian</string>
 
-    <string name="action_kick_dialog_title">alasan untuk mengeluarkan</string>
-    <string name="action_kill_dialog_title">alasan untuk membunuh</string>
+    <string name="action_kick_dialog_title">Alasan untuk mengeluarkan</string>
+    <string name="action_kill_dialog_title">Alasan untuk membunuh</string>
     <string name="action_notice_dialog_title">Kirim pesan perhatian</string>
 
     <string name="settings_nickname_label">Nickname:</string>
