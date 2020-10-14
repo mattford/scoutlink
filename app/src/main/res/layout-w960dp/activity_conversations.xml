@@ -82,7 +82,7 @@
                 android:paddingEnd="5dp"
                 android:orientation="horizontal"
                 android:layout_gravity="center">
-                <EditText
+                <uk.org.mattford.scoutlink.views.NickCompletionTextView
                     android:id="@+id/input"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"

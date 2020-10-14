@@ -7,7 +7,6 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.room.Room;
-import uk.org.mattford.scoutlink.BuildConfig;
 import uk.org.mattford.scoutlink.R;
 import uk.org.mattford.scoutlink.ScoutlinkApplication;
 import uk.org.mattford.scoutlink.command.CommandParser;
@@ -33,14 +32,18 @@ import android.os.Handler;
 import androidx.appcompat.app.AppCompatActivity;
 import uk.org.mattford.scoutlink.viewmodel.ConnectionStatusViewModel;
 import uk.org.mattford.scoutlink.viewmodel.ConversationListViewModel;
+import uk.org.mattford.scoutlink.views.NickCompletionTextView;
 
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import org.pircbotx.User;
 
 public class ConversationsActivity extends AppCompatActivity implements ConversationListFragment.OnJoinChannelButtonClickListener {
     private ActivityConversationsBinding binding;
@@ -93,6 +96,15 @@ public class ConversationsActivity extends AppCompatActivity implements Conversa
             if (messageListFragment != null) {
                 messageListFragment.setDataSource(activeConversation);
             }
+            activeConversation.getUsers().observe(this, users -> {
+                // I think this can be done more fluidly with .stream().map()
+                // but stuck with this unless I bump minimum API.
+                ArrayList<String> userNicks = new ArrayList<>();
+                for (User user : users) {
+                    userNicks.add(user.getNick());
+                }
+                binding.input.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, userNicks));
+            });
         });
 
         connectionStatusViewModel.getConnectionStatus().observe(this, connectionStatus -> {
@@ -117,7 +129,7 @@ public class ConversationsActivity extends AppCompatActivity implements Conversa
 		intentFilter.addAction(Broadcast.CONNECTED);
         registerReceiver(this.receiver, intentFilter);
 
-        EditText newMessage = binding.input;
+        NickCompletionTextView newMessage = binding.input;
         newMessage.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_NULL && event.getAction() == KeyEvent.ACTION_DOWN) {
                 onSendButtonClick(v);
