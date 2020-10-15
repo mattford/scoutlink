@@ -37,22 +37,14 @@ public class ListEditActivity extends ListActivity {
 
         if (callingIntent.getStringExtra("firstChar") != null) {
             firstChar = callingIntent.getStringExtra("firstChar");
+            TextView tv = binding.firstChar;
+            tv.setText(firstChar);
+            tv.setVisibility(View.VISIBLE);
         }
         if (callingIntent.getStringExtra("title") != null) {
             title = callingIntent.getStringExtra("title");
         }
         setTitle(title);
-        EditText et = binding.newItem;
-        et.setText(firstChar);
-        et.setSelection(et.getText().length());
-    }
-
-    public void onPause() {
-        super.onPause();
-        Intent intent = new Intent();
-        intent.putStringArrayListExtra("items", items);
-        setResult(RESULT_OK, intent);
-        finish();
     }
 
     public void onFinishClick(View v) {
@@ -66,12 +58,11 @@ public class ListEditActivity extends ListActivity {
 
     public void onNewItemButtonClick(View v) {
         EditText et = binding.newItem;
-        String newItem = et.getText().toString();
+        String newItem = firstChar + et.getText().toString();
         items.add(newItem);
         newItems.add(newItem);
         adapter.notifyDataSetChanged();
-        et.setText(firstChar);
-        et.setSelection(et.getText().length());
+        et.setText("");
     }
 
     public void onItemClick(View v) {
