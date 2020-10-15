@@ -23,6 +23,10 @@
     <style name="Dialog" parent="Dialog.Base">
 
     </style>
+    <style name="DialogNoActionBar" parent="Dialog.Base">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
 
     <!--
         Base application theme, dependent on API level. This theme is replaced

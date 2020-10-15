@@ -39,7 +39,7 @@
         <activity
             android:name=".activity.ChannelListActivity"
             android:label="@string/title_activity_channel_list"
-            android:theme="@style/Dialog">
+            android:theme="@style/DialogNoActionBar">
         </activity>
         <activity
             android:name=".activity.ListEditActivity"

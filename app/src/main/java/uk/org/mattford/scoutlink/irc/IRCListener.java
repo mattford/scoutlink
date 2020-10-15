@@ -1,12 +1,7 @@
 package uk.org.mattford.scoutlink.irc;
 
 import android.content.Intent;
-import android.graphics.Typeface;
-import android.text.SpannableString;
-import android.text.style.StyleSpan;
-import android.util.Log;
 
-import org.pircbotx.ChannelListEntry;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.pircbotx.hooks.ListenerAdapter;
@@ -19,7 +14,6 @@ import org.pircbotx.hooks.events.InviteEvent;
 import org.pircbotx.hooks.events.JoinEvent;
 import org.pircbotx.hooks.events.KickEvent;
 import org.pircbotx.hooks.events.MessageEvent;
-import org.pircbotx.hooks.events.ModeEvent;
 import org.pircbotx.hooks.events.MotdEvent;
 import org.pircbotx.hooks.events.NickAlreadyInUseEvent;
 import org.pircbotx.hooks.events.NickChangeEvent;
@@ -706,14 +700,9 @@ public class IRCListener extends ListenerAdapter {
 
     @SuppressWarnings("unchecked")
     public void onChannelInfo(ChannelInfoEvent event) {
-        Intent intent;
-        for (ChannelListEntry entry : event.getList()) {
-            if (!entry.getName().equals("*")) {
-                intent = new Intent(Broadcast.CHANNEL_LIST_INFO);
-                intent.putExtra("value", entry.getName());
-                service.sendBroadcast(intent);
-            }
-        }
+        server.setChannelList(new ArrayList<>(event.getList()));
+        Intent intent = new Intent(Broadcast.CHANNEL_LIST_INFO);
+        service.sendBroadcast(intent);
     }
 
     public void onServerPing(ServerPingEvent event) {

@@ -18,11 +18,9 @@ public class ChannelListReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        switch(intent.getAction()) {
-            case Broadcast.CHANNEL_LIST_INFO:
-                String channel = intent.getStringExtra("value");
-                activity.onChannelListInfo(channel);
-                break;
+        String action = intent.getAction();
+        if (Broadcast.CHANNEL_LIST_INFO.equals(action)) {
+            activity.onChannelListInfo();
         }
     }
 }

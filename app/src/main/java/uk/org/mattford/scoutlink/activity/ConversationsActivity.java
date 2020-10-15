@@ -214,8 +214,6 @@ public class ConversationsActivity extends AppCompatActivity implements Conversa
     public void onConnect(boolean initialConnection) {
 	    if (initialConnection && settings.getBoolean("channel_list_on_connect", false)) {
             Intent channelListIntent = new Intent(this, ChannelListActivity.class);
-            ArrayList<String> channels = server.getChannelList();
-            channelListIntent.putStringArrayListExtra("channels", channels);
             startActivityForResult(channelListIntent, JOIN_CHANNEL_RESULT);
         }
 
