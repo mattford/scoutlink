@@ -319,7 +319,12 @@ public class IRCListener extends ListenerAdapter {
     }
 
     public void onPrivateMessage(PrivateMessageEvent event) {
-        Conversation conversation = server.getConversation(event.getUserHostmask().getNick());
+        String nickname = event.getUserHostmask().getNick();
+        if (service.isUserBlocked(nickname)) {
+            // User is blocked, ignore message event completely.
+            return;
+        }
+        Conversation conversation = server.getConversation(nickname);
         if (conversation == null) {
             conversation = new Query(event.getUserHostmask().getNick());
             server.addConversation(conversation);

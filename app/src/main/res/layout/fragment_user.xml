@@ -16,6 +16,14 @@
         android:layout_height="wrap_content"
         android:textAppearance="?attr/textAppearanceListItem" />
 
+    <ImageView
+        android:id="@+id/blocked_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/blocked_icon"
+        android:contentDescription="@string/blocked_icon_description"
+        android:visibility="gone" />
+
     <TextView
         android:id="@+id/role_label"
         android:layout_width="wrap_content"

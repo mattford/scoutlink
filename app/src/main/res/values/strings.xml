@@ -205,6 +205,13 @@
 
     <string name="connect_failed">Connection failed, please try again</string>
 
+    <string name="online_users">Online users</string>
+    <string name="block_user">Block</string>
+    <string name="unblock_user">Unblock</string>
+    <string name="user_blocked">You will no longer receive private messages from %1$s.</string>
+    <string name="user_unblocked">%1$s has been unblocked.</string>
+    <string name="blocked_icon_description">Blocked</string>
+
     <!-- Default settings values -->
     <!-- Default ident to use if the user does not set one, this will show in the users hostmask (nick!ident@host) -->
     <string name="default_ident" translatable="false">SLAndroid</string>
@@ -218,5 +225,5 @@
     <string name="channel_name_prefix" translatable="false">#</string>
 
     <string name="server_address" translatable="false">chat.scoutlink.net</string>
-    <string name="online_users">Online users</string>
+
 </resources>

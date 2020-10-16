@@ -4,4 +4,8 @@
         android:orderInCategory="100" app:showAsAction="never" />
     <item android:id="@+id/action_userlist_notice" android:title="@string/action_userlist_notice_label"
         android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/action_userlist_block" android:title="@string/block_user"
+        android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/action_userlist_unblock" android:title="@string/unblock_user"
+        android:orderInCategory="100" app:showAsAction="never" />
 </menu>

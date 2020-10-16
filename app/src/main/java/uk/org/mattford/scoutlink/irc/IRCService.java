@@ -114,6 +114,11 @@ public class IRCService extends Service {
 	public boolean isForeground() {
 		return this.foreground;
 	}
+
+	public boolean isUserBlocked(String nickname) {
+	    ArrayList<String> blockedUsers = settings.getBlockedUsers();
+	    return blockedUsers.contains(nickname);
+    }
 	
 	public PircBotX getConnection() {
 		return this.server.getConnection();
