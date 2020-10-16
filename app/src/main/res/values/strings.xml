@@ -218,4 +218,5 @@
     <string name="channel_name_prefix" translatable="false">#</string>
 
     <string name="server_address" translatable="false">chat.scoutlink.net</string>
+    <string name="online_users">Online users</string>
 </resources>

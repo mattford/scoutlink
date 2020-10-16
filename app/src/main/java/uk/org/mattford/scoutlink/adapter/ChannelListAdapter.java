@@ -1,5 +1,6 @@
 package uk.org.mattford.scoutlink.adapter;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,7 +34,7 @@ public class ChannelListAdapter extends RecyclerView.Adapter<ChannelListAdapter.
                 channels.add(channel);
             }
         }
-        Collections.sort(channels, (lhs, rhs) -> lhs.getName().compareTo(rhs.getName()));
+        Collections.sort(channels, (lhs, rhs) -> lhs.getName().toLowerCase().compareTo(rhs.getName().toLowerCase()));
         notifyDataSetChanged();
     }
 
@@ -44,18 +45,19 @@ public class ChannelListAdapter extends RecyclerView.Adapter<ChannelListAdapter.
         return new ChannelListAdapter.ViewHolder(view);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(final ChannelListAdapter.ViewHolder holder, int position) {
         holder.mChannel = channels.get(position);
         holder.mChannelNameView.setText(holder.mChannel.getName());
-        Pattern topicPattern = Pattern.compile("\\[[+a-zA-Z]*] (.*)");
+        Pattern topicPattern = Pattern.compile("\\[[^]]*] (.*)");
         Matcher topicMatcher = topicPattern.matcher(holder.mChannel.getTopic());
         if (topicMatcher.find()) {
             holder.mChannelTopicView.setText(topicMatcher.group(1));
         } else {
-            holder.mChannelTopicView.setText(holder.mChannel.getTopic());
+            holder.mChannelTopicView.setText("");
         }
-        holder.mUsersCountView.setText(holder.mChannel.getUsers() + " users online");
+        holder.mUsersCountView.setText(Integer.toString(holder.mChannel.getUsers()));
         holder.mView.setOnClickListener(view -> {
             listener.onChannelListItemClick(holder.mChannel.getName());
         });

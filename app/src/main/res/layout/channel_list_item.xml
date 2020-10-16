@@ -1,25 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="10dp"
     android:orientation="vertical">
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:id="@+id/channel_name"
         android:layout_height="wrap_content"
-        android:textStyle="bold" />
+        >
+        <TextView
+            android:layout_width="0dp"
+            android:id="@+id/channel_name"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:layout_weight="1" />
 
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_people"
+            android:contentDescription="@string/online_users"
+            app:tint="@color/light_grey"
+            android:layout_marginEnd="1dp"
+            android:layout_marginRight="1dp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/channel_user_count"
+            android:layout_gravity="end" />
+    </LinearLayout>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/channel_topic" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/channel_user_count" />
-
 </LinearLayout>
