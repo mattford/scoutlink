@@ -4,6 +4,7 @@ import java.text.DateFormat;
 import java.util.LinkedList;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import uk.org.mattford.scoutlink.R;
 import uk.org.mattford.scoutlink.model.Message;
@@ -22,7 +23,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.ViewHolder> {
-    private LinkedList<Message> messages;
+    private final LinkedList<Message> messages;
 
     public MessageListAdapter(LinkedList<Message> messages) {
         this.messages = messages;
@@ -90,11 +91,13 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
             100,
             context.getResources().getDisplayMetrics()
         );
-        Drawable background = context.getResources().getDrawable(R.drawable.rounded_corners);
+        Drawable background = ResourcesCompat.getDrawable(context.getResources(), R.drawable.rounded_corners, context.getTheme());
         LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams)holder.mMessageContainer.getLayoutParams();
         if (message.isSenderType(Message.SENDER_TYPE_SELF)) {
             holder.mMessageContainer.setGravity(Gravity.END);
-            background.setColorFilter(context.getResources().getColor(R.color.outgoing_message_background), PorterDuff.Mode.SRC_IN);
+            if (background != null) {
+                background.setColorFilter(context.getResources().getColor(R.color.outgoing_message_background), PorterDuff.Mode.SRC_IN);
+            }
         }
         layoutParams.leftMargin = message.isSenderType(Message.SENDER_TYPE_SELF) ? marginPx : defaultMarginPx;
         layoutParams.rightMargin = message.isSenderType(Message.SENDER_TYPE_OTHER) ? marginPx : defaultMarginPx;
