@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
+import org.pircbotx.hooks.managers.SequentialListenerManager;
 
 import androidx.annotation.Nullable;
 import uk.org.mattford.scoutlink.R;
@@ -139,8 +140,15 @@ public class IRCService extends Service {
             .setName(settings.getString("nickname"))
             .setLogin(settings.getString("ident", getString(R.string.default_ident)))
             .setServers(servers)
-            .setRealName(settings.getString("gecos", getString(R.string.default_gecos)))
-            .addListener(listener);
+            .setRealName(settings.getString("gecos", getString(R.string.default_gecos)));
+
+        // If we have a version of Android prior to O, the ThreadedListenerManager will
+        // crash, as it uses Java8 APIs which Android < O doesn't support currently.
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            config.setListenerManager(SequentialListenerManager.newDefault());
+        }
+
+        config.addListener(listener);
 
         String[] channels = settings.getStringArray("autojoin_channels");
         if (channels.length > 1 || !channels[0].equals("")) {

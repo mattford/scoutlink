@@ -25,8 +25,9 @@ android {
         exclude 'META-INF/ASL2.0'
     }
     compileOptions {
-        sourceCompatibility 1.8
-        targetCompatibility 1.8
+        coreLibraryDesugaringEnabled true
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
     productFlavors {
     }
@@ -39,8 +40,8 @@ dependencies {
     implementation 'org.slf4j:slf4j-android:1.7.30'
     implementation 'org.pircbotx:pircbotx:2.3-SNAPSHOT'
     implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation 'com.google.firebase:firebase-analytics:17.5.0'
-    implementation 'com.google.firebase:firebase-crashlytics:17.2.1'
+    implementation 'com.google.firebase:firebase-analytics:17.6.0'
+    implementation 'com.google.firebase:firebase-crashlytics:17.2.2'
     implementation 'com.google.android.material:material:1.2.1'
 
     implementation "androidx.room:room-runtime:2.2.5"
@@ -51,4 +52,5 @@ dependencies {
     annotationProcessor "androidx.room:room-compiler:2.2.5"
 
     implementation 'androidx.multidex:multidex:2.0.1'
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.0.10'
 }
