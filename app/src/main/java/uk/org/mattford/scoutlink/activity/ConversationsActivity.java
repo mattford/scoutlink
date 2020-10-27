@@ -2,6 +2,7 @@ package uk.org.mattford.scoutlink.activity;
 
 import java.util.ArrayList;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -246,7 +247,7 @@ public class ConversationsActivity extends AppCompatActivity implements Conversa
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         ConversationListViewModel viewModel = new ViewModelProvider(this).get(ConversationListViewModel.class);
@@ -256,64 +257,53 @@ public class ConversationsActivity extends AppCompatActivity implements Conversa
         }
         int id = item.getItemId();
         Intent intent;
-        switch(id) {
-            case R.id.action_close:
-                switch (conversation.getType()) {
-                    case Conversation.TYPE_CHANNEL:
-                        backgroundHandler.post(() -> conversation.getChannel().send().part());
-                        break;
-                    case Conversation.TYPE_QUERY:
-                        server.removeConversation(conversation.getName());
-                        break;
-                    default:
-                        Toast.makeText(this, getResources().getString(R.string.close_server_window), Toast.LENGTH_SHORT).show();
-                        break;
-                }
-                break;
-            case R.id.action_disconnect:
-                backgroundHandler.post(() -> server.getConnection().sendIRC().quitServer(settings.getString("quit_message", getString(R.string.default_quit_message))));
-                break;
-            case android.R.id.home:
+        if (id == R.id.action_close) {
+            switch (conversation.getType()) {
+                case Conversation.TYPE_CHANNEL:
+                    backgroundHandler.post(() -> conversation.getChannel().send().part());
+                    break;
+                case Conversation.TYPE_QUERY:
+                    server.removeConversation(conversation.getName());
+                    break;
+                default:
+                    Toast.makeText(this, getResources().getString(R.string.close_server_window), Toast.LENGTH_SHORT).show();
+                    break;
+            }
+        } else if (id == R.id.action_disconnect) {
+            backgroundHandler.post(() -> server.getConnection().sendIRC().quitServer(settings.getString("quit_message", getString(R.string.default_quit_message))));
+        } else if (id == android.R.id.home) {
+            if (hasDrawerLayout && binding.conversationsDrawerContainer != null) {
+                binding.conversationsDrawerContainer.openDrawer(GravityCompat.START);
+            }
+        } else if (id == R.id.action_userlist) {
+            if (conversation.getType() == Conversation.TYPE_CHANNEL) {
                 if (hasDrawerLayout && binding.conversationsDrawerContainer != null) {
-                    binding.conversationsDrawerContainer.openDrawer(GravityCompat.START);
+                    binding.conversationsDrawerContainer.openDrawer(GravityCompat.END);
                 }
-                break;
-            case R.id.action_userlist:
-                if (conversation.getType() == Conversation.TYPE_CHANNEL) {
-                    if (hasDrawerLayout && binding.conversationsDrawerContainer != null) {
-                        binding.conversationsDrawerContainer.openDrawer(GravityCompat.END);
-                    }
-                } else {
-                    Toast.makeText(this, getResources().getString(R.string.userlist_not_on_channel), Toast.LENGTH_SHORT).show();
-                }
-                break;
-            case R.id.action_join:
-                intent = new Intent(this, JoinActivity.class);
-                startActivityForResult(intent, JOIN_CHANNEL_RESULT);
-                break;
-            case R.id.action_channel_list:
-                onJoinChannelClick();
-                break;
-            case R.id.action_channel_settings:
-                if (conversation.getType() != Conversation.TYPE_CHANNEL) {
-                    Toast.makeText(this, getString(R.string.channel_settings_not_channel), Toast.LENGTH_SHORT).show();
-                } else if (conversation.getChannel().isOp(server.getConnection().getUserBot())) {
-                    intent = new Intent(this, ChannelSettingsActivity.class);
-                    intent.putExtra("channelName", conversation.getName());
-                    startActivity(intent);
-                } else {
-                    Toast.makeText(this, getString(R.string.channel_settings_need_op), Toast.LENGTH_SHORT).show();
-                }
-                break;
-            case R.id.action_rules:
-                intent = new Intent(this, RulesActivity.class);
+            } else {
+                Toast.makeText(this, getResources().getString(R.string.userlist_not_on_channel), Toast.LENGTH_SHORT).show();
+            }
+        } else if (id == R.id.action_join) {
+            intent = new Intent(this, JoinActivity.class);
+            startActivityForResult(intent, JOIN_CHANNEL_RESULT);
+        } else if (id == R.id.action_channel_list) {
+            onJoinChannelClick();
+        } else if (id == R.id.action_channel_settings) {
+            if (conversation.getType() != Conversation.TYPE_CHANNEL) {
+                Toast.makeText(this, getString(R.string.channel_settings_not_channel), Toast.LENGTH_SHORT).show();
+            } else if (conversation.getChannel().isOp(server.getConnection().getUserBot())) {
+                intent = new Intent(this, ChannelSettingsActivity.class);
+                intent.putExtra("channelName", conversation.getName());
                 startActivity(intent);
-                break;
-            case R.id.action_logs:
-                intent = new Intent(this, LogListActivity.class);
-                startActivity(intent);
-                break;
-
+            } else {
+                Toast.makeText(this, getString(R.string.channel_settings_need_op), Toast.LENGTH_SHORT).show();
+            }
+        } else if (id == R.id.action_rules) {
+            intent = new Intent(this, RulesActivity.class);
+            startActivity(intent);
+        } else if (id == R.id.action_logs) {
+            intent = new Intent(this, LogListActivity.class);
+            startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }

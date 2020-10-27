@@ -70,7 +70,7 @@ public class Server {
 	}
 	
 	public void removeConversation(String name) {
-		conversations.remove(name);
+		conversations.remove(name.toLowerCase());
 		onConversationListChanged();
 	}
 	
