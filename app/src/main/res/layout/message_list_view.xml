@@ -1,4 +1,5 @@
  <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+     xmlns:app="http://schemas.android.com/apk/res-auto"
      android:orientation="vertical"
      android:gravity="center"
      android:background="@color/conversation_background"
@@ -11,14 +12,15 @@
          android:layout_width="match_parent"
          android:layout_height="match_parent"
          android:visibility="gone"
-         android:drawSelectorOnTop="false"/>
+         android:drawSelectorOnTop="false"
+         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
      <TextView
          android:id="@+id/empty"
-         android:drawableTop="@drawable/ic_no_messages_yet"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
-         android:text="@string/message_list_no_messages"/>
+         android:text="@string/message_list_no_messages"
+         app:drawableTopCompat="@drawable/ic_no_messages_yet" />
 
      <ImageView
          android:id="@+id/not_at_bottom"
