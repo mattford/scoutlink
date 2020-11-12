@@ -2,6 +2,8 @@ package uk.org.mattford.scoutlink.irc;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.pircbotx.Configuration;
@@ -20,6 +22,8 @@ import uk.org.mattford.scoutlink.model.Message;
 import uk.org.mattford.scoutlink.model.Server;
 import uk.org.mattford.scoutlink.model.ServerWindow;
 import uk.org.mattford.scoutlink.model.Settings;
+import uk.org.mattford.scoutlink.utils.NotificationId;
+
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -30,17 +34,21 @@ import android.content.Intent;
 import android.os.Build;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.core.app.Person;
 
 import android.os.Handler;
 import android.os.IBinder;
+import android.util.Log;
 import android.widget.Toast;
 
 public class IRCService extends Service {
 	private Settings settings;
 	private Server server;
 
-	private final int NOTIFICATION_ID = 1;
+	private int foregroundNotificationId = 1;
+	private final HashMap<String, Integer> notificationIds = new HashMap<>();
 	private final String NOTIFICATION_CHANNEL_ID = "uk.org.mattford.scoutlink.IRCService.NOTIFICATION_CHANNEL";
+	private final String NOTIFICATION_CHANNEL_MENTIONS_ID = "uk.org.mattford.scoutlink.IRCService.NOTIFICATION_CHANNEL_MENTIONS";
 
     public static final String ACTION_ADD_NOTIFY = "uk.org.mattford.scoutlink.IRCService.ADD_NOTIFY";
     public static final String ACTION_REMOVE_NOTIFY = "uk.org.mattford.scoutlink.IRCService.REMOVE_NOTIFY";
@@ -48,7 +56,7 @@ public class IRCService extends Service {
 
 	private boolean foreground = false;
 
-	private ArrayList<Intent> queuedIntents = new ArrayList<>();
+	private final ArrayList<Intent> queuedIntents = new ArrayList<>();
 
 	public void onCreate() {
 		this.server = Server.getInstance();
@@ -105,7 +113,8 @@ public class IRCService extends Service {
 	public void setIsForeground(boolean fg) {
         if (!foreground && fg) {
             createNotificationChannel();
-            startForeground(NOTIFICATION_ID, getNotification());
+            foregroundNotificationId = NotificationId.getID();
+            startForeground(foregroundNotificationId, getNotification());
         } else {
             stopForeground(true);
         }
@@ -192,7 +201,7 @@ public class IRCService extends Service {
         if (this.isForeground()) {
             NotificationManagerCompat nm = NotificationManagerCompat.from(this);
             Notification notification = getNotification();
-            nm.notify(NOTIFICATION_ID, notification);
+            nm.notify(foregroundNotificationId, notification);
         }
     }
 	
@@ -216,10 +225,10 @@ public class IRCService extends Service {
         }
 
 		return new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
-				.setContentTitle(getString(R.string.app_name))
-				.setContentText(basicText)
+				.setContentTitle(basicText)
 				.setSmallIcon(R.drawable.notification_icon)
                 .setContentIntent(intent)
+                .setPriority(Notification.PRIORITY_LOW)
 				.build();
 	}
 
@@ -273,15 +282,18 @@ public class IRCService extends Service {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = "General";
-            String description = "Connection status and new messages";
-            int importance = NotificationManager.IMPORTANCE_LOW;
-            NotificationChannel channel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, name, importance);
-            channel.setDescription(description);
+            NotificationChannel channel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, "General", NotificationManager.IMPORTANCE_LOW);
+            channel.setDescription("Connection information");
             // Register the channel with the system; you can't change the importance
             // or other notification behaviors after this
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
+
+            NotificationChannel mentionChannel = new NotificationChannel(NOTIFICATION_CHANNEL_MENTIONS_ID, "New messages and mentions", NotificationManager.IMPORTANCE_HIGH);
+            mentionChannel.setDescription("Used to send notifications when someone mentions your name in channel or sends a private message.");
+            mentionChannel.enableVibration(true);
+            mentionChannel.enableLights(true);
+            notificationManager.createNotificationChannel(mentionChannel);
         }
     }
 
@@ -307,6 +319,46 @@ public class IRCService extends Service {
             for (LogMessage logMessage : logMessages) {
                 conversation.addMessage(logMessage.toMessage(), false);
             }
+        }
+    }
+
+    private boolean isNotifiableMention(Conversation conversation, Message message) {
+        return !message.getSender().equalsIgnoreCase(getConnection().getNick()) &&
+                conversation.getType() != Conversation.TYPE_SERVER && (
+                conversation.getType() == Conversation.TYPE_QUERY ||
+                        message.isType(Message.TYPE_NOTICE) ||
+                        message.getText().toLowerCase().contains(getConnection().getNick().toLowerCase()));
+    }
+
+    public void maybeNotify(Conversation conversation, Message message) {
+        if (isNotifiableMention(conversation, message)) {
+            Integer notificationId;
+            if (notificationIds.containsKey(conversation.getName().toLowerCase())) {
+                notificationId = notificationIds.get(conversation.getName().toLowerCase());
+            } else {
+                notificationId = NotificationId.getID();
+                notificationIds.put(conversation.getName().toLowerCase(), notificationId);
+            }
+            Integer unreadMessagesCount = conversation.getUnreadMessagesCount().getValue();
+            LinkedList<Message> messages = conversation.getMessages().getValue();
+            NotificationCompat.MessagingStyle messagingStyle = new NotificationCompat.MessagingStyle(new Person.Builder().setName(getConnection().getNick()).build())
+                    .setConversationTitle(conversation.getName());
+            for (int i = messages.size() - unreadMessagesCount; i < messages.size(); i++) {
+                Message msg = messages.get(i);
+                if (isNotifiableMention(conversation, msg)) {
+                    Log.d("SL", "Adding: " + msg.getText());
+                    messagingStyle.addMessage(new NotificationCompat.MessagingStyle.Message(
+                            msg.getText(),
+                            msg.getTimestamp().getTime(),
+                            new Person.Builder().setName(msg.getSender()).build())
+                    );
+                }
+            }
+            Notification notification = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_MENTIONS_ID)
+                    .setSmallIcon(R.drawable.notification_icon)
+                    .setContentTitle("New messages")
+                .setStyle(messagingStyle).build();
+            NotificationManagerCompat.from(getApplicationContext()).notify(notificationId, notification);
         }
     }
 }

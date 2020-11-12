@@ -12,19 +12,19 @@ import uk.org.mattford.scoutlink.database.entities.LogMessage;
 
 public class Conversation implements Comparable<Conversation> {
 	private boolean isActive;
-	private String CONVERSATION_NAME;
+	private final String name;
 	private int type;
-	private LinkedList<Message> messages;
+	private final LinkedList<Message> messages;
 	MutableLiveData<ArrayList<User>> usersLiveData;
-	private MutableLiveData<LinkedList<Message>> messagesLiveData;
-	private MutableLiveData<Integer> unreadMessagesLiveData;
+	private final MutableLiveData<LinkedList<Message>> messagesLiveData;
+	private final MutableLiveData<Integer> unreadMessagesLiveData;
 
 	public final static int TYPE_CHANNEL = 0;
 	public final static int TYPE_QUERY = 1;
 	public final static int TYPE_SERVER = 2;
 
 	protected Conversation(String name) {
-		this.CONVERSATION_NAME = name;
+		this.name = name;
 		this.messages = new LinkedList<>();
 		this.usersLiveData = new MutableLiveData<>(new ArrayList<>());
 		this.messagesLiveData = new MutableLiveData<>(this.messages);
@@ -32,7 +32,7 @@ public class Conversation implements Comparable<Conversation> {
 	}
 	
 	public String getName() {
-		return this.CONVERSATION_NAME;
+		return this.name;
 	}
 	
 	public LiveData<LinkedList<Message>> getMessages() {

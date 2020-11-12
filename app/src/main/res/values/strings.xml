@@ -160,6 +160,7 @@
     <string name="settings_autojoin_channels_label">Autojoin Channels</string>
     <string name="settings_command_on_connect_label">Run commands on connect</string>
     <string name="settings_notify_list_label">Notify List</string>
+    <string name="settings_vibrate_on_mention">Vibrate on mention</string>
 
     <string name="title_activity_channel_settings">Channel Settings</string>
     <string name="title_activity_rules">Rules</string>

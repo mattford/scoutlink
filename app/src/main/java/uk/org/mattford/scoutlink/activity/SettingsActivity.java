@@ -37,6 +37,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         binding.settingsEnableLogging.setChecked(settings.getBoolean("logging_enabled", true));
         binding.settingsLoadPreviousMessagesOnJoin.setChecked(settings.getBoolean("load_previous_messages_on_join", true));
+        binding.settingsVibrateOnMention.setChecked(settings.getBoolean("vibrate_on_mention", true));
     }
 
     @Override
@@ -51,6 +52,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         settings.putBoolean("logging_enabled", binding.settingsEnableLogging.isChecked());
         settings.putBoolean("load_previous_messages_on_join", binding.settingsLoadPreviousMessagesOnJoin.isChecked());
+        settings.putBoolean("vibrate_on_mention", binding.settingsVibrateOnMention.isChecked());
     }
 
     public void openAutojoinSettings(View v) {

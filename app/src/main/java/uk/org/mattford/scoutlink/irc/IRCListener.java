@@ -295,7 +295,9 @@ public class IRCListener extends ListenerAdapter {
 
     public void onMessage(MessageEvent event) {
         Message message = new Message(event.getUserHostmask().getNick(), event.getMessage(), Message.SENDER_TYPE_OTHER, Message.TYPE_MESSAGE);
-        server.getConversation(event.getChannel().getName()).addMessage(message);
+        Conversation conversation = server.getConversation(event.getChannel().getName());
+        conversation.addMessage(message);
+        service.maybeNotify(conversation, message);
     }
 
     public void onAction(ActionEvent event) {
@@ -305,17 +307,20 @@ public class IRCListener extends ListenerAdapter {
             Message.SENDER_TYPE_OTHER,
             Message.TYPE_ACTION
         );
+        Conversation conversation;
         if (event.getChannel() != null) {
-            server.getConversation(event.getChannel().getName()).addMessage(msg);
+            conversation = server.getConversation(event.getChannel().getName());
+            conversation.addMessage(msg);
         } else {
             // It's a private message.
-            Conversation conversation = server.getConversation(event.getUserHostmask().getNick());
+            conversation = server.getConversation(event.getUserHostmask().getNick());
             if (conversation == null) {
                 conversation = new Query(event.getUserHostmask().getNick());
                 server.addConversation(conversation);
             }
             conversation.addMessage(msg);
         }
+        service.maybeNotify(conversation, msg);
     }
 
     public void onPrivateMessage(PrivateMessageEvent event) {
@@ -336,6 +341,7 @@ public class IRCListener extends ListenerAdapter {
             Message.TYPE_MESSAGE
         );
         conversation.addMessage(msg);
+        service.maybeNotify(conversation, msg);
     }
 
     public void onNotice(NoticeEvent event) {
@@ -356,6 +362,7 @@ public class IRCListener extends ListenerAdapter {
 
         // Add to Server Window
         server.getConversation(service.getString(R.string.server_window_title)).addMessage(message);
+        service.maybeNotify(server.getConversation(service.getString(R.string.server_window_title)), message);
     }
 
     public void onInvite(InviteEvent event) {
