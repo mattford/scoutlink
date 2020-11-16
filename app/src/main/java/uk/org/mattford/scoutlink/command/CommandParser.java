@@ -3,6 +3,8 @@ package uk.org.mattford.scoutlink.command;
 import android.content.Context;
 import android.os.Handler;
 
+import androidx.lifecycle.LifecycleOwner;
+
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -14,6 +16,8 @@ import uk.org.mattford.scoutlink.command.handler.NotifyHandler;
 import uk.org.mattford.scoutlink.command.handler.PartHandler;
 import uk.org.mattford.scoutlink.command.handler.QuitHandler;
 import uk.org.mattford.scoutlink.command.handler.UserDefinedCommandHandler;
+import uk.org.mattford.scoutlink.database.SettingsDatabase;
+import uk.org.mattford.scoutlink.database.entities.Alias;
 import uk.org.mattford.scoutlink.model.Conversation;
 import uk.org.mattford.scoutlink.model.Server;
 
@@ -24,6 +28,7 @@ public class CommandParser {
 
 	private final HashMap<String, CommandHandler> commands = new HashMap<>();
 	private final HashMap<String, String> aliases = new HashMap<>();
+	private final HashMap<String, CommandHandler> userDefinedAliases = new HashMap<>();
 	
 	private CommandParser(Context context) {
 		server = Server.getInstance();
@@ -36,14 +41,18 @@ public class CommandParser {
 		commands.put("notify", new NotifyHandler(context));
 		commands.put("msg", new MessageHandler(context));
 
-		commands.put("test", new UserDefinedCommandHandler(context, this, "/msg #test $1/$2-"));
-		commands.put("test2", new UserDefinedCommandHandler(context, this, "/msg #test # is the channel and # is where we #are #"));
-
 		aliases.put("j", "join");
 		aliases.put("p", "part");
 		aliases.put("n", "nick");
 		aliases.put("q", "quit");
 		aliases.put("disconnect", "quit");
+
+		SettingsDatabase.getInstance(context).aliasesDao().getAliases().observe((LifecycleOwner) context, dbAliases -> {
+			userDefinedAliases.clear();
+			for (Alias alias : dbAliases) {
+				userDefinedAliases.put(alias.commandName, new UserDefinedCommandHandler(context, this, alias.commandText));
+			}
+		});
 	}
 	
 	public void parse(String command, Conversation conversation, Handler backgroundHandler) {
@@ -70,6 +79,8 @@ public class CommandParser {
 			if (commands.containsKey(command)) {
 				return commands.get(command);
 			}
+		} else if (userDefinedAliases.containsKey(command)) {
+			return userDefinedAliases.get(command);
 		}
 		return null;
 	}
