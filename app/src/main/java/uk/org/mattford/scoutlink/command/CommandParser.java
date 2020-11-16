@@ -13,20 +13,19 @@ import uk.org.mattford.scoutlink.command.handler.NickHandler;
 import uk.org.mattford.scoutlink.command.handler.NotifyHandler;
 import uk.org.mattford.scoutlink.command.handler.PartHandler;
 import uk.org.mattford.scoutlink.command.handler.QuitHandler;
+import uk.org.mattford.scoutlink.command.handler.UserDefinedCommandHandler;
 import uk.org.mattford.scoutlink.model.Conversation;
 import uk.org.mattford.scoutlink.model.Server;
 
 public class CommandParser {
 	
 	private static CommandParser instance;
-	private Server server;
+	private final Server server;
 
-	private HashMap<String, CommandHandler> commands;
-	private HashMap<String, String> aliases;
+	private final HashMap<String, CommandHandler> commands = new HashMap<>();
+	private final HashMap<String, String> aliases = new HashMap<>();
 	
 	private CommandParser(Context context) {
-		commands = new HashMap<>();
-		aliases = new HashMap<>();
 		server = Server.getInstance();
 
 		commands.put("join", new JoinHandler(context));
@@ -36,7 +35,10 @@ public class CommandParser {
 		commands.put("me", new ActionHandler(context));
 		commands.put("notify", new NotifyHandler(context));
 		commands.put("msg", new MessageHandler(context));
-		
+
+		commands.put("test", new UserDefinedCommandHandler(context, this, "/msg #test $1/$2-"));
+		commands.put("test2", new UserDefinedCommandHandler(context, this, "/msg #test # is the channel and # is where we #are #"));
+
 		aliases.put("j", "join");
 		aliases.put("p", "part");
 		aliases.put("n", "nick");
