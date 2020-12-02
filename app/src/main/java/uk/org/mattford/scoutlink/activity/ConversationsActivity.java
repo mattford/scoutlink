@@ -183,7 +183,7 @@ public class ConversationsActivity extends AppCompatActivity implements Conversa
 			return;
 		}
 		if (message.startsWith("/")) {
-			CommandParser.getInstance(getApplicationContext()).parse(message, conversation, backgroundHandler);
+			CommandParser.getInstance(this).parse(message, conversation, backgroundHandler);
 		} else {
             if (conversation.getType() == (Conversation.TYPE_SERVER)) {
                 Message msg = new Message(
@@ -303,6 +303,9 @@ public class ConversationsActivity extends AppCompatActivity implements Conversa
             startActivity(intent);
         } else if (id == R.id.action_logs) {
             intent = new Intent(this, LogListActivity.class);
+            startActivity(intent);
+        } else if (id == R.id.action_aliases) {
+            intent = new Intent(this, AliasesActivity.class);
             startActivity(intent);
         }
         return super.onOptionsItemSelected(item);

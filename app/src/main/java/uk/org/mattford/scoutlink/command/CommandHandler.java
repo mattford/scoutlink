@@ -14,10 +14,14 @@ public abstract class CommandHandler {
 		server = Server.getInstance();
 		this.context = context;
 	}
-	
+
+	public boolean validate(String[] params, Conversation conversation) {
+		return true;
+	}
+
 	public abstract void execute(String[] params, Conversation conversation, Handler backgroundHandler);
 	
 	public abstract String getUsage();
-	
+
 	public abstract String getDescription();
 }

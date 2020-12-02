@@ -10,7 +10,6 @@ public final class SettingsDatabaseMigrations {
         public void migrate(@NonNull SupportSQLiteDatabase database) {
             database.execSQL(
                     "CREATE TABLE `aliases` (" +
-                            "`rowid` INTEGER, " +
                             "`command_name` TEXT, " +
                             "`command_string` TEXT" +
                             ");"

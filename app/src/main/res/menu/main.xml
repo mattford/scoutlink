@@ -16,5 +16,10 @@
         android:orderInCategory="100"
         app:showAsAction="never"
         android:title="@string/title_activity_log_list"/>
+    <item
+        android:id="@+id/action_aliases"
+        android:orderInCategory="100"
+        app:showAsAction="never"
+        android:title="Aliases" />
 
 </menu>

@@ -26,6 +26,14 @@
 
         <service android:name=".irc.IRCService" />
 
+        <activity
+            android:name=".activity.AliasesActivity"
+            android:label="Aliases" />
+
+        <activity
+            android:name=".activity.EditAliasActivity"
+            android:theme="@style/DialogNoActionBar" />
+
         <activity android:name=".activity.ConversationsActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity
@@ -39,22 +47,19 @@
         <activity
             android:name=".activity.ChannelListActivity"
             android:label="@string/title_activity_channel_list"
-            android:theme="@style/DialogNoActionBar">
-        </activity>
+            android:theme="@style/DialogNoActionBar" />
         <activity
             android:name=".activity.ListEditActivity"
             android:label="@string/title_activity_list_view_edit"
-            android:theme="@style/Dialog">
-        </activity>
+            android:theme="@style/Dialog" />
         <activity
             android:name=".activity.ChannelSettingsActivity"
             android:label="@string/title_activity_channel_settings" >
         </activity>
         <activity
             android:name=".activity.RulesActivity"
-            android:label="@string/title_activity_rules" >
-        </activity>
-        <activity android:name=".activity.LogListActivity" android:label="@string/title_activity_log_list"/>
-        <activity android:name=".activity.LogViewActivity" android:label="@string/title_activity_log_view"/>
+            android:label="@string/title_activity_rules" />
+        <activity android:name=".activity.LogListActivity" android:label="@string/title_activity_log_list" />
+        <activity android:name=".activity.LogViewActivity" android:label="@string/title_activity_log_view" />
     </application>
 </manifest>

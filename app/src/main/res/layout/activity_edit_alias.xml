@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Command name" />
+    <EditText
+        android:id="@+id/command_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="text" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Each line will be treated as a separate command.\nInclude variables in your commands using $n where n is the number of the parameter, or use $n- to include all text after that parameter"
+        />
+
+    <EditText
+        android:id="@+id/command_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="start"
+        android:lines="5"
+        android:importantForAutofill="no"
+        android:inputType="textMultiLine" />
+
+    <Button
+        android:id="@+id/save_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/sl_button"
+        android:textColor="@color/white"
+        android:text="@string/edit_list_save_button" />
+
+
+</LinearLayout>

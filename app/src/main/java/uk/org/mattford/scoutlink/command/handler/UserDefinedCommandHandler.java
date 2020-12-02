@@ -2,7 +2,6 @@ package uk.org.mattford.scoutlink.command.handler;
 
 import android.content.Context;
 import android.os.Handler;
-import android.util.Log;
 
 import java.util.StringJoiner;
 import java.util.regex.Matcher;
@@ -15,11 +14,32 @@ import uk.org.mattford.scoutlink.model.Conversation;
 public class UserDefinedCommandHandler extends CommandHandler {
     private final String[] commands;
     private final CommandParser parser;
+    private final String argPattern = "\\$([0-9]+)(-?)";
 
     public UserDefinedCommandHandler(Context context, CommandParser parser, String command) {
         super(context);
-        this.commands = command.split("\r\n");
+        this.commands = command.split("\\r?\\n");
         this.parser = parser;
+    }
+
+    public boolean validate(String[] params, Conversation conversation) {
+        for (String command : commands) {
+            Pattern p = Pattern.compile(argPattern);
+            Matcher m = p.matcher(command);
+            while (m.find()) {
+                // Groups: 1 - param number, 2 - "greedy" dash
+                try {
+                    int paramNumber = Integer.parseInt(m.group(1));
+                    if (paramNumber < 0 || paramNumber > params.length - 1) {
+                        return false;
+                    }
+                } catch (NumberFormatException e) {
+                    // Failed.
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     @Override
@@ -34,7 +54,6 @@ public class UserDefinedCommandHandler extends CommandHandler {
             if (conversation.getType() == Conversation.TYPE_CHANNEL) {
                 command = command.replaceAll("(^| )#($| )", "$1" + conversation.getName() + "$2");
             }
-            String argPattern = "\\$([0-9]+)(-?)";
             Pattern p = Pattern.compile(argPattern);
             Matcher m = p.matcher(command);
             StringBuffer finalCommand = new StringBuffer(command.length());
@@ -43,7 +62,7 @@ public class UserDefinedCommandHandler extends CommandHandler {
                 try {
                     int paramNumber = Integer.parseInt(m.group(1));
                     String paramValue = "";
-                    if (paramNumber >= 0 && params.length >= paramNumber) {
+                    if (paramNumber >= 0 && params.length > paramNumber) {
                         StringJoiner sj = new StringJoiner(" ");
                         if ("-".equalsIgnoreCase(m.group(2))) {
                             for (int i = paramNumber; i < params.length; i++) {
@@ -68,7 +87,7 @@ public class UserDefinedCommandHandler extends CommandHandler {
 
     @Override
     public String getUsage() {
-        return null;
+        return "Incorrect usage, refer to Settings -> Aliases for correct usage.";
     }
 
     @Override

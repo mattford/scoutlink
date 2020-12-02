@@ -26,6 +26,7 @@
     <style name="DialogNoActionBar" parent="Dialog.Base">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:windowNoTitle">true</item>
     </style>
 
     <!--
