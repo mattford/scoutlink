@@ -60,7 +60,8 @@ public class UserListRecyclerViewAdapter extends RecyclerView.Adapter<UserListRe
 
         holder.mBlockedIconView.setVisibility(blockedUsers.contains(holder.mItem.getNick()) ? View.VISIBLE : View.GONE);
 
-        if (role != null) {
+        holder.mUserRoleView.setVisibility(View.GONE);
+        if (role != null && !blockedUsers.contains(holder.mItem.getNick())) {
             holder.mUserRoleView.setText(role);
             holder.mUserRoleView.setVisibility(View.VISIBLE);
         }

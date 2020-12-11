@@ -16,7 +16,7 @@ public class Conversation implements Comparable<Conversation> {
 	private int type;
 	private final LinkedList<Message> messages = new LinkedList<>();
 	protected final MutableLiveData<ArrayList<User>> usersLiveData = new MutableLiveData<>(new ArrayList<>());
-	private final MutableLiveData<LinkedList<Message>> messagesLiveData = new MutableLiveData<>(new LinkedList<>());
+	private final MutableLiveData<LinkedList<Message>> messagesLiveData = new MutableLiveData<>(this.messages);
 	private final MutableLiveData<Integer> unreadMessagesLiveData = new MutableLiveData<>(0);
 
 	public final static int TYPE_CHANNEL = 0;
