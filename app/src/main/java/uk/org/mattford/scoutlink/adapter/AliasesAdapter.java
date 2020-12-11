@@ -1,12 +1,12 @@
 package uk.org.mattford.scoutlink.adapter;
 
 import android.annotation.SuppressLint;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -24,14 +24,12 @@ public class AliasesAdapter extends RecyclerView.Adapter<AliasesAdapter.ViewHold
     }
 
     public void setAliases(List<Alias> newAliases) {
-        for (Alias a : newAliases) {
-            Log.d("SL", a.commandName);
-        }
         aliases.clear();
         aliases.addAll(newAliases);
         notifyDataSetChanged();
     }
 
+    @NonNull
     @Override
     public AliasesAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
