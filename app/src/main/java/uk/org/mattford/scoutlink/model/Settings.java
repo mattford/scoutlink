@@ -10,7 +10,7 @@ import java.util.Arrays;
 
 public class Settings {
 	
-	private SharedPreferences prefs;
+	private final SharedPreferences prefs;
 
 	public Settings(Context context) {
 		this.prefs = PreferenceManager.getDefaultSharedPreferences(context);

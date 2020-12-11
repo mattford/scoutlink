@@ -29,5 +29,6 @@
          android:layout_alignParentBottom="true"
          android:layout_centerHorizontal="true"
          android:visibility="gone"
-         android:src="@drawable/ic_arrow_downward"/>
+         android:src="@drawable/ic_arrow_downward"
+         android:contentDescription="@string/scroll_to_bottom_arrow" />
  </RelativeLayout>

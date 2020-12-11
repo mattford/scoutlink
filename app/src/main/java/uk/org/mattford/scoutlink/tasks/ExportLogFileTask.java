@@ -22,9 +22,9 @@ import uk.org.mattford.scoutlink.database.entities.LogMessage;
 
 public class ExportLogFileTask implements Runnable {
 
-    private List<LogMessage> messages;
-    private String conversationName;
-    private Context context;
+    private final List<LogMessage> messages;
+    private final String conversationName;
+    private final Context context;
 
     public ExportLogFileTask(List<LogMessage> messages, String conversationName, Context context) {
         this.messages = messages;

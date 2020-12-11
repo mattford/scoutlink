@@ -61,9 +61,7 @@ public class UserListFragment extends Fragment implements PopupMenu.OnMenuItemCl
             if (activeConversation == null) {
                 return;
             }
-            activeConversation.getUsers().observe(getViewLifecycleOwner(), users -> {
-                recyclerView.setAdapter(new UserListRecyclerViewAdapter(users, settings, activeConversation.getChannel(), this));
-            });
+            activeConversation.getUsers().observe(getViewLifecycleOwner(), users -> recyclerView.setAdapter(new UserListRecyclerViewAdapter(users, settings, activeConversation.getChannel(), this)));
         });
     }
 
@@ -115,86 +113,73 @@ public class UserListFragment extends Fragment implements PopupMenu.OnMenuItemCl
         Channel channel = activeConversation.getChannel();
         String nickname = selectedUser.getNick();
         Settings settings = new Settings(getContext());
-        switch (item.getItemId()) {
-            case R.id.action_userlist_query:
-                Query query = new Query(selectedUser.getNick());
-                server.addConversation(query);
-                break;
-            case R.id.action_userlist_notice:
-                final EditText inputNotice = new EditText(getContext());
-                new AlertDialog.Builder(getContext())
-                        .setTitle(R.string.action_notice_dialog_title)
-                        .setView(inputNotice)
-                        .setPositiveButton("Send", (dialog, whichButton) -> {
-                            backgroundHandler.post(() -> server.getConnection().sendIRC().notice(nickname, inputNotice.getText().toString()));
-                            Message msg = new Message(nickname, inputNotice.getText().toString(), Message.SENDER_TYPE_SELF, Message.TYPE_NOTICE);
-                            activeConversation.addMessage(msg);
-                        })
-                        .setNegativeButton("Cancel", (dialog, whichButton) -> {})
-                        .show();
-                break;
-            case R.id.action_userlist_block:
-                settings.blockUser(nickname);
-                Toast.makeText(getContext(), getString(R.string.user_blocked, nickname), Toast.LENGTH_LONG).show();
-                if (recyclerView.getAdapter() != null) {
-                    recyclerView.getAdapter().notifyDataSetChanged();
-                }
-                break;
-            case R.id.action_userlist_unblock:
-                settings.unblockUser(nickname);
-                Toast.makeText(getContext(), getString(R.string.user_unblocked, nickname), Toast.LENGTH_LONG).show();
-                if (recyclerView.getAdapter() != null) {
-                    recyclerView.getAdapter().notifyDataSetChanged();
-                }
-                break;
-            case R.id.action_userlist_kick:
-                final EditText input = new EditText(getContext());
-                new AlertDialog.Builder(getContext())
-                        .setTitle(R.string.action_kick_dialog_title)
-                        .setView(input)
-                        .setPositiveButton("Kick", (dialog, whichButton) -> backgroundHandler.post(() -> channel.send().kick(selectedUser, input.getText().toString())))
-                        .setNegativeButton("Cancel", (dialog, whichButton) -> {})
-                        .show();
-                break;
-            case R.id.action_userlist_kill:
-                final EditText inputKill = new EditText(getContext());
-                new AlertDialog.Builder(getContext())
-                        .setTitle(R.string.action_kill_dialog_title)
-                        .setView(inputKill)
-                        .setPositiveButton("Kill", (dialog, whichButton) -> backgroundHandler.post(() -> server.getConnection().sendRaw().rawLineNow("KILL " + nickname + " " + inputKill.getText().toString())))
-                        .setNegativeButton("Cancel", (dialog, whichButton) -> {})
-                        .show();
-                break;
-            case R.id.action_userlist_op:
-                backgroundHandler.post(() -> channel.send().op(selectedUser));
-                break;
-            case R.id.action_userlist_deop:
-                backgroundHandler.post(() -> channel.send().deOp(selectedUser));
-                break;
-            case R.id.action_userlist_hop:
-                backgroundHandler.post(() -> channel.send().halfOp(selectedUser));
-                break;
-            case R.id.action_userlist_dehop:
-                backgroundHandler.post(() -> channel.send().deHalfOp(selectedUser));
-                break;
-            case R.id.action_userlist_owner:
-                backgroundHandler.post(() -> channel.send().owner(selectedUser));
-                break;
-            case R.id.action_userlist_deowner:
-                backgroundHandler.post(() -> channel.send().deOwner(selectedUser));
-                break;
-            case R.id.action_userlist_admin:
-                backgroundHandler.post(() -> channel.send().superOp(selectedUser));
-                break;
-            case R.id.action_userlist_deadmin:
-                backgroundHandler.post(() -> channel.send().deSuperOp(selectedUser));
-                break;
-            case R.id.action_userlist_voice:
-                backgroundHandler.post(() -> channel.send().voice(selectedUser));
-                break;
-            case R.id.action_userlist_devoice:
-                backgroundHandler.post(() -> channel.send().deVoice(selectedUser));
-                break;
+        int itemId = item.getItemId();
+        if (itemId == R.id.action_userlist_query) {
+            Query query = new Query(selectedUser.getNick());
+            server.addConversation(query);
+        } else if (itemId == R.id.action_userlist_notice) {
+            final EditText inputNotice = new EditText(getContext());
+            new AlertDialog.Builder(getContext())
+                    .setTitle(R.string.action_notice_dialog_title)
+                    .setView(inputNotice)
+                    .setPositiveButton("Send", (dialog, whichButton) -> {
+                        backgroundHandler.post(() -> server.getConnection().sendIRC().notice(nickname, inputNotice.getText().toString()));
+                        Message msg = new Message(nickname, inputNotice.getText().toString(), Message.SENDER_TYPE_SELF, Message.TYPE_NOTICE);
+                        activeConversation.addMessage(msg);
+                    })
+                    .setNegativeButton("Cancel", (dialog, whichButton) -> {
+                    })
+                    .show();
+        } else if (itemId == R.id.action_userlist_block) {
+            settings.blockUser(nickname);
+            Toast.makeText(getContext(), getString(R.string.user_blocked, nickname), Toast.LENGTH_LONG).show();
+            if (recyclerView.getAdapter() != null) {
+                recyclerView.getAdapter().notifyDataSetChanged();
+            }
+        } else if (itemId == R.id.action_userlist_unblock) {
+            settings.unblockUser(nickname);
+            Toast.makeText(getContext(), getString(R.string.user_unblocked, nickname), Toast.LENGTH_LONG).show();
+            if (recyclerView.getAdapter() != null) {
+                recyclerView.getAdapter().notifyDataSetChanged();
+            }
+        } else if (itemId == R.id.action_userlist_kick) {
+            final EditText input = new EditText(getContext());
+            new AlertDialog.Builder(getContext())
+                    .setTitle(R.string.action_kick_dialog_title)
+                    .setView(input)
+                    .setPositiveButton("Kick", (dialog, whichButton) -> backgroundHandler.post(() -> channel.send().kick(selectedUser, input.getText().toString())))
+                    .setNegativeButton("Cancel", (dialog, whichButton) -> {
+                    })
+                    .show();
+        } else if (itemId == R.id.action_userlist_kill) {
+            final EditText inputKill = new EditText(getContext());
+            new AlertDialog.Builder(getContext())
+                    .setTitle(R.string.action_kill_dialog_title)
+                    .setView(inputKill)
+                    .setPositiveButton("Kill", (dialog, whichButton) -> backgroundHandler.post(() -> server.getConnection().sendRaw().rawLineNow("KILL " + nickname + " " + inputKill.getText().toString())))
+                    .setNegativeButton("Cancel", (dialog, whichButton) -> {
+                    })
+                    .show();
+        } else if (itemId == R.id.action_userlist_op) {
+            backgroundHandler.post(() -> channel.send().op(selectedUser));
+        } else if (itemId == R.id.action_userlist_deop) {
+            backgroundHandler.post(() -> channel.send().deOp(selectedUser));
+        } else if (itemId == R.id.action_userlist_hop) {
+            backgroundHandler.post(() -> channel.send().halfOp(selectedUser));
+        } else if (itemId == R.id.action_userlist_dehop) {
+            backgroundHandler.post(() -> channel.send().deHalfOp(selectedUser));
+        } else if (itemId == R.id.action_userlist_owner) {
+            backgroundHandler.post(() -> channel.send().owner(selectedUser));
+        } else if (itemId == R.id.action_userlist_deowner) {
+            backgroundHandler.post(() -> channel.send().deOwner(selectedUser));
+        } else if (itemId == R.id.action_userlist_admin) {
+            backgroundHandler.post(() -> channel.send().superOp(selectedUser));
+        } else if (itemId == R.id.action_userlist_deadmin) {
+            backgroundHandler.post(() -> channel.send().deSuperOp(selectedUser));
+        } else if (itemId == R.id.action_userlist_voice) {
+            backgroundHandler.post(() -> channel.send().voice(selectedUser));
+        } else if (itemId == R.id.action_userlist_devoice) {
+            backgroundHandler.post(() -> channel.send().deVoice(selectedUser));
         }
         return false;
     }

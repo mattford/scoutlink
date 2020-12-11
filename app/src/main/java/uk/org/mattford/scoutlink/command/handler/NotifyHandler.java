@@ -12,6 +12,11 @@ public class NotifyHandler extends CommandHandler {
     }
 
     @Override
+    public boolean validate(String[] params, Conversation conversation) {
+        return params.length > 1;
+    }
+
+    @Override
     public void execute(String[] params, Conversation conversation, Handler backgroundHandler) {
         if (params.length == 2) {
             if (params[1].equals("-l")) {

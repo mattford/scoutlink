@@ -48,7 +48,7 @@ public class IRCService extends Service {
 
 	private boolean foreground = false;
 
-	private ArrayList<Intent> queuedIntents = new ArrayList<>();
+	private final ArrayList<Intent> queuedIntents = new ArrayList<>();
 
 	public void onCreate() {
 		this.server = Server.getInstance();
@@ -56,12 +56,7 @@ public class IRCService extends Service {
 		this.updateNotification();
 	}
 
-	@Override
-	public void onDestroy() {
-        super.onDestroy();
-    }
-		
-	public int onStartCommand(Intent intent, int flags, int startId) {
+    public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent != null && intent.getAction() != null) {
             if (Broadcast.CONNECT.equals(intent.getAction())) {
                 if (!isConnected()) {

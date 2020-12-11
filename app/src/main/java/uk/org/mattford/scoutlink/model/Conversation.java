@@ -12,27 +12,23 @@ import uk.org.mattford.scoutlink.database.entities.LogMessage;
 
 public class Conversation implements Comparable<Conversation> {
 	private boolean isActive;
-	private String CONVERSATION_NAME;
+	private final String name;
 	private int type;
-	private LinkedList<Message> messages;
-	MutableLiveData<ArrayList<User>> usersLiveData;
-	private MutableLiveData<LinkedList<Message>> messagesLiveData;
-	private MutableLiveData<Integer> unreadMessagesLiveData;
+	private final LinkedList<Message> messages = new LinkedList<>();
+	private final MutableLiveData<ArrayList<User>> usersLiveData = new MutableLiveData<>(new ArrayList<>());
+	private final MutableLiveData<LinkedList<Message>> messagesLiveData = new MutableLiveData<>(new LinkedList<>());
+	private final MutableLiveData<Integer> unreadMessagesLiveData = new MutableLiveData<>(0);
 
 	public final static int TYPE_CHANNEL = 0;
 	public final static int TYPE_QUERY = 1;
 	public final static int TYPE_SERVER = 2;
 
 	protected Conversation(String name) {
-		this.CONVERSATION_NAME = name;
-		this.messages = new LinkedList<>();
-		this.usersLiveData = new MutableLiveData<>(new ArrayList<>());
-		this.messagesLiveData = new MutableLiveData<>(this.messages);
-		this.unreadMessagesLiveData = new MutableLiveData<>(0);
+		this.name = name;
 	}
 	
 	public String getName() {
-		return this.CONVERSATION_NAME;
+		return this.name;
 	}
 	
 	public LiveData<LinkedList<Message>> getMessages() {
@@ -80,9 +76,7 @@ public class Conversation implements Comparable<Conversation> {
 			LogMessage logMessage = new LogMessage(this, msg);
 			LogDatabase db = LogDatabase.getInstance();
 			if (db != null) {
-			    new Thread(() -> {
-                    db.logMessageDao().insert(logMessage);
-                }).start();
+			    new Thread(() -> db.logMessageDao().insert(logMessage)).start();
 			}
 		}
 		onMessagesChanged();

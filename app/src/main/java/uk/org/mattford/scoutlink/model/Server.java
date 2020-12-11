@@ -9,10 +9,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 public class Server {
-	private ArrayList<OnConversationListChangedListener> onConversationListChangedListeners;
-	private ArrayList<OnConnectionStatusChangedListener> onConnectionStatusChangedListeners;
-	private ArrayList<OnActiveConversationChangedListener> onActiveConversationChangedListeners;
-	private LinkedHashMap<String, Conversation> conversations;
+	private final ArrayList<OnConversationListChangedListener> onConversationListChangedListeners;
+	private final ArrayList<OnConnectionStatusChangedListener> onConnectionStatusChangedListeners;
+	private final ArrayList<OnActiveConversationChangedListener> onActiveConversationChangedListeners;
+	private final LinkedHashMap<String, Conversation> conversations;
 	private int status = 0;
     private PircBotX bot;
     private List<ChannelListEntry> channelList;

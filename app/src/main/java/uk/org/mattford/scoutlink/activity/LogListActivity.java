@@ -16,6 +16,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -77,21 +78,18 @@ public class LogListActivity extends AppCompatActivity {
         LogListActivity context = this;
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
         String conversationName = conversationNames.get(info.position);
-        switch(item.getItemId()) {
-            case R.id.log_action_delete:
-                new Thread(() -> {
-                    int affectedRows = logDatabase.logMessageDao().deleteByConversation(conversationName);
-                    if (affectedRows > 0) {
-                        context.runOnUiThread(() -> Toast.makeText(context, getString(R.string.logs_deleted, conversationName), Toast.LENGTH_LONG).show());
-                    }
+        int itemId = item.getItemId();
+        if (itemId == R.id.log_action_delete) {
+            new Thread(() -> {
+                int affectedRows = logDatabase.logMessageDao().deleteByConversation(conversationName);
+                if (affectedRows > 0) {
+                    context.runOnUiThread(() -> Toast.makeText(context, getString(R.string.logs_deleted, conversationName), Toast.LENGTH_LONG).show());
+                }
 
-                }).start();
-                break;
-            case R.id.log_action_export:
-                queuedExport = conversationName;
-
-                checkExportPermission();
-                break;
+            }).start();
+        } else if (itemId == R.id.log_action_export) {
+            queuedExport = conversationName;
+            checkExportPermission();
         }
         return true;
     }
@@ -117,7 +115,7 @@ public class LogListActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == EXPORT_PERMISSION_REQUEST &&
                 grantResults.length > 0 &&
                 grantResults[0] == PackageManager.PERMISSION_GRANTED

@@ -61,7 +61,7 @@ public class ConversationsActivity extends AppCompatActivity implements Conversa
     /**
      * Required to work around NPE when screen is rotated immediately after selecting a channel, causing the reference to IRCService to be lost briefly.
      */
-    private ArrayList<String> joinChannelBuffer = new ArrayList<>();
+    private final ArrayList<String> joinChannelBuffer = new ArrayList<>();
 	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -108,9 +108,7 @@ public class ConversationsActivity extends AppCompatActivity implements Conversa
             });
         });
 
-        connectionStatusViewModel.getConnectionStatus().observe(this, connectionStatus -> {
-           binding.connectionStatus.setText(connectionStatus);
-        });
+        connectionStatusViewModel.getConnectionStatus().observe(this, connectionStatus -> binding.connectionStatus.setText(connectionStatus));
     }
 
 	public void onResume() {
@@ -183,7 +181,7 @@ public class ConversationsActivity extends AppCompatActivity implements Conversa
 			return;
 		}
 		if (message.startsWith("/")) {
-			CommandParser.getInstance(getApplicationContext()).parse(message, conversation, backgroundHandler);
+			CommandParser.getInstance(this).parse(message, conversation, backgroundHandler);
 		} else {
             if (conversation.getType() == (Conversation.TYPE_SERVER)) {
                 Message msg = new Message(
@@ -303,6 +301,9 @@ public class ConversationsActivity extends AppCompatActivity implements Conversa
             startActivity(intent);
         } else if (id == R.id.action_logs) {
             intent = new Intent(this, LogListActivity.class);
+            startActivity(intent);
+        } else if (id == R.id.action_aliases) {
+            intent = new Intent(this, AliasesActivity.class);
             startActivity(intent);
         }
         return super.onOptionsItemSelected(item);

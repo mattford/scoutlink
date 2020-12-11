@@ -68,8 +68,8 @@ import uk.org.mattford.scoutlink.model.Settings;
 
 public class IRCListener extends ListenerAdapter {
 
-    private IRCService service;
-    private Server server;
+    private final IRCService service;
+    private final Server server;
 
     IRCListener(IRCService service) {
         super();
@@ -703,7 +703,6 @@ public class IRCListener extends ListenerAdapter {
         server.getConversation(service.getString(R.string.server_window_title)).addMessage(msg);
     }
 
-    @SuppressWarnings("unchecked")
     public void onChannelInfo(ChannelInfoEvent event) {
         server.setChannelList(new ArrayList<>(event.getList()));
         Intent intent = new Intent(Broadcast.CHANNEL_LIST_INFO);

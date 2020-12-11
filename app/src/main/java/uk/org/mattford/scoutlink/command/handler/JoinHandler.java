@@ -13,6 +13,11 @@ public class JoinHandler extends CommandHandler {
 	}
 
 	@Override
+	public boolean validate(String[] params, Conversation conversation) {
+		return params.length > 1;
+	}
+
+	@Override
 	public void execute(String[] params, Conversation conversation, Handler backgroundHandler) {
 
 		String channelToJoin = params[1];

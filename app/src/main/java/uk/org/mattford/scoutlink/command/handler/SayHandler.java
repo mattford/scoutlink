@@ -11,9 +11,9 @@ import uk.org.mattford.scoutlink.command.CommandHandler;
 import uk.org.mattford.scoutlink.model.Conversation;
 import uk.org.mattford.scoutlink.model.Message;
 
-public class ActionHandler extends CommandHandler {
+public class SayHandler extends CommandHandler {
 
-	public ActionHandler(Context context) {
+	public SayHandler(Context context) {
 		super(context);
 	}
 
@@ -24,20 +24,25 @@ public class ActionHandler extends CommandHandler {
 
 	@Override
 	public void execute(String[] params, Conversation conversation, Handler backgroundHandler) {
-		String action = StringUtils.join(Arrays.copyOfRange(params, 1, params.length), " ");
-		String nick = server.getConnection().getNick();
-		backgroundHandler.post(() -> server.getConnection().sendIRC().action(conversation.getName(), action));
-        Message msg = new Message(nick, action, Message.SENDER_TYPE_SELF, Message.TYPE_ACTION);
+		String message = StringUtils.join(Arrays.copyOfRange(params, 1, params.length), " ");
+		backgroundHandler.post(() -> server.getConnection().sendIRC().message(conversation.getName(), message));
+		Message msg = new Message(
+				server.getConnection().getNick(),
+				message,
+				Message.SENDER_TYPE_SELF,
+				Message.TYPE_MESSAGE
+		);
 		conversation.addMessage(msg);
 	}
 
 	@Override
 	public String getUsage() {
-		return "/me <action>";
+		return "/say Message";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Sends an action to a channel, e.g., Fordy goes to the shops";
+		return "Sends a message to the current channel";
 	}
+
 }

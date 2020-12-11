@@ -11,16 +11,16 @@ import org.pircbotx.User;
 
 import java.util.ArrayList;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import uk.org.mattford.scoutlink.R;
 import uk.org.mattford.scoutlink.model.Settings;
 
 public class UserListRecyclerViewAdapter extends RecyclerView.Adapter<UserListRecyclerViewAdapter.ViewHolder> {
-
-    private OnUserListItemClickListener mListener;
-    private ArrayList<User> users;
-    private Channel channel;
-    private Settings settings;
+    private final OnUserListItemClickListener mListener;
+    private final ArrayList<User> users;
+    private final Channel channel;
+    private final Settings settings;
 
     public UserListRecyclerViewAdapter(ArrayList<User> users, Settings settings, Channel channel, OnUserListItemClickListener listener) {
         mListener = listener;
@@ -29,6 +29,7 @@ public class UserListRecyclerViewAdapter extends RecyclerView.Adapter<UserListRe
         this.settings = settings;
     }
 
+    @NonNull
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())

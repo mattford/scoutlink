@@ -18,8 +18,8 @@ public class ListEditActivity extends ListActivity {
     private ActivityListViewEditBinding binding;
     private ArrayList<String>items;
     private ArrayAdapter<String> adapter;
-    private ArrayList<String> newItems = new ArrayList<>();
-    private ArrayList<String> removedItems = new ArrayList<>();
+    private final ArrayList<String> newItems = new ArrayList<>();
+    private final ArrayList<String> removedItems = new ArrayList<>();
 
     protected String title = "List Edit";
     protected String firstChar = "";

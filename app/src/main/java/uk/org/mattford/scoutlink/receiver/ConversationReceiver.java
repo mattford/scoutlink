@@ -9,7 +9,7 @@ import android.content.Intent;
 
 public class ConversationReceiver extends BroadcastReceiver {
 	
-	private ConversationsActivity activity;
+	private final ConversationsActivity activity;
 
 	public ConversationReceiver(ConversationsActivity act) {
 		super();
