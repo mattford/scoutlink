@@ -10,8 +10,8 @@ import uk.org.mattford.scoutlink.model.Conversation;
 import uk.org.mattford.scoutlink.model.Server;
 
 public class ConversationListViewModel extends ViewModel implements Server.OnConversationListChangedListener, Server.OnActiveConversationChangedListener {
-    private MutableLiveData<ArrayList<Conversation>> conversationLiveData;
-    private MutableLiveData<Conversation> activeConversationLiveData;
+    private final MutableLiveData<ArrayList<Conversation>> conversationLiveData;
+    private final MutableLiveData<Conversation> activeConversationLiveData;
 
     public ConversationListViewModel() {
         Server server = Server.getInstance();

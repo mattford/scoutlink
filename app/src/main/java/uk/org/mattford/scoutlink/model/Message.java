@@ -6,8 +6,8 @@ import uk.org.mattford.scoutlink.database.entities.LogMessage;
 import uk.org.mattford.scoutlink.utils.MircColors;
 
 public class Message {
-    private int senderType;
-    private int type;
+    private final int senderType;
+    private final int type;
 	private String text;
     private String sender;
     private Date timestamp;

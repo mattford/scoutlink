@@ -61,7 +61,7 @@ public class ConversationsActivity extends AppCompatActivity implements Conversa
     /**
      * Required to work around NPE when screen is rotated immediately after selecting a channel, causing the reference to IRCService to be lost briefly.
      */
-    private ArrayList<String> joinChannelBuffer = new ArrayList<>();
+    private final ArrayList<String> joinChannelBuffer = new ArrayList<>();
 	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -108,9 +108,7 @@ public class ConversationsActivity extends AppCompatActivity implements Conversa
             });
         });
 
-        connectionStatusViewModel.getConnectionStatus().observe(this, connectionStatus -> {
-           binding.connectionStatus.setText(connectionStatus);
-        });
+        connectionStatusViewModel.getConnectionStatus().observe(this, connectionStatus -> binding.connectionStatus.setText(connectionStatus));
     }
 
 	public void onResume() {

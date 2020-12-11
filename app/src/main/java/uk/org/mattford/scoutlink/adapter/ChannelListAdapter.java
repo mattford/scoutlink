@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.pircbotx.ChannelListEntry;
@@ -19,11 +20,10 @@ import java.util.regex.Pattern;
 import uk.org.mattford.scoutlink.R;
 
 public class ChannelListAdapter extends RecyclerView.Adapter<ChannelListAdapter.ViewHolder> {
-    private List<ChannelListEntry> channels;
-    private ChannelListAdapter.OnChannelListItemClickListener listener;
+    private final List<ChannelListEntry> channels = new ArrayList<>();
+    private final ChannelListAdapter.OnChannelListItemClickListener listener;
 
     public ChannelListAdapter(ChannelListAdapter.OnChannelListItemClickListener listener) {
-        channels = new ArrayList<>();
         this.listener = listener;
     }
 
@@ -38,6 +38,7 @@ public class ChannelListAdapter extends RecyclerView.Adapter<ChannelListAdapter.
         notifyDataSetChanged();
     }
 
+    @NonNull
     @Override
     public ChannelListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
@@ -58,9 +59,7 @@ public class ChannelListAdapter extends RecyclerView.Adapter<ChannelListAdapter.
             holder.mChannelTopicView.setText("");
         }
         holder.mUsersCountView.setText(Integer.toString(holder.mChannel.getUsers()));
-        holder.mView.setOnClickListener(view -> {
-            listener.onChannelListItemClick(holder.mChannel.getName());
-        });
+        holder.mView.setOnClickListener(view -> listener.onChannelListItemClick(holder.mChannel.getName()));
     }
 
     @Override

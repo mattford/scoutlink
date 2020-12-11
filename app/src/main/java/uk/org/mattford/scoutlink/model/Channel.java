@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class Channel extends Conversation {
 
-	private org.pircbotx.Channel channel;
+	private final org.pircbotx.Channel channel;
 
 	public Channel(String name, org.pircbotx.Channel channel) {
 		super(name);

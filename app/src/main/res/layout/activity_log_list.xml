@@ -10,7 +10,7 @@
         android:layout_height="fill_parent">
 
         </ListView>
-    <TextView android:id="@id/android:empty"
+    <TextView android:id="@android:id/empty"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"

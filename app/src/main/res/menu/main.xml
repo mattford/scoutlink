@@ -20,6 +20,6 @@
         android:id="@+id/action_aliases"
         android:orderInCategory="100"
         app:showAsAction="never"
-        android:title="Aliases" />
+        android:title="@string/aliases_activity_title" />
 
 </menu>

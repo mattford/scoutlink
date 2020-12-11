@@ -6,12 +6,12 @@ package uk.org.mattford.scoutlink.event;
  */
 public class NotifyEvent {
 
-    private String nick;
-    private int type;
-    private boolean isAway;
-    private boolean isOnline;
-    private boolean isAdded;
-    private String message;
+    private final String nick;
+    private final int type;
+    private final boolean isAway;
+    private final boolean isOnline;
+    private final boolean isAdded;
+    private final String message;
 
     public static final int TYPE_MANAGELIST = 1;
     public static final int TYPE_AWAY = 2;

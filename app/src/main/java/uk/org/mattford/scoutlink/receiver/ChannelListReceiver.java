@@ -9,7 +9,7 @@ import uk.org.mattford.scoutlink.model.Broadcast;
 
 public class ChannelListReceiver extends BroadcastReceiver {
 
-    private ChannelListActivity activity;
+    private final ChannelListActivity activity;
 
     public ChannelListReceiver(ChannelListActivity activity) {
         super();

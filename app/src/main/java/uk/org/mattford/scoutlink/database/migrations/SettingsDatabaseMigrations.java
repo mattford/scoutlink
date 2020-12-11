@@ -14,6 +14,7 @@ public final class SettingsDatabaseMigrations {
                             "`command_string` TEXT" +
                             ");"
             );
+            database.execSQL("INSERT INTO `aliases` (`command_name`, `command_string`) VALUES ('example', '/say This is an example of an alias created in the SL Android App.\nThis is the first parameter passed to the alias: $1\nand this is the text passed afterwards: $2-')");
         }
     };
 }

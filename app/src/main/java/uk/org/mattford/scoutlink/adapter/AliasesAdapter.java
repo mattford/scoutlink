@@ -45,9 +45,7 @@ public class AliasesAdapter extends RecyclerView.Adapter<AliasesAdapter.ViewHold
         Alias alias = aliases.get(position);
         holder.mAliasCommandNameView.setText(alias.commandName);
 
-        holder.mView.setOnClickListener(view -> {
-            listener.onAliasClick(holder.mAliasCommandNameView.getText().toString());
-        });
+        holder.mView.setOnClickListener(view -> listener.onAliasClick(holder.mAliasCommandNameView.getText().toString()));
     }
 
     @Override
