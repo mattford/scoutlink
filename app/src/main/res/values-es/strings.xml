@@ -179,6 +179,20 @@
     <!-- Default Real Name to use if the user does not set one, this will show in WHOIS -->
     <string name="default_gecos">ScoutLink IRC para Android!</string>
 
+    <string name="online_users">Usuarios Conectados</string>
+    <string name="block_user">Bloquear</string>
+    <string name="unblock_user">Desbloquear</string>
+    <string name="user_blocked">Ya no recibiras mensajes de %1$s.</string>
+    <string name="user_unblocked">%1$s ha sido desbloqueado.</string>
+    <string name="blocked_icon_description">Bloqueado</string>
+    <string name="aliases_activity_title">Aliases</string>
+    <string name="action_new_alias">Nuevo alias</string>
+    <string name="alias_command_name">Nombre de comando</string>
+    <string name="alias_help">Cada línea será tomada como un comando nuevo.\nPuedes usar otros comandos y aliases aquí.\nPuedes usar los siguientes hilos especiales:\n# Será reemplazado con el canal correspondiente.\n$n Será reemplazado con el parametro nth al alias.\n$n- Será reemplazado con el parametro nth y todo el texto tras el.</string>
+    <string name="alias_already_exists">Un alias con este nombre ya existe, por favor elige un nombre diferente.</string>
+    <string name="scroll_to_bottom_arrow">Desliza al fondo</string>
+    <string name="channels_section_title">Canales</string>
+    <string name="direct_messages_section_title">Mensajes directos</string>
 
     <string name="title_activity_log_view">Vista de registro</string>
     <string name="title_activity_log_list">Logs</string>
