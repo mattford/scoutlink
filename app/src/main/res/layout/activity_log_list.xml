@@ -7,9 +7,7 @@
     <ListView
         android:id="@+id/conversation_list"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
-
-        </ListView>
+        android:layout_height="fill_parent" />
     <TextView android:id="@android:id/empty"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

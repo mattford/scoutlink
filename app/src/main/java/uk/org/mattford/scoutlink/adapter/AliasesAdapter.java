@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
-import uk.org.mattford.scoutlink.R;
 import uk.org.mattford.scoutlink.database.entities.Alias;
 
 public class AliasesAdapter extends RecyclerView.Adapter<AliasesAdapter.ViewHolder> {
@@ -33,7 +32,7 @@ public class AliasesAdapter extends RecyclerView.Adapter<AliasesAdapter.ViewHold
     @Override
     public AliasesAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.alias_list_item, parent, false);
+                .inflate(android.R.layout.simple_list_item_1, parent, false);
         return new AliasesAdapter.ViewHolder(view);
     }
 
@@ -58,7 +57,7 @@ public class AliasesAdapter extends RecyclerView.Adapter<AliasesAdapter.ViewHold
         ViewHolder(View view) {
             super(view);
             mView = view;
-            mAliasCommandNameView = view.findViewById(R.id.alias_command_name);
+            mAliasCommandNameView = view.findViewById(android.R.id.text1);
         }
 
         @Override

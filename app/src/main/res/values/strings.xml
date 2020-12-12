@@ -203,7 +203,7 @@
     <string name="aliases_activity_title">Aliases</string>
     <string name="action_new_alias">New alias</string>
     <string name="alias_command_name">Command name</string>
-    <string name="alias_help">Each line will be treated as a separate command.<br />You can use other aliases as commands here.\nYou can use the following special strings:<br /># Will be replaced with the current channel name.<br />$n Will be replaced with the nth parameter passed to the alias.<br />$n- Will be replaced with the nth parameter and all text after it.</string>
+    <string name="alias_help">Each line will be treated as a separate command.\nYou can use other aliases as commands here.\nYou can use the following special strings:\n# Will be replaced with the current channel name.\n$n Will be replaced with the nth parameter passed to the alias.\n$n- Will be replaced with the nth parameter and all text after it.</string>
     <string name="alias_already_exists">An alias with this name already exists, please choose a different name.</string>
 
     <string name="scroll_to_bottom_arrow">Scroll to bottom</string>

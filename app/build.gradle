@@ -10,6 +10,11 @@ android {
         minSdkVersion 16
         targetSdkVersion 29
         multiDexEnabled true
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments += ["room.schemaLocation": "$projectDir/schemas".toString()]
+            }
+        }
     }
     buildTypes {
         release {}
