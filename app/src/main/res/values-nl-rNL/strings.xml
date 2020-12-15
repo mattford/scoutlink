@@ -173,6 +173,20 @@
     <string name="channel_settings_need_op">Je moet een OP zijn om kanaal instellingen te veranderen</string>
     <string name="channel_settings_not_channel">Je kan alleen in het kanaal dingen veranderen</string>
 
+    <string name="online_users">Online gebruikers</string>
+    <string name="block_user">Blokkeren</string>
+    <string name="unblock_user">Deblokkeren</string>
+    <string name="user_blocked">Je zal geen berichten meer ontvangen van%1$s.</string>
+    <string name="user_unblocked">%1$s is gedeblokeerd.</string>
+    <string name="blocked_icon_description">Geblokeerd</string>
+    <string name="aliases_activity_title">Aliasen</string>
+    <string name="action_new_alias">Nieuwe alias</string>
+    <string name="alias_command_name">Naam commando</string>
+    <string name="alias_help">Elke lijn word behandeld als een apart commando\nJe kan andere aliassen hier als commandos gebruiken.\nJe kan de volgende speciale karakters gebruiken:\n# Word vervangen door de huidige kanaalnaam\n$n Word vervangen door een parameter die je mee geeft aan de alias.\n$n- Word vervangen door de n-de parameter die je mee geeft</string>
+    <string name="alias_already_exists">Een alias met deze naam bestaat al, kies een andere naam</string>
+    <string name="scroll_to_bottom_arrow">Scroll naar beneden</string>
+    <string name="channels_section_title">Kanalen</string>
+    <string name="direct_messages_section_title">Prive bericht</string>
 
     <string name="default_quit_message">ScoutLink for Android!</string>
     <string name="nick_already_in_use">Deze gebruikersnaam is al in gebruik, kies een andere en probeer het opnieuw</string>
