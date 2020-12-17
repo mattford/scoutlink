@@ -174,6 +174,20 @@
     <string name="channel_settings_need_op">Anda harus menjadi op untuk mengubah pengaturan saluran</string>
     <string name="channel_settings_not_channel">Anda hanya dapat mengubah pengaturan di saluran</string>
 
+    <string name="online_users">Pengguna Daring</string>
+    <string name="block_user">Blokir</string>
+    <string name="unblock_user">Buka Blokir</string>
+    <string name="user_blocked">Anda tak akan lagi menerima pesan pribadi dari %1$s.</string>
+    <string name="user_unblocked">%1$s telah dikeluarkan dari daftar blok.</string>
+    <string name="blocked_icon_description">Terblokir</string>
+    <string name="aliases_activity_title">Alias</string>
+    <string name="action_new_alias">Alias baru</string>
+    <string name="alias_command_name">Nama perintah</string>
+    <string name="alias_help">Setiap baris akan diberlakukan sebagai perintah terpisah.\nAnda dapat menggunakan alias lain sebagai perintah.\n Anda dapat menggunakan string khusus berikut:\n# Akan diganti dengan nama kanal terkini.\n$n Akan diganti dengan parameter ke-n yang diteruskan ke alias.\n$n- Akan diganti dengan paramater ke-n dan semua teks setelahnya.</string>
+    <string name="alias_already_exists">Sebuah alias dengan nama ini sedang digunakan, mohon untuk memilih nama yang lain.</string>
+    <string name="scroll_to_bottom_arrow">Gulir ke bawah</string>
+    <string name="channels_section_title">Kanal</string>
+    <string name="direct_messages_section_title">Pesan pribadi</string>
 
     <string name="default_quit_message">ScoutLink di Android!</string>
     <string name="nick_already_in_use">Nickname ini telah digunakan, silakan pilih nickname lain dan coba lagi.</string>
