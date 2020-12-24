@@ -5,8 +5,6 @@ import android.content.res.Resources;
 
 import org.pircbotx.PircBotX;
 
-import java.util.ResourceBundle;
-
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -14,8 +12,8 @@ import uk.org.mattford.scoutlink.R;
 import uk.org.mattford.scoutlink.model.Server;
 
 public class ConnectionStatusViewModel extends AndroidViewModel implements Server.OnConnectionStatusChangedListener {
-    private Server server;
-    private MutableLiveData<String> connectionStatus;
+    private final Server server;
+    private final MutableLiveData<String> connectionStatus;
 
     public ConnectionStatusViewModel(Application app) {
         super(app);

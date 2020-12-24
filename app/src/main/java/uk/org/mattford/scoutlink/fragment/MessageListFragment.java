@@ -1,6 +1,5 @@
 package uk.org.mattford.scoutlink.fragment;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,22 +8,18 @@ import android.view.ViewGroup;
 import java.util.LinkedList;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import uk.org.mattford.scoutlink.adapter.MessageListAdapter;
 import uk.org.mattford.scoutlink.databinding.MessageListViewBinding;
 import uk.org.mattford.scoutlink.model.Conversation;
 import uk.org.mattford.scoutlink.model.Message;
-import uk.org.mattford.scoutlink.viewmodel.ConversationListViewModel;
 
 public class MessageListFragment extends Fragment {
     private MessageListAdapter adapter;
     private MessageListViewBinding binding;
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = MessageListViewBinding.inflate(inflater, container, false);
 
         RecyclerView lv = binding.list;
@@ -36,19 +31,9 @@ public class MessageListFragment extends Fragment {
             }
         });
         binding.notAtBottom.setVisibility(lv.canScrollVertically(1) ? View.VISIBLE : View.GONE);
-        binding.notAtBottom.setOnClickListener((v) -> binding.list.smoothScrollToPosition(adapter.getItemCount() - 1));
+        binding.notAtBottom.setOnClickListener((v) -> scrollToBottom(true));
 
         return binding.getRoot();
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        ConversationListViewModel viewModel = new ViewModelProvider(requireActivity()).get(ConversationListViewModel.class);
-        // Set the adapter
-        Context context = view.getContext();
-        RecyclerView recyclerView = binding.list;
-        recyclerView.setLayoutManager(new LinearLayoutManager(context));
     }
 
     public void setDataSource(Conversation conversation) {
@@ -65,8 +50,8 @@ public class MessageListFragment extends Fragment {
                 recyclerView.setAdapter(adapter);
             }
             adapter.notifyDataSetChanged();
-            if (isScrolledToBottom && adapter.getItemCount() > 0) {
-                recyclerView.scrollToPosition(adapter.getItemCount() - 1);
+            if (isScrolledToBottom) {
+                scrollToBottom(false);
             }
         });
     }
@@ -77,6 +62,17 @@ public class MessageListFragment extends Fragment {
         binding.empty.setVisibility(messages != null && messages.size() > 0 ? View.GONE : View.VISIBLE);
         adapter = new MessageListAdapter(messages);
         recyclerView.setAdapter(adapter);
-        recyclerView.scrollToPosition(adapter.getItemCount() - 1);
+        scrollToBottom(false);
+    }
+
+    private void scrollToBottom(boolean smooth) {
+        int itemCount = adapter.getItemCount();
+        if (itemCount > 0) {
+            if (smooth) {
+                binding.list.smoothScrollToPosition(itemCount - 1);
+            } else {
+                binding.list.scrollToPosition(itemCount - 1);
+            }
+        }
     }
 }

@@ -27,7 +27,9 @@
             android:layout_height="wrap_content"
             android:id="@+id/new_item"
             android:layout_weight="1"
-            android:inputType="text" />
+            android:inputType="text"
+            android:importantForAutofill="no"
+            tools:ignore="LabelFor" />
 
         <Button
             android:layout_height="wrap_content"

@@ -1,142 +1,140 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="fill_parent"
     android:layout_width="fill_parent">
-<LinearLayout
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin">
-
-    <TextView
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/settings_nickname_label"
-        android:id="@+id/settings_nickname_label"
-        android:layout_gravity="center_horizontal" />
+        android:paddingHorizontal="@dimen/activity_horizontal_margin"
+        android:paddingVertical="@dimen/activity_vertical_margin">
 
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/settings_nickname"
-        android:layout_gravity="center_horizontal"
-        android:inputType="text" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/settings_nickname_label"
+            android:id="@+id/settings_nickname_label"
+            android:layout_gravity="center_horizontal" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/settings_ident_label"
-        android:id="@+id/settings_ident_label"
-        android:layout_gravity="center_horizontal" />
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/settings_nickname"
+            android:layout_gravity="center_horizontal"
+            android:inputType="text" />
 
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/settings_ident"
-        android:layout_gravity="center_horizontal"
-        android:inputType="text" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/settings_ident_label"
+            android:id="@+id/settings_ident_label"
+            android:layout_gravity="center_horizontal" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/settings_gecos_label"
-        android:id="@+id/settings_gecos_label"
-        android:layout_gravity="center_horizontal" />
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/settings_ident"
+            android:layout_gravity="center_horizontal"
+            android:inputType="text"
+            android:importantForAutofill="no"
+            tools:ignore="LabelFor" />
 
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/settings_gecos"
-        android:layout_gravity="center_horizontal"
-        android:inputType="text" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/settings_gecos_label"
+            android:id="@+id/settings_gecos_label"
+            android:layout_gravity="center_horizontal" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/settings_nickserv_user_label"
-        android:id="@+id/settings_nickserv_user_label"
-        android:layout_gravity="center_horizontal" />
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/settings_gecos"
+            android:layout_gravity="center_horizontal"
+            android:inputType="text"
+            android:importantForAutofill="no"
+            tools:ignore="LabelFor" />
 
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/settings_nickserv_user"
-        android:layout_gravity="center_horizontal"
-        android:inputType="text" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/settings_nickserv_user_label"
+            android:id="@+id/settings_nickserv_user_label"
+            android:layout_gravity="center_horizontal" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/settings_nickserv_password_label"
-        android:id="@+id/settings_nickserv_password_label"
-        android:layout_gravity="center_horizontal" />
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/settings_nickserv_user"
+            android:layout_gravity="center_horizontal"
+            android:inputType="text"
+            android:importantForAutofill="no"
+            tools:ignore="LabelFor" />
 
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/settings_nickserv_password"
-        android:layout_gravity="center_horizontal"
-        android:inputType="textPassword"
-        />
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/settings_quit_message_label"
-        android:id="@+id/settings_quit_message_label"
-        android:layout_gravity="center_horizontal" />
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/settings_quit_message"
-        android:layout_gravity="center_horizontal"
-        android:inputType="text"
-        />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/settings_nickserv_password_label"
+            android:id="@+id/settings_nickserv_password_label"
+            android:layout_gravity="center_horizontal" />
 
-    <Switch
-        android:id="@+id/settings_enable_logging"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/settings_enable_logging" />
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/settings_nickserv_password"
+            android:layout_gravity="center_horizontal"
+            android:inputType="textPassword"
+            android:importantForAutofill="no"
+            tools:ignore="LabelFor" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/settings_quit_message_label"
+            android:id="@+id/settings_quit_message_label"
+            android:layout_gravity="center_horizontal" />
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/settings_quit_message"
+            android:layout_gravity="center_horizontal"
+            android:inputType="text"
+            android:importantForAutofill="no"
+            tools:ignore="LabelFor" />
 
-    <Switch
-        android:id="@+id/settings_load_previous_messages_on_join"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/settings_load_previous_messages_on_join" />
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/settings_enable_logging"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/settings_enable_logging" />
 
-    <Button
-    android:id="@+id/settings_autojoin_channels"
-    android:layout_height="wrap_content"
-    android:layout_width="match_parent"
-    android:text="@string/settings_autojoin_channels_label"
-    android:onClick="openAutojoinSettings"
-    >
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/settings_load_previous_messages_on_join"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/settings_load_previous_messages_on_join" />
 
-</Button>
+        <Button
+            android:id="@+id/settings_autojoin_channels"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:text="@string/settings_autojoin_channels_label"
+            android:onClick="openAutojoinSettings" />
 
-<Button
-    android:id="@+id/settings_command_on_connect"
-    android:layout_height="wrap_content"
-    android:layout_width="match_parent"
-    android:text="@string/settings_command_on_connect_label"
-    android:onClick="openCommandOnConnectSettings"
-    >
+        <Button
+            android:id="@+id/settings_command_on_connect"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:text="@string/settings_command_on_connect_label"
+            android:onClick="openCommandOnConnectSettings" />
 
-</Button>
+        <Button
+            android:id="@+id/settings_notify_list"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:text="@string/settings_notify_list_label"
+            android:onClick="openNotifyListSettings" />
 
-<Button
-    android:id="@+id/settings_notify_list"
-    android:layout_height="wrap_content"
-    android:layout_width="match_parent"
-    android:text="@string/settings_notify_list_label"
-    android:onClick="openNotifyListSettings"
-    >
-
-</Button>
-
-</LinearLayout>
+    </LinearLayout>
 </ScrollView>

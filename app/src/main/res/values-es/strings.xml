@@ -12,7 +12,6 @@
     <!-- Message to say connection is in progress -->
     <string name="connect_message">Conectando a ScoutLink&#8230;</string>
     <string name="logo_content_description">ScoutLink logo</string>
-    <string name="sl_header_content_description">Imagen de cabecera</string>
     <string name="channel_list_on_connect">Mostrar lista de canales después de conectarse</string>
     <!-- Menu Items -->
     <!-- Opens Application Settings, e.g., nick, ident, realname, quit message -->
@@ -23,7 +22,6 @@
     <!-- Disconnects from ScoutLink -->
     <string name="action_disconnect">Desconectar</string>
     <!-- Shows users on the current channel, fails if not in a channel - see `userlist_not_on_channel` string. -->
-    <string name="action_users">Lista de usuarios</string>
     <!-- Opens an interface to join a new channel -->
     <string name="action_join">Unirse a un canal</string>
     <!-- Displays a list of all available channels -->
@@ -32,7 +30,6 @@
     <string name="action_channel_settings">Configuraciones del  canal</string>
 
     <!-- Text displayed on the "Send" button in a channel -->
-    <string name="label_send_message_button">Enviar</string>
     <!-- Text shown when no text has been typed into the new message box on a channel. -->
     <string name="send_message_hint">Escribe para enviar el mensaje</string>
 
@@ -65,9 +62,6 @@
     <string name="action_userlist_deadmin">De-Admin</string>
     <string name="action_userlist_voice">Voice</string>
     <string name="action_userlist_devoice">Devoice</string>
-
-    <string name="title_activity_notice">Enviar un notice</string>
-    <string name="send_notice_button">Enviar</string>
 
     <string name="activity_invite_title">Invitar al canal</string>
     <string name="invited_to_channel">Has sido invitado a %1$s, te gustaría unirte?</string>
@@ -170,15 +164,8 @@
     <string name="default_quit_message">ScoutLink para Android!</string>
     <string name="nick_already_in_use">Este apodo ya está en uso, selecciona otro apodo e intenta de nuevo.</string>
 
-    <string name="notification_new_mentions">%1$d nuevas menciones en %2$s.</string>
-    <string name="notification_new_mentions_multi">%1$d nuevos mensajes en %2$d conversaciones.</string>
-    <string name="notification_new_messages_inbox_title">Nuevos mensajes en ScoutLink</string>
-    <string name="notification_new_messages">%1$d nuevos mensajes en %2$d conversaciones.</string>
-    <string name="notification_new_messages_multi">%1$s/%2$s: %3$s</string>
     <string name="notification_connected">Conectado como %1$s.</string>
-    <string name="notification_new_multi">%1$d nuevos mensajes, %2$d menciones.</string>
 
-    <string name="notice_hint">Ingresa tu mensaje</string>
     <string name="settings_topic_hint">Topic del canal</string>
 
     <string name="edit_list_add_button">Añadir</string>
@@ -189,19 +176,23 @@
 
     <string name="connect_failed">Conexión fallida, intenta de nuevo</string>
 
-    <!-- Default settings values -->
-    <!-- Default ident to use if the user does not set one, this will show in the users hostmask (nick!ident@host) -->
-    <string name="default_ident">SLAndroid</string>
     <!-- Default Real Name to use if the user does not set one, this will show in WHOIS -->
     <string name="default_gecos">ScoutLink IRC para Android!</string>
 
-    <string name="failed_to_load_user_list">Error al cargar lista de usuarios</string>
-
-    <!-- Core App Settings, probably don't need localising. -->
-    <string name="server_window_title">ScoutLink</string>
-    <string name="channel_name_prefix">#</string>
-
-    <string name="server_address">chat.scoutlink.net</string>
+    <string name="online_users">Usuarios Conectados</string>
+    <string name="block_user">Bloquear</string>
+    <string name="unblock_user">Desbloquear</string>
+    <string name="user_blocked">Ya no recibiras mensajes de %1$s.</string>
+    <string name="user_unblocked">%1$s ha sido desbloqueado.</string>
+    <string name="blocked_icon_description">Bloqueado</string>
+    <string name="aliases_activity_title">Aliases</string>
+    <string name="action_new_alias">Nuevo alias</string>
+    <string name="alias_command_name">Nombre de comando</string>
+    <string name="alias_help">Cada línea será tomada como un comando nuevo.\nPuedes usar otros comandos y aliases aquí.\nPuedes usar los siguientes hilos especiales:\n# Será reemplazado con el canal correspondiente.\n$n Será reemplazado con el parametro nth al alias.\n$n- Será reemplazado con el parametro nth y todo el texto tras el.</string>
+    <string name="alias_already_exists">Un alias con este nombre ya existe, por favor elige un nombre diferente.</string>
+    <string name="scroll_to_bottom_arrow">Desliza al fondo</string>
+    <string name="channels_section_title">Canales</string>
+    <string name="direct_messages_section_title">Mensajes directos</string>
 
     <string name="title_activity_log_view">Vista de registro</string>
     <string name="title_activity_log_list">Logs</string>
@@ -213,7 +204,5 @@
     <string name="error_exporting_logs">Error al exportar el archivo de registro</string>
     <string name="settings_enable_logging">Habilitar el registro</string>
     <string name="settings_load_previous_messages_on_join">Cargar mensajes anteriores en unirse</string>
-    <string name="previous_session_header">Mensajes anteriores</string>
-    <string name="current_session_header">Sesión actual</string>
 
 </resources>

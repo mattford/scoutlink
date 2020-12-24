@@ -12,7 +12,6 @@
     <!-- Message to say connection is in progress -->
     <string name="connect_message">Verbinden met ScoutLink&#8230;</string>
     <string name="logo_content_description">ScoutLink logo</string>
-    <string name="sl_header_content_description">Header plaatje</string>
     <string name="channel_list_on_connect">Laat de kanalen zien na het verbinden</string>
     <!-- Menu Items -->
     <!-- Opens Application Settings, e.g., nick, ident, realname, quit message -->
@@ -23,7 +22,6 @@
     <!-- Disconnects from ScoutLink -->
     <string name="action_disconnect">Verbinding verbreken</string>
     <!-- Shows users on the current channel, fails if not in a channel - see `userlist_not_on_channel` string. -->
-    <string name="action_users">Gebruikerslijst</string>
     <!-- Opens an interface to join a new channel -->
     <string name="action_join">Enter kanaal</string>
     <!-- Displays a list of all available channels -->
@@ -32,7 +30,6 @@
     <string name="action_channel_settings">Kanaal instellingen</string>
 
     <!-- Text displayed on the "Send" button in a channel -->
-    <string name="label_send_message_button">Verzenden</string>
     <!-- Text shown when no text has been typed into the new message box on a channel. -->
     <string name="send_message_hint">Typ om een bericht te versturen</string>
 
@@ -66,9 +63,6 @@
     <string name="action_userlist_deadmin">De-Admin</string>
     <string name="action_userlist_voice">Voice</string>
     <string name="action_userlist_devoice">Devoice</string>
-
-    <string name="title_activity_notice">Stuur een aankondiging</string>
-    <string name="send_notice_button">versturen</string>
 
     <string name="activity_invite_title">Uitgenodigd in kanaal</string>
     <string name="invited_to_channel">Je bent uitnodigigd in %1$s, wil je mee doen?</string>
@@ -149,8 +143,6 @@
     <string name="error_exporting_logs">Error exporteren log file</string>
     <string name="settings_enable_logging">Logging aanzetten</string>
     <string name="settings_load_previous_messages_on_join">Laad vorige berichten bij deelnemen kanaal</string>
-    <string name="previous_session_header">Vorige berichten</string>
-    <string name="current_session_header">Huidige Sessie</string>
 
     <string name="title_activity_list_view_edit">Lijst aanpassen</string>
     <string name="edit_list_remove_item_confirm_title">Verwijderen Item?</string>
@@ -181,19 +173,26 @@
     <string name="channel_settings_need_op">Je moet een OP zijn om kanaal instellingen te veranderen</string>
     <string name="channel_settings_not_channel">Je kan alleen in het kanaal dingen veranderen</string>
 
+    <string name="online_users">Online gebruikers</string>
+    <string name="block_user">Blokkeren</string>
+    <string name="unblock_user">Deblokkeren</string>
+    <string name="user_blocked">Je zal geen berichten meer ontvangen van%1$s.</string>
+    <string name="user_unblocked">%1$s is gedeblokeerd.</string>
+    <string name="blocked_icon_description">Geblokeerd</string>
+    <string name="aliases_activity_title">Aliasen</string>
+    <string name="action_new_alias">Nieuwe alias</string>
+    <string name="alias_command_name">Naam commando</string>
+    <string name="alias_help">Elke lijn word behandeld als een apart commando\nJe kan andere aliassen hier als commandos gebruiken.\nJe kan de volgende speciale karakters gebruiken:\n# Word vervangen door de huidige kanaalnaam\n$n Word vervangen door een parameter die je mee geeft aan de alias.\n$n- Word vervangen door de n-de parameter die je mee geeft</string>
+    <string name="alias_already_exists">Een alias met deze naam bestaat al, kies een andere naam</string>
+    <string name="scroll_to_bottom_arrow">Scroll naar beneden</string>
+    <string name="channels_section_title">Kanalen</string>
+    <string name="direct_messages_section_title">Prive bericht</string>
 
     <string name="default_quit_message">ScoutLink for Android!</string>
     <string name="nick_already_in_use">Deze gebruikersnaam is al in gebruik, kies een andere en probeer het opnieuw</string>
 
-    <string name="notification_new_mentions">%1$d genoemd in %2$s.</string>
-    <string name="notification_new_mentions_multi">%1$d genoemd in %2$d gesprekken.</string>
-    <string name="notification_new_messages_inbox_title">Nieuwe berichten op Scoutlink</string>
-    <string name="notification_new_messages">%1$d nieuwe berichten in %2$d gesprekken.</string>
-    <string name="notification_new_messages_multi">%1$s/%2$s: %3$s</string>
     <string name="notification_connected">Verbonden als %1$s.</string>
-    <string name="notification_new_multi">%1$d nieuwe berichten, %2$d nieuwe benoemingen.</string>
 
-    <string name="notice_hint">Typ je bericht</string>
     <string name="settings_topic_hint">Kanaal onderwerp</string>
 
     <string name="edit_list_add_button">Toevoegen</string>
@@ -204,17 +203,7 @@
 
     <string name="connect_failed">Verbinding mislukt, probeer het opnieuw</string>
 
-    <!-- Default settings values -->
-    <!-- Default ident to use if the user does not set one, this will show in the users hostmask (nick!ident@host) -->
-    <string name="default_ident" translatable="false">SLAndroid</string>
     <!-- Default Real Name to use if the user does not set one, this will show in WHOIS -->
     <string name="default_gecos">ScoutLink IRC voor Android!</string>
 
-    <string name="failed_to_load_user_list">Kan de gebruikerslijst niet laden</string>
-
-    <!-- Core App Settings, probably don't need localising. -->
-    <string name="server_window_title" translatable="false">ScoutLink</string>
-    <string name="channel_name_prefix" translatable="false">#</string>
-
-    <string name="server_address" translatable="false">chat.scoutlink.net</string>
 </resources>

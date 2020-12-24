@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
+import org.pircbotx.hooks.managers.SequentialListenerManager;
 
 import androidx.annotation.Nullable;
 import uk.org.mattford.scoutlink.R;
@@ -47,7 +48,7 @@ public class IRCService extends Service {
 
 	private boolean foreground = false;
 
-	private ArrayList<Intent> queuedIntents = new ArrayList<>();
+	private final ArrayList<Intent> queuedIntents = new ArrayList<>();
 
 	public void onCreate() {
 		this.server = Server.getInstance();
@@ -55,12 +56,7 @@ public class IRCService extends Service {
 		this.updateNotification();
 	}
 
-	@Override
-	public void onDestroy() {
-        super.onDestroy();
-    }
-		
-	public int onStartCommand(Intent intent, int flags, int startId) {
+    public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent != null && intent.getAction() != null) {
             if (Broadcast.CONNECT.equals(intent.getAction())) {
                 if (!isConnected()) {
@@ -114,6 +110,11 @@ public class IRCService extends Service {
 	public boolean isForeground() {
 		return this.foreground;
 	}
+
+	public boolean isUserBlocked(String nickname) {
+	    ArrayList<String> blockedUsers = settings.getBlockedUsers();
+	    return blockedUsers.contains(nickname);
+    }
 	
 	public PircBotX getConnection() {
 		return this.server.getConnection();
@@ -134,8 +135,15 @@ public class IRCService extends Service {
             .setName(settings.getString("nickname"))
             .setLogin(settings.getString("ident", getString(R.string.default_ident)))
             .setServers(servers)
-            .setRealName(settings.getString("gecos", getString(R.string.default_gecos)))
-            .addListener(listener);
+            .setRealName(settings.getString("gecos", getString(R.string.default_gecos)));
+
+        // If we have a version of Android prior to O, the ThreadedListenerManager will
+        // crash, as it uses Java8 APIs which Android < O doesn't support currently.
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            config.setListenerManager(SequentialListenerManager.newDefault());
+        }
+
+        config.addListener(listener);
 
         String[] channels = settings.getStringArray("autojoin_channels");
         if (channels.length > 1 || !channels[0].equals("")) {

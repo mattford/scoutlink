@@ -43,7 +43,6 @@
             android:orientation="vertical">
 
             <LinearLayout
-                android:id="@+id/message_metadata"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="5dp"
@@ -72,5 +71,4 @@
                 android:padding="10dp" />
         </LinearLayout>
     </LinearLayout>
-
 </LinearLayout>

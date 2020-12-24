@@ -91,20 +91,18 @@ public class MainActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         Intent intent;
-        switch(id) {
-            case R.id.action_settings:
-                intent = new Intent(this, SettingsActivity.class);
-                startActivity(intent);
-                break;
-            case R.id.action_rules:
-                intent = new Intent(this, RulesActivity.class);
-                startActivity(intent);
-                break;
-            case R.id.action_logs:
-                intent = new Intent(this, LogListActivity.class);
-                startActivity(intent);
-                break;
-        	
+        if (id == R.id.action_settings) {
+            intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
+        } else if (id == R.id.action_rules) {
+            intent = new Intent(this, RulesActivity.class);
+            startActivity(intent);
+        } else if (id == R.id.action_logs) {
+            intent = new Intent(this, LogListActivity.class);
+            startActivity(intent);
+        } else if (id == R.id.action_aliases) {
+            intent = new Intent(this, AliasesActivity.class);
+            startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }

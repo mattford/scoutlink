@@ -2,12 +2,12 @@ package uk.org.mattford.scoutlink.activity;
 
 import java.util.ArrayList;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.room.Room;
-import uk.org.mattford.scoutlink.BuildConfig;
 import uk.org.mattford.scoutlink.R;
 import uk.org.mattford.scoutlink.ScoutlinkApplication;
 import uk.org.mattford.scoutlink.command.CommandParser;
@@ -33,12 +33,18 @@ import android.os.Handler;
 import androidx.appcompat.app.AppCompatActivity;
 import uk.org.mattford.scoutlink.viewmodel.ConnectionStatusViewModel;
 import uk.org.mattford.scoutlink.viewmodel.ConversationListViewModel;
+import uk.org.mattford.scoutlink.views.NickCompletionTextView;
 
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import org.pircbotx.User;
 
 public class ConversationsActivity extends AppCompatActivity implements ConversationListFragment.OnJoinChannelButtonClickListener {
     private ActivityConversationsBinding binding;
@@ -55,7 +61,7 @@ public class ConversationsActivity extends AppCompatActivity implements Conversa
     /**
      * Required to work around NPE when screen is rotated immediately after selecting a channel, causing the reference to IRCService to be lost briefly.
      */
-    private ArrayList<String> joinChannelBuffer = new ArrayList<>();
+    private final ArrayList<String> joinChannelBuffer = new ArrayList<>();
 	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -91,11 +97,18 @@ public class ConversationsActivity extends AppCompatActivity implements Conversa
             if (messageListFragment != null) {
                 messageListFragment.setDataSource(activeConversation);
             }
+            activeConversation.getUsers().observe(this, users -> {
+                // I think this can be done more fluidly with .stream().map()
+                // but stuck with this unless I bump minimum API.
+                ArrayList<String> userNicks = new ArrayList<>();
+                for (User user : users) {
+                    userNicks.add(user.getNick());
+                }
+                binding.input.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, userNicks));
+            });
         });
 
-        connectionStatusViewModel.getConnectionStatus().observe(this, connectionStatus -> {
-           binding.connectionStatus.setText(connectionStatus);
-        });
+        connectionStatusViewModel.getConnectionStatus().observe(this, connectionStatus -> binding.connectionStatus.setText(connectionStatus));
     }
 
 	public void onResume() {
@@ -115,13 +128,12 @@ public class ConversationsActivity extends AppCompatActivity implements Conversa
 		intentFilter.addAction(Broadcast.CONNECTED);
         registerReceiver(this.receiver, intentFilter);
 
-        EditText newMessage = binding.input;
+        NickCompletionTextView newMessage = binding.input;
         newMessage.setOnEditorActionListener((v, actionId, event) -> {
-            if (event == null) {
+            if (actionId == EditorInfo.IME_NULL && event.getAction() == KeyEvent.ACTION_DOWN) {
                 onSendButtonClick(v);
-                return true;
             }
-            return false;
+            return true;
         });
 
         if (!settings.getBoolean("rules_viewed", false)) {
@@ -169,7 +181,7 @@ public class ConversationsActivity extends AppCompatActivity implements Conversa
 			return;
 		}
 		if (message.startsWith("/")) {
-			CommandParser.getInstance(getApplicationContext()).parse(message, conversation, backgroundHandler);
+			CommandParser.getInstance(this).parse(message, conversation, backgroundHandler);
 		} else {
             if (conversation.getType() == (Conversation.TYPE_SERVER)) {
                 Message msg = new Message(
@@ -201,8 +213,6 @@ public class ConversationsActivity extends AppCompatActivity implements Conversa
     public void onConnect(boolean initialConnection) {
 	    if (initialConnection && settings.getBoolean("channel_list_on_connect", false)) {
             Intent channelListIntent = new Intent(this, ChannelListActivity.class);
-            ArrayList<String> channels = server.getChannelList();
-            channelListIntent.putStringArrayListExtra("channels", channels);
             startActivityForResult(channelListIntent, JOIN_CHANNEL_RESULT);
         }
 
@@ -235,7 +245,7 @@ public class ConversationsActivity extends AppCompatActivity implements Conversa
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         ConversationListViewModel viewModel = new ViewModelProvider(this).get(ConversationListViewModel.class);
@@ -245,64 +255,56 @@ public class ConversationsActivity extends AppCompatActivity implements Conversa
         }
         int id = item.getItemId();
         Intent intent;
-        switch(id) {
-            case R.id.action_close:
-                switch (conversation.getType()) {
-                    case Conversation.TYPE_CHANNEL:
-                        backgroundHandler.post(() -> conversation.getChannel().send().part());
-                        break;
-                    case Conversation.TYPE_QUERY:
-                        server.removeConversation(conversation.getName());
-                        break;
-                    default:
-                        Toast.makeText(this, getResources().getString(R.string.close_server_window), Toast.LENGTH_SHORT).show();
-                        break;
-                }
-                break;
-            case R.id.action_disconnect:
-                backgroundHandler.post(() -> server.getConnection().sendIRC().quitServer(settings.getString("quit_message", getString(R.string.default_quit_message))));
-                break;
-            case android.R.id.home:
+        if (id == R.id.action_close) {
+            switch (conversation.getType()) {
+                case Conversation.TYPE_CHANNEL:
+                    backgroundHandler.post(() -> conversation.getChannel().send().part());
+                    break;
+                case Conversation.TYPE_QUERY:
+                    server.removeConversation(conversation.getName());
+                    break;
+                default:
+                    Toast.makeText(this, getResources().getString(R.string.close_server_window), Toast.LENGTH_SHORT).show();
+                    break;
+            }
+        } else if (id == R.id.action_disconnect) {
+            backgroundHandler.post(() -> server.getConnection().sendIRC().quitServer(settings.getString("quit_message", getString(R.string.default_quit_message))));
+        } else if (id == android.R.id.home) {
+            if (hasDrawerLayout && binding.conversationsDrawerContainer != null) {
+                binding.conversationsDrawerContainer.openDrawer(GravityCompat.START);
+            }
+        } else if (id == R.id.action_userlist) {
+            if (conversation.getType() == Conversation.TYPE_CHANNEL) {
                 if (hasDrawerLayout && binding.conversationsDrawerContainer != null) {
-                    binding.conversationsDrawerContainer.openDrawer(GravityCompat.START);
+                    binding.conversationsDrawerContainer.openDrawer(GravityCompat.END);
                 }
-                break;
-            case R.id.action_userlist:
-                if (conversation.getType() == Conversation.TYPE_CHANNEL) {
-                    if (hasDrawerLayout && binding.conversationsDrawerContainer != null) {
-                        binding.conversationsDrawerContainer.openDrawer(GravityCompat.END);
-                    }
-                } else {
-                    Toast.makeText(this, getResources().getString(R.string.userlist_not_on_channel), Toast.LENGTH_SHORT).show();
-                }
-                break;
-            case R.id.action_join:
-                intent = new Intent(this, JoinActivity.class);
-                startActivityForResult(intent, JOIN_CHANNEL_RESULT);
-                break;
-            case R.id.action_channel_list:
-                onJoinChannelClick();
-                break;
-            case R.id.action_channel_settings:
-                if (conversation.getType() != Conversation.TYPE_CHANNEL) {
-                    Toast.makeText(this, getString(R.string.channel_settings_not_channel), Toast.LENGTH_SHORT).show();
-                } else if (conversation.getChannel().isOp(server.getConnection().getUserBot())) {
-                    intent = new Intent(this, ChannelSettingsActivity.class);
-                    intent.putExtra("channelName", conversation.getName());
-                    startActivity(intent);
-                } else {
-                    Toast.makeText(this, getString(R.string.channel_settings_need_op), Toast.LENGTH_SHORT).show();
-                }
-                break;
-            case R.id.action_rules:
-                intent = new Intent(this, RulesActivity.class);
+            } else {
+                Toast.makeText(this, getResources().getString(R.string.userlist_not_on_channel), Toast.LENGTH_SHORT).show();
+            }
+        } else if (id == R.id.action_join) {
+            intent = new Intent(this, JoinActivity.class);
+            startActivityForResult(intent, JOIN_CHANNEL_RESULT);
+        } else if (id == R.id.action_channel_list) {
+            onJoinChannelClick();
+        } else if (id == R.id.action_channel_settings) {
+            if (conversation.getType() != Conversation.TYPE_CHANNEL) {
+                Toast.makeText(this, getString(R.string.channel_settings_not_channel), Toast.LENGTH_SHORT).show();
+            } else if (conversation.getChannel().isOp(server.getConnection().getUserBot())) {
+                intent = new Intent(this, ChannelSettingsActivity.class);
+                intent.putExtra("channelName", conversation.getName());
                 startActivity(intent);
-                break;
-            case R.id.action_logs:
-                intent = new Intent(this, LogListActivity.class);
-                startActivity(intent);
-                break;
-
+            } else {
+                Toast.makeText(this, getString(R.string.channel_settings_need_op), Toast.LENGTH_SHORT).show();
+            }
+        } else if (id == R.id.action_rules) {
+            intent = new Intent(this, RulesActivity.class);
+            startActivity(intent);
+        } else if (id == R.id.action_logs) {
+            intent = new Intent(this, LogListActivity.class);
+            startActivity(intent);
+        } else if (id == R.id.action_aliases) {
+            intent = new Intent(this, AliasesActivity.class);
+            startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }

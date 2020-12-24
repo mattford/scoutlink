@@ -26,7 +26,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textColor="@color/light_grey"
-            android:text="Channels" />
+            android:text="@string/channels_section_title" />
 
         <ImageButton
             android:id="@+id/join_button"
@@ -35,7 +35,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:background="?android:attr/selectableItemBackground"
-            android:contentDescription="Join channel" />
+            android:contentDescription="@string/action_join" />
 
 
     </LinearLayout>
@@ -53,7 +53,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="@color/light_grey"
-        android:text="Direct messages" />
+        android:text="@string/direct_messages_section_title" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/direct_message_list"

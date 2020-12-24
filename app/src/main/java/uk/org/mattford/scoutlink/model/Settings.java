@@ -10,7 +10,7 @@ import java.util.Arrays;
 
 public class Settings {
 	
-	private SharedPreferences prefs;
+	private final SharedPreferences prefs;
 
 	public Settings(Context context) {
 		this.prefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -83,5 +83,24 @@ public class Settings {
 	public Integer getInteger(String key, Integer defaultValue) {
 		return prefs.getInt(key, defaultValue);
 	}
-	
+
+	public ArrayList<String> getBlockedUsers() {
+		return getStringArrayList("blocked_users");
+	}
+
+	public void blockUser(String nickname) {
+		ArrayList<String> blockedUsers = getBlockedUsers();
+		if (!blockedUsers.contains(nickname)) {
+			blockedUsers.add(nickname);
+			putStringArrayList("blocked_users", blockedUsers);
+		}
+	}
+
+	public void unblockUser(String nickname) {
+		ArrayList<String> blockedUsers = getBlockedUsers();
+		if (blockedUsers.contains(nickname)) {
+			blockedUsers.remove(nickname);
+			putStringArrayList("blocked_users", blockedUsers);
+		}
+	}
 }

@@ -1,19 +1,21 @@
 package uk.org.mattford.scoutlink.model;
 
+import org.pircbotx.ChannelListEntry;
 import org.pircbotx.PircBotX;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 public class Server {
-	private ArrayList<OnConversationListChangedListener> onConversationListChangedListeners;
-	private ArrayList<OnConnectionStatusChangedListener> onConnectionStatusChangedListeners;
-	private ArrayList<OnActiveConversationChangedListener> onActiveConversationChangedListeners;
-	private LinkedHashMap<String, Conversation> conversations;
+	private final ArrayList<OnConversationListChangedListener> onConversationListChangedListeners;
+	private final ArrayList<OnConnectionStatusChangedListener> onConnectionStatusChangedListeners;
+	private final ArrayList<OnActiveConversationChangedListener> onActiveConversationChangedListeners;
+	private final LinkedHashMap<String, Conversation> conversations;
 	private int status = 0;
-    private ArrayList<String> channelList = new ArrayList<>();
     private PircBotX bot;
+    private List<ChannelListEntry> channelList;
 	
 	public final static int STATUS_DISCONNECTED = 0;
 	public final static int STATUS_CONNECTING = 1;
@@ -29,6 +31,7 @@ public class Server {
 
 	private Server() {
 		this.conversations = new LinkedHashMap<>();
+		this.channelList = new ArrayList<>();
 		this.onConversationListChangedListeners = new ArrayList<>();
 		this.onConnectionStatusChangedListeners = new ArrayList<>();
 		this.onActiveConversationChangedListeners = new ArrayList<>();
@@ -40,10 +43,6 @@ public class Server {
 		}
 		return null;
 	}
-
-    public ArrayList<String> getChannelList() {
-        return channelList;
-    }
 	
 	public int getStatus() {
 		return this.status;
@@ -71,7 +70,7 @@ public class Server {
 	}
 	
 	public void removeConversation(String name) {
-		conversations.remove(name);
+		conversations.remove(name.toLowerCase());
 		onConversationListChanged();
 	}
 	
@@ -100,6 +99,14 @@ public class Server {
 		for (OnConversationListChangedListener listener : onConversationListChangedListeners) {
 			listener.onConversationListChanged(this.conversations);
 		}
+	}
+
+	public void setChannelList(List<ChannelListEntry> channelList) {
+		this.channelList = channelList;
+	}
+
+	public List<ChannelListEntry> getChannelList() {
+		return this.channelList;
 	}
 
 	public interface OnConversationListChangedListener {

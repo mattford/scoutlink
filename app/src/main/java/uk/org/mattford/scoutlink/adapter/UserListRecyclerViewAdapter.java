@@ -3,6 +3,7 @@ package uk.org.mattford.scoutlink.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.pircbotx.Channel;
@@ -10,21 +11,25 @@ import org.pircbotx.User;
 
 import java.util.ArrayList;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import uk.org.mattford.scoutlink.R;
+import uk.org.mattford.scoutlink.model.Settings;
 
 public class UserListRecyclerViewAdapter extends RecyclerView.Adapter<UserListRecyclerViewAdapter.ViewHolder> {
+    private final OnUserListItemClickListener mListener;
+    private final ArrayList<User> users;
+    private final Channel channel;
+    private final Settings settings;
 
-    private OnUserListItemClickListener mListener;
-    private ArrayList<User> users;
-    private Channel channel;
-
-    public UserListRecyclerViewAdapter(ArrayList<User> users, Channel channel, OnUserListItemClickListener listener) {
+    public UserListRecyclerViewAdapter(ArrayList<User> users, Settings settings, Channel channel, OnUserListItemClickListener listener) {
         mListener = listener;
         this.users = users;
         this.channel = channel;
+        this.settings = settings;
     }
 
+    @NonNull
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
@@ -34,6 +39,7 @@ public class UserListRecyclerViewAdapter extends RecyclerView.Adapter<UserListRe
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
+        ArrayList<String> blockedUsers = settings.getBlockedUsers();
         holder.mItem = this.users.get(position);
         holder.mUserNameView.setText(holder.mItem.getNick());
         // Show the highest level of access
@@ -52,7 +58,10 @@ public class UserListRecyclerViewAdapter extends RecyclerView.Adapter<UserListRe
             }
         }
 
-        if (role != null) {
+        holder.mBlockedIconView.setVisibility(blockedUsers.contains(holder.mItem.getNick()) ? View.VISIBLE : View.GONE);
+
+        holder.mUserRoleView.setVisibility(View.GONE);
+        if (role != null && !blockedUsers.contains(holder.mItem.getNick())) {
             holder.mUserRoleView.setText(role);
             holder.mUserRoleView.setVisibility(View.VISIBLE);
         }
@@ -72,6 +81,7 @@ public class UserListRecyclerViewAdapter extends RecyclerView.Adapter<UserListRe
         final View mView;
         final TextView mUserNameView;
         final TextView mUserRoleView;
+        final ImageView mBlockedIconView;
         User mItem;
 
         ViewHolder(View view) {
@@ -79,6 +89,7 @@ public class UserListRecyclerViewAdapter extends RecyclerView.Adapter<UserListRe
             mView = view;
             mUserNameView = view.findViewById(R.id.user_name);
             mUserRoleView = view.findViewById(R.id.role_label);
+            mBlockedIconView = view.findViewById(R.id.blocked_icon);
         }
 
         @Override

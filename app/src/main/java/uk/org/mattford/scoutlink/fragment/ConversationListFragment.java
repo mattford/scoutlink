@@ -75,9 +75,7 @@ public class ConversationListFragment extends Fragment {
             view.findViewById(R.id.direct_message_label).setVisibility(directMessages.size() > 0 ? View.VISIBLE : View.GONE);
             viewModel.getActiveConversation().observe(getViewLifecycleOwner(), this::setActiveConversation);
             for (Conversation conversation : conversations) {
-                conversation.getUnreadMessagesCount().observe(getViewLifecycleOwner(), unreadCount -> {
-                    notifyConversationChanged(conversation);
-                });
+                conversation.getUnreadMessagesCount().observe(getViewLifecycleOwner(), unreadCount -> notifyConversationChanged(conversation));
             }
         });
 
@@ -121,6 +119,6 @@ public class ConversationListFragment extends Fragment {
 
 
     public interface OnJoinChannelButtonClickListener {
-        public void onJoinChannelClick();
+        void onJoinChannelClick();
     }
 }
