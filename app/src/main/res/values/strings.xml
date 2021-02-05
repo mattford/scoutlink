@@ -207,6 +207,8 @@
     <string name="alias_already_exists">An alias with this name already exists, please choose a different name.</string>
 
     <string name="scroll_to_bottom_arrow">Scroll to bottom</string>
+
+    <string name="user_search_box_hint">Search Users…</string>
     <!-- Default settings values -->
     <!-- Default ident to use if the user does not set one, this will show in the users hostmask (nick!ident@host) -->
     <string name="default_ident" translatable="false">SLAndroid</string>

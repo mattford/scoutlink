@@ -10,6 +10,7 @@ import org.pircbotx.Channel;
 import org.pircbotx.User;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,15 +19,61 @@ import uk.org.mattford.scoutlink.model.Settings;
 
 public class UserListRecyclerViewAdapter extends RecyclerView.Adapter<UserListRecyclerViewAdapter.ViewHolder> {
     private final OnUserListItemClickListener mListener;
-    private final ArrayList<User> users;
-    private final Channel channel;
+    private ArrayList<User> users = new ArrayList<>();
+    private Channel channel;
     private final Settings settings;
+    private ArrayList<User> filteredUsers = new ArrayList<>();
+    private String filterText = "";
 
-    public UserListRecyclerViewAdapter(ArrayList<User> users, Settings settings, Channel channel, OnUserListItemClickListener listener) {
+    public UserListRecyclerViewAdapter(Settings settings, OnUserListItemClickListener listener) {
         mListener = listener;
-        this.users = users;
-        this.channel = channel;
         this.settings = settings;
+    }
+
+    public void updateConversation(Channel channel, ArrayList<User> users) {
+        this.channel = channel;
+        this.users = users;
+        refreshFilteredUsers();
+    }
+
+    public void setFilter(String filterText) {
+        this.filterText = filterText;
+        refreshFilteredUsers();
+    }
+
+    public void refreshFilteredUsers() {
+        this.filteredUsers = new ArrayList<>();
+        Collections.sort(this.users, (user, user2) -> {
+            int rolePriorityUser1 = getUserRolePriority(user);
+            int rolePriorityUser2 = getUserRolePriority(user2);
+            if (rolePriorityUser1 != rolePriorityUser2) {
+                return rolePriorityUser1 < rolePriorityUser2 ? 1 : -1;
+            }
+            return user.getNick().toLowerCase().compareTo(user2.getNick().toLowerCase());
+        });
+        for (User user : this.users) {
+            if ("".equalsIgnoreCase(this.filterText) || user.getNick().toLowerCase().contains(this.filterText.toLowerCase())) {
+                this.filteredUsers.add(user);
+            }
+        }
+        notifyDataSetChanged();
+    }
+
+    private int getUserRolePriority(User user) {
+        if (channel != null) {
+            if (channel.isOwner(user)) {
+                return 5;
+            } else if (channel.isSuperOp(user)) {
+                return 4;
+            } else if (channel.isOp(user)) {
+                return 3;
+            } else if (channel.isHalfOp(user)) {
+                return 2;
+            } else if (channel.hasVoice(user)) {
+                return 1;
+            }
+        }
+        return 0;
     }
 
     @NonNull
@@ -40,7 +87,7 @@ public class UserListRecyclerViewAdapter extends RecyclerView.Adapter<UserListRe
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         ArrayList<String> blockedUsers = settings.getBlockedUsers();
-        holder.mItem = this.users.get(position);
+        holder.mItem = this.filteredUsers.get(position);
         holder.mUserNameView.setText(holder.mItem.getNick());
         // Show the highest level of access
         String role = null;
@@ -74,7 +121,7 @@ public class UserListRecyclerViewAdapter extends RecyclerView.Adapter<UserListRe
 
     @Override
     public int getItemCount() {
-        return users.size();
+        return filteredUsers.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
