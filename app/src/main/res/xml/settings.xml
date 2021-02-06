@@ -18,12 +18,14 @@
             app:key="ident"
             app:title="@string/settings_ident_label"
             app:summary="@string/settings_ident_summary"
+            app:defaultValue="@string/default_ident"
             app:iconSpaceReserved="false"/>
 
         <EditTextPreference
             app:key="gecos"
             app:title="@string/settings_gecos_label"
             app:summary="@string/settings_gecos_summary"
+            app:defaultValue="@string/default_gecos"
             app:iconSpaceReserved="false"/>
 
         <EditTextPreference
@@ -43,6 +45,7 @@
             app:key="quit_message"
             app:title="@string/settings_quit_message_label"
             app:summary="@string/settings_quit_message_summary"
+            app:defaultValue="@string/default_quit_message"
             app:iconSpaceReserved="false"/>
 
     </PreferenceCategory>
@@ -55,12 +58,14 @@
         <SwitchPreferenceCompat
             app:key="enable_logging"
             app:title="@string/settings_enable_logging"
+            app:defaultValue="true"
             app:iconSpaceReserved="false"/>
         <SwitchPreferenceCompat
             app:key="load_previous_messages_on_join"
             app:title="@string/settings_load_previous_messages_on_join_label"
             app:summary="@string/settings_load_previous_messages_on_join_summary"
             app:dependency="enable_logging"
+            app:defaultValue="true"
             app:iconSpaceReserved="false"
         />
     </PreferenceCategory>
@@ -70,14 +75,14 @@
         app:title="@string/settings_category_other"
         app:iconSpaceReserved="false">
         <uk.org.mattford.scoutlink.preference.StringListPreference
-            app:key="join_on_connect"
+            app:key="autojoin_channels"
             app:title="@string/settings_autojoin_channels_label"
             app:summary="@string/settings_autojoin_channels_summary"
             app:iconSpaceReserved="false"
             app:firstChar="#" />
 
         <uk.org.mattford.scoutlink.preference.StringListPreference
-            app:key="commands_on_connect"
+            app:key="command_on_connect"
             app:title="@string/settings_command_on_connect_label"
             app:summary="@string/settings_command_on_connect_summary"
             app:iconSpaceReserved="false"

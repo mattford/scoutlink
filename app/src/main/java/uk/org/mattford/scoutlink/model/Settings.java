@@ -17,6 +17,10 @@ public class Settings {
 	public Settings(Context context) {
 		this.prefs = PreferenceManager.getDefaultSharedPreferences(context);
 	}
+
+	public Settings (SharedPreferences sharedPreferences) {
+		this.prefs = sharedPreferences;
+	}
 	
 	public String getString(String key) {
 		return this.getString(key, "");
@@ -51,9 +55,13 @@ public class Settings {
     }
 
 	public ArrayList<String> getStringArrayList(String key) {
-		Set<String> value = prefs.getStringSet(key, null);
-		if (value != null) {
-			return new ArrayList<>(value);
+		try {
+			Set<String> value = prefs.getStringSet(key, null);
+			if (value != null) {
+				return new ArrayList<>(value);
+			}
+		} catch (ClassCastException e) {
+			// This is due to the settings previously being saved as a string
 		}
 		String string = getString(key);
 		return new ArrayList<>(Arrays.asList(TextUtils.split(string, ",")));

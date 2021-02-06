@@ -4,16 +4,13 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import androidx.preference.DialogPreference;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 
 import uk.org.mattford.scoutlink.R;
+import uk.org.mattford.scoutlink.model.Settings;
 
 public class StringListPreference extends DialogPreference {
     private ArrayList<String> mStrings = new ArrayList<>();
@@ -80,16 +77,11 @@ public class StringListPreference extends DialogPreference {
     }
 
     protected ArrayList<String> getPersistedStringArray() {
-        Set<String> strings = getPersistedStringSet(null);
-        if (strings != null) {
-            return new ArrayList<>(strings);
-        }
-        String csValues = getSharedPreferences().getString(getKey(), "");
-        return new ArrayList<>(Arrays.asList(TextUtils.split(csValues, ",")));
+        return (new Settings(getSharedPreferences())).getStringArrayList(getKey());
     }
 
     protected void persistStringArray(ArrayList<String> strings) {
-        persistStringSet(new HashSet<>(strings));
+        (new Settings(getSharedPreferences())).putStringArrayList(getKey(), strings);
     }
 
     @Override
