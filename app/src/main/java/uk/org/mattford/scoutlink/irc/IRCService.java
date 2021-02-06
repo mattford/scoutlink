@@ -14,6 +14,7 @@ import uk.org.mattford.scoutlink.ScoutlinkApplication;
 import uk.org.mattford.scoutlink.activity.ConversationsActivity;
 import uk.org.mattford.scoutlink.database.LogDatabase;
 import uk.org.mattford.scoutlink.database.entities.LogMessage;
+import uk.org.mattford.scoutlink.event.NotifyEvent;
 import uk.org.mattford.scoutlink.model.Broadcast;
 import uk.org.mattford.scoutlink.model.Conversation;
 import uk.org.mattford.scoutlink.model.Message;
@@ -42,13 +43,14 @@ public class IRCService extends Service {
 	private final int NOTIFICATION_ID = 1;
 	private final String NOTIFICATION_CHANNEL_ID = "uk.org.mattford.scoutlink.IRCService.NOTIFICATION_CHANNEL";
 
-    public static final String ACTION_ADD_NOTIFY = "uk.org.mattford.scoutlink.IRCService.ADD_NOTIFY";
-    public static final String ACTION_REMOVE_NOTIFY = "uk.org.mattford.scoutlink.IRCService.REMOVE_NOTIFY";
+    public static final String ACTION_SET_NOTIFY_LIST = "uk.org.mattford.scoutlink.IRCService.SET_NOTIFY_LIST";
     public static final String ACTION_LIST_CHANNELS = "uk.org.mattford.scoutlink.IRCService.LIST_CHANNELS";
 
 	private boolean foreground = false;
 
 	private final ArrayList<Intent> queuedIntents = new ArrayList<>();
+
+	private final ArrayList<String> watchedUsers = new ArrayList<>();
 
 	public void onCreate() {
 		this.server = Server.getInstance();
@@ -77,18 +79,32 @@ public class IRCService extends Service {
         return null;
     }
 
+    public void onNotify(NotifyEvent event) {
+	    Settings settings = new Settings(this);
+	    ArrayList<String> notifyUsers = settings.getStringArrayList("notify_list");
+	    if (!notifyUsers.contains(event.getNick())) {
+	        notifyUsers.add(event.getNick());
+	        watchedUsers.add(event.getNick());
+        }
+    }
+
     private void processIntent(Intent intent) {
         String action = intent.getAction();
         if (action != null) {
             switch (action) {
-                case ACTION_ADD_NOTIFY:
-                    for (String item : intent.getStringArrayListExtra("items")) {
-                        getBackgroundHandler().post(() -> getConnection().sendRaw().rawLineNow("WATCH " + getConnection().getNick() + " +" + item));
+                case ACTION_SET_NOTIFY_LIST:
+                    ArrayList<String> newNotifyList = intent.getStringArrayListExtra("items");
+                    for (String nickname : watchedUsers) {
+                        if (!newNotifyList.contains(nickname)) {
+                            watchedUsers.remove(nickname);
+                            getBackgroundHandler().post(() -> getConnection().sendRaw().rawLineNow("WATCH " + getConnection().getNick() + " -" + nickname));
+                        }
                     }
-                    break;
-                case ACTION_REMOVE_NOTIFY:
-                    for (String item : intent.getStringArrayListExtra("items")) {
-                        getBackgroundHandler().post(() -> getConnection().sendRaw().rawLineNow("WATCH " + getConnection().getNick() + " -" + item));
+                    for (String nickname : newNotifyList) {
+                        if (!watchedUsers.contains(nickname)) {
+                            watchedUsers.add(nickname);
+                            getBackgroundHandler().post(() -> getConnection().sendRaw().rawLineNow("WATCH " + getConnection().getNick() + " +" + nickname));
+                        }
                     }
                     break;
                 case ACTION_LIST_CHANNELS:
@@ -145,14 +161,9 @@ public class IRCService extends Service {
 
         config.addListener(listener);
 
-        String[] channels = settings.getStringArray("autojoin_channels");
-        if (channels.length > 1 || !channels[0].equals("")) {
-            for (String channel : channels) {
-                if (!channel.startsWith("#")) {
-                    channel = "#" + channel;
-                }
-                config.addAutoJoinChannel(channel);
-            }
+        ArrayList<String> channels = settings.getStringArrayList("autojoin_channels");
+        for (String channel : channels) {
+            config.addAutoJoinChannel(channel);
         }
 
         PircBotX irc = new PircBotX(config.buildConfiguration());
@@ -228,26 +239,23 @@ public class IRCService extends Service {
             getBackgroundHandler().post(() -> getConnection().sendIRC().message("NickServ", "LOGIN "+settings.getString("nickserv_user", "")+" "+settings.getString("nickserv_password", "")));
         }
 
-        String[] commands = settings.getStringArray("command_on_connect");
-        if (commands.length > 1 || !commands[0].equals("")) {
-            getBackgroundHandler().post(() -> {
-                for (String command : commands) {
-                    if (command.startsWith("/")) {
-                        command = command.substring(1);
-                    }
-                    getConnection().sendRaw().rawLineNow(command);
+        ArrayList<String> commands = settings.getStringArrayList("command_on_connect");
+        getBackgroundHandler().post(() -> {
+            for (String command : commands) {
+                if (command.startsWith("/")) {
+                    command = command.substring(1);
                 }
-            });
-        }
+                getConnection().sendRaw().rawLineNow(command);
+            }
+        });
 
-        String[] notify_users = settings.getStringArray("notify_list");
-        if (notify_users.length > 1 || !notify_users[0].equals("")) {
-            getBackgroundHandler().post(() -> {
-                for(String user : notify_users) {
-                    getConnection().sendRaw().rawLineNow("WATCH "+getConnection().getNick()+" +"+user);
-                }
-            });
-        }
+        ArrayList<String> notifyUsers = settings.getStringArrayList("notify_list");
+        getBackgroundHandler().post(() -> {
+            for(String user : notifyUsers) {
+                watchedUsers.add(user);
+                getConnection().sendRaw().rawLineNow("WATCH "+getConnection().getNick()+" +"+user);
+            }
+        });
 
         for (Intent queuedIntent : queuedIntents) {
             processIntent(queuedIntent);

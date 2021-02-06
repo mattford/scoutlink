@@ -92,6 +92,8 @@ public class ConversationsActivity extends AppCompatActivity implements Conversa
                     GravityCompat.END
                 );
                 binding.conversationsDrawerContainer.closeDrawer(GravityCompat.START);
+            } else {
+                binding.userListFragmentContainer.setVisibility(activeConversation.getType() == Conversation.TYPE_CHANNEL ? View.VISIBLE : View.GONE);
             }
             MessageListFragment messageListFragment = (MessageListFragment)getSupportFragmentManager().findFragmentById(R.id.conversation_view);
             if (messageListFragment != null) {
