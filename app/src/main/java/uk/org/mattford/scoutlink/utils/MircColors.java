@@ -170,4 +170,88 @@ public abstract class MircColors
         }
         return text;
     }
+
+    public static int[] getColours() {
+        return colors;
+    }
+
+    public static String applyControlCodes(Spannable spannableString) {
+        StringBuilder sb = new StringBuilder();
+        CharacterStyle[] spans = spannableString.getSpans(0, spannableString.length(), CharacterStyle.class);
+        for (int i = 0; i < spannableString.length(); i++) {
+            char c = spannableString.charAt(i);
+            ArrayList<CharacterStyle> spansStarting = new ArrayList<>();
+            ArrayList<CharacterStyle> spansEnding = new ArrayList<>();
+            for (CharacterStyle span : spans) {
+                if (spannableString.getSpanEnd(span) == i) {
+                    spansEnding.add(span);
+                }
+                if (spannableString.getSpanStart(span) == i) {
+                   spansStarting.add(span);
+                }
+            }
+            sb.append(getEndControlCode(spansEnding));
+            sb.append(getStartControlCode(spansStarting));
+            sb.append(c);
+        }
+        return sb.toString();
+    }
+
+    private static String getStartControlCode(ArrayList<CharacterStyle> styles) {
+        StringBuilder controlString = new StringBuilder();
+        int foregroundColour = 0;
+        int backgroundColour = 0;
+        for (CharacterStyle style : styles) {
+            if (style.getClass() == StyleSpan.class) {
+                StyleSpan span = (StyleSpan) style;
+                if (span.getStyle() == Typeface.BOLD || span.getStyle() == Typeface.BOLD_ITALIC) {
+                    controlString.append(Character.toChars(2));
+                }
+                if (span.getStyle() == Typeface.ITALIC || span.getStyle() == Typeface.BOLD_ITALIC) {
+                    controlString.append(Character.toChars(29));
+                }
+            } else if (style.getClass() == UnderlineSpan.class) {
+                controlString.append(Character.toChars(31));
+            } else if (style.getClass() == ForegroundColorSpan.class) {
+                foregroundColour = ((ForegroundColorSpan) style).getForegroundColor();
+            } else if (style.getClass() == BackgroundColorSpan.class) {
+                backgroundColour = ((BackgroundColorSpan) style).getBackgroundColor();
+            }
+        }
+        if (foregroundColour != 0) {
+            StringBuilder colourControlCode = new StringBuilder();
+            colourControlCode.append(Character.toChars(3));
+            colourControlCode.append(getMircColor(foregroundColour));
+            if (backgroundColour != 0) {
+                colourControlCode.append(",");
+                colourControlCode.append(getMircColor(backgroundColour));
+            }
+            controlString.append(colourControlCode.toString());
+        }
+        return controlString.toString();
+    }
+
+    private static String getEndControlCode(ArrayList<CharacterStyle> styles) {
+        ArrayList<CharacterStyle> styleSpans = new ArrayList<>();
+        StringBuilder controlCode = new StringBuilder();
+        for (CharacterStyle style : styles) {
+            if (style.getClass() == ForegroundColorSpan.class || style.getClass() == BackgroundColorSpan.class) {
+                // TODO: If a foreground colour span is ending, but there is still a background colour span (and vice versa),
+                // TODO: we'll need to add another start control code here with the remaining span.
+                controlCode.append(Character.toChars(3));
+            } else {
+                styleSpans.add(style);
+            }
+        }
+        return controlCode.append(getStartControlCode(styleSpans)).toString();
+    }
+
+    private static int getMircColor(int color) {
+        for (int i = 0; i < colors.length; i++) {
+            if ((colors[i] | 0xFF000000) == color) {
+                return i;
+            }
+        }
+        return 99;
+    }
 }

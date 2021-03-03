@@ -40,12 +40,12 @@
                 android:orientation="horizontal"
                 android:background="@color/conversation_background"
                 android:layout_gravity="center">
-                <uk.org.mattford.scoutlink.views.NickCompletionTextView
+                <uk.org.mattford.scoutlink.views.SpannableEditText
                     android:id="@+id/input"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:inputType="text"
+                    android:inputType="textNoSuggestions|textVisiblePassword"
                     android:hint="@string/send_message_hint"/>
                 <Button
                     android:id="@+id/send_button"

@@ -31,10 +31,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import androidx.appcompat.app.AppCompatActivity;
+
+import uk.org.mattford.scoutlink.utils.MircColors;
 import uk.org.mattford.scoutlink.viewmodel.ConnectionStatusViewModel;
 import uk.org.mattford.scoutlink.viewmodel.ConversationListViewModel;
 import uk.org.mattford.scoutlink.views.NickCompletionTextView;
 
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -177,7 +180,8 @@ public class ConversationsActivity extends AppCompatActivity implements Conversa
 	
 	public void onSendButtonClick(View v) {
 		EditText et = binding.input;
-		String message = et.getText().toString();
+		String message = MircColors.applyControlCodes(et.getText());
+		Log.d("SL", message);
 		Conversation conversation = viewModel.getActiveConversation().getValue();
 		if (message.isEmpty() || conversation == null) {
 			return;
