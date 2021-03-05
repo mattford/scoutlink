@@ -2,7 +2,6 @@ package uk.org.mattford.scoutlink.views;
 
 import android.content.Context;
 import android.graphics.PorterDuff;
-import android.graphics.Typeface;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.widget.PopupWindow;
@@ -23,6 +22,7 @@ public class TextFormatPopupWindow extends PopupWindow {
     private final ArrayList<Integer> colours = new ArrayList<>();
     private ColourSelectorPopupWindow textColourSelector;
     private ColourSelectorPopupWindow backgroundColourSelector;
+
     public TextFormatPopupWindow(Context context, OnTextFormatChangedListener listener) {
         super(context);
         this.context = context;

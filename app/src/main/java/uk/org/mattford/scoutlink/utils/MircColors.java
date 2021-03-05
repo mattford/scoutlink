@@ -182,15 +182,18 @@ public abstract class MircColors
             char c = spannableString.charAt(i);
             ArrayList<CharacterStyle> spansStarting = new ArrayList<>();
             ArrayList<CharacterStyle> spansEnding = new ArrayList<>();
+            ArrayList<CharacterStyle> otherSpans = new ArrayList<>();
             for (CharacterStyle span : spans) {
                 if (spannableString.getSpanEnd(span) == i) {
                     spansEnding.add(span);
+                } else {
+                    otherSpans.add(span);
                 }
                 if (spannableString.getSpanStart(span) == i) {
                    spansStarting.add(span);
                 }
             }
-            sb.append(getEndControlCode(spansEnding));
+            sb.append(getEndControlCode(spansEnding, otherSpans));
             sb.append(getStartControlCode(spansStarting));
             sb.append(c);
         }
@@ -231,14 +234,22 @@ public abstract class MircColors
         return controlString.toString();
     }
 
-    private static String getEndControlCode(ArrayList<CharacterStyle> styles) {
+    private static String getEndControlCode(ArrayList<CharacterStyle> endingStyles, ArrayList<CharacterStyle> otherStyles) {
         ArrayList<CharacterStyle> styleSpans = new ArrayList<>();
         StringBuilder controlCode = new StringBuilder();
-        for (CharacterStyle style : styles) {
+        for (CharacterStyle style : endingStyles) {
             if (style.getClass() == ForegroundColorSpan.class || style.getClass() == BackgroundColorSpan.class) {
-                // TODO: If a foreground colour span is ending, but there is still a background colour span (and vice versa),
-                // TODO: we'll need to add another start control code here with the remaining span.
+                // If a foreground colour span is ending, but there is still a background colour span (and vice versa),
+                // we'll need to add another start control code here with the remaining span.
                 controlCode.append(Character.toChars(3));
+                for (CharacterStyle otherSpan : otherStyles) {
+                    if (style.getClass() == ForegroundColorSpan.class && otherSpan.getClass() == BackgroundColorSpan.class) {
+                        controlCode.append("99,");
+                        controlCode.append(getMircColor(((BackgroundColorSpan) otherSpan).getBackgroundColor()));
+                    } else if (style.getClass() == BackgroundColorSpan.class && otherSpan.getClass() == ForegroundColorSpan.class) {
+                        controlCode.append(getMircColor(((ForegroundColorSpan) otherSpan).getForegroundColor()));
+                    }
+                }
             } else {
                 styleSpans.add(style);
             }

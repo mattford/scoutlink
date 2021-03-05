@@ -11,6 +11,8 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.text.style.UnderlineSpan;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -104,6 +106,7 @@ public class SpannableEditText extends NickCompletionTextView implements TextFor
             textFormatPopup.dismiss();
         } else {
             textFormatPopup.setCurrentFormat(buildFormatFromSelection());
+            textFormatPopup.setInputMethodMode(TextFormatPopupWindow.INPUT_METHOD_NEEDED);
             PopupWindowCompat.showAsDropDown(textFormatPopup, this, 0, 0, Gravity.TOP);
             PopupWindowCompat.setOverlapAnchor(textFormatPopup, false);
         }
