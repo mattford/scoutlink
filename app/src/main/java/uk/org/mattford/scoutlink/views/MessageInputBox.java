@@ -56,7 +56,7 @@ public class SpannableEditText extends NickCompletionTextView implements TextFor
             }
             if (motionEvent.getX() > getWidth() - getPaddingRight() - fontButton.getIntrinsicWidth()) {
                 handleFontClick();
-                return false;
+                return true;
             }
             view.performClick();
             return false;
