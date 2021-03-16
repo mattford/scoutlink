@@ -1,6 +1,7 @@
 package uk.org.mattford.scoutlink.views;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
@@ -11,13 +12,12 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.text.style.UnderlineSpan;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.LinearLayout;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.core.widget.PopupWindowCompat;
@@ -25,55 +25,102 @@ import androidx.core.widget.PopupWindowCompat;
 import java.util.ArrayList;
 
 import uk.org.mattford.scoutlink.R;
+import uk.org.mattford.scoutlink.databinding.MessageInputBoxBinding;
+import uk.org.mattford.scoutlink.utils.MircColors;
 
-public class SpannableEditText extends NickCompletionTextView implements TextFormatPopupWindow.OnTextFormatChangedListener {
+public class MessageInputBox extends LinearLayout implements NickCompletionTextView.OnSelectionChangedListener {
     Drawable fontButton = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_text_format, getContext().getTheme());
-    TextFormatPopupWindow textFormatPopup;
+    ArrayList<Integer> colours = new ArrayList<>();
+    ColourSelectorPopupWindow backgroundColourSelector;
+    ColourSelectorPopupWindow textColourSelector;
+    MessageInputBoxBinding binding;
+    TextFormat currentFormat;
 
-    public SpannableEditText(@NonNull Context context) {
+    public MessageInputBox(Context context) {
         super(context);
         init();
     }
 
-    public SpannableEditText(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public MessageInputBox(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
-    public SpannableEditText(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public MessageInputBox(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }
 
     private void init() {
-        Drawable[] drawables = getCompoundDrawables();
+        binding = MessageInputBoxBinding.inflate(LayoutInflater.from(getContext()), this, true);
+        Drawable[] drawables = binding.input.getCompoundDrawables();
         fontButton.setBounds(0, 0, fontButton.getIntrinsicWidth(), fontButton.getIntrinsicHeight());
-        fontButton.setColorFilter(getTextColors().getDefaultColor(), PorterDuff.Mode.SRC_IN);
-        setCompoundDrawables(drawables[0], drawables[1], fontButton, drawables[3]);
-        setOnTouchListener((View view, MotionEvent motionEvent) -> {
+        fontButton.setColorFilter(binding.input.getTextColors().getDefaultColor(), PorterDuff.Mode.SRC_IN);
+        binding.input.setCompoundDrawables(drawables[0], drawables[1], fontButton, drawables[3]);
+        binding.input.setOnTouchListener((View view, MotionEvent motionEvent) -> {
             if (motionEvent.getAction() != MotionEvent.ACTION_UP) {
                 return false;
             }
-            if (motionEvent.getX() > getWidth() - getPaddingRight() - fontButton.getIntrinsicWidth()) {
+            if (motionEvent.getX() > binding.input.getWidth() - binding.input.getPaddingRight() - fontButton.getIntrinsicWidth()) {
                 handleFontClick();
                 return true;
             }
             view.performClick();
             return false;
         });
+        binding.input.setOnSelectionChangedListener(this);
+        binding.bold.setOnClickListener(view -> onBoldClicked());
+        binding.underline.setOnClickListener(view -> onUnderlineClicked());
+        binding.italic.setOnClickListener(view -> onItalicClicked());
+
+        for (int colour : MircColors.getColours()) {
+            colours.add(colour | 0xFF000000);
+        }
+
+        binding.textColour.setOnClickListener(view -> {
+            if (backgroundColourSelector != null && backgroundColourSelector.isShowing()) {
+                backgroundColourSelector.dismiss();
+            }
+            if (textColourSelector == null) {
+                textColourSelector = new ColourSelectorPopupWindow(getContext(), colours, (colour, popup) -> {
+                    onTextColourChanged(colour);
+                    popup.dismiss();
+                });
+            }
+            if (textColourSelector.isShowing()) {
+                textColourSelector.dismiss();
+            } else {
+                PopupWindowCompat.showAsDropDown(textColourSelector, binding.textColour, 0, 0, Gravity.TOP);
+            }
+        });
+
+        binding.backgroundColour.setOnClickListener(view -> {
+            if (textColourSelector != null && textColourSelector.isShowing()) {
+                textColourSelector.dismiss();
+            }
+            if (backgroundColourSelector == null) {
+                backgroundColourSelector = new ColourSelectorPopupWindow(getContext(), colours, (colour, popup) -> {
+                    onBackgroundColourChanged(colour);
+                    popup.dismiss();
+                });
+            }
+            if (backgroundColourSelector.isShowing()) {
+                backgroundColourSelector.dismiss();
+            } else {
+                PopupWindowCompat.showAsDropDown(backgroundColourSelector, binding.backgroundColour, 0, 0, Gravity.TOP);
+            }
+        });
 
     }
 
-    @Override
-    protected void onSelectionChanged(int start, int end) {
-        super.onSelectionChanged(start, end);
-        if (textFormatPopup != null && textFormatPopup.isShowing()) {
-            textFormatPopup.setCurrentFormat(buildFormatFromSelection());
+    public void onSelectionChanged(int start, int end) {
+        if (binding.textFormatBar.getVisibility() == VISIBLE) {
+            setCurrentFormat(buildFormatFromSelection());
         }
     }
 
-    private TextFormatPopupWindow.TextFormat buildFormatFromSelection() {
-        TextFormatPopupWindow.TextFormat format = new TextFormatPopupWindow.TextFormat();
+    private TextFormat buildFormatFromSelection() {
+        TextFormat format = new TextFormat();
         StyleSpan[] styleSpans = getText().getSpans(getSelectionStart(), getSelectionEnd(), StyleSpan.class);
         for (StyleSpan span : styleSpans) {
             if (span.getStyle() == Typeface.BOLD || span.getStyle() == Typeface.BOLD_ITALIC) {
@@ -99,31 +146,33 @@ public class SpannableEditText extends NickCompletionTextView implements TextFor
     }
 
     private void handleFontClick() {
-        if (textFormatPopup == null) {
-            textFormatPopup = new TextFormatPopupWindow(getContext(), this);
-        }
-        if (textFormatPopup.isShowing()) {
-            textFormatPopup.dismiss();
+        boolean isShowing = binding.textFormatBar.getVisibility() == VISIBLE;
+        Drawable textFormatButton = binding.input.getCompoundDrawables()[2];
+        if (isShowing) {
+            binding.textFormatBar.setVisibility(GONE);
+            textFormatButton.setColorFilter(null);
         } else {
-            textFormatPopup.setCurrentFormat(buildFormatFromSelection());
-            textFormatPopup.setInputMethodMode(TextFormatPopupWindow.INPUT_METHOD_NEEDED);
-            PopupWindowCompat.showAsDropDown(textFormatPopup, this, 0, 0, Gravity.TOP);
-            PopupWindowCompat.setOverlapAnchor(textFormatPopup, false);
+            setCurrentFormat(buildFormatFromSelection());
+            binding.textFormatBar.setVisibility(VISIBLE);
+            textFormatButton.setColorFilter(getResources().getColor(R.color.scoutlink_orange), PorterDuff.Mode.SRC_IN);
         }
     }
 
-    @Override
-    public void onBoldClicked(boolean enabled) {
-        onStyleToggled(enabled, Typeface.BOLD);
+    public void onBoldClicked() {
+        currentFormat.bold = !currentFormat.bold;
+        onStyleToggled(currentFormat.bold, Typeface.BOLD);
+        updateUi();
     }
 
-    @Override
-    public void onItalicClicked(boolean enabled) {
-        onStyleToggled(enabled, Typeface.ITALIC);
+    public void onItalicClicked() {
+        currentFormat.italic = !currentFormat.italic;
+        onStyleToggled(currentFormat.italic, Typeface.ITALIC);
+        updateUi();
     }
 
-    @Override
-    public void onUnderlineClicked(boolean enabled) {
+    public void onUnderlineClicked() {
+        currentFormat.underline = !currentFormat.underline;
+        boolean enabled = currentFormat.underline;
         boolean isUnderlined = false;
         Editable text = getText();
         int start = getSelectionStart();
@@ -146,6 +195,7 @@ public class SpannableEditText extends NickCompletionTextView implements TextFor
         if (enabled && !isUnderlined) {
             text.setSpan(new UnderlineSpan(), start, end, Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
         }
+        updateUi();
     }
 
     private void onStyleToggled(boolean enabled, int type) {
@@ -174,8 +224,8 @@ public class SpannableEditText extends NickCompletionTextView implements TextFor
         }
     }
 
-    @Override
     public void onTextColourChanged(int colour) {
+        currentFormat.textColour = colour;
         Editable text = getText();
         int start = getSelectionStart();
         int end = getSelectionEnd();
@@ -194,10 +244,11 @@ public class SpannableEditText extends NickCompletionTextView implements TextFor
             }
         }
         text.setSpan(new ForegroundColorSpan(colour), start, end, Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
+        updateUi();
     }
 
-    @Override
     public void onBackgroundColourChanged(int colour) {
+        currentFormat.backgroundColour = colour;
         Editable text = getText();
         int start = getSelectionStart();
         int end = getSelectionEnd();
@@ -218,5 +269,54 @@ public class SpannableEditText extends NickCompletionTextView implements TextFor
         if (colour != 0) {
             text.setSpan(new BackgroundColorSpan(colour), start, end, Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
         }
+        updateUi();
     }
+
+    public Editable getText() {
+        return binding.input.getText();
+    }
+
+    public int getSelectionStart() {
+        return binding.input.getSelectionStart();
+    }
+
+    public int getSelectionEnd() {
+        return binding.input.getSelectionEnd();
+    }
+
+    public ColorStateList getTextColors() {
+        return binding.input.getTextColors();
+    }
+
+    public NickCompletionTextView getEditText() {
+        return binding.input;
+    }
+
+    public void setCurrentFormat(TextFormat format) {
+        currentFormat = format;
+        updateUi();
+    }
+
+    public static class TextFormat {
+        public boolean bold = false;
+        public boolean italic = false;
+        public boolean underline = false;
+        public int textColour = 0x000000;
+        public int backgroundColour = 0x0000000;
+    }
+
+    private void updateUi() {
+        int black = ResourcesCompat.getColor(getResources(), android.R.color.black, getContext().getTheme());
+        int orange = ResourcesCompat.getColor(getResources(), R.color.scoutlink_orange, getContext().getTheme());
+        binding.bold.getDrawable().setColorFilter(currentFormat.bold ? orange : black, PorterDuff.Mode.SRC_IN);
+        binding.underline.getDrawable().setColorFilter(currentFormat.underline ? orange : black, PorterDuff.Mode.SRC_IN);
+        binding.italic.getDrawable().setColorFilter(currentFormat.italic ? orange : black, PorterDuff.Mode.SRC_IN);
+        binding.textColour.getDrawable().setColorFilter(currentFormat.textColour, PorterDuff.Mode.SRC_IN);
+        if (colours.contains(currentFormat.backgroundColour)) {
+            binding.backgroundColour.getDrawable().setColorFilter(currentFormat.backgroundColour, PorterDuff.Mode.SRC_IN);
+        } else {
+            binding.backgroundColour.getDrawable().setColorFilter(null);
+        }
+    }
+
 }

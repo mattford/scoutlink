@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatAutoCompleteTextView;
 
 public class NickCompletionTextView extends AppCompatAutoCompleteTextView {
+    private OnSelectionChangedListener selectionChangedListener;
 
     public NickCompletionTextView(@NonNull Context context) {
         super(context);
@@ -55,5 +56,20 @@ public class NickCompletionTextView extends AppCompatAutoCompleteTextView {
             setText(sb);
             setSelection(lastAtSymbol + selectedNickname.length() + 1);
         }
+    }
+
+    @Override
+    public void onSelectionChanged(int start, int end) {
+        if (selectionChangedListener != null) {
+            selectionChangedListener.onSelectionChanged(start, end);
+        }
+    }
+
+    public void setOnSelectionChangedListener(OnSelectionChangedListener listener) {
+        selectionChangedListener = listener;
+    }
+
+    public interface OnSelectionChangedListener {
+        void onSelectionChanged(int start, int end);
     }
 }

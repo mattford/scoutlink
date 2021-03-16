@@ -109,7 +109,7 @@ public class ConversationsActivity extends AppCompatActivity implements Conversa
                 for (User user : users) {
                     userNicks.add(user.getNick());
                 }
-                binding.input.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, userNicks));
+                binding.messageInput.getEditText().setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, userNicks));
             });
         });
 
@@ -133,7 +133,7 @@ public class ConversationsActivity extends AppCompatActivity implements Conversa
 		intentFilter.addAction(Broadcast.CONNECTED);
         registerReceiver(this.receiver, intentFilter);
 
-        NickCompletionTextView newMessage = binding.input;
+        NickCompletionTextView newMessage = binding.messageInput.getEditText();
         newMessage.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_NULL && event.getAction() == KeyEvent.ACTION_DOWN) {
                 onSendButtonClick(v);
@@ -179,7 +179,7 @@ public class ConversationsActivity extends AppCompatActivity implements Conversa
 	}
 	
 	public void onSendButtonClick(View v) {
-		EditText et = binding.input;
+		EditText et = binding.messageInput.getEditText();
 		String message = MircColors.applyControlCodes(et.getText());
 		Log.d("SL", message);
 		Conversation conversation = viewModel.getActiveConversation().getValue();
