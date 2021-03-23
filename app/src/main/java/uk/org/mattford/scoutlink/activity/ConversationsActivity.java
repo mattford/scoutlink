@@ -1,9 +1,12 @@
 package uk.org.mattford.scoutlink.activity;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Random;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.ViewModelProvider;
@@ -23,6 +26,7 @@ import uk.org.mattford.scoutlink.model.Message;
 import uk.org.mattford.scoutlink.model.Server;
 import uk.org.mattford.scoutlink.model.Settings;
 import uk.org.mattford.scoutlink.receiver.ConversationReceiver;
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -31,17 +35,27 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import androidx.appcompat.app.AppCompatActivity;
+
+import uk.org.mattford.scoutlink.utils.AnimationSequence;
 import uk.org.mattford.scoutlink.viewmodel.ConnectionStatusViewModel;
 import uk.org.mattford.scoutlink.viewmodel.ConversationListViewModel;
 import uk.org.mattford.scoutlink.views.NickCompletionTextView;
 
+import android.text.SpannableString;
+import android.text.method.LinkMovementMethod;
+import android.text.util.Linkify;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.RotateAnimation;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.pircbotx.User;
@@ -57,6 +71,8 @@ public class ConversationsActivity extends AppCompatActivity implements Conversa
     private Handler backgroundHandler;
 
 	private final int JOIN_CHANNEL_RESULT = 0;
+
+	private boolean easterEggShowing = false;
 
     /**
      * Required to work around NPE when screen is rotated immediately after selecting a channel, causing the reference to IRCService to be lost briefly.
@@ -82,6 +98,9 @@ public class ConversationsActivity extends AppCompatActivity implements Conversa
         viewModel.getActiveConversation().observe(this, activeConversation -> {
             if (activeConversation == null) {
                 return;
+            }
+            if ("#english".equalsIgnoreCase(activeConversation.getName())) {
+                setupEasterEgg();
             }
             binding.toolbar.setTitle(activeConversation.getName());
             if (hasDrawerLayout) {
@@ -172,6 +191,85 @@ public class ConversationsActivity extends AppCompatActivity implements Conversa
 
 		unregisterReceiver(this.receiver);
 	}
+
+    /**
+     * Shows a wobbling easter egg in a (sort of) random location on the screen.
+     * This can be removed after the 2021 Easter event.
+     */
+	private void setupEasterEgg() {
+        Date now = new Date();
+	    if (easterEggShowing ||
+                settings.getBoolean("dont_show_easter_egg_2021", false) ||
+                now.before(new Date(2021, 4, 4)) ||
+                now.after(new Date(2021, 4, 4, 23, 59, 59))
+        ) {
+	        return;
+        }
+	    easterEggShowing = true;
+        ImageView easterEggView = new ImageView(this);
+        easterEggView.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_easter_egg, getTheme()));
+        easterEggView.setAlpha(0f);
+
+        Random random = new Random();
+        int marginLeft = random.nextInt(binding.getRoot().getWidth() - 50);
+        int marginTop = random.nextInt(binding.getRoot().getHeight() - 50);
+        RelativeLayout wrapperLayout = new RelativeLayout(this);
+        wrapperLayout.addView(easterEggView);
+        wrapperLayout.setPadding(marginLeft, marginTop, 0, 0);
+        addContentView(
+                wrapperLayout,
+                new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT)
+        );
+
+        easterEggView.setOnClickListener(v -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            SpannableString message = new SpannableString("You found the #english mobile easter egg! To record this egg, upload a screenshot of this page at scoutl.ink/easter");
+            Linkify.addLinks(message, Linkify.WEB_URLS);
+            builder
+                    .setTitle("You found an easter egg!")
+                    .setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_easter_egg, getTheme()))
+                    .setMessage(message)
+                    .setPositiveButton("Hide", (dialog, id) -> {
+                        dialog.cancel();
+                        wrapperLayout.setVisibility(View.GONE);
+                    })
+                    .setNegativeButton("Don't show this again", (dialog, id) -> {
+                        dialog.cancel();
+                        settings.putBoolean("dont_show_easter_egg_2021", true);
+                        wrapperLayout.setVisibility(View.GONE);
+                    });
+            AlertDialog dialog = builder.create();
+            dialog.show();
+            TextView messageView = dialog.findViewById(android.R.id.message);
+            messageView.setMovementMethod(LinkMovementMethod.getInstance());
+        });
+
+        int animationDuration = getResources().getInteger(android.R.integer.config_longAnimTime);
+        easterEggView.animate().alpha(1f).setDuration(animationDuration).withEndAction(() -> {
+            RotateAnimation wobbleLeft = new RotateAnimation(0, -10, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 1f);
+            wobbleLeft.setDuration(animationDuration / 2);
+            wobbleLeft.setFillEnabled(true);
+            wobbleLeft.setFillAfter(true);
+            RotateAnimation wobbleRight = new RotateAnimation(-10, 10, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 1f);
+            wobbleRight.setDuration(animationDuration);
+            wobbleRight.setFillEnabled(true);
+            wobbleRight.setFillAfter(true);
+            RotateAnimation wobbleCentre = new RotateAnimation(10, 0, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 1f);
+            wobbleCentre.setDuration(animationDuration / 2);
+            wobbleCentre.setFillEnabled(true);
+            wobbleCentre.setFillAfter(true);
+            ArrayList<Animation> animations = new ArrayList<>();
+            animations.add(wobbleLeft);
+            animations.add(wobbleRight);
+            animations.add(wobbleCentre);
+            AnimationSequence animationSequence = new AnimationSequence(animations);
+            animationSequence.setRepeatEnabled(true);
+            animationSequence.setRepeatDelay(animationDuration * 5);
+
+            animationSequence.runOnView(easterEggView);
+        });
+
+    }
 	
 	public void onSendButtonClick(View v) {
 		EditText et = binding.input;
