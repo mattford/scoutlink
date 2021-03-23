@@ -200,8 +200,8 @@ public class ConversationsActivity extends AppCompatActivity implements Conversa
         Date now = new Date();
 	    if (easterEggShowing ||
                 settings.getBoolean("dont_show_easter_egg_2021", false) ||
-                now.before(new Date(2021, 4, 4)) ||
-                now.after(new Date(2021, 4, 4, 23, 59, 59))
+                now.before(new Date(2021 - 1900, 3, 4)) ||
+                now.after(new Date(2021 - 1900, 3, 4, 23, 59, 59))
         ) {
 	        return;
         }
