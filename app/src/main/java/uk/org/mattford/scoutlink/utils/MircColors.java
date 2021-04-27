@@ -180,21 +180,18 @@ public abstract class MircColors
         CharacterStyle[] spans = spannableString.getSpans(0, spannableString.length(), CharacterStyle.class);
         for (int i = 0; i < spannableString.length(); i++) {
             char c = spannableString.charAt(i);
-            ArrayList<CharacterStyle> spansStarting = new ArrayList<>();
             ArrayList<CharacterStyle> spansEnding = new ArrayList<>();
             ArrayList<CharacterStyle> otherSpans = new ArrayList<>();
             for (CharacterStyle span : spans) {
-                if (spannableString.getSpanEnd(span) == i) {
+                int spanStart = spannableString.getSpanStart(span);
+                int spanEnd = spannableString.getSpanEnd(span);
+                if (spanEnd == i) {
                     spansEnding.add(span);
-                } else {
+                } else if (spanStart <= i && spanEnd >= i) {
                     otherSpans.add(span);
-                }
-                if (spannableString.getSpanStart(span) == i) {
-                   spansStarting.add(span);
                 }
             }
             sb.append(getEndControlCode(spansEnding, otherSpans));
-            sb.append(getStartControlCode(spansStarting));
             sb.append(c);
         }
         return sb.toString();
@@ -235,26 +232,36 @@ public abstract class MircColors
     }
 
     private static String getEndControlCode(ArrayList<CharacterStyle> endingStyles, ArrayList<CharacterStyle> otherStyles) {
-        ArrayList<CharacterStyle> styleSpans = new ArrayList<>();
+        ArrayList<CharacterStyle> leftoverSpans = new ArrayList<>(otherStyles);
         StringBuilder controlCode = new StringBuilder();
         for (CharacterStyle style : endingStyles) {
             if (style.getClass() == ForegroundColorSpan.class || style.getClass() == BackgroundColorSpan.class) {
                 // If a foreground colour span is ending, but there is still a background colour span (and vice versa),
                 // we'll need to add another start control code here with the remaining span.
-                controlCode.append(Character.toChars(3));
+                int foregroundColour = 0;
+                int backgroundColor = 0;
                 for (CharacterStyle otherSpan : otherStyles) {
-                    if (style.getClass() == ForegroundColorSpan.class && otherSpan.getClass() == BackgroundColorSpan.class) {
-                        controlCode.append("99,");
-                        controlCode.append(getMircColor(((BackgroundColorSpan) otherSpan).getBackgroundColor()));
-                    } else if (style.getClass() == BackgroundColorSpan.class && otherSpan.getClass() == ForegroundColorSpan.class) {
-                        controlCode.append(getMircColor(((ForegroundColorSpan) otherSpan).getForegroundColor()));
+                    if (otherSpan.getClass() == BackgroundColorSpan.class) {
+                        backgroundColor = ((BackgroundColorSpan) otherSpan).getBackgroundColor();
+                        leftoverSpans.remove(otherSpan);
+                    } else if (otherSpan.getClass() == ForegroundColorSpan.class) {
+                        foregroundColour = ((ForegroundColorSpan) otherSpan).getForegroundColor();
+                        leftoverSpans.remove(otherSpan);
                     }
                 }
-            } else {
-                styleSpans.add(style);
+                controlCode.append(Character.toChars(3));
+                if (foregroundColour != 0) {
+                    controlCode.append(getMircColor(foregroundColour));
+                } else if (backgroundColor != 0) {
+                    controlCode.append("99");
+                }
+                if (backgroundColor != 0) {
+                    controlCode.append(",");
+                    controlCode.append(getMircColor(backgroundColor));
+                }
             }
         }
-        return controlCode.append(getStartControlCode(styleSpans)).toString();
+        return controlCode.append(getStartControlCode(leftoverSpans)).toString();
     }
 
     private static int getMircColor(int color) {

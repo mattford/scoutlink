@@ -6,6 +6,7 @@ import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.Spanned;
 import android.text.style.BackgroundColorSpan;
 import android.text.style.ForegroundColorSpan;
@@ -150,8 +151,9 @@ public class MessageInputBox extends LinearLayout implements NickCompletionTextV
         Drawable textFormatButton = binding.input.getCompoundDrawables()[2];
         if (isShowing) {
             binding.textFormatBar.setVisibility(GONE);
-            textFormatButton.setColorFilter(null);
+            textFormatButton.setColorFilter(getResources().getColor(android.R.color.black), PorterDuff.Mode.SRC_IN);
         } else {
+            getEditText().setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
             setCurrentFormat(buildFormatFromSelection());
             binding.textFormatBar.setVisibility(VISIBLE);
             textFormatButton.setColorFilter(getResources().getColor(R.color.scoutlink_orange), PorterDuff.Mode.SRC_IN);
@@ -258,10 +260,10 @@ public class MessageInputBox extends LinearLayout implements NickCompletionTextV
             int spanEnd = text.getSpanEnd(span);
             if (colour != span.getBackgroundColor()) {
                 if (spanStart < start) {
-                    text.setSpan(new ForegroundColorSpan(span.getBackgroundColor()), spanStart, start, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+                    text.setSpan(new BackgroundColorSpan(span.getBackgroundColor()), spanStart, start, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
                 }
                 if (spanEnd > end) {
-                    text.setSpan(new ForegroundColorSpan(span.getBackgroundColor()), end, spanEnd, Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
+                    text.setSpan(new BackgroundColorSpan(span.getBackgroundColor()), end, spanEnd, Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
                 }
                 text.removeSpan(span);
             }
