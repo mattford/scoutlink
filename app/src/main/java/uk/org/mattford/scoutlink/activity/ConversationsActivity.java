@@ -37,7 +37,6 @@ import uk.org.mattford.scoutlink.viewmodel.ConnectionStatusViewModel;
 import uk.org.mattford.scoutlink.viewmodel.ConversationListViewModel;
 import uk.org.mattford.scoutlink.views.NickCompletionTextView;
 
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -181,7 +180,6 @@ public class ConversationsActivity extends AppCompatActivity implements Conversa
 	public void onSendButtonClick(View v) {
 		EditText et = binding.messageInput.getEditText();
 		String message = MircColors.applyControlCodes(et.getText());
-		Log.d("SL", message);
 		Conversation conversation = viewModel.getActiveConversation().getValue();
 		if (message.isEmpty() || conversation == null) {
 			return;
