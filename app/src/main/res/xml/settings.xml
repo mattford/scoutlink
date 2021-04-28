@@ -74,6 +74,13 @@
         app:key="other"
         app:title="@string/settings_category_other"
         app:iconSpaceReserved="false">
+        <SwitchPreferenceCompat
+            app:key="use_secure_connection"
+            app:title="@string/settings_use_secure_connection"
+            app:summary="@string/settings_use_secure_connection_summary"
+            app:defaultValue="true"
+            app:iconSpaceReserved="false"
+            />
         <uk.org.mattford.scoutlink.preference.StringListPreference
             app:key="autojoin_channels"
             app:title="@string/settings_autojoin_channels_label"
