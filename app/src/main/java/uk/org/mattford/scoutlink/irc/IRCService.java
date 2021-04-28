@@ -36,6 +36,8 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.widget.Toast;
 
+import javax.net.ssl.SSLSocketFactory;
+
 public class IRCService extends Service {
 	private Settings settings;
 	private Server server;
@@ -143,15 +145,20 @@ public class IRCService extends Service {
         Message msg = new Message(getString(R.string.connect_message), Message.SENDER_TYPE_SERVER, Message.TYPE_EVENT);
         sw.addMessage(msg);
 
-        List<Configuration.ServerEntry> servers = new ArrayList<>();
-        servers.add(new Configuration.ServerEntry(getString(R.string.server_address), 6667));
-
         IRCListener listener = new IRCListener(this);
         Configuration.Builder config = new Configuration.Builder()
             .setName(settings.getString("nickname"))
             .setLogin(settings.getString("ident", getString(R.string.default_ident)))
-            .setServers(servers)
             .setRealName(settings.getString("gecos", getString(R.string.default_gecos)));
+
+        List<Configuration.ServerEntry> servers = new ArrayList<>();
+        if (settings.getBoolean(Settings.USE_SECURE_CONNECTION, true)) {
+            config.setSocketFactory(SSLSocketFactory.getDefault());
+            servers.add(new Configuration.ServerEntry(getString(R.string.server_address), 6697));
+        } else {
+            servers.add(new Configuration.ServerEntry(getString(R.string.server_address), 6667));
+        }
+        config.setServers(servers);
 
         // If we have a version of Android prior to O, the ThreadedListenerManager will
         // crash, as it uses Java8 APIs which Android < O doesn't support currently.

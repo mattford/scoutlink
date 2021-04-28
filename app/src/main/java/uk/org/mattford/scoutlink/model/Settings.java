@@ -11,7 +11,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Settings {
-	
+	public static String USE_SECURE_CONNECTION = "use_secure_connection";
+
 	private final SharedPreferences prefs;
 
 	public Settings(Context context) {

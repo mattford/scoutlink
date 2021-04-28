@@ -131,17 +131,17 @@
     <string name="action_notice_dialog_title">Send a notice</string>
 
     <string name="settings_category_identity">Identity</string>
-    <string name="settings_nickname_label">Nickname:</string>
+    <string name="settings_nickname_label">Nickname</string>
     <string name="settings_nickname_summary">The name which will appear to other users</string>
-    <string name="settings_ident_label">Username:</string>
+    <string name="settings_ident_label">Username</string>
     <string name="settings_ident_summary">Appears before the @ in your hostname (username@host)</string>
-    <string name="settings_gecos_label">Real Name:</string>
+    <string name="settings_gecos_label">Real Name</string>
     <string name="settings_gecos_summary">Visible to other users via /whois</string>
-    <string name="settings_quit_message_label">Quit Message:</string>
+    <string name="settings_quit_message_label">Quit Message</string>
     <string name="settings_quit_message_summary">This message will be displayed when you disconnect from ScoutLink</string>
-    <string name="settings_nickserv_user_label">Nickserv Username:</string>
+    <string name="settings_nickserv_user_label">Nickserv Username</string>
     <string name="settings_nickserv_user_summary">The nickname used to login to NickServ</string>
-    <string name="settings_nickserv_password_label">Nickserv Password:</string>
+    <string name="settings_nickserv_password_label">Nickserv Password</string>
     <string name="settings_nickserv_password_summary">The password used to login to NickServ</string>
 
     <string name="title_activity_log_list">Logs</string>
@@ -169,6 +169,8 @@
     <string name="settings_command_on_connect_summary">Commands to be run on connect</string>
     <string name="settings_notify_list_label">Notify List</string>
     <string name="settings_notify_list_summary">Get notified when users are online</string>
+    <string name="settings_use_secure_connection">Use secure connection</string>
+    <string name="settings_use_secure_connection_summary">Encrypts all traffic between you and the server</string>
 
     <string name="title_activity_channel_settings">Channel Settings</string>
     <string name="title_activity_rules">Rules</string>
