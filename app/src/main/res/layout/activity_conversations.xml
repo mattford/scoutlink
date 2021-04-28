@@ -32,30 +32,10 @@
                 android:unselectedAlpha="100"
                 android:padding="0dp" />
 
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="50dp"
-                android:paddingStart="5dp"
-                android:paddingEnd="5dp"
-                android:orientation="horizontal"
-                android:background="@color/conversation_background"
-                android:layout_gravity="center">
-                <uk.org.mattford.scoutlink.views.NickCompletionTextView
-                    android:id="@+id/input"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:inputType="text"
-                    android:hint="@string/send_message_hint"/>
-                <Button
-                    android:id="@+id/send_button"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:layout_gravity="center"
-                    android:onClick="onSendButtonClick"
-                    android:background="@drawable/ic_send"
-                    />
-            </LinearLayout>
+           <uk.org.mattford.scoutlink.views.MessageInputBox
+               android:id="@+id/message_input"
+               android:layout_height="wrap_content"
+               android:layout_width="match_parent" />
         </LinearLayout>
 
         <!-- Container for contents of drawer - use NavigationView to make configuration easier -->

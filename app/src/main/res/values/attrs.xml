@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="uk.org.mattford.scoutlink.preference.StringListPreference">
+        <attr name="firstChar" format="string" />
+    </declare-styleable>
+</resources>

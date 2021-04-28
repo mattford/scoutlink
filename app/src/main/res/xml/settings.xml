@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        app:key="identity_category"
+        app:title="@string/settings_category_identity">
+
+        <EditTextPreference
+            app:key="nickname"
+            app:title="@string/settings_nickname_label"
+            app:summary="@string/settings_nickname_summary"
+            app:iconSpaceReserved="false"/>
+
+        <EditTextPreference
+            app:key="ident"
+            app:title="@string/settings_ident_label"
+            app:summary="@string/settings_ident_summary"
+            app:defaultValue="@string/default_ident"
+            app:iconSpaceReserved="false"/>
+
+        <EditTextPreference
+            app:key="gecos"
+            app:title="@string/settings_gecos_label"
+            app:summary="@string/settings_gecos_summary"
+            app:defaultValue="@string/default_gecos"
+            app:iconSpaceReserved="false"/>
+
+        <EditTextPreference
+            app:key="nickserv_user"
+            app:title="@string/settings_nickserv_user_label"
+            app:summary="@string/settings_nickserv_user_summary"
+            app:iconSpaceReserved="false"/>
+
+        <EditTextPreference
+            app:key="nickserv_password"
+            android:inputType="textPassword"
+            app:title="@string/settings_nickserv_password_label"
+            app:summary="@string/settings_nickserv_password_summary"
+            app:iconSpaceReserved="false"/>
+
+        <EditTextPreference
+            app:key="quit_message"
+            app:title="@string/settings_quit_message_label"
+            app:summary="@string/settings_quit_message_summary"
+            app:defaultValue="@string/default_quit_message"
+            app:iconSpaceReserved="false"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:key="logging"
+        app:title="@string/settings_category_logging"
+        app:iconSpaceReserved="false"
+        >
+        <SwitchPreferenceCompat
+            app:key="enable_logging"
+            app:title="@string/settings_enable_logging"
+            app:defaultValue="true"
+            app:iconSpaceReserved="false"/>
+        <SwitchPreferenceCompat
+            app:key="load_previous_messages_on_join"
+            app:title="@string/settings_load_previous_messages_on_join_label"
+            app:summary="@string/settings_load_previous_messages_on_join_summary"
+            app:dependency="enable_logging"
+            app:defaultValue="true"
+            app:iconSpaceReserved="false"
+        />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:key="other"
+        app:title="@string/settings_category_other"
+        app:iconSpaceReserved="false">
+        <SwitchPreferenceCompat
+            app:key="use_secure_connection"
+            app:title="@string/settings_use_secure_connection"
+            app:summary="@string/settings_use_secure_connection_summary"
+            app:defaultValue="true"
+            app:iconSpaceReserved="false"
+            />
+        <uk.org.mattford.scoutlink.preference.StringListPreference
+            app:key="autojoin_channels"
+            app:title="@string/settings_autojoin_channels_label"
+            app:summary="@string/settings_autojoin_channels_summary"
+            app:iconSpaceReserved="false"
+            app:firstChar="#" />
+
+        <uk.org.mattford.scoutlink.preference.StringListPreference
+            app:key="command_on_connect"
+            app:title="@string/settings_command_on_connect_label"
+            app:summary="@string/settings_command_on_connect_summary"
+            app:iconSpaceReserved="false"
+            app:firstChar="/" />
+
+        <uk.org.mattford.scoutlink.preference.StringListPreference
+            app:key="notify_list"
+            app:title="@string/settings_notify_list_label"
+            app:summary="@string/settings_notify_list_summary"
+            app:iconSpaceReserved="false" />
+    </PreferenceCategory>
+</PreferenceScreen>

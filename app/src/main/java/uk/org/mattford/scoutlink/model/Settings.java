@@ -7,17 +7,20 @@ import android.text.TextUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Settings {
-	
+	public static String USE_SECURE_CONNECTION = "use_secure_connection";
+
 	private final SharedPreferences prefs;
 
 	public Settings(Context context) {
 		this.prefs = PreferenceManager.getDefaultSharedPreferences(context);
 	}
-	
-	public SharedPreferences getPrefs() {
-		return this.prefs;
+
+	public Settings (SharedPreferences sharedPreferences) {
+		this.prefs = sharedPreferences;
 	}
 	
 	public String getString(String key) {
@@ -25,12 +28,11 @@ public class Settings {
 	}
 	
 	public String getString(String key, String defValue) {
-		String str =  prefs.getString(key, defValue);
+		String str = prefs.getString(key, defValue);
         if ("".equals(str)) {
             return defValue; // Return the default value is the string is blank as opposed to null
-        } else {
-            return str;
         }
+        return str;
 	}
 	
 	public Boolean getBoolean(String key) {
@@ -42,42 +44,28 @@ public class Settings {
 	}
 	
 	public void putString(String key, String value) {
-		SharedPreferences.Editor editor = prefs.edit();
-		editor.putString(key, value);
-		editor.apply();
+		prefs.edit().putString(key, value).apply();
 	}
 	
 	public void putBoolean(String key, Boolean value) {
-		SharedPreferences.Editor editor = prefs.edit();
-		editor.putBoolean(key, value);
-		editor.apply();
+		prefs.edit().putBoolean(key, value).apply();
 	}
 
-    public void putStringArray(String key, String[] value) {
-		String joinedString = TextUtils.join(",", value);
-        putString(key, joinedString);
-    }
-
     public void putStringArrayList(String key, ArrayList<String> value) {
-        String[] strArr = new String[value.size()];
-        strArr = value.toArray(strArr);
-        putStringArray(key, strArr);
+		prefs.edit().putStringSet(key, new HashSet<>(value)).apply();
     }
 
 	public ArrayList<String> getStringArrayList(String key) {
+		try {
+			Set<String> value = prefs.getStringSet(key, null);
+			if (value != null) {
+				return new ArrayList<>(value);
+			}
+		} catch (ClassCastException e) {
+			// This is due to the settings previously being saved as a string
+		}
 		String string = getString(key);
 		return new ArrayList<>(Arrays.asList(TextUtils.split(string, ",")));
-	}
-
-    public String[] getStringArray(String key) {
-        String string = getString(key);
-		return string.split(",");
-    }
-
-	public void putInteger(String key, Integer value) {
-		SharedPreferences.Editor editor = prefs.edit();
-		editor.putInt(key, value);
-		editor.apply();
 	}
 
 	public Integer getInteger(String key, Integer defaultValue) {

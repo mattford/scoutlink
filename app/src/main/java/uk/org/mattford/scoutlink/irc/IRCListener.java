@@ -52,7 +52,6 @@ import org.pircbotx.hooks.events.VoiceEvent;
 import org.pircbotx.hooks.events.WhoisEvent;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import uk.org.mattford.scoutlink.R;
 import uk.org.mattford.scoutlink.event.JoinFailedEvent;
@@ -64,7 +63,6 @@ import uk.org.mattford.scoutlink.model.Conversation;
 import uk.org.mattford.scoutlink.model.Message;
 import uk.org.mattford.scoutlink.model.Query;
 import uk.org.mattford.scoutlink.model.Server;
-import uk.org.mattford.scoutlink.model.Settings;
 
 public class IRCListener extends ListenerAdapter {
 
@@ -78,52 +76,32 @@ public class IRCListener extends ListenerAdapter {
     }
 
     public void onServerResponse(ServerResponseEvent event) {
-        Settings settings;
-        ArrayList<String> notifies;
         switch (event.getCode()) {
             case 604:
             case 600:
                 // User on watchlist joined IRC
-                settings = new Settings(service);
-                notifies = new ArrayList<>(Arrays.asList(settings.getStringArray("notify_list")));
-                if (!notifies.contains(event.getParsedResponse().get(1))) {
-                    notifies.add(event.getParsedResponse().get(1));
-                    settings.putStringArrayList("notify_list", notifies);
-                }
                 NotifyEvent onlineEvent = new NotifyEvent(event.getParsedResponse().get(1), NotifyEvent.TYPE_ONLINE, false, true, false, event.getParsedResponse().get(4));
                 onNotify(onlineEvent);
                 break;
             case 605:
             case 601:
                 // User on watchlist left IRC
-                settings = new Settings(service);
-                notifies = new ArrayList<>(Arrays.asList(settings.getStringArray("notify_list")));
-                if (!notifies.contains(event.getParsedResponse().get(1))) {
-                    notifies.add(event.getParsedResponse().get(1));
-                    settings.putStringArrayList("notify_list", notifies);
-                }
                 NotifyEvent offlineEvent = new NotifyEvent(event.getParsedResponse().get(1), NotifyEvent.TYPE_ONLINE, false, false, false, event.getParsedResponse().get(4));
                 onNotify(offlineEvent);
                 break;
             case 602:
                 // Removed from list
-                settings = new Settings(service);
-                notifies = new ArrayList<>(Arrays.asList(settings.getStringArray("notify_list")));
-                if (notifies.contains(event.getParsedResponse().get(1))) {
-                    notifies.remove(event.getParsedResponse().get(1));
-                    settings.putStringArrayList("notify_list", notifies);
-                }
                 NotifyEvent removedEvent = new NotifyEvent(event.getParsedResponse().get(1), NotifyEvent.TYPE_MANAGELIST, false, false, false, event.getParsedResponse().get(4));
                 onNotify(removedEvent);
                 break;
             case 598:
                 // User on watch list is away
-                NotifyEvent awayEvent = new NotifyEvent(event.getParsedResponse().get(0), NotifyEvent.TYPE_AWAY, true, true, false, event.getParsedResponse().get(4));
+                NotifyEvent awayEvent = new NotifyEvent(event.getParsedResponse().get(1), NotifyEvent.TYPE_AWAY, true, true, false, event.getParsedResponse().get(4));
                 onNotify(awayEvent);
                 break;
             case 599:
                 // User on watch list is back from away
-                NotifyEvent backEvent = new NotifyEvent(event.getParsedResponse().get(0), NotifyEvent.TYPE_AWAY, false, true, false, event.getParsedResponse().get(4));
+                NotifyEvent backEvent = new NotifyEvent(event.getParsedResponse().get(1), NotifyEvent.TYPE_AWAY, false, true, false, event.getParsedResponse().get(4));
                 onNotify(backEvent);
                 break;
             case 474:
@@ -178,6 +156,7 @@ public class IRCListener extends ListenerAdapter {
         }
         Message msg = new Message(text, Message.SENDER_TYPE_SERVER, Message.TYPE_EVENT);
         server.getConversation(service.getString(R.string.server_window_title)).addMessage(msg);
+        service.onNotify(event);
     }
 
     public void onNickAlreadyInUse(NickAlreadyInUseEvent event) {

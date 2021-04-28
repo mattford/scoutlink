@@ -1,7 +1,6 @@
 package uk.org.mattford.scoutlink.fragment;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -9,6 +8,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.os.Handler;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,7 +24,6 @@ import org.pircbotx.Channel;
 import org.pircbotx.User;
 
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -39,7 +39,7 @@ import uk.org.mattford.scoutlink.model.Settings;
 import uk.org.mattford.scoutlink.viewmodel.ConversationListViewModel;
 
 public class UserListFragment extends Fragment implements PopupMenu.OnMenuItemClickListener, UserListRecyclerViewAdapter.OnUserListItemClickListener {
-    private RecyclerView recyclerView;
+    private UserListRecyclerViewAdapter adapter;
     private User selectedUser;
     private ConversationListViewModel viewModel;
     private Server server;
@@ -57,24 +57,35 @@ public class UserListFragment extends Fragment implements PopupMenu.OnMenuItemCl
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        adapter = new UserListRecyclerViewAdapter(settings, this);
+        ((RecyclerView)view.findViewById(R.id.list)).setAdapter(adapter);
         viewModel.getActiveConversation().observe(getViewLifecycleOwner(), activeConversation -> {
             if (activeConversation == null) {
                 return;
             }
-            activeConversation.getUsers().observe(getViewLifecycleOwner(), users -> recyclerView.setAdapter(new UserListRecyclerViewAdapter(users, settings, activeConversation.getChannel(), this)));
+            activeConversation.getUsers().observe(getViewLifecycleOwner(), users -> {
+                adapter.updateConversation(activeConversation.getChannel(), users);
+            });
+        });
+
+        ((EditText)view.findViewById(R.id.search_box)).addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                adapter.setFilter(charSequence.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {}
         });
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_user_list, container, false);
-        if (view instanceof RecyclerView) {
-            Context context = view.getContext();
-            recyclerView = (RecyclerView) view;
-            recyclerView.setLayoutManager(new LinearLayoutManager(context));
-        }
-        return view;
+        return inflater.inflate(R.layout.fragment_user_list, container, false);
     }
 
     private void showPopup(View view) {
@@ -133,14 +144,14 @@ public class UserListFragment extends Fragment implements PopupMenu.OnMenuItemCl
         } else if (itemId == R.id.action_userlist_block) {
             settings.blockUser(nickname);
             Toast.makeText(getContext(), getString(R.string.user_blocked, nickname), Toast.LENGTH_LONG).show();
-            if (recyclerView.getAdapter() != null) {
-                recyclerView.getAdapter().notifyDataSetChanged();
+            if (adapter != null) {
+                adapter.notifyDataSetChanged();
             }
         } else if (itemId == R.id.action_userlist_unblock) {
             settings.unblockUser(nickname);
             Toast.makeText(getContext(), getString(R.string.user_unblocked, nickname), Toast.LENGTH_LONG).show();
-            if (recyclerView.getAdapter() != null) {
-                recyclerView.getAdapter().notifyDataSetChanged();
+            if (adapter != null) {
+                adapter.notifyDataSetChanged();
             }
         } else if (itemId == R.id.action_userlist_kick) {
             final EditText input = new EditText(getContext());
