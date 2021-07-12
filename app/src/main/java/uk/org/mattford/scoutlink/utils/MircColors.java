@@ -180,6 +180,7 @@ public abstract class MircColors
         CharacterStyle[] spans = spannableString.getSpans(0, spannableString.length(), CharacterStyle.class);
         for (int i = 0; i < spannableString.length(); i++) {
             char c = spannableString.charAt(i);
+            ArrayList<CharacterStyle> spansStarting = new ArrayList<>();
             ArrayList<CharacterStyle> spansEnding = new ArrayList<>();
             ArrayList<CharacterStyle> otherSpans = new ArrayList<>();
             for (CharacterStyle span : spans) {
@@ -187,11 +188,14 @@ public abstract class MircColors
                 int spanEnd = spannableString.getSpanEnd(span);
                 if (spanEnd == i) {
                     spansEnding.add(span);
-                } else if (spanStart <= i && spanEnd >= i) {
+                } else if (spanStart == i) {
+                    spansStarting.add(span);
+                } else {
                     otherSpans.add(span);
                 }
             }
             sb.append(getEndControlCode(spansEnding, otherSpans));
+            sb.append(getStartControlCode(spansStarting));
             sb.append(c);
         }
         return sb.toString();
@@ -218,8 +222,8 @@ public abstract class MircColors
                 backgroundColour = ((BackgroundColorSpan) style).getBackgroundColor();
             }
         }
+        StringBuilder colourControlCode = new StringBuilder();
         if (foregroundColour != 0) {
-            StringBuilder colourControlCode = new StringBuilder();
             colourControlCode.append(Character.toChars(3));
             colourControlCode.append(getMircColor(foregroundColour));
             if (backgroundColour != 0) {
@@ -227,12 +231,23 @@ public abstract class MircColors
                 colourControlCode.append(getMircColor(backgroundColour));
             }
             controlString.append(colourControlCode.toString());
+        } else if (backgroundColour != 0) {
+            colourControlCode.append(Character.toChars(3));
+            colourControlCode.append("99,");
+            colourControlCode.append(getMircColor(backgroundColour));
         }
-        return controlString.toString();
+        return controlString.append(colourControlCode).toString();
     }
 
     private static String getEndControlCode(ArrayList<CharacterStyle> endingStyles, ArrayList<CharacterStyle> otherStyles) {
-        ArrayList<CharacterStyle> leftoverSpans = new ArrayList<>(otherStyles);
+        ArrayList<Integer> otherTypefaces = new ArrayList<>();
+        for (CharacterStyle otherStyle : otherStyles) {
+            if (otherStyle.getClass() == StyleSpan.class) {
+                StyleSpan otherSpan = (StyleSpan) otherStyle;
+                otherTypefaces.add(otherSpan.getStyle());
+            }
+        }
+        ArrayList<CharacterStyle> styleSpans = new ArrayList<>();
         StringBuilder controlCode = new StringBuilder();
         for (CharacterStyle style : endingStyles) {
             if (style.getClass() == ForegroundColorSpan.class || style.getClass() == BackgroundColorSpan.class) {
@@ -243,10 +258,8 @@ public abstract class MircColors
                 for (CharacterStyle otherSpan : otherStyles) {
                     if (otherSpan.getClass() == BackgroundColorSpan.class) {
                         backgroundColor = ((BackgroundColorSpan) otherSpan).getBackgroundColor();
-                        leftoverSpans.remove(otherSpan);
                     } else if (otherSpan.getClass() == ForegroundColorSpan.class) {
                         foregroundColour = ((ForegroundColorSpan) otherSpan).getForegroundColor();
-                        leftoverSpans.remove(otherSpan);
                     }
                 }
                 controlCode.append(Character.toChars(3));
@@ -259,9 +272,21 @@ public abstract class MircColors
                     controlCode.append(",");
                     controlCode.append(getMircColor(backgroundColor));
                 }
+            } else {
+                StyleSpan span = (StyleSpan) style;
+                if (span.getStyle() == Typeface.BOLD_ITALIC) {
+                    if (otherTypefaces.contains(Typeface.ITALIC) && !otherTypefaces.contains(Typeface.BOLD)) {
+                        styleSpans.add(new StyleSpan(Typeface.BOLD));
+                    }
+                    if (otherTypefaces.contains(Typeface.BOLD) && !otherTypefaces.contains(Typeface.ITALIC)) {
+                        styleSpans.add(new StyleSpan(Typeface.ITALIC));
+                    }
+                } else if (!otherTypefaces.contains(span.getStyle())) {
+                    styleSpans.add(style);
+                }
             }
         }
-        return controlCode.append(getStartControlCode(leftoverSpans)).toString();
+        return controlCode.append(getStartControlCode(styleSpans)).toString();
     }
 
     private static int getMircColor(int color) {
