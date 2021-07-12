@@ -143,7 +143,7 @@
     <string name="log_exported">File catatan telah diekspor ke %1$s</string>
     <string name="error_exporting_logs">Kesalahan saat ekspor file</string>
     <string name="settings_enable_logging">Nyalakan pencatatan</string>
-    <string name="settings_load_previous_messages_on_join">muat pesan terakhir saat bergabung</string>
+    <string name="settings_load_previous_messages_on_join_label">muat pesan terakhir saat bergabung</string>
 
     <string name="title_activity_list_view_edit">Sunting Daftar</string>
     <string name="edit_list_remove_item_confirm_title">Hapus Item?</string>

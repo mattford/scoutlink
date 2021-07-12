@@ -142,7 +142,7 @@
     <string name="log_exported">Log file geexporteerd naar %1$s</string>
     <string name="error_exporting_logs">Error exporteren log file</string>
     <string name="settings_enable_logging">Logging aanzetten</string>
-    <string name="settings_load_previous_messages_on_join">Laad vorige berichten bij deelnemen kanaal</string>
+    <string name="settings_load_previous_messages_on_join_label">Laad vorige berichten bij deelnemen kanaal</string>
 
     <string name="title_activity_list_view_edit">Lijst aanpassen</string>
     <string name="edit_list_remove_item_confirm_title">Verwijderen Item?</string>

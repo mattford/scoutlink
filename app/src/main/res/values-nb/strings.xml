@@ -143,7 +143,7 @@
     <string name="log_exported">Loggfilen er eksportert til %1$s</string>
     <string name="error_exporting_logs">En feil oppstod ved eksportering av loggfil</string>
     <string name="settings_enable_logging">Aktiver logging</string>
-    <string name="settings_load_previous_messages_on_join">Last inn tidligere meldinger ved tilkobling</string>
+    <string name="settings_load_previous_messages_on_join_label">Last inn tidligere meldinger ved tilkobling</string>
 
     <string name="title_activity_list_view_edit">Endre listen</string>
     <string name="edit_list_remove_item_confirm_title">Ta bort?</string>

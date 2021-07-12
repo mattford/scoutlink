@@ -143,7 +143,7 @@
     <string name="log_exported">Loggfilen exporterad till %1$s</string>
     <string name="error_exporting_logs">Fel vid export av loggfil</string>
     <string name="settings_enable_logging">Aktivera loggning</string>
-    <string name="settings_load_previous_messages_on_join">Ladda tidigare meddelande vid anslutning</string>
+    <string name="settings_load_previous_messages_on_join_label">Ladda tidigare meddelande vid anslutning</string>
 
     <string name="title_activity_list_view_edit">Editera lista</string>
     <string name="edit_list_remove_item_confirm_title">Ta bort post?</string>
