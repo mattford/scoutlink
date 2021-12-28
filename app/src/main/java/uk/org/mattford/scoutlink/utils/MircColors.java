@@ -272,7 +272,7 @@ public abstract class MircColors
                     controlCode.append(",");
                     controlCode.append(getMircColor(backgroundColor));
                 }
-            } else {
+            } else if (style.getClass() == StyleSpan.class) {
                 StyleSpan span = (StyleSpan) style;
                 if (span.getStyle() == Typeface.BOLD_ITALIC) {
                     if (otherTypefaces.contains(Typeface.ITALIC) && !otherTypefaces.contains(Typeface.BOLD)) {
