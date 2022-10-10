@@ -184,6 +184,10 @@ public abstract class MircColors
             ArrayList<CharacterStyle> spansEnding = new ArrayList<>();
             ArrayList<CharacterStyle> otherSpans = new ArrayList<>();
             for (CharacterStyle span : spans) {
+                int mask = spannableString.getSpanFlags(span);
+                if ((mask & Spannable.SPAN_COMPOSING) != 0) {
+                    continue;
+                }
                 int spanStart = spannableString.getSpanStart(span);
                 int spanEnd = spannableString.getSpanEnd(span);
                 if (spanEnd == i) {
