@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="uk.org.mattford.scoutlink"
     android:versionCode="27"
     android:versionName="2.2.1" >
 
@@ -17,7 +16,10 @@
         android:name="uk.org.mattford.scoutlink.ScoutlinkApplication"
         tools:ignore="GoogleAppIndexingWarning">
 
-        <activity android:name=".activity.MainActivity">
+        <activity
+            android:name=".activity.MainActivity"
+            android:exported="true"
+        >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
