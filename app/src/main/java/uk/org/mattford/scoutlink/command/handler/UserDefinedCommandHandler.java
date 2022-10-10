@@ -51,7 +51,7 @@ public class UserDefinedCommandHandler extends CommandHandler {
                     String paramValue = "";
                     if (paramNumber >= 0 && params.length > paramNumber) {
                         if ("-".equalsIgnoreCase(m.group(2))) {
-                            paramValue = StringUtils.join(Arrays.copyOfRange(params, paramNumber, params.length));
+                            paramValue = StringUtils.join(Arrays.copyOfRange(params, paramNumber, params.length), " ");
                         } else {
                             paramValue = params[paramNumber];
                         }

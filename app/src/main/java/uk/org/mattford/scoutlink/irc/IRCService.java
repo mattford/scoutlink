@@ -212,7 +212,11 @@ public class IRCService extends Service {
 	public Notification getNotification() {
         Intent notificationIntent = new Intent(this, ConversationsActivity.class);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        PendingIntent intent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+        int flags = 0;
+        if (Build.VERSION.SDK_INT >= 23) {
+            flags += PendingIntent.FLAG_IMMUTABLE;
+        }
+        PendingIntent intent = PendingIntent.getActivity(this, 0, notificationIntent, flags);
 
         String basicText;
         switch (server.getStatus()) {
