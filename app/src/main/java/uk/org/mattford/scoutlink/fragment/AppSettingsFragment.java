@@ -48,7 +48,7 @@ public class AppSettingsFragment extends PreferenceFragmentCompat implements Sha
         if ("notify_list".equalsIgnoreCase(key)) {
             Set<String> value = sharedPreferences.getStringSet(key, null);
             if (value != null) {
-                Intent intent = new Intent(getActivity(), IRCService.class)
+                Intent intent = new Intent(getContext(), IRCService.class)
                         .setAction(IRCService.ACTION_SET_NOTIFY_LIST)
                         .putExtra("items", new ArrayList<>(value));
                 getActivity().startService(intent);
