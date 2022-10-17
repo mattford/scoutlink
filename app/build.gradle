@@ -24,6 +24,7 @@ android {
         }
     }
     compileOptions {
+        coreLibraryDesugaringEnabled true
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
@@ -40,8 +41,8 @@ dependencies {
     implementation 'org.pircbotx:pircbotx:2.3-SNAPSHOT'
     implementation 'androidx.appcompat:appcompat:1.5.1'
     implementation "androidx.preference:preference:1.2.0"
-    implementation 'com.google.firebase:firebase-analytics:21.1.1'
-    implementation 'com.google.firebase:firebase-crashlytics:18.2.13'
+    implementation 'com.google.firebase:firebase-analytics:21.2.0'
+    implementation 'com.google.firebase:firebase-crashlytics:18.3.0'
     implementation 'com.google.android.material:material:1.6.1'
 
     implementation "androidx.room:room-runtime:2.4.3"
@@ -51,6 +52,7 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel:2.5.1"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1"
     annotationProcessor "androidx.room:room-compiler:2.4.3"
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.2.0'
 
     implementation 'androidx.multidex:multidex:2.0.1'
 }
