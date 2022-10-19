@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import org.pircbotx.Channel;
 import org.pircbotx.User;
+import org.pircbotx.exception.DaoException;
 
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
@@ -101,14 +102,20 @@ public class UserListFragment extends Fragment implements PopupMenu.OnMenuItemCl
             menu.removeItem(R.id.action_userlist_unblock);
         }
         Conversation activeConversation = viewModel.getActiveConversation().getValue();
-        if (activeConversation != null &&
-                activeConversation.getChannel() != null &&
-                activeConversation.getChannel().isOp(server.getConnection().getUserBot())
-        ) {
-            inflater.inflate(R.menu.userlist_context_menu_chanop, menu);
-        }
-        if (server.getConnection().getUserBot().isIrcop()) {
-            inflater.inflate(R.menu.userlist_context_menu_ircop, menu);
+
+        try {
+            if (activeConversation != null &&
+                    activeConversation.getChannel() != null &&
+                    activeConversation.getChannel().isOp(server.getConnection().getUserBot())
+            ) {
+                inflater.inflate(R.menu.userlist_context_menu_chanop, menu);
+            }
+            if (server.getConnection().getUserBot().isIrcop()) {
+                inflater.inflate(R.menu.userlist_context_menu_ircop, menu);
+            }
+        } catch (DaoException e) {
+            // This means we couldn't get info for the current user from the DAO, weird,
+            // but we will just ignore it and not show the IRCop/Chanop options.
         }
         popup.setOnMenuItemClickListener(this);
         popup.show();

@@ -41,7 +41,7 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Context context = holder.mView.getContext();
         Message previousMessage = null;
-        if (position > 0) {
+        if (position > 0 && this.messages.size() > 0) {
             previousMessage = this.messages.get(position - 1);
         }
         Message message = this.messages.get(position);
