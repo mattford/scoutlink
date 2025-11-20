@@ -229,7 +229,9 @@ public class ConversationsActivity extends EdgeToEdgeActivity implements Convers
                 joinChannelBuffer.clear();
             });
         }
-        sendBroadcast(new Intent(Broadcast.UPDATE_NOTIFICATION));
+        Intent intent = new Intent(Broadcast.UPDATE_NOTIFICATION);
+        intent.setPackage(getPackageName());
+        sendBroadcast(intent);
     }
 
 	public void onDisconnect() {

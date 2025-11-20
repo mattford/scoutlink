@@ -198,6 +198,7 @@ public class IRCService extends Service {
         updateNotification();
         setIsForeground(false);
         Intent intent = new Intent().setAction(Broadcast.DISCONNECTED);
+        intent.setPackage(getPackageName());
         sendBroadcast(intent);
     }
 
@@ -242,6 +243,7 @@ public class IRCService extends Service {
 
     public void onConnect() {
         Intent intent = new Intent(Broadcast.CONNECTED);
+        intent.setPackage(getPackageName());
         sendBroadcast(intent);
         getServer().setStatus(Server.STATUS_CONNECTED);
         updateNotification();

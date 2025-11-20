@@ -339,6 +339,7 @@ public class IRCListener extends ListenerAdapter {
 
     public void onInvite(InviteEvent event) {
         Intent intent = new Intent().setAction(Broadcast.INVITE).putExtra("target", event.getChannel());
+        intent.setPackage(service.getPackageName());
         service.sendBroadcast(intent);
     }
 
@@ -685,6 +686,7 @@ public class IRCListener extends ListenerAdapter {
     public void onChannelInfo(ChannelInfoEvent event) {
         server.setChannelList(new ArrayList<>(event.getList()));
         Intent intent = new Intent(Broadcast.CHANNEL_LIST_INFO);
+        intent.setPackage(service.getPackageName());
         service.sendBroadcast(intent);
     }
 

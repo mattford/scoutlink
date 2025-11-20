@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -38,7 +39,7 @@ public class ChannelListActivity extends AppCompatActivity implements ChannelLis
     public void onResume() {
         super.onResume();
         receiver = new ChannelListReceiver(this);
-        ContextCompat.registerReceiver(this, receiver, new IntentFilter(Broadcast.CHANNEL_LIST_INFO), ContextCompat.RECEIVER_NOT_EXPORTED);
+        ContextCompat.registerReceiver(this, receiver, new IntentFilter(Broadcast.CHANNEL_LIST_INFO), ContextCompat.RECEIVER_EXPORTED);
         Intent listChannels = new Intent(this, IRCService.class);
         listChannels.setAction(IRCService.ACTION_LIST_CHANNELS);
         startService(listChannels);
