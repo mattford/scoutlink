@@ -1,13 +1,12 @@
 package uk.org.mattford.scoutlink.activity;
 
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import uk.org.mattford.scoutlink.R;
 
-public class RulesActivity extends AppCompatActivity {
+public class RulesActivity extends EdgeToEdgeActivity {
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

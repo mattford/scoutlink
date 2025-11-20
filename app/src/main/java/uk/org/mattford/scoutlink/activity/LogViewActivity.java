@@ -5,14 +5,13 @@ import android.os.Bundle;
 
 import java.util.LinkedList;
 
-import androidx.appcompat.app.AppCompatActivity;
 import uk.org.mattford.scoutlink.R;
 import uk.org.mattford.scoutlink.database.LogDatabase;
 import uk.org.mattford.scoutlink.database.entities.LogMessage;
 import uk.org.mattford.scoutlink.fragment.MessageListFragment;
 import uk.org.mattford.scoutlink.model.Message;
 
-public class LogViewActivity extends AppCompatActivity {
+public class LogViewActivity extends EdgeToEdgeActivity {
     private LogDatabase logDatabase;
     private String channelName;
 

@@ -2,7 +2,6 @@ package uk.org.mattford.scoutlink.activity;
 
 import android.os.Bundle;
 import android.os.Handler;
-import androidx.appcompat.app.AppCompatActivity;
 import android.widget.Button;
 
 import org.pircbotx.Channel;
@@ -12,7 +11,7 @@ import uk.org.mattford.scoutlink.ScoutlinkApplication;
 import uk.org.mattford.scoutlink.databinding.ActivityChannelSettingsBinding;
 import uk.org.mattford.scoutlink.model.Server;
 
-public class ChannelSettingsActivity extends AppCompatActivity {
+public class ChannelSettingsActivity extends EdgeToEdgeActivity {
     private ActivityChannelSettingsBinding binding;
 
     @Override

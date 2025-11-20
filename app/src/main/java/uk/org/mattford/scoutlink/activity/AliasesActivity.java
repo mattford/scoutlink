@@ -5,14 +5,13 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import androidx.appcompat.app.AppCompatActivity;
 
 import uk.org.mattford.scoutlink.R;
 import uk.org.mattford.scoutlink.adapter.AliasesAdapter;
 import uk.org.mattford.scoutlink.database.SettingsDatabase;
 import uk.org.mattford.scoutlink.databinding.ActivityAliasesBinding;
 
-public class AliasesActivity extends AppCompatActivity implements AliasesAdapter.OnAliasClickListener {
+public class AliasesActivity extends EdgeToEdgeActivity implements AliasesAdapter.OnAliasClickListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

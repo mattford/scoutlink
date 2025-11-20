@@ -8,7 +8,6 @@ import uk.org.mattford.scoutlink.utils.Validator;
 
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,7 +15,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends EdgeToEdgeActivity {
 	private ActivityMainBinding binding;
 	private Settings settings;
 

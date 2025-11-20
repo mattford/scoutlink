@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import uk.org.mattford.scoutlink.R;
@@ -25,7 +24,7 @@ import uk.org.mattford.scoutlink.database.LogDatabase;
 import uk.org.mattford.scoutlink.database.entities.LogMessage;
 import uk.org.mattford.scoutlink.tasks.ExportLogFileTask;
 
-public class LogListActivity extends AppCompatActivity {
+public class LogListActivity extends EdgeToEdgeActivity {
     private LogDatabase logDatabase;
     private ArrayList<String> conversationNames;
     private String queuedExport;
