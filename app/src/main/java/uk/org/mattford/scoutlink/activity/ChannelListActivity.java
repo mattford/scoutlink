@@ -2,10 +2,12 @@ package uk.org.mattford.scoutlink.activity;
 
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import org.pircbotx.ChannelListEntry;
 
@@ -36,7 +38,7 @@ public class ChannelListActivity extends AppCompatActivity implements ChannelLis
     public void onResume() {
         super.onResume();
         receiver = new ChannelListReceiver(this);
-        registerReceiver(receiver, new IntentFilter(Broadcast.CHANNEL_LIST_INFO));
+        ContextCompat.registerReceiver(this, receiver, new IntentFilter(Broadcast.CHANNEL_LIST_INFO), ContextCompat.RECEIVER_NOT_EXPORTED);
         Intent listChannels = new Intent(this, IRCService.class);
         listChannels.setAction(IRCService.ACTION_LIST_CHANNELS);
         startService(listChannels);

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.ViewModelProvider;
@@ -30,7 +31,6 @@ import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import androidx.appcompat.app.AppCompatActivity;
 
 import uk.org.mattford.scoutlink.utils.MircColors;
 import uk.org.mattford.scoutlink.viewmodel.ConnectionStatusViewModel;
@@ -48,7 +48,7 @@ import android.widget.Toast;
 
 import org.pircbotx.User;
 
-public class ConversationsActivity extends AppCompatActivity implements ConversationListFragment.OnJoinChannelButtonClickListener {
+public class ConversationsActivity extends EdgeToEdgeActivity implements ConversationListFragment.OnJoinChannelButtonClickListener {
     private ActivityConversationsBinding binding;
 	private ConversationListViewModel viewModel;
     private ConversationReceiver receiver;
@@ -130,7 +130,7 @@ public class ConversationsActivity extends AppCompatActivity implements Conversa
 		intentFilter.addAction(Broadcast.INVITE);
 		intentFilter.addAction(Broadcast.DISCONNECTED);
 		intentFilter.addAction(Broadcast.CONNECTED);
-        registerReceiver(this.receiver, intentFilter);
+        ContextCompat.registerReceiver(this, this.receiver, intentFilter, ContextCompat.RECEIVER_NOT_EXPORTED);
 
         NickCompletionTextView newMessage = binding.messageInput.getEditText();
         newMessage.setOnEditorActionListener((v, actionId, event) -> {

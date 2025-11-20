@@ -6,7 +6,9 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_REMOTE_MESSAGING" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
 
     <application
         android:allowBackup="true"
@@ -26,7 +28,7 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".irc.IRCService" />
+        <service android:name=".irc.IRCService" android:foregroundServiceType="remoteMessaging"/>
 
         <activity
             android:name=".activity.AliasesActivity"

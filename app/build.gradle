@@ -3,11 +3,11 @@ apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.google.firebase.crashlytics'
 
 android {
-    compileSdkVersion 32
+    compileSdkVersion 36
     defaultConfig {
         applicationId "uk.org.mattford.scoutlink"
-        minSdkVersion 19
-        targetSdkVersion 32
+        minSdkVersion 23
+        targetSdkVersion 36
         multiDexEnabled true
         javaCompileOptions {
             annotationProcessorOptions {
@@ -16,7 +16,12 @@ android {
         }
     }
     buildTypes {
-        release {}
+        release {
+            minifyEnabled true
+            proguardFiles
+                getDefaultProguardFile('proguard-android-optimize.txt')
+            signingConfig signingConfigs.debug
+        }
     }
     packagingOptions {
         resources {
@@ -37,22 +42,22 @@ android {
 }
 
 dependencies {
-    implementation 'org.slf4j:slf4j-android:1.7.30'
-    implementation 'org.pircbotx:pircbotx:2.3-SNAPSHOT'
-    implementation 'androidx.appcompat:appcompat:1.5.1'
-    implementation "androidx.preference:preference:1.2.0"
-    implementation 'com.google.firebase:firebase-analytics:21.2.0'
-    implementation 'com.google.firebase:firebase-crashlytics:18.3.0'
-    implementation 'com.google.android.material:material:1.6.1'
+    implementation 'org.slf4j:slf4j-android:1.7.36'
+    implementation 'com.github.pircbotx:pircbotx:2.3.1'
+    implementation 'androidx.appcompat:appcompat:1.7.1'
+    implementation "androidx.preference:preference:1.2.1"
+    implementation 'com.google.firebase:firebase-analytics:23.0.0'
+    implementation 'com.google.firebase:firebase-crashlytics:20.0.3'
+    implementation 'com.google.android.material:material:1.13.0'
 
-    implementation "androidx.room:room-runtime:2.4.3"
+    implementation "androidx.room:room-runtime:2.8.4"
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.recyclerview:recyclerview:1.2.1'
+    implementation 'androidx.recyclerview:recyclerview:1.4.0'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
-    implementation "androidx.lifecycle:lifecycle-viewmodel:2.5.1"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1"
-    annotationProcessor "androidx.room:room-compiler:2.4.3"
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.2.0'
+    implementation "androidx.lifecycle:lifecycle-viewmodel:2.10.0"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.10.0"
+    annotationProcessor "androidx.room:room-compiler:2.8.4"
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.5'
 
     implementation 'androidx.multidex:multidex:2.0.1'
 }
