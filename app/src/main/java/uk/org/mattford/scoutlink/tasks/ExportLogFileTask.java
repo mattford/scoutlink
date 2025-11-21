@@ -19,13 +19,11 @@ import uk.org.mattford.scoutlink.database.entities.LogMessage;
 public class ExportLogFileTask implements Runnable {
 
     private final List<LogMessage> messages;
-    private final String conversationName;
     private final Context context;
     private final Uri uri;
 
-    public ExportLogFileTask(List<LogMessage> messages, String conversationName, Context context, Uri uri) {
+    public ExportLogFileTask(List<LogMessage> messages, Context context, Uri uri) {
         this.messages = messages;
-        this.conversationName = conversationName;
         this.context = context;
         this.uri = uri;
     }

@@ -89,6 +89,7 @@ public class LogListActivity extends EdgeToEdgeActivity {
     public boolean onContextItemSelected(MenuItem item) {
         LogListActivity context = this;
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+        if (info == null) return true;
         String conversationName = conversationNames.get(info.position);
         int itemId = item.getItemId();
         if (itemId == R.id.log_action_delete) {
@@ -122,7 +123,7 @@ public class LogListActivity extends EdgeToEdgeActivity {
         String conversationName = this.queuedExport;
         new Thread(() -> {
             List<LogMessage> logMessages = logDatabase.logMessageDao().findByConversationSync(conversationName);
-            (new ExportLogFileTask(logMessages, conversationName, this, uri)).run();
+            (new ExportLogFileTask(logMessages, this, uri)).run();
         }).start();
     }
 }
