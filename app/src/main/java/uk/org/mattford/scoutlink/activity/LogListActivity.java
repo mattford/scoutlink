@@ -1,8 +1,7 @@
 package uk.org.mattford.scoutlink.activity;
 
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.MenuInflater;
@@ -13,12 +12,15 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import uk.org.mattford.scoutlink.R;
 import uk.org.mattford.scoutlink.database.LogDatabase;
 import uk.org.mattford.scoutlink.database.entities.LogMessage;
@@ -28,13 +30,24 @@ public class LogListActivity extends EdgeToEdgeActivity {
     private LogDatabase logDatabase;
     private ArrayList<String> conversationNames;
     private String queuedExport;
-
-    final int EXPORT_PERMISSION_REQUEST = 0;
+    private ActivityResultLauncher<Intent> createDocumentLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log_list);
+        
+        createDocumentLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                    Uri uri = result.getData().getData();
+                    if (uri != null) {
+                        doExport(uri);
+                    }
+                }
+            }
+        );
     }
 
     @Override
@@ -88,38 +101,28 @@ public class LogListActivity extends EdgeToEdgeActivity {
             }).start();
         } else if (itemId == R.id.log_action_export) {
             queuedExport = conversationName;
-            checkExportPermission();
+            launchExportFilePicker();
         }
         return true;
     }
 
-    private void doExport() {
+    private void launchExportFilePicker() {
+        String conversationName = this.queuedExport;
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault());
+        String fileName = "logs-" + conversationName + "-" + dateFormat.format(new Date()) + ".txt";
+        
+        Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_TITLE, fileName);
+        createDocumentLauncher.launch(intent);
+    }
+
+    private void doExport(@NonNull Uri uri) {
         String conversationName = this.queuedExport;
         new Thread(() -> {
             List<LogMessage> logMessages = logDatabase.logMessageDao().findByConversationSync(conversationName);
-            (new ExportLogFileTask(logMessages, conversationName, this)).run();
+            (new ExportLogFileTask(logMessages, conversationName, this, uri)).run();
         }).start();
-    }
-
-    private void checkExportPermission() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                    EXPORT_PERMISSION_REQUEST);
-        } else {
-            doExport();
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == EXPORT_PERMISSION_REQUEST &&
-                grantResults.length > 0 &&
-                grantResults[0] == PackageManager.PERMISSION_GRANTED
-        ) {
-            doExport();
-        }
     }
 }

@@ -150,7 +150,7 @@
     <string name="no_logs_to_view">There are no logs to view</string>
     <string name="log_action_delete">Delete</string>
     <string name="log_action_export">Export</string>
-    <string name="log_exported">Log file exported to %1$s</string>
+    <string name="log_exported">Log file exported successfully</string>
     <string name="error_exporting_logs">Error exporting log file</string>
 
     <string name="settings_category_logging">Logging</string>
@@ -235,6 +235,6 @@
     <string name="server_window_title" translatable="false">ScoutLink</string>
     <string name="channel_name_prefix" translatable="false">#</string>
 
-    <string name="server_address" translatable="false">chat.scoutlink.net</string>
+    <string name="server_address" translatable="false">192.168.0.179</string>
 
 </resources>
